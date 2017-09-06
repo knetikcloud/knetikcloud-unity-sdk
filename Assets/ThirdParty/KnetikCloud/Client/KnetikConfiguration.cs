@@ -20,7 +20,7 @@ namespace com.knetikcloud.Client
         /// </summary>
         /// <value>The default client.</value>
         public static KnetikClient DefaultClient;
-    
+
         /// <summary>
         /// Gets or sets the API key based on the authentication name.
         /// </summary>

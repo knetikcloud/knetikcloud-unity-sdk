@@ -355,6 +355,9 @@ namespace com.knetikcloud.Client
             return Convert.ChangeType(fromObject, toObject);
         }
 
+        /// <summary>
+        /// Initialize the Knetik Cloud client when the corresponding game object is initialized
+        /// </summary>
         private void Start()
         {
             // Load project settings
@@ -389,25 +392,13 @@ namespace com.knetikcloud.Client
                     break;
 
                 case GrantTypeFacebook:
-                    break;
-
                 case GrantTypeGoogle:
-                    break;
-
                 case GrantTypeRefreshToken:
-                    break;
-
                 default:
                     Debug.LogErrorFormat("Knetik Cloud: Unrecognized 'grant_type' - please verify that you have selected one of: {0}, {1}, {2}, {3}, {4}.",
                         GrantTypeClientCredentials, GrantTypeUserPassword, GrantTypeFacebook, GrantTypeGoogle, GrantTypeRefreshToken);
                     break;
             }
-
-            //string clientSecret = null;  // string | The secret key of the client.  Used only with a grant_type of client_credentials (optional) 
-            //string username = "george.hornmoen";  // string | The username of the client. Used only with a grant_type of password (optional) 
-            //string password = "meowmeow";  // string | The password of the client. Used only with a grant_type of password (optional) 
-            //string token = null;  // string | The 3rd party authentication token. Used only with a grant_type of facebook, google, etc (social plugins) (optional) 
-            //string refreshToken = null;  // string | The refresh token obtained during prior authentication. Used only with a grant_type of refresh_token (optional) 
         }
 
         private void GrantClientCredentials()
@@ -450,11 +441,6 @@ namespace com.knetikcloud.Client
             {
                 Debug.LogError("Exception when calling AccessTokenApi.GetOAuthToken: " + e.Message);
             }
-        }
-
-        private void GrantToken()
-        {
-
         }
 
         /// <summary>
