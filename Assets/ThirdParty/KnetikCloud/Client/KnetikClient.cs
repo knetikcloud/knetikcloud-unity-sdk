@@ -395,7 +395,7 @@ namespace com.knetikcloud.Client
                 case GrantTypeGoogle:
                 case GrantTypeRefreshToken:
                 default:
-                    Debug.LogErrorFormat("Knetik Cloud: Unrecognized 'grant_type' - please verify that you have selected one of: {0}, {1}, {2}, {3}, {4}.",
+                    Debug.LogErrorFormat("Knetik Cloud: Unrecognized 'grant_type' - please verify that you have selected either '{0}' or '{1}'.  '{2}', '{3}', and '{4}' are currently not supported by the default client.",
                         GrantTypeClientCredentials, GrantTypeUserPassword, GrantTypeFacebook, GrantTypeGoogle, GrantTypeRefreshToken);
                     break;
             }
