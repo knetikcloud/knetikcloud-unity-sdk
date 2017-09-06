@@ -1,0 +1,12 @@
+# Add any directories, files, or patterns you don't want to be tracked by version control
+KnetikSDK/Library/**
+KnetikSDK/Temp/**
+KnetikSDK/KnetikSDK.sln
+KnetikSDK/KnetikSDK.csproj
+KnetikSDK/KnetikSDK.Editor.csproj
+**\.mdb**
+**\.pdb**
+**/\.vs/**
+**\.user**
+Source/Dev/**/bin/**
+Source/Dev/**/obj/**
