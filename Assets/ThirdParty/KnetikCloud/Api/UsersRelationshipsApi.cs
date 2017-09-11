@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using RestSharp;
 using com.knetikcloud.Client;
 using com.knetikcloud.Model;
+using com.knetikcloud.Utils;
 using UnityEngine;
 
 using Object = System.Object;
@@ -16,39 +17,48 @@ namespace com.knetikcloud.Api
     /// </summary>
     public interface IUsersRelationshipsApi
     {
+        UserRelationshipResource CreateUserRelationshipData { get; }
+
+        UserRelationshipResource GetUserRelationshipData { get; }
+
+        PageResourceUserRelationshipResource GetUserRelationshipsData { get; }
+
+        UserRelationshipResource UpdateUserRelationshipData { get; }
+
+        
         /// <summary>
         /// Create a user relationship 
         /// </summary>
         /// <param name="relationship">The new relationship</param>
-        /// <returns>UserRelationshipResource</returns>
-        UserRelationshipResource CreateUserRelationship (UserRelationshipResource relationship);
+        void CreateUserRelationship(UserRelationshipResource relationship);
+
         /// <summary>
         /// Delete a user relationship 
         /// </summary>
         /// <param name="id">The id of the relationship</param>
-        /// <returns></returns>
-        void DeleteUserRelationship (long? id);
+        void DeleteUserRelationship(long? id);
+
         /// <summary>
         /// Get a user relationship 
         /// </summary>
         /// <param name="id">The id of the relationship</param>
-        /// <returns>UserRelationshipResource</returns>
-        UserRelationshipResource GetUserRelationship (long? id);
+        void GetUserRelationship(long? id);
+
         /// <summary>
         /// Get a list of user relationships 
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned</param>
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
-        /// <returns>PageResourceUserRelationshipResource</returns>
-        PageResourceUserRelationshipResource GetUserRelationships (int? size, int? page, string order);
+        void GetUserRelationships(int? size, int? page, string order);
+
         /// <summary>
         /// Update a user relationship 
         /// </summary>
         /// <param name="id">The id of the relationship</param>
         /// <param name="relationship">The new relationship</param>
-        /// <returns>UserRelationshipResource</returns>
-        UserRelationshipResource UpdateUserRelationship (long? id, UserRelationshipResource relationship);
+        void UpdateUserRelationship(long? id, UserRelationshipResource relationship);
+
     }
   
     /// <summary>
@@ -56,6 +66,41 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class UsersRelationshipsApi : IUsersRelationshipsApi
     {
+        private readonly KnetikCoroutine mCreateUserRelationshipCoroutine;
+        private DateTime mCreateUserRelationshipStartTime;
+        private string mCreateUserRelationshipPath;
+        private readonly KnetikCoroutine mDeleteUserRelationshipCoroutine;
+        private DateTime mDeleteUserRelationshipStartTime;
+        private string mDeleteUserRelationshipPath;
+        private readonly KnetikCoroutine mGetUserRelationshipCoroutine;
+        private DateTime mGetUserRelationshipStartTime;
+        private string mGetUserRelationshipPath;
+        private readonly KnetikCoroutine mGetUserRelationshipsCoroutine;
+        private DateTime mGetUserRelationshipsStartTime;
+        private string mGetUserRelationshipsPath;
+        private readonly KnetikCoroutine mUpdateUserRelationshipCoroutine;
+        private DateTime mUpdateUserRelationshipStartTime;
+        private string mUpdateUserRelationshipPath;
+
+        public UserRelationshipResource CreateUserRelationshipData { get; private set; }
+        public delegate void CreateUserRelationshipCompleteDelegate(UserRelationshipResource response);
+        public CreateUserRelationshipCompleteDelegate CreateUserRelationshipComplete;
+
+        public delegate void DeleteUserRelationshipCompleteDelegate();
+        public DeleteUserRelationshipCompleteDelegate DeleteUserRelationshipComplete;
+
+        public UserRelationshipResource GetUserRelationshipData { get; private set; }
+        public delegate void GetUserRelationshipCompleteDelegate(UserRelationshipResource response);
+        public GetUserRelationshipCompleteDelegate GetUserRelationshipComplete;
+
+        public PageResourceUserRelationshipResource GetUserRelationshipsData { get; private set; }
+        public delegate void GetUserRelationshipsCompleteDelegate(PageResourceUserRelationshipResource response);
+        public GetUserRelationshipsCompleteDelegate GetUserRelationshipsComplete;
+
+        public UserRelationshipResource UpdateUserRelationshipData { get; private set; }
+        public delegate void UpdateUserRelationshipCompleteDelegate(UserRelationshipResource response);
+        public UpdateUserRelationshipCompleteDelegate UpdateUserRelationshipComplete;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="UsersRelationshipsApi"/> class.
         /// </summary>
@@ -63,58 +108,74 @@ namespace com.knetikcloud.Api
         public UsersRelationshipsApi()
         {
             KnetikClient = KnetikConfiguration.DefaultClient;
+            mCreateUserRelationshipCoroutine = new KnetikCoroutine(KnetikClient);
+            mDeleteUserRelationshipCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetUserRelationshipCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetUserRelationshipsCoroutine = new KnetikCoroutine(KnetikClient);
+            mUpdateUserRelationshipCoroutine = new KnetikCoroutine(KnetikClient);
         }
     
         /// <summary>
         /// Gets the Knetik client.
         /// </summary>
         /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient {get; private set;}
+        public KnetikClient KnetikClient { get; private set; }
 
         /// <summary>
         /// Create a user relationship 
         /// </summary>
-        /// <param name="relationship">The new relationship</param> 
-        /// <returns>UserRelationshipResource</returns>            
-        public UserRelationshipResource CreateUserRelationship(UserRelationshipResource relationship)
+        /// <param name="relationship">The new relationship</param>
+        public void CreateUserRelationship(UserRelationshipResource relationship)
         {
             
-            string urlPath = "/users/relationships";
-            //urlPath = urlPath.Replace("{format}", "json");
-                
+            mCreateUserRelationshipPath = "/users/relationships";
+            if (!string.IsNullOrEmpty(mCreateUserRelationshipPath))
+            {
+                mCreateUserRelationshipPath = mCreateUserRelationshipPath.Replace("{format}", "json");
+            }
+            
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             postBody = KnetikClient.Serialize(relationship); // http body (model) parameter
  
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mCreateUserRelationshipStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mCreateUserRelationshipStartTime, mCreateUserRelationshipPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mCreateUserRelationshipCoroutine.ResponseReceived += CreateUserRelationshipCallback;
+            mCreateUserRelationshipCoroutine.Start(mCreateUserRelationshipPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void CreateUserRelationshipCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling CreateUserRelationship: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling CreateUserRelationship: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling CreateUserRelationship: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling CreateUserRelationship: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (UserRelationshipResource) KnetikClient.Deserialize(response.Content, typeof(UserRelationshipResource), response.Headers);
+
+            CreateUserRelationshipData = (UserRelationshipResource) KnetikClient.Deserialize(response.Content, typeof(UserRelationshipResource), response.Headers);
+            KnetikLogger.LogResponse(mCreateUserRelationshipStartTime, mCreateUserRelationshipPath, string.Format("Response received successfully:\n{0}", CreateUserRelationshipData.ToString()));
+
+            if (CreateUserRelationshipComplete != null)
+            {
+                CreateUserRelationshipComplete(CreateUserRelationshipData);
+            }
         }
         /// <summary>
         /// Delete a user relationship 
         /// </summary>
-        /// <param name="id">The id of the relationship</param> 
-        /// <returns></returns>            
+        /// <param name="id">The id of the relationship</param>
         public void DeleteUserRelationship(long? id)
         {
             // verify the required parameter 'id' is set
@@ -123,43 +184,52 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeleteUserRelationship");
             }
             
-            
-            string urlPath = "/users/relationships/{id}";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
-    
+            mDeleteUserRelationshipPath = "/users/relationships/{id}";
+            if (!string.IsNullOrEmpty(mDeleteUserRelationshipPath))
+            {
+                mDeleteUserRelationshipPath = mDeleteUserRelationshipPath.Replace("{format}", "json");
+            }
+            mDeleteUserRelationshipPath = mDeleteUserRelationshipPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mDeleteUserRelationshipStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mDeleteUserRelationshipStartTime, mDeleteUserRelationshipPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mDeleteUserRelationshipCoroutine.ResponseReceived += DeleteUserRelationshipCallback;
+            mDeleteUserRelationshipCoroutine.Start(mDeleteUserRelationshipPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void DeleteUserRelationshipCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling DeleteUserRelationship: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling DeleteUserRelationship: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling DeleteUserRelationship: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling DeleteUserRelationship: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return;
+
+            KnetikLogger.LogResponse(mDeleteUserRelationshipStartTime, mDeleteUserRelationshipPath, "Response received successfully.");
+            if (DeleteUserRelationshipComplete != null)
+            {
+                DeleteUserRelationshipComplete();
+            }
         }
         /// <summary>
         /// Get a user relationship 
         /// </summary>
-        /// <param name="id">The id of the relationship</param> 
-        /// <returns>UserRelationshipResource</returns>            
-        public UserRelationshipResource GetUserRelationship(long? id)
+        /// <param name="id">The id of the relationship</param>
+        public void GetUserRelationship(long? id)
         {
             // verify the required parameter 'id' is set
             if (id == null)
@@ -167,98 +237,121 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetUserRelationship");
             }
             
-            
-            string urlPath = "/users/relationships/{id}";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
-    
+            mGetUserRelationshipPath = "/users/relationships/{id}";
+            if (!string.IsNullOrEmpty(mGetUserRelationshipPath))
+            {
+                mGetUserRelationshipPath = mGetUserRelationshipPath.Replace("{format}", "json");
+            }
+            mGetUserRelationshipPath = mGetUserRelationshipPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mGetUserRelationshipStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetUserRelationshipStartTime, mGetUserRelationshipPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetUserRelationshipCoroutine.ResponseReceived += GetUserRelationshipCallback;
+            mGetUserRelationshipCoroutine.Start(mGetUserRelationshipPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetUserRelationshipCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetUserRelationship: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetUserRelationship: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetUserRelationship: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetUserRelationship: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (UserRelationshipResource) KnetikClient.Deserialize(response.Content, typeof(UserRelationshipResource), response.Headers);
+
+            GetUserRelationshipData = (UserRelationshipResource) KnetikClient.Deserialize(response.Content, typeof(UserRelationshipResource), response.Headers);
+            KnetikLogger.LogResponse(mGetUserRelationshipStartTime, mGetUserRelationshipPath, string.Format("Response received successfully:\n{0}", GetUserRelationshipData.ToString()));
+
+            if (GetUserRelationshipComplete != null)
+            {
+                GetUserRelationshipComplete(GetUserRelationshipData);
+            }
         }
         /// <summary>
         /// Get a list of user relationships 
         /// </summary>
-        /// <param name="size">The number of objects returned per page</param> 
-        /// <param name="page">The number of the page returned</param> 
-        /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param> 
-        /// <returns>PageResourceUserRelationshipResource</returns>            
-        public PageResourceUserRelationshipResource GetUserRelationships(int? size, int? page, string order)
+        /// <param name="size">The number of objects returned per page</param>
+        /// <param name="page">The number of the page returned</param>
+        /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
+        public void GetUserRelationships(int? size, int? page, string order)
         {
             
-            string urlPath = "/users/relationships";
-            //urlPath = urlPath.Replace("{format}", "json");
-                
+            mGetUserRelationshipsPath = "/users/relationships";
+            if (!string.IsNullOrEmpty(mGetUserRelationshipsPath))
+            {
+                mGetUserRelationshipsPath = mGetUserRelationshipsPath.Replace("{format}", "json");
+            }
+            
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             if (size != null)
             {
                 queryParams.Add("size", KnetikClient.ParameterToString(size));
             }
-            
+
             if (page != null)
             {
                 queryParams.Add("page", KnetikClient.ParameterToString(page));
             }
-            
+
             if (order != null)
             {
                 queryParams.Add("order", KnetikClient.ParameterToString(order));
             }
-            
-            // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            // authentication setting, if any
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+
+            mGetUserRelationshipsStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetUserRelationshipsStartTime, mGetUserRelationshipsPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetUserRelationshipsCoroutine.ResponseReceived += GetUserRelationshipsCallback;
+            mGetUserRelationshipsCoroutine.Start(mGetUserRelationshipsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetUserRelationshipsCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetUserRelationships: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetUserRelationships: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetUserRelationships: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetUserRelationships: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (PageResourceUserRelationshipResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceUserRelationshipResource), response.Headers);
+
+            GetUserRelationshipsData = (PageResourceUserRelationshipResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceUserRelationshipResource), response.Headers);
+            KnetikLogger.LogResponse(mGetUserRelationshipsStartTime, mGetUserRelationshipsPath, string.Format("Response received successfully:\n{0}", GetUserRelationshipsData.ToString()));
+
+            if (GetUserRelationshipsComplete != null)
+            {
+                GetUserRelationshipsComplete(GetUserRelationshipsData);
+            }
         }
         /// <summary>
         /// Update a user relationship 
         /// </summary>
-        /// <param name="id">The id of the relationship</param> 
-        /// <param name="relationship">The new relationship</param> 
-        /// <returns>UserRelationshipResource</returns>            
-        public UserRelationshipResource UpdateUserRelationship(long? id, UserRelationshipResource relationship)
+        /// <param name="id">The id of the relationship</param>
+        /// <param name="relationship">The new relationship</param>
+        public void UpdateUserRelationship(long? id, UserRelationshipResource relationship)
         {
             // verify the required parameter 'id' is set
             if (id == null)
@@ -266,38 +359,50 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling UpdateUserRelationship");
             }
             
-            
-            string urlPath = "/users/relationships/{id}";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
-    
+            mUpdateUserRelationshipPath = "/users/relationships/{id}";
+            if (!string.IsNullOrEmpty(mUpdateUserRelationshipPath))
+            {
+                mUpdateUserRelationshipPath = mUpdateUserRelationshipPath.Replace("{format}", "json");
+            }
+            mUpdateUserRelationshipPath = mUpdateUserRelationshipPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             postBody = KnetikClient.Serialize(relationship); // http body (model) parameter
  
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mUpdateUserRelationshipStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mUpdateUserRelationshipStartTime, mUpdateUserRelationshipPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mUpdateUserRelationshipCoroutine.ResponseReceived += UpdateUserRelationshipCallback;
+            mUpdateUserRelationshipCoroutine.Start(mUpdateUserRelationshipPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void UpdateUserRelationshipCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling UpdateUserRelationship: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling UpdateUserRelationship: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling UpdateUserRelationship: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling UpdateUserRelationship: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (UserRelationshipResource) KnetikClient.Deserialize(response.Content, typeof(UserRelationshipResource), response.Headers);
+
+            UpdateUserRelationshipData = (UserRelationshipResource) KnetikClient.Deserialize(response.Content, typeof(UserRelationshipResource), response.Headers);
+            KnetikLogger.LogResponse(mUpdateUserRelationshipStartTime, mUpdateUserRelationshipPath, string.Format("Response received successfully:\n{0}", UpdateUserRelationshipData.ToString()));
+
+            if (UpdateUserRelationshipComplete != null)
+            {
+                UpdateUserRelationshipComplete(UpdateUserRelationshipData);
+            }
         }
     }
 }

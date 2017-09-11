@@ -30,7 +30,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The tax rate as a percentage to a maximum of two decimal places (1.5 means 1.5%)</value>
         [JsonProperty(PropertyName = "rate")]
-        public double? Rate { get; set; }
+        public decimal? Rate { get; set; }
 
         /// <summary>
         /// Whether the tax applies to shipping costs

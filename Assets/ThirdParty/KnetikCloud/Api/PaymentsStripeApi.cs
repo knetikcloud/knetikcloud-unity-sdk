@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using RestSharp;
 using com.knetikcloud.Client;
 using com.knetikcloud.Model;
+using com.knetikcloud.Utils;
 using UnityEngine;
 
 using Object = System.Object;
@@ -16,18 +17,21 @@ namespace com.knetikcloud.Api
     /// </summary>
     public interface IPaymentsStripeApi
     {
+        PaymentMethodResource CreateStripePaymentMethodData { get; }
+
+        
         /// <summary>
         /// Create a Stripe payment method for a user Obtain a token from Stripe, following their examples and documentation. Stores customer information and creates a payment method that can be used to pay invoices through the payments endpoints. Ensure that Stripe itself has been configured with the webhook so that invoices are marked paid.
         /// </summary>
         /// <param name="request">The request to create a Stripe customer with payment info</param>
-        /// <returns>PaymentMethodResource</returns>
-        PaymentMethodResource CreateStripePaymentMethod (StripeCreatePaymentMethod request);
+        void CreateStripePaymentMethod(StripeCreatePaymentMethod request);
+
         /// <summary>
         /// Pay with a single use token Obtain a token from Stripe, following their examples and documentation. Pays an invoice without creating a payment method. Ensure that Stripe itself has been configured with the webhook so that invoices are marked paid.
         /// </summary>
         /// <param name="request">The request to pay an invoice</param>
-        /// <returns></returns>
-        void PayStripeInvoice (StripePaymentRequest request);
+        void PayStripeInvoice(StripePaymentRequest request);
+
     }
   
     /// <summary>
@@ -35,6 +39,20 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class PaymentsStripeApi : IPaymentsStripeApi
     {
+        private readonly KnetikCoroutine mCreateStripePaymentMethodCoroutine;
+        private DateTime mCreateStripePaymentMethodStartTime;
+        private string mCreateStripePaymentMethodPath;
+        private readonly KnetikCoroutine mPayStripeInvoiceCoroutine;
+        private DateTime mPayStripeInvoiceStartTime;
+        private string mPayStripeInvoicePath;
+
+        public PaymentMethodResource CreateStripePaymentMethodData { get; private set; }
+        public delegate void CreateStripePaymentMethodCompleteDelegate(PaymentMethodResource response);
+        public CreateStripePaymentMethodCompleteDelegate CreateStripePaymentMethodComplete;
+
+        public delegate void PayStripeInvoiceCompleteDelegate();
+        public PayStripeInvoiceCompleteDelegate PayStripeInvoiceComplete;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="PaymentsStripeApi"/> class.
         /// </summary>
@@ -42,91 +60,115 @@ namespace com.knetikcloud.Api
         public PaymentsStripeApi()
         {
             KnetikClient = KnetikConfiguration.DefaultClient;
+            mCreateStripePaymentMethodCoroutine = new KnetikCoroutine(KnetikClient);
+            mPayStripeInvoiceCoroutine = new KnetikCoroutine(KnetikClient);
         }
     
         /// <summary>
         /// Gets the Knetik client.
         /// </summary>
         /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient {get; private set;}
+        public KnetikClient KnetikClient { get; private set; }
 
         /// <summary>
         /// Create a Stripe payment method for a user Obtain a token from Stripe, following their examples and documentation. Stores customer information and creates a payment method that can be used to pay invoices through the payments endpoints. Ensure that Stripe itself has been configured with the webhook so that invoices are marked paid.
         /// </summary>
-        /// <param name="request">The request to create a Stripe customer with payment info</param> 
-        /// <returns>PaymentMethodResource</returns>            
-        public PaymentMethodResource CreateStripePaymentMethod(StripeCreatePaymentMethod request)
+        /// <param name="request">The request to create a Stripe customer with payment info</param>
+        public void CreateStripePaymentMethod(StripeCreatePaymentMethod request)
         {
             
-            string urlPath = "/payment/provider/stripe/payment-methods";
-            //urlPath = urlPath.Replace("{format}", "json");
-                
+            mCreateStripePaymentMethodPath = "/payment/provider/stripe/payment-methods";
+            if (!string.IsNullOrEmpty(mCreateStripePaymentMethodPath))
+            {
+                mCreateStripePaymentMethodPath = mCreateStripePaymentMethodPath.Replace("{format}", "json");
+            }
+            
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             postBody = KnetikClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mCreateStripePaymentMethodStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mCreateStripePaymentMethodStartTime, mCreateStripePaymentMethodPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mCreateStripePaymentMethodCoroutine.ResponseReceived += CreateStripePaymentMethodCallback;
+            mCreateStripePaymentMethodCoroutine.Start(mCreateStripePaymentMethodPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void CreateStripePaymentMethodCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling CreateStripePaymentMethod: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling CreateStripePaymentMethod: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling CreateStripePaymentMethod: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling CreateStripePaymentMethod: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (PaymentMethodResource) KnetikClient.Deserialize(response.Content, typeof(PaymentMethodResource), response.Headers);
+
+            CreateStripePaymentMethodData = (PaymentMethodResource) KnetikClient.Deserialize(response.Content, typeof(PaymentMethodResource), response.Headers);
+            KnetikLogger.LogResponse(mCreateStripePaymentMethodStartTime, mCreateStripePaymentMethodPath, string.Format("Response received successfully:\n{0}", CreateStripePaymentMethodData.ToString()));
+
+            if (CreateStripePaymentMethodComplete != null)
+            {
+                CreateStripePaymentMethodComplete(CreateStripePaymentMethodData);
+            }
         }
         /// <summary>
         /// Pay with a single use token Obtain a token from Stripe, following their examples and documentation. Pays an invoice without creating a payment method. Ensure that Stripe itself has been configured with the webhook so that invoices are marked paid.
         /// </summary>
-        /// <param name="request">The request to pay an invoice</param> 
-        /// <returns></returns>            
+        /// <param name="request">The request to pay an invoice</param>
         public void PayStripeInvoice(StripePaymentRequest request)
         {
             
-            string urlPath = "/payment/provider/stripe/payments";
-            //urlPath = urlPath.Replace("{format}", "json");
-                
+            mPayStripeInvoicePath = "/payment/provider/stripe/payments";
+            if (!string.IsNullOrEmpty(mPayStripeInvoicePath))
+            {
+                mPayStripeInvoicePath = mPayStripeInvoicePath.Replace("{format}", "json");
+            }
+            
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             postBody = KnetikClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
-            String[] authSettings = new String[] {  };
+            string[] authSettings = new string[] {  };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mPayStripeInvoiceStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mPayStripeInvoiceStartTime, mPayStripeInvoicePath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mPayStripeInvoiceCoroutine.ResponseReceived += PayStripeInvoiceCallback;
+            mPayStripeInvoiceCoroutine.Start(mPayStripeInvoicePath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void PayStripeInvoiceCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling PayStripeInvoice: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling PayStripeInvoice: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling PayStripeInvoice: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling PayStripeInvoice: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return;
+
+            KnetikLogger.LogResponse(mPayStripeInvoiceStartTime, mPayStripeInvoicePath, "Response received successfully.");
+            if (PayStripeInvoiceComplete != null)
+            {
+                PayStripeInvoiceComplete();
+            }
         }
     }
 }

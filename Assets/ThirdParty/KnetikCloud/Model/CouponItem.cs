@@ -23,14 +23,14 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The amount this coupon is maxed out at.  Applies if coupon_type_hint is coupon_cart</value>
         [JsonProperty(PropertyName = "discount_max")]
-        public double? DiscountMax { get; set; }
+        public decimal? DiscountMax { get; set; }
 
         /// <summary>
         /// The minimium amount needed in the cart for the coupon to apply.  Applies if coupon_type_hint is coupon_cart
         /// </summary>
         /// <value>The minimium amount needed in the cart for the coupon to apply.  Applies if coupon_type_hint is coupon_cart</value>
         [JsonProperty(PropertyName = "discount_min_cart_value")]
-        public double? DiscountMinCartValue { get; set; }
+        public decimal? DiscountMinCartValue { get; set; }
 
         /// <summary>
         /// The type of discount in terms of how it deducts price. Value based discount not available for coupon_cart type coupons
@@ -44,7 +44,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The amount the coupon will discount the item. If discount_type is 'value' this will be a flat amount of currency. If discount type is 'percentage' this will be a fraction (0.2 for 20% off) multiplied by the price of the matching item or items.</value>
         [JsonProperty(PropertyName = "discount_value")]
-        public double? DiscountValue { get; set; }
+        public decimal? DiscountValue { get; set; }
 
         /// <summary>
         /// Whether this coupon is exclusive or not (true means cannot be in same cart as another).  Default = false

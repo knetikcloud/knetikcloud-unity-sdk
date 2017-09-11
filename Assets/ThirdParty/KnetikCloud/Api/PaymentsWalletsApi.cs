@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using RestSharp;
 using com.knetikcloud.Client;
 using com.knetikcloud.Model;
+using com.knetikcloud.Utils;
 using UnityEngine;
 
 using Object = System.Object;
@@ -16,13 +17,28 @@ namespace com.knetikcloud.Api
     /// </summary>
     public interface IPaymentsWalletsApi
     {
+        SimpleWallet GetUserWalletData { get; }
+
+        PageResourceWalletTransactionResource GetUserWalletTransactionsData { get; }
+
+        List<SimpleWallet> GetUserWalletsData { get; }
+
+        PageResourceWalletTotalResponse GetWalletBalancesData { get; }
+
+        PageResourceWalletTransactionResource GetWalletTransactionsData { get; }
+
+        PageResourceSimpleWallet GetWalletsData { get; }
+
+        WalletTransactionResource UpdateWalletBalanceData { get; }
+
+        
         /// <summary>
         /// Returns the user&#39;s wallet for the given currency code 
         /// </summary>
         /// <param name="userId">The ID of the user for whom wallet is being retrieved</param>
         /// <param name="currencyCode">Currency code of the user&#39;s wallet</param>
-        /// <returns>SimpleWallet</returns>
-        SimpleWallet GetUserWallet (int? userId, string currencyCode);
+        void GetUserWallet(int? userId, string currencyCode);
+
         /// <summary>
         /// Retrieve a user&#39;s wallet transactions 
         /// </summary>
@@ -35,19 +51,19 @@ namespace com.knetikcloud.Api
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
-        /// <returns>PageResourceWalletTransactionResource</returns>
-        PageResourceWalletTransactionResource GetUserWalletTransactions (int? userId, string currencyCode, string filterType, long? filterMaxDate, long? filterMinDate, string filterSign, int? size, int? page, string order);
+        void GetUserWalletTransactions(int? userId, string currencyCode, string filterType, long? filterMaxDate, long? filterMinDate, string filterSign, int? size, int? page, string order);
+
         /// <summary>
         /// List all of a user&#39;s wallets 
         /// </summary>
         /// <param name="userId">The ID of the user for whom wallets are being retrieved</param>
-        /// <returns>List&lt;SimpleWallet&gt;</returns>
-        List<SimpleWallet> GetUserWallets (int? userId);
+        void GetUserWallets(int? userId);
+
         /// <summary>
         /// Retrieves a summation of wallet balances by currency code 
         /// </summary>
-        /// <returns>PageResourceWalletTotalResponse</returns>
-        PageResourceWalletTotalResponse GetWalletBalances ();
+        void GetWalletBalances();
+
         /// <summary>
         /// Retrieve wallet transactions across the system 
         /// </summary>
@@ -62,24 +78,24 @@ namespace com.knetikcloud.Api
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
-        /// <returns>PageResourceWalletTransactionResource</returns>
-        PageResourceWalletTransactionResource GetWalletTransactions (int? filterInvoice, string filterType, string filterDate, string filterSign, int? filterUserId, string filterUsername, string filterDetails, string filterCurrencyCode, int? size, int? page, string order);
+        void GetWalletTransactions(int? filterInvoice, string filterType, string filterDate, string filterSign, int? filterUserId, string filterUsername, string filterDetails, string filterCurrencyCode, int? size, int? page, string order);
+
         /// <summary>
         /// Retrieve a list of wallets across the system 
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
-        /// <returns>PageResourceSimpleWallet</returns>
-        PageResourceSimpleWallet GetWallets (int? size, int? page, string order);
+        void GetWallets(int? size, int? page, string order);
+
         /// <summary>
         /// Updates the balance for a user&#39;s wallet 
         /// </summary>
         /// <param name="userId">The ID of the user for whom wallet is being modified</param>
         /// <param name="currencyCode">Currency code of the user&#39;s wallet</param>
         /// <param name="request">The requested balance modification to be made to the user&#39;s wallet</param>
-        /// <returns>WalletTransactionResource</returns>
-        WalletTransactionResource UpdateWalletBalance (int? userId, string currencyCode, WalletAlterRequest request);
+        void UpdateWalletBalance(int? userId, string currencyCode, WalletAlterRequest request);
+
     }
   
     /// <summary>
@@ -87,6 +103,56 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class PaymentsWalletsApi : IPaymentsWalletsApi
     {
+        private readonly KnetikCoroutine mGetUserWalletCoroutine;
+        private DateTime mGetUserWalletStartTime;
+        private string mGetUserWalletPath;
+        private readonly KnetikCoroutine mGetUserWalletTransactionsCoroutine;
+        private DateTime mGetUserWalletTransactionsStartTime;
+        private string mGetUserWalletTransactionsPath;
+        private readonly KnetikCoroutine mGetUserWalletsCoroutine;
+        private DateTime mGetUserWalletsStartTime;
+        private string mGetUserWalletsPath;
+        private readonly KnetikCoroutine mGetWalletBalancesCoroutine;
+        private DateTime mGetWalletBalancesStartTime;
+        private string mGetWalletBalancesPath;
+        private readonly KnetikCoroutine mGetWalletTransactionsCoroutine;
+        private DateTime mGetWalletTransactionsStartTime;
+        private string mGetWalletTransactionsPath;
+        private readonly KnetikCoroutine mGetWalletsCoroutine;
+        private DateTime mGetWalletsStartTime;
+        private string mGetWalletsPath;
+        private readonly KnetikCoroutine mUpdateWalletBalanceCoroutine;
+        private DateTime mUpdateWalletBalanceStartTime;
+        private string mUpdateWalletBalancePath;
+
+        public SimpleWallet GetUserWalletData { get; private set; }
+        public delegate void GetUserWalletCompleteDelegate(SimpleWallet response);
+        public GetUserWalletCompleteDelegate GetUserWalletComplete;
+
+        public PageResourceWalletTransactionResource GetUserWalletTransactionsData { get; private set; }
+        public delegate void GetUserWalletTransactionsCompleteDelegate(PageResourceWalletTransactionResource response);
+        public GetUserWalletTransactionsCompleteDelegate GetUserWalletTransactionsComplete;
+
+        public List<SimpleWallet> GetUserWalletsData { get; private set; }
+        public delegate void GetUserWalletsCompleteDelegate(List<SimpleWallet> response);
+        public GetUserWalletsCompleteDelegate GetUserWalletsComplete;
+
+        public PageResourceWalletTotalResponse GetWalletBalancesData { get; private set; }
+        public delegate void GetWalletBalancesCompleteDelegate(PageResourceWalletTotalResponse response);
+        public GetWalletBalancesCompleteDelegate GetWalletBalancesComplete;
+
+        public PageResourceWalletTransactionResource GetWalletTransactionsData { get; private set; }
+        public delegate void GetWalletTransactionsCompleteDelegate(PageResourceWalletTransactionResource response);
+        public GetWalletTransactionsCompleteDelegate GetWalletTransactionsComplete;
+
+        public PageResourceSimpleWallet GetWalletsData { get; private set; }
+        public delegate void GetWalletsCompleteDelegate(PageResourceSimpleWallet response);
+        public GetWalletsCompleteDelegate GetWalletsComplete;
+
+        public WalletTransactionResource UpdateWalletBalanceData { get; private set; }
+        public delegate void UpdateWalletBalanceCompleteDelegate(WalletTransactionResource response);
+        public UpdateWalletBalanceCompleteDelegate UpdateWalletBalanceComplete;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="PaymentsWalletsApi"/> class.
         /// </summary>
@@ -94,166 +160,192 @@ namespace com.knetikcloud.Api
         public PaymentsWalletsApi()
         {
             KnetikClient = KnetikConfiguration.DefaultClient;
+            mGetUserWalletCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetUserWalletTransactionsCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetUserWalletsCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetWalletBalancesCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetWalletTransactionsCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetWalletsCoroutine = new KnetikCoroutine(KnetikClient);
+            mUpdateWalletBalanceCoroutine = new KnetikCoroutine(KnetikClient);
         }
     
         /// <summary>
         /// Gets the Knetik client.
         /// </summary>
         /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient {get; private set;}
+        public KnetikClient KnetikClient { get; private set; }
 
         /// <summary>
         /// Returns the user&#39;s wallet for the given currency code 
         /// </summary>
-        /// <param name="userId">The ID of the user for whom wallet is being retrieved</param> 
-        /// <param name="currencyCode">Currency code of the user&#39;s wallet</param> 
-        /// <returns>SimpleWallet</returns>            
-        public SimpleWallet GetUserWallet(int? userId, string currencyCode)
+        /// <param name="userId">The ID of the user for whom wallet is being retrieved</param>
+        /// <param name="currencyCode">Currency code of the user&#39;s wallet</param>
+        public void GetUserWallet(int? userId, string currencyCode)
         {
             // verify the required parameter 'userId' is set
             if (userId == null)
             {
                 throw new KnetikException(400, "Missing required parameter 'userId' when calling GetUserWallet");
             }
-            
             // verify the required parameter 'currencyCode' is set
             if (currencyCode == null)
             {
                 throw new KnetikException(400, "Missing required parameter 'currencyCode' when calling GetUserWallet");
             }
             
-            
-            string urlPath = "/users/{user_id}/wallets/{currency_code}";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-urlPath = urlPath.Replace("{" + "currency_code" + "}", KnetikClient.ParameterToString(currencyCode));
-    
+            mGetUserWalletPath = "/users/{user_id}/wallets/{currency_code}";
+            if (!string.IsNullOrEmpty(mGetUserWalletPath))
+            {
+                mGetUserWalletPath = mGetUserWalletPath.Replace("{format}", "json");
+            }
+            mGetUserWalletPath = mGetUserWalletPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+mGetUserWalletPath = mGetUserWalletPath.Replace("{" + "currency_code" + "}", KnetikClient.ParameterToString(currencyCode));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mGetUserWalletStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetUserWalletStartTime, mGetUserWalletPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetUserWalletCoroutine.ResponseReceived += GetUserWalletCallback;
+            mGetUserWalletCoroutine.Start(mGetUserWalletPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetUserWalletCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetUserWallet: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetUserWallet: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetUserWallet: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetUserWallet: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (SimpleWallet) KnetikClient.Deserialize(response.Content, typeof(SimpleWallet), response.Headers);
+
+            GetUserWalletData = (SimpleWallet) KnetikClient.Deserialize(response.Content, typeof(SimpleWallet), response.Headers);
+            KnetikLogger.LogResponse(mGetUserWalletStartTime, mGetUserWalletPath, string.Format("Response received successfully:\n{0}", GetUserWalletData.ToString()));
+
+            if (GetUserWalletComplete != null)
+            {
+                GetUserWalletComplete(GetUserWalletData);
+            }
         }
         /// <summary>
         /// Retrieve a user&#39;s wallet transactions 
         /// </summary>
-        /// <param name="userId">The ID of the user for whom wallet transactions are being retrieved</param> 
-        /// <param name="currencyCode">Currency code of the user&#39;s wallet</param> 
-        /// <param name="filterType">Filter for transactions with specified type</param> 
-        /// <param name="filterMaxDate">Filter for transactions from no earlier than the specified date as a unix timestamp in seconds</param> 
-        /// <param name="filterMinDate">Filter for transactions from no later than the specified date as a unix timestamp in seconds</param> 
-        /// <param name="filterSign">Filter for transactions with amount with the given sign.  Allowable values: (&#39;positive&#39;, &#39;negative&#39;)</param> 
-        /// <param name="size">The number of objects returned per page</param> 
-        /// <param name="page">The number of the page returned, starting with 1</param> 
-        /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param> 
-        /// <returns>PageResourceWalletTransactionResource</returns>            
-        public PageResourceWalletTransactionResource GetUserWalletTransactions(int? userId, string currencyCode, string filterType, long? filterMaxDate, long? filterMinDate, string filterSign, int? size, int? page, string order)
+        /// <param name="userId">The ID of the user for whom wallet transactions are being retrieved</param>
+        /// <param name="currencyCode">Currency code of the user&#39;s wallet</param>
+        /// <param name="filterType">Filter for transactions with specified type</param>
+        /// <param name="filterMaxDate">Filter for transactions from no earlier than the specified date as a unix timestamp in seconds</param>
+        /// <param name="filterMinDate">Filter for transactions from no later than the specified date as a unix timestamp in seconds</param>
+        /// <param name="filterSign">Filter for transactions with amount with the given sign.  Allowable values: (&#39;positive&#39;, &#39;negative&#39;)</param>
+        /// <param name="size">The number of objects returned per page</param>
+        /// <param name="page">The number of the page returned, starting with 1</param>
+        /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
+        public void GetUserWalletTransactions(int? userId, string currencyCode, string filterType, long? filterMaxDate, long? filterMinDate, string filterSign, int? size, int? page, string order)
         {
             // verify the required parameter 'userId' is set
             if (userId == null)
             {
                 throw new KnetikException(400, "Missing required parameter 'userId' when calling GetUserWalletTransactions");
             }
-            
             // verify the required parameter 'currencyCode' is set
             if (currencyCode == null)
             {
                 throw new KnetikException(400, "Missing required parameter 'currencyCode' when calling GetUserWalletTransactions");
             }
             
-            
-            string urlPath = "/users/{user_id}/wallets/{currency_code}/transactions";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-urlPath = urlPath.Replace("{" + "currency_code" + "}", KnetikClient.ParameterToString(currencyCode));
-    
+            mGetUserWalletTransactionsPath = "/users/{user_id}/wallets/{currency_code}/transactions";
+            if (!string.IsNullOrEmpty(mGetUserWalletTransactionsPath))
+            {
+                mGetUserWalletTransactionsPath = mGetUserWalletTransactionsPath.Replace("{format}", "json");
+            }
+            mGetUserWalletTransactionsPath = mGetUserWalletTransactionsPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+mGetUserWalletTransactionsPath = mGetUserWalletTransactionsPath.Replace("{" + "currency_code" + "}", KnetikClient.ParameterToString(currencyCode));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             if (filterType != null)
             {
                 queryParams.Add("filter_type", KnetikClient.ParameterToString(filterType));
             }
-            
+
             if (filterMaxDate != null)
             {
                 queryParams.Add("filter_max_date", KnetikClient.ParameterToString(filterMaxDate));
             }
-            
+
             if (filterMinDate != null)
             {
                 queryParams.Add("filter_min_date", KnetikClient.ParameterToString(filterMinDate));
             }
-            
+
             if (filterSign != null)
             {
                 queryParams.Add("filter_sign", KnetikClient.ParameterToString(filterSign));
             }
-            
+
             if (size != null)
             {
                 queryParams.Add("size", KnetikClient.ParameterToString(size));
             }
-            
+
             if (page != null)
             {
                 queryParams.Add("page", KnetikClient.ParameterToString(page));
             }
-            
+
             if (order != null)
             {
                 queryParams.Add("order", KnetikClient.ParameterToString(order));
             }
-            
-            // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            // authentication setting, if any
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+
+            mGetUserWalletTransactionsStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetUserWalletTransactionsStartTime, mGetUserWalletTransactionsPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetUserWalletTransactionsCoroutine.ResponseReceived += GetUserWalletTransactionsCallback;
+            mGetUserWalletTransactionsCoroutine.Start(mGetUserWalletTransactionsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetUserWalletTransactionsCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetUserWalletTransactions: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetUserWalletTransactions: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetUserWalletTransactions: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetUserWalletTransactions: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (PageResourceWalletTransactionResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceWalletTransactionResource), response.Headers);
+
+            GetUserWalletTransactionsData = (PageResourceWalletTransactionResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceWalletTransactionResource), response.Headers);
+            KnetikLogger.LogResponse(mGetUserWalletTransactionsStartTime, mGetUserWalletTransactionsPath, string.Format("Response received successfully:\n{0}", GetUserWalletTransactionsData.ToString()));
+
+            if (GetUserWalletTransactionsComplete != null)
+            {
+                GetUserWalletTransactionsComplete(GetUserWalletTransactionsData);
+            }
         }
         /// <summary>
         /// List all of a user&#39;s wallets 
         /// </summary>
-        /// <param name="userId">The ID of the user for whom wallets are being retrieved</param> 
-        /// <returns>List&lt;SimpleWallet&gt;</returns>            
-        public List<SimpleWallet> GetUserWallets(int? userId)
+        /// <param name="userId">The ID of the user for whom wallets are being retrieved</param>
+        public void GetUserWallets(int? userId)
         {
             // verify the required parameter 'userId' is set
             if (userId == null)
@@ -261,283 +353,341 @@ urlPath = urlPath.Replace("{" + "currency_code" + "}", KnetikClient.ParameterToS
                 throw new KnetikException(400, "Missing required parameter 'userId' when calling GetUserWallets");
             }
             
-            
-            string urlPath = "/users/{user_id}/wallets";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-    
+            mGetUserWalletsPath = "/users/{user_id}/wallets";
+            if (!string.IsNullOrEmpty(mGetUserWalletsPath))
+            {
+                mGetUserWalletsPath = mGetUserWalletsPath.Replace("{format}", "json");
+            }
+            mGetUserWalletsPath = mGetUserWalletsPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mGetUserWalletsStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetUserWalletsStartTime, mGetUserWalletsPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetUserWalletsCoroutine.ResponseReceived += GetUserWalletsCallback;
+            mGetUserWalletsCoroutine.Start(mGetUserWalletsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetUserWalletsCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetUserWallets: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetUserWallets: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetUserWallets: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetUserWallets: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (List<SimpleWallet>) KnetikClient.Deserialize(response.Content, typeof(List<SimpleWallet>), response.Headers);
+
+            GetUserWalletsData = (List<SimpleWallet>) KnetikClient.Deserialize(response.Content, typeof(List<SimpleWallet>), response.Headers);
+            KnetikLogger.LogResponse(mGetUserWalletsStartTime, mGetUserWalletsPath, string.Format("Response received successfully:\n{0}", GetUserWalletsData.ToString()));
+
+            if (GetUserWalletsComplete != null)
+            {
+                GetUserWalletsComplete(GetUserWalletsData);
+            }
         }
         /// <summary>
         /// Retrieves a summation of wallet balances by currency code 
         /// </summary>
-        /// <returns>PageResourceWalletTotalResponse</returns>            
-        public PageResourceWalletTotalResponse GetWalletBalances()
+        public void GetWalletBalances()
         {
             
-            string urlPath = "/wallets/totals";
-            //urlPath = urlPath.Replace("{format}", "json");
-                
+            mGetWalletBalancesPath = "/wallets/totals";
+            if (!string.IsNullOrEmpty(mGetWalletBalancesPath))
+            {
+                mGetWalletBalancesPath = mGetWalletBalancesPath.Replace("{format}", "json");
+            }
+            
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mGetWalletBalancesStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetWalletBalancesStartTime, mGetWalletBalancesPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetWalletBalancesCoroutine.ResponseReceived += GetWalletBalancesCallback;
+            mGetWalletBalancesCoroutine.Start(mGetWalletBalancesPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetWalletBalancesCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetWalletBalances: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetWalletBalances: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetWalletBalances: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetWalletBalances: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (PageResourceWalletTotalResponse) KnetikClient.Deserialize(response.Content, typeof(PageResourceWalletTotalResponse), response.Headers);
+
+            GetWalletBalancesData = (PageResourceWalletTotalResponse) KnetikClient.Deserialize(response.Content, typeof(PageResourceWalletTotalResponse), response.Headers);
+            KnetikLogger.LogResponse(mGetWalletBalancesStartTime, mGetWalletBalancesPath, string.Format("Response received successfully:\n{0}", GetWalletBalancesData.ToString()));
+
+            if (GetWalletBalancesComplete != null)
+            {
+                GetWalletBalancesComplete(GetWalletBalancesData);
+            }
         }
         /// <summary>
         /// Retrieve wallet transactions across the system 
         /// </summary>
-        /// <param name="filterInvoice">Filter for transactions from a specific invoice</param> 
-        /// <param name="filterType">Filter for transactions with specified type</param> 
-        /// <param name="filterDate">A comma separated string without spaces.  First value is the operator to search on, second value is the log start date, a unix timestamp in seconds. Can be repeated for a range, eg: GT,123,LT,456  Allowed operators: (GT, LT, EQ, GOE, LOE).</param> 
-        /// <param name="filterSign">Filter for transactions with amount with the given sign</param> 
-        /// <param name="filterUserId">Filter for transactions for specific userId</param> 
-        /// <param name="filterUsername">Filter for transactions for specific username that start with the given string</param> 
-        /// <param name="filterDetails">Filter for transactions for specific details that start with the given string</param> 
-        /// <param name="filterCurrencyCode">Filter for transactions for specific currency code</param> 
-        /// <param name="size">The number of objects returned per page</param> 
-        /// <param name="page">The number of the page returned, starting with 1</param> 
-        /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param> 
-        /// <returns>PageResourceWalletTransactionResource</returns>            
-        public PageResourceWalletTransactionResource GetWalletTransactions(int? filterInvoice, string filterType, string filterDate, string filterSign, int? filterUserId, string filterUsername, string filterDetails, string filterCurrencyCode, int? size, int? page, string order)
+        /// <param name="filterInvoice">Filter for transactions from a specific invoice</param>
+        /// <param name="filterType">Filter for transactions with specified type</param>
+        /// <param name="filterDate">A comma separated string without spaces.  First value is the operator to search on, second value is the log start date, a unix timestamp in seconds. Can be repeated for a range, eg: GT,123,LT,456  Allowed operators: (GT, LT, EQ, GOE, LOE).</param>
+        /// <param name="filterSign">Filter for transactions with amount with the given sign</param>
+        /// <param name="filterUserId">Filter for transactions for specific userId</param>
+        /// <param name="filterUsername">Filter for transactions for specific username that start with the given string</param>
+        /// <param name="filterDetails">Filter for transactions for specific details that start with the given string</param>
+        /// <param name="filterCurrencyCode">Filter for transactions for specific currency code</param>
+        /// <param name="size">The number of objects returned per page</param>
+        /// <param name="page">The number of the page returned, starting with 1</param>
+        /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
+        public void GetWalletTransactions(int? filterInvoice, string filterType, string filterDate, string filterSign, int? filterUserId, string filterUsername, string filterDetails, string filterCurrencyCode, int? size, int? page, string order)
         {
             
-            string urlPath = "/wallets/transactions";
-            //urlPath = urlPath.Replace("{format}", "json");
-                
+            mGetWalletTransactionsPath = "/wallets/transactions";
+            if (!string.IsNullOrEmpty(mGetWalletTransactionsPath))
+            {
+                mGetWalletTransactionsPath = mGetWalletTransactionsPath.Replace("{format}", "json");
+            }
+            
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             if (filterInvoice != null)
             {
                 queryParams.Add("filter_invoice", KnetikClient.ParameterToString(filterInvoice));
             }
-            
+
             if (filterType != null)
             {
                 queryParams.Add("filter_type", KnetikClient.ParameterToString(filterType));
             }
-            
+
             if (filterDate != null)
             {
                 queryParams.Add("filter_date", KnetikClient.ParameterToString(filterDate));
             }
-            
+
             if (filterSign != null)
             {
                 queryParams.Add("filter_sign", KnetikClient.ParameterToString(filterSign));
             }
-            
+
             if (filterUserId != null)
             {
                 queryParams.Add("filter_user_id", KnetikClient.ParameterToString(filterUserId));
             }
-            
+
             if (filterUsername != null)
             {
                 queryParams.Add("filter_username", KnetikClient.ParameterToString(filterUsername));
             }
-            
+
             if (filterDetails != null)
             {
                 queryParams.Add("filter_details", KnetikClient.ParameterToString(filterDetails));
             }
-            
+
             if (filterCurrencyCode != null)
             {
                 queryParams.Add("filter_currency_code", KnetikClient.ParameterToString(filterCurrencyCode));
             }
-            
+
             if (size != null)
             {
                 queryParams.Add("size", KnetikClient.ParameterToString(size));
             }
-            
+
             if (page != null)
             {
                 queryParams.Add("page", KnetikClient.ParameterToString(page));
             }
-            
+
             if (order != null)
             {
                 queryParams.Add("order", KnetikClient.ParameterToString(order));
             }
-            
-            // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            // authentication setting, if any
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+
+            mGetWalletTransactionsStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetWalletTransactionsStartTime, mGetWalletTransactionsPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetWalletTransactionsCoroutine.ResponseReceived += GetWalletTransactionsCallback;
+            mGetWalletTransactionsCoroutine.Start(mGetWalletTransactionsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetWalletTransactionsCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetWalletTransactions: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetWalletTransactions: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetWalletTransactions: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetWalletTransactions: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (PageResourceWalletTransactionResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceWalletTransactionResource), response.Headers);
+
+            GetWalletTransactionsData = (PageResourceWalletTransactionResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceWalletTransactionResource), response.Headers);
+            KnetikLogger.LogResponse(mGetWalletTransactionsStartTime, mGetWalletTransactionsPath, string.Format("Response received successfully:\n{0}", GetWalletTransactionsData.ToString()));
+
+            if (GetWalletTransactionsComplete != null)
+            {
+                GetWalletTransactionsComplete(GetWalletTransactionsData);
+            }
         }
         /// <summary>
         /// Retrieve a list of wallets across the system 
         /// </summary>
-        /// <param name="size">The number of objects returned per page</param> 
-        /// <param name="page">The number of the page returned, starting with 1</param> 
-        /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param> 
-        /// <returns>PageResourceSimpleWallet</returns>            
-        public PageResourceSimpleWallet GetWallets(int? size, int? page, string order)
+        /// <param name="size">The number of objects returned per page</param>
+        /// <param name="page">The number of the page returned, starting with 1</param>
+        /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
+        public void GetWallets(int? size, int? page, string order)
         {
             
-            string urlPath = "/wallets";
-            //urlPath = urlPath.Replace("{format}", "json");
-                
+            mGetWalletsPath = "/wallets";
+            if (!string.IsNullOrEmpty(mGetWalletsPath))
+            {
+                mGetWalletsPath = mGetWalletsPath.Replace("{format}", "json");
+            }
+            
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             if (size != null)
             {
                 queryParams.Add("size", KnetikClient.ParameterToString(size));
             }
-            
+
             if (page != null)
             {
                 queryParams.Add("page", KnetikClient.ParameterToString(page));
             }
-            
+
             if (order != null)
             {
                 queryParams.Add("order", KnetikClient.ParameterToString(order));
             }
-            
-            // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            // authentication setting, if any
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+
+            mGetWalletsStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetWalletsStartTime, mGetWalletsPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetWalletsCoroutine.ResponseReceived += GetWalletsCallback;
+            mGetWalletsCoroutine.Start(mGetWalletsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetWalletsCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetWallets: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetWallets: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetWallets: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetWallets: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (PageResourceSimpleWallet) KnetikClient.Deserialize(response.Content, typeof(PageResourceSimpleWallet), response.Headers);
+
+            GetWalletsData = (PageResourceSimpleWallet) KnetikClient.Deserialize(response.Content, typeof(PageResourceSimpleWallet), response.Headers);
+            KnetikLogger.LogResponse(mGetWalletsStartTime, mGetWalletsPath, string.Format("Response received successfully:\n{0}", GetWalletsData.ToString()));
+
+            if (GetWalletsComplete != null)
+            {
+                GetWalletsComplete(GetWalletsData);
+            }
         }
         /// <summary>
         /// Updates the balance for a user&#39;s wallet 
         /// </summary>
-        /// <param name="userId">The ID of the user for whom wallet is being modified</param> 
-        /// <param name="currencyCode">Currency code of the user&#39;s wallet</param> 
-        /// <param name="request">The requested balance modification to be made to the user&#39;s wallet</param> 
-        /// <returns>WalletTransactionResource</returns>            
-        public WalletTransactionResource UpdateWalletBalance(int? userId, string currencyCode, WalletAlterRequest request)
+        /// <param name="userId">The ID of the user for whom wallet is being modified</param>
+        /// <param name="currencyCode">Currency code of the user&#39;s wallet</param>
+        /// <param name="request">The requested balance modification to be made to the user&#39;s wallet</param>
+        public void UpdateWalletBalance(int? userId, string currencyCode, WalletAlterRequest request)
         {
             // verify the required parameter 'userId' is set
             if (userId == null)
             {
                 throw new KnetikException(400, "Missing required parameter 'userId' when calling UpdateWalletBalance");
             }
-            
             // verify the required parameter 'currencyCode' is set
             if (currencyCode == null)
             {
                 throw new KnetikException(400, "Missing required parameter 'currencyCode' when calling UpdateWalletBalance");
             }
             
-            
-            string urlPath = "/users/{user_id}/wallets/{currency_code}/balance";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-urlPath = urlPath.Replace("{" + "currency_code" + "}", KnetikClient.ParameterToString(currencyCode));
-    
+            mUpdateWalletBalancePath = "/users/{user_id}/wallets/{currency_code}/balance";
+            if (!string.IsNullOrEmpty(mUpdateWalletBalancePath))
+            {
+                mUpdateWalletBalancePath = mUpdateWalletBalancePath.Replace("{format}", "json");
+            }
+            mUpdateWalletBalancePath = mUpdateWalletBalancePath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+mUpdateWalletBalancePath = mUpdateWalletBalancePath.Replace("{" + "currency_code" + "}", KnetikClient.ParameterToString(currencyCode));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             postBody = KnetikClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mUpdateWalletBalanceStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mUpdateWalletBalanceStartTime, mUpdateWalletBalancePath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mUpdateWalletBalanceCoroutine.ResponseReceived += UpdateWalletBalanceCallback;
+            mUpdateWalletBalanceCoroutine.Start(mUpdateWalletBalancePath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void UpdateWalletBalanceCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling UpdateWalletBalance: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling UpdateWalletBalance: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling UpdateWalletBalance: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling UpdateWalletBalance: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (WalletTransactionResource) KnetikClient.Deserialize(response.Content, typeof(WalletTransactionResource), response.Headers);
+
+            UpdateWalletBalanceData = (WalletTransactionResource) KnetikClient.Deserialize(response.Content, typeof(WalletTransactionResource), response.Headers);
+            KnetikLogger.LogResponse(mUpdateWalletBalanceStartTime, mUpdateWalletBalancePath, string.Format("Response received successfully:\n{0}", UpdateWalletBalanceData.ToString()));
+
+            if (UpdateWalletBalanceComplete != null)
+            {
+                UpdateWalletBalanceComplete(UpdateWalletBalanceData);
+            }
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using RestSharp;
 using com.knetikcloud.Client;
 using com.knetikcloud.Model;
+using com.knetikcloud.Utils;
 using UnityEngine;
 
 using Object = System.Object;
@@ -16,72 +17,91 @@ namespace com.knetikcloud.Api
     /// </summary>
     public interface IDevicesApi
     {
+        DeviceResource AddDeviceUsersData { get; }
+
+        DeviceResource CreateDeviceData { get; }
+
+        TemplateResource CreateDeviceTemplateData { get; }
+
+        DeviceResource GetDeviceData { get; }
+
+        TemplateResource GetDeviceTemplateData { get; }
+
+        PageResourceTemplateResource GetDeviceTemplatesData { get; }
+
+        PageResourceDeviceResource GetDevicesData { get; }
+
+        DeviceResource UpdateDeviceData { get; }
+
+        TemplateResource UpdateDeviceTemplateData { get; }
+
+        
         /// <summary>
         /// Add device users 
         /// </summary>
         /// <param name="userResources">userResources</param>
         /// <param name="id">id</param>
-        /// <returns>DeviceResource</returns>
-        DeviceResource AddDeviceUsers (List<SimpleUserResource> userResources, string id);
+        void AddDeviceUsers(List<SimpleUserResource> userResources, string id);
+
         /// <summary>
         /// Create a device 
         /// </summary>
         /// <param name="device">device</param>
-        /// <returns>DeviceResource</returns>
-        DeviceResource CreateDevice (DeviceResource device);
+        void CreateDevice(DeviceResource device);
+
         /// <summary>
         /// Create a device template Device Templates define a type of device and the properties they have
         /// </summary>
         /// <param name="deviceTemplateResource">The device template resource object</param>
-        /// <returns>TemplateResource</returns>
-        TemplateResource CreateDeviceTemplate (TemplateResource deviceTemplateResource);
+        void CreateDeviceTemplate(TemplateResource deviceTemplateResource);
+
         /// <summary>
         /// Delete a device 
         /// </summary>
         /// <param name="id">id</param>
-        /// <returns></returns>
-        void DeleteDevice (string id);
+        void DeleteDevice(string id);
+
         /// <summary>
         /// Delete an device template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="cascade">The value needed to delete used templates</param>
-        /// <returns></returns>
-        void DeleteDeviceTemplate (string id, string cascade);
+        void DeleteDeviceTemplate(string id, string cascade);
+
         /// <summary>
         /// Delete a device user 
         /// </summary>
         /// <param name="id">The id of the device</param>
         /// <param name="userId">The user id of the device user</param>
-        /// <returns></returns>
-        void DeleteDeviceUser (string id, int? userId);
+        void DeleteDeviceUser(string id, int? userId);
+
         /// <summary>
         /// Delete all device users 
         /// </summary>
         /// <param name="id">The id of the device</param>
         /// <param name="filterId">Filter for device users to delete with a user id in a given comma separated list of ids</param>
-        /// <returns></returns>
-        void DeleteDeviceUsers (string id, string filterId);
+        void DeleteDeviceUsers(string id, string filterId);
+
         /// <summary>
         /// Get a single device 
         /// </summary>
         /// <param name="id">id</param>
-        /// <returns>DeviceResource</returns>
-        DeviceResource GetDevice (string id);
+        void GetDevice(string id);
+
         /// <summary>
         /// Get a single device template 
         /// </summary>
         /// <param name="id">The id of the template</param>
-        /// <returns>TemplateResource</returns>
-        TemplateResource GetDeviceTemplate (string id);
+        void GetDeviceTemplate(string id);
+
         /// <summary>
         /// List and search device templates 
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
-        /// <returns>PageResourceTemplateResource</returns>
-        PageResourceTemplateResource GetDeviceTemplates (int? size, int? page, string order);
+        void GetDeviceTemplates(int? size, int? page, string order);
+
         /// <summary>
         /// List and search devices Get a list of devices with optional filtering
         /// </summary>
@@ -94,22 +114,22 @@ namespace com.knetikcloud.Api
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
-        /// <returns>PageResourceDeviceResource</returns>
-        PageResourceDeviceResource GetDevices (string filterMake, string filterModel, string filterOs, string filterSerial, string filterType, string filterTag, int? size, int? page, string order);
+        void GetDevices(string filterMake, string filterModel, string filterOs, string filterSerial, string filterType, string filterTag, int? size, int? page, string order);
+
         /// <summary>
         /// Update a device 
         /// </summary>
         /// <param name="device">device</param>
         /// <param name="id">id</param>
-        /// <returns>DeviceResource</returns>
-        DeviceResource UpdateDevice (DeviceResource device, string id);
+        void UpdateDevice(DeviceResource device, string id);
+
         /// <summary>
         /// Update an device template 
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="deviceTemplateResource">The device template resource object</param>
-        /// <returns>TemplateResource</returns>
-        TemplateResource UpdateDeviceTemplate (string id, TemplateResource deviceTemplateResource);
+        void UpdateDeviceTemplate(string id, TemplateResource deviceTemplateResource);
+
     }
   
     /// <summary>
@@ -117,6 +137,94 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class DevicesApi : IDevicesApi
     {
+        private readonly KnetikCoroutine mAddDeviceUsersCoroutine;
+        private DateTime mAddDeviceUsersStartTime;
+        private string mAddDeviceUsersPath;
+        private readonly KnetikCoroutine mCreateDeviceCoroutine;
+        private DateTime mCreateDeviceStartTime;
+        private string mCreateDevicePath;
+        private readonly KnetikCoroutine mCreateDeviceTemplateCoroutine;
+        private DateTime mCreateDeviceTemplateStartTime;
+        private string mCreateDeviceTemplatePath;
+        private readonly KnetikCoroutine mDeleteDeviceCoroutine;
+        private DateTime mDeleteDeviceStartTime;
+        private string mDeleteDevicePath;
+        private readonly KnetikCoroutine mDeleteDeviceTemplateCoroutine;
+        private DateTime mDeleteDeviceTemplateStartTime;
+        private string mDeleteDeviceTemplatePath;
+        private readonly KnetikCoroutine mDeleteDeviceUserCoroutine;
+        private DateTime mDeleteDeviceUserStartTime;
+        private string mDeleteDeviceUserPath;
+        private readonly KnetikCoroutine mDeleteDeviceUsersCoroutine;
+        private DateTime mDeleteDeviceUsersStartTime;
+        private string mDeleteDeviceUsersPath;
+        private readonly KnetikCoroutine mGetDeviceCoroutine;
+        private DateTime mGetDeviceStartTime;
+        private string mGetDevicePath;
+        private readonly KnetikCoroutine mGetDeviceTemplateCoroutine;
+        private DateTime mGetDeviceTemplateStartTime;
+        private string mGetDeviceTemplatePath;
+        private readonly KnetikCoroutine mGetDeviceTemplatesCoroutine;
+        private DateTime mGetDeviceTemplatesStartTime;
+        private string mGetDeviceTemplatesPath;
+        private readonly KnetikCoroutine mGetDevicesCoroutine;
+        private DateTime mGetDevicesStartTime;
+        private string mGetDevicesPath;
+        private readonly KnetikCoroutine mUpdateDeviceCoroutine;
+        private DateTime mUpdateDeviceStartTime;
+        private string mUpdateDevicePath;
+        private readonly KnetikCoroutine mUpdateDeviceTemplateCoroutine;
+        private DateTime mUpdateDeviceTemplateStartTime;
+        private string mUpdateDeviceTemplatePath;
+
+        public DeviceResource AddDeviceUsersData { get; private set; }
+        public delegate void AddDeviceUsersCompleteDelegate(DeviceResource response);
+        public AddDeviceUsersCompleteDelegate AddDeviceUsersComplete;
+
+        public DeviceResource CreateDeviceData { get; private set; }
+        public delegate void CreateDeviceCompleteDelegate(DeviceResource response);
+        public CreateDeviceCompleteDelegate CreateDeviceComplete;
+
+        public TemplateResource CreateDeviceTemplateData { get; private set; }
+        public delegate void CreateDeviceTemplateCompleteDelegate(TemplateResource response);
+        public CreateDeviceTemplateCompleteDelegate CreateDeviceTemplateComplete;
+
+        public delegate void DeleteDeviceCompleteDelegate();
+        public DeleteDeviceCompleteDelegate DeleteDeviceComplete;
+
+        public delegate void DeleteDeviceTemplateCompleteDelegate();
+        public DeleteDeviceTemplateCompleteDelegate DeleteDeviceTemplateComplete;
+
+        public delegate void DeleteDeviceUserCompleteDelegate();
+        public DeleteDeviceUserCompleteDelegate DeleteDeviceUserComplete;
+
+        public delegate void DeleteDeviceUsersCompleteDelegate();
+        public DeleteDeviceUsersCompleteDelegate DeleteDeviceUsersComplete;
+
+        public DeviceResource GetDeviceData { get; private set; }
+        public delegate void GetDeviceCompleteDelegate(DeviceResource response);
+        public GetDeviceCompleteDelegate GetDeviceComplete;
+
+        public TemplateResource GetDeviceTemplateData { get; private set; }
+        public delegate void GetDeviceTemplateCompleteDelegate(TemplateResource response);
+        public GetDeviceTemplateCompleteDelegate GetDeviceTemplateComplete;
+
+        public PageResourceTemplateResource GetDeviceTemplatesData { get; private set; }
+        public delegate void GetDeviceTemplatesCompleteDelegate(PageResourceTemplateResource response);
+        public GetDeviceTemplatesCompleteDelegate GetDeviceTemplatesComplete;
+
+        public PageResourceDeviceResource GetDevicesData { get; private set; }
+        public delegate void GetDevicesCompleteDelegate(PageResourceDeviceResource response);
+        public GetDevicesCompleteDelegate GetDevicesComplete;
+
+        public DeviceResource UpdateDeviceData { get; private set; }
+        public delegate void UpdateDeviceCompleteDelegate(DeviceResource response);
+        public UpdateDeviceCompleteDelegate UpdateDeviceComplete;
+
+        public TemplateResource UpdateDeviceTemplateData { get; private set; }
+        public delegate void UpdateDeviceTemplateCompleteDelegate(TemplateResource response);
+        public UpdateDeviceTemplateCompleteDelegate UpdateDeviceTemplateComplete;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DevicesApi"/> class.
         /// </summary>
@@ -124,73 +232,95 @@ namespace com.knetikcloud.Api
         public DevicesApi()
         {
             KnetikClient = KnetikConfiguration.DefaultClient;
+            mAddDeviceUsersCoroutine = new KnetikCoroutine(KnetikClient);
+            mCreateDeviceCoroutine = new KnetikCoroutine(KnetikClient);
+            mCreateDeviceTemplateCoroutine = new KnetikCoroutine(KnetikClient);
+            mDeleteDeviceCoroutine = new KnetikCoroutine(KnetikClient);
+            mDeleteDeviceTemplateCoroutine = new KnetikCoroutine(KnetikClient);
+            mDeleteDeviceUserCoroutine = new KnetikCoroutine(KnetikClient);
+            mDeleteDeviceUsersCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetDeviceCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetDeviceTemplateCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetDeviceTemplatesCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetDevicesCoroutine = new KnetikCoroutine(KnetikClient);
+            mUpdateDeviceCoroutine = new KnetikCoroutine(KnetikClient);
+            mUpdateDeviceTemplateCoroutine = new KnetikCoroutine(KnetikClient);
         }
     
         /// <summary>
         /// Gets the Knetik client.
         /// </summary>
         /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient {get; private set;}
+        public KnetikClient KnetikClient { get; private set; }
 
         /// <summary>
         /// Add device users 
         /// </summary>
-        /// <param name="userResources">userResources</param> 
-        /// <param name="id">id</param> 
-        /// <returns>DeviceResource</returns>            
-        public DeviceResource AddDeviceUsers(List<SimpleUserResource> userResources, string id)
+        /// <param name="userResources">userResources</param>
+        /// <param name="id">id</param>
+        public void AddDeviceUsers(List<SimpleUserResource> userResources, string id)
         {
             // verify the required parameter 'userResources' is set
             if (userResources == null)
             {
                 throw new KnetikException(400, "Missing required parameter 'userResources' when calling AddDeviceUsers");
             }
-            
             // verify the required parameter 'id' is set
             if (id == null)
             {
                 throw new KnetikException(400, "Missing required parameter 'id' when calling AddDeviceUsers");
             }
             
-            
-            string urlPath = "/devices/{id}/users";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
-    
+            mAddDeviceUsersPath = "/devices/{id}/users";
+            if (!string.IsNullOrEmpty(mAddDeviceUsersPath))
+            {
+                mAddDeviceUsersPath = mAddDeviceUsersPath.Replace("{format}", "json");
+            }
+            mAddDeviceUsersPath = mAddDeviceUsersPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             postBody = KnetikClient.Serialize(userResources); // http body (model) parameter
  
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mAddDeviceUsersStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mAddDeviceUsersStartTime, mAddDeviceUsersPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mAddDeviceUsersCoroutine.ResponseReceived += AddDeviceUsersCallback;
+            mAddDeviceUsersCoroutine.Start(mAddDeviceUsersPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void AddDeviceUsersCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling AddDeviceUsers: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling AddDeviceUsers: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling AddDeviceUsers: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling AddDeviceUsers: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (DeviceResource) KnetikClient.Deserialize(response.Content, typeof(DeviceResource), response.Headers);
+
+            AddDeviceUsersData = (DeviceResource) KnetikClient.Deserialize(response.Content, typeof(DeviceResource), response.Headers);
+            KnetikLogger.LogResponse(mAddDeviceUsersStartTime, mAddDeviceUsersPath, string.Format("Response received successfully:\n{0}", AddDeviceUsersData.ToString()));
+
+            if (AddDeviceUsersComplete != null)
+            {
+                AddDeviceUsersComplete(AddDeviceUsersData);
+            }
         }
         /// <summary>
         /// Create a device 
         /// </summary>
-        /// <param name="device">device</param> 
-        /// <returns>DeviceResource</returns>            
-        public DeviceResource CreateDevice(DeviceResource device)
+        /// <param name="device">device</param>
+        public void CreateDevice(DeviceResource device)
         {
             // verify the required parameter 'device' is set
             if (device == null)
@@ -198,82 +328,105 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'device' when calling CreateDevice");
             }
             
+            mCreateDevicePath = "/devices";
+            if (!string.IsNullOrEmpty(mCreateDevicePath))
+            {
+                mCreateDevicePath = mCreateDevicePath.Replace("{format}", "json");
+            }
             
-            string urlPath = "/devices";
-            //urlPath = urlPath.Replace("{format}", "json");
-                
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             postBody = KnetikClient.Serialize(device); // http body (model) parameter
  
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mCreateDeviceStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mCreateDeviceStartTime, mCreateDevicePath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mCreateDeviceCoroutine.ResponseReceived += CreateDeviceCallback;
+            mCreateDeviceCoroutine.Start(mCreateDevicePath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void CreateDeviceCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling CreateDevice: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling CreateDevice: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling CreateDevice: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling CreateDevice: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (DeviceResource) KnetikClient.Deserialize(response.Content, typeof(DeviceResource), response.Headers);
+
+            CreateDeviceData = (DeviceResource) KnetikClient.Deserialize(response.Content, typeof(DeviceResource), response.Headers);
+            KnetikLogger.LogResponse(mCreateDeviceStartTime, mCreateDevicePath, string.Format("Response received successfully:\n{0}", CreateDeviceData.ToString()));
+
+            if (CreateDeviceComplete != null)
+            {
+                CreateDeviceComplete(CreateDeviceData);
+            }
         }
         /// <summary>
         /// Create a device template Device Templates define a type of device and the properties they have
         /// </summary>
-        /// <param name="deviceTemplateResource">The device template resource object</param> 
-        /// <returns>TemplateResource</returns>            
-        public TemplateResource CreateDeviceTemplate(TemplateResource deviceTemplateResource)
+        /// <param name="deviceTemplateResource">The device template resource object</param>
+        public void CreateDeviceTemplate(TemplateResource deviceTemplateResource)
         {
             
-            string urlPath = "/devices/templates";
-            //urlPath = urlPath.Replace("{format}", "json");
-                
+            mCreateDeviceTemplatePath = "/devices/templates";
+            if (!string.IsNullOrEmpty(mCreateDeviceTemplatePath))
+            {
+                mCreateDeviceTemplatePath = mCreateDeviceTemplatePath.Replace("{format}", "json");
+            }
+            
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             postBody = KnetikClient.Serialize(deviceTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mCreateDeviceTemplateStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mCreateDeviceTemplateStartTime, mCreateDeviceTemplatePath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mCreateDeviceTemplateCoroutine.ResponseReceived += CreateDeviceTemplateCallback;
+            mCreateDeviceTemplateCoroutine.Start(mCreateDeviceTemplatePath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void CreateDeviceTemplateCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling CreateDeviceTemplate: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling CreateDeviceTemplate: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling CreateDeviceTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling CreateDeviceTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+
+            CreateDeviceTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mCreateDeviceTemplateStartTime, mCreateDeviceTemplatePath, string.Format("Response received successfully:\n{0}", CreateDeviceTemplateData.ToString()));
+
+            if (CreateDeviceTemplateComplete != null)
+            {
+                CreateDeviceTemplateComplete(CreateDeviceTemplateData);
+            }
         }
         /// <summary>
         /// Delete a device 
         /// </summary>
-        /// <param name="id">id</param> 
-        /// <returns></returns>            
+        /// <param name="id">id</param>
         public void DeleteDevice(string id)
         {
             // verify the required parameter 'id' is set
@@ -282,43 +435,52 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeleteDevice");
             }
             
-            
-            string urlPath = "/devices/{id}";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
-    
+            mDeleteDevicePath = "/devices/{id}";
+            if (!string.IsNullOrEmpty(mDeleteDevicePath))
+            {
+                mDeleteDevicePath = mDeleteDevicePath.Replace("{format}", "json");
+            }
+            mDeleteDevicePath = mDeleteDevicePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mDeleteDeviceStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mDeleteDeviceStartTime, mDeleteDevicePath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mDeleteDeviceCoroutine.ResponseReceived += DeleteDeviceCallback;
+            mDeleteDeviceCoroutine.Start(mDeleteDevicePath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void DeleteDeviceCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling DeleteDevice: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling DeleteDevice: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling DeleteDevice: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling DeleteDevice: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return;
+
+            KnetikLogger.LogResponse(mDeleteDeviceStartTime, mDeleteDevicePath, "Response received successfully.");
+            if (DeleteDeviceComplete != null)
+            {
+                DeleteDeviceComplete();
+            }
         }
         /// <summary>
         /// Delete an device template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
         /// </summary>
-        /// <param name="id">The id of the template</param> 
-        /// <param name="cascade">The value needed to delete used templates</param> 
-        /// <returns></returns>            
+        /// <param name="id">The id of the template</param>
+        /// <param name="cascade">The value needed to delete used templates</param>
         public void DeleteDeviceTemplate(string id, string cascade)
         {
             // verify the required parameter 'id' is set
@@ -327,48 +489,57 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeleteDeviceTemplate");
             }
             
-            
-            string urlPath = "/devices/templates/{id}";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
-    
+            mDeleteDeviceTemplatePath = "/devices/templates/{id}";
+            if (!string.IsNullOrEmpty(mDeleteDeviceTemplatePath))
+            {
+                mDeleteDeviceTemplatePath = mDeleteDeviceTemplatePath.Replace("{format}", "json");
+            }
+            mDeleteDeviceTemplatePath = mDeleteDeviceTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             if (cascade != null)
             {
                 queryParams.Add("cascade", KnetikClient.ParameterToString(cascade));
             }
-            
-            // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            // authentication setting, if any
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+
+            mDeleteDeviceTemplateStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mDeleteDeviceTemplateStartTime, mDeleteDeviceTemplatePath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mDeleteDeviceTemplateCoroutine.ResponseReceived += DeleteDeviceTemplateCallback;
+            mDeleteDeviceTemplateCoroutine.Start(mDeleteDeviceTemplatePath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void DeleteDeviceTemplateCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling DeleteDeviceTemplate: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling DeleteDeviceTemplate: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling DeleteDeviceTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling DeleteDeviceTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return;
+
+            KnetikLogger.LogResponse(mDeleteDeviceTemplateStartTime, mDeleteDeviceTemplatePath, "Response received successfully.");
+            if (DeleteDeviceTemplateComplete != null)
+            {
+                DeleteDeviceTemplateComplete();
+            }
         }
         /// <summary>
         /// Delete a device user 
         /// </summary>
-        /// <param name="id">The id of the device</param> 
-        /// <param name="userId">The user id of the device user</param> 
-        /// <returns></returns>            
+        /// <param name="id">The id of the device</param>
+        /// <param name="userId">The user id of the device user</param>
         public void DeleteDeviceUser(string id, int? userId)
         {
             // verify the required parameter 'id' is set
@@ -376,51 +547,59 @@ namespace com.knetikcloud.Api
             {
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeleteDeviceUser");
             }
-            
             // verify the required parameter 'userId' is set
             if (userId == null)
             {
                 throw new KnetikException(400, "Missing required parameter 'userId' when calling DeleteDeviceUser");
             }
             
-            
-            string urlPath = "/devices/{id}/users/{user_id}";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
-urlPath = urlPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-    
+            mDeleteDeviceUserPath = "/devices/{id}/users/{user_id}";
+            if (!string.IsNullOrEmpty(mDeleteDeviceUserPath))
+            {
+                mDeleteDeviceUserPath = mDeleteDeviceUserPath.Replace("{format}", "json");
+            }
+            mDeleteDeviceUserPath = mDeleteDeviceUserPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+mDeleteDeviceUserPath = mDeleteDeviceUserPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mDeleteDeviceUserStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mDeleteDeviceUserStartTime, mDeleteDeviceUserPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mDeleteDeviceUserCoroutine.ResponseReceived += DeleteDeviceUserCallback;
+            mDeleteDeviceUserCoroutine.Start(mDeleteDeviceUserPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void DeleteDeviceUserCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling DeleteDeviceUser: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling DeleteDeviceUser: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling DeleteDeviceUser: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling DeleteDeviceUser: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return;
+
+            KnetikLogger.LogResponse(mDeleteDeviceUserStartTime, mDeleteDeviceUserPath, "Response received successfully.");
+            if (DeleteDeviceUserComplete != null)
+            {
+                DeleteDeviceUserComplete();
+            }
         }
         /// <summary>
         /// Delete all device users 
         /// </summary>
-        /// <param name="id">The id of the device</param> 
-        /// <param name="filterId">Filter for device users to delete with a user id in a given comma separated list of ids</param> 
-        /// <returns></returns>            
+        /// <param name="id">The id of the device</param>
+        /// <param name="filterId">Filter for device users to delete with a user id in a given comma separated list of ids</param>
         public void DeleteDeviceUsers(string id, string filterId)
         {
             // verify the required parameter 'id' is set
@@ -429,48 +608,57 @@ urlPath = urlPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeleteDeviceUsers");
             }
             
-            
-            string urlPath = "/devices/{id}/users";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
-    
+            mDeleteDeviceUsersPath = "/devices/{id}/users";
+            if (!string.IsNullOrEmpty(mDeleteDeviceUsersPath))
+            {
+                mDeleteDeviceUsersPath = mDeleteDeviceUsersPath.Replace("{format}", "json");
+            }
+            mDeleteDeviceUsersPath = mDeleteDeviceUsersPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             if (filterId != null)
             {
                 queryParams.Add("filter_id", KnetikClient.ParameterToString(filterId));
             }
-            
-            // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            // authentication setting, if any
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+
+            mDeleteDeviceUsersStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mDeleteDeviceUsersStartTime, mDeleteDeviceUsersPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mDeleteDeviceUsersCoroutine.ResponseReceived += DeleteDeviceUsersCallback;
+            mDeleteDeviceUsersCoroutine.Start(mDeleteDeviceUsersPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void DeleteDeviceUsersCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling DeleteDeviceUsers: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling DeleteDeviceUsers: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling DeleteDeviceUsers: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling DeleteDeviceUsers: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return;
+
+            KnetikLogger.LogResponse(mDeleteDeviceUsersStartTime, mDeleteDeviceUsersPath, "Response received successfully.");
+            if (DeleteDeviceUsersComplete != null)
+            {
+                DeleteDeviceUsersComplete();
+            }
         }
         /// <summary>
         /// Get a single device 
         /// </summary>
-        /// <param name="id">id</param> 
-        /// <returns>DeviceResource</returns>            
-        public DeviceResource GetDevice(string id)
+        /// <param name="id">id</param>
+        public void GetDevice(string id)
         {
             // verify the required parameter 'id' is set
             if (id == null)
@@ -478,43 +666,54 @@ urlPath = urlPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetDevice");
             }
             
-            
-            string urlPath = "/devices/{id}";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
-    
+            mGetDevicePath = "/devices/{id}";
+            if (!string.IsNullOrEmpty(mGetDevicePath))
+            {
+                mGetDevicePath = mGetDevicePath.Replace("{format}", "json");
+            }
+            mGetDevicePath = mGetDevicePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mGetDeviceStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetDeviceStartTime, mGetDevicePath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetDeviceCoroutine.ResponseReceived += GetDeviceCallback;
+            mGetDeviceCoroutine.Start(mGetDevicePath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetDeviceCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetDevice: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetDevice: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetDevice: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetDevice: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (DeviceResource) KnetikClient.Deserialize(response.Content, typeof(DeviceResource), response.Headers);
+
+            GetDeviceData = (DeviceResource) KnetikClient.Deserialize(response.Content, typeof(DeviceResource), response.Headers);
+            KnetikLogger.LogResponse(mGetDeviceStartTime, mGetDevicePath, string.Format("Response received successfully:\n{0}", GetDeviceData.ToString()));
+
+            if (GetDeviceComplete != null)
+            {
+                GetDeviceComplete(GetDeviceData);
+            }
         }
         /// <summary>
         /// Get a single device template 
         /// </summary>
-        /// <param name="id">The id of the template</param> 
-        /// <returns>TemplateResource</returns>            
-        public TemplateResource GetDeviceTemplate(string id)
+        /// <param name="id">The id of the template</param>
+        public void GetDeviceTemplate(string id)
         {
             // verify the required parameter 'id' is set
             if (id == null)
@@ -522,241 +721,286 @@ urlPath = urlPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetDeviceTemplate");
             }
             
-            
-            string urlPath = "/devices/templates/{id}";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
-    
+            mGetDeviceTemplatePath = "/devices/templates/{id}";
+            if (!string.IsNullOrEmpty(mGetDeviceTemplatePath))
+            {
+                mGetDeviceTemplatePath = mGetDeviceTemplatePath.Replace("{format}", "json");
+            }
+            mGetDeviceTemplatePath = mGetDeviceTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mGetDeviceTemplateStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetDeviceTemplateStartTime, mGetDeviceTemplatePath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetDeviceTemplateCoroutine.ResponseReceived += GetDeviceTemplateCallback;
+            mGetDeviceTemplateCoroutine.Start(mGetDeviceTemplatePath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetDeviceTemplateCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetDeviceTemplate: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetDeviceTemplate: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetDeviceTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetDeviceTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+
+            GetDeviceTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mGetDeviceTemplateStartTime, mGetDeviceTemplatePath, string.Format("Response received successfully:\n{0}", GetDeviceTemplateData.ToString()));
+
+            if (GetDeviceTemplateComplete != null)
+            {
+                GetDeviceTemplateComplete(GetDeviceTemplateData);
+            }
         }
         /// <summary>
         /// List and search device templates 
         /// </summary>
-        /// <param name="size">The number of objects returned per page</param> 
-        /// <param name="page">The number of the page returned, starting with 1</param> 
-        /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param> 
-        /// <returns>PageResourceTemplateResource</returns>            
-        public PageResourceTemplateResource GetDeviceTemplates(int? size, int? page, string order)
+        /// <param name="size">The number of objects returned per page</param>
+        /// <param name="page">The number of the page returned, starting with 1</param>
+        /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
+        public void GetDeviceTemplates(int? size, int? page, string order)
         {
             
-            string urlPath = "/devices/templates";
-            //urlPath = urlPath.Replace("{format}", "json");
-                
+            mGetDeviceTemplatesPath = "/devices/templates";
+            if (!string.IsNullOrEmpty(mGetDeviceTemplatesPath))
+            {
+                mGetDeviceTemplatesPath = mGetDeviceTemplatesPath.Replace("{format}", "json");
+            }
+            
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             if (size != null)
             {
                 queryParams.Add("size", KnetikClient.ParameterToString(size));
             }
-            
+
             if (page != null)
             {
                 queryParams.Add("page", KnetikClient.ParameterToString(page));
             }
-            
+
             if (order != null)
             {
                 queryParams.Add("order", KnetikClient.ParameterToString(order));
             }
-            
-            // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            // authentication setting, if any
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+
+            mGetDeviceTemplatesStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetDeviceTemplatesStartTime, mGetDeviceTemplatesPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetDeviceTemplatesCoroutine.ResponseReceived += GetDeviceTemplatesCallback;
+            mGetDeviceTemplatesCoroutine.Start(mGetDeviceTemplatesPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetDeviceTemplatesCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetDeviceTemplates: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetDeviceTemplates: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetDeviceTemplates: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetDeviceTemplates: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (PageResourceTemplateResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceTemplateResource), response.Headers);
+
+            GetDeviceTemplatesData = (PageResourceTemplateResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceTemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mGetDeviceTemplatesStartTime, mGetDeviceTemplatesPath, string.Format("Response received successfully:\n{0}", GetDeviceTemplatesData.ToString()));
+
+            if (GetDeviceTemplatesComplete != null)
+            {
+                GetDeviceTemplatesComplete(GetDeviceTemplatesData);
+            }
         }
         /// <summary>
         /// List and search devices Get a list of devices with optional filtering
         /// </summary>
-        /// <param name="filterMake">Filter for devices with specified make</param> 
-        /// <param name="filterModel">Filter for devices with specified model</param> 
-        /// <param name="filterOs">Filter for devices with specified OS</param> 
-        /// <param name="filterSerial">Filter for devices with specified serial</param> 
-        /// <param name="filterType">Filter for devices with specified type</param> 
-        /// <param name="filterTag">A comma separated list without spaces to filter for devices with specified tags (matches any)</param> 
-        /// <param name="size">The number of objects returned per page</param> 
-        /// <param name="page">The number of the page returned, starting with 1</param> 
-        /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param> 
-        /// <returns>PageResourceDeviceResource</returns>            
-        public PageResourceDeviceResource GetDevices(string filterMake, string filterModel, string filterOs, string filterSerial, string filterType, string filterTag, int? size, int? page, string order)
+        /// <param name="filterMake">Filter for devices with specified make</param>
+        /// <param name="filterModel">Filter for devices with specified model</param>
+        /// <param name="filterOs">Filter for devices with specified OS</param>
+        /// <param name="filterSerial">Filter for devices with specified serial</param>
+        /// <param name="filterType">Filter for devices with specified type</param>
+        /// <param name="filterTag">A comma separated list without spaces to filter for devices with specified tags (matches any)</param>
+        /// <param name="size">The number of objects returned per page</param>
+        /// <param name="page">The number of the page returned, starting with 1</param>
+        /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
+        public void GetDevices(string filterMake, string filterModel, string filterOs, string filterSerial, string filterType, string filterTag, int? size, int? page, string order)
         {
             
-            string urlPath = "/devices";
-            //urlPath = urlPath.Replace("{format}", "json");
-                
+            mGetDevicesPath = "/devices";
+            if (!string.IsNullOrEmpty(mGetDevicesPath))
+            {
+                mGetDevicesPath = mGetDevicesPath.Replace("{format}", "json");
+            }
+            
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             if (filterMake != null)
             {
                 queryParams.Add("filter_make", KnetikClient.ParameterToString(filterMake));
             }
-            
+
             if (filterModel != null)
             {
                 queryParams.Add("filter_model", KnetikClient.ParameterToString(filterModel));
             }
-            
+
             if (filterOs != null)
             {
                 queryParams.Add("filter_os", KnetikClient.ParameterToString(filterOs));
             }
-            
+
             if (filterSerial != null)
             {
                 queryParams.Add("filter_serial", KnetikClient.ParameterToString(filterSerial));
             }
-            
+
             if (filterType != null)
             {
                 queryParams.Add("filter_type", KnetikClient.ParameterToString(filterType));
             }
-            
+
             if (filterTag != null)
             {
                 queryParams.Add("filter_tag", KnetikClient.ParameterToString(filterTag));
             }
-            
+
             if (size != null)
             {
                 queryParams.Add("size", KnetikClient.ParameterToString(size));
             }
-            
+
             if (page != null)
             {
                 queryParams.Add("page", KnetikClient.ParameterToString(page));
             }
-            
+
             if (order != null)
             {
                 queryParams.Add("order", KnetikClient.ParameterToString(order));
             }
-            
-            // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            // authentication setting, if any
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+
+            mGetDevicesStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetDevicesStartTime, mGetDevicesPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetDevicesCoroutine.ResponseReceived += GetDevicesCallback;
+            mGetDevicesCoroutine.Start(mGetDevicesPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetDevicesCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetDevices: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetDevices: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetDevices: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetDevices: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (PageResourceDeviceResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceDeviceResource), response.Headers);
+
+            GetDevicesData = (PageResourceDeviceResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceDeviceResource), response.Headers);
+            KnetikLogger.LogResponse(mGetDevicesStartTime, mGetDevicesPath, string.Format("Response received successfully:\n{0}", GetDevicesData.ToString()));
+
+            if (GetDevicesComplete != null)
+            {
+                GetDevicesComplete(GetDevicesData);
+            }
         }
         /// <summary>
         /// Update a device 
         /// </summary>
-        /// <param name="device">device</param> 
-        /// <param name="id">id</param> 
-        /// <returns>DeviceResource</returns>            
-        public DeviceResource UpdateDevice(DeviceResource device, string id)
+        /// <param name="device">device</param>
+        /// <param name="id">id</param>
+        public void UpdateDevice(DeviceResource device, string id)
         {
             // verify the required parameter 'device' is set
             if (device == null)
             {
                 throw new KnetikException(400, "Missing required parameter 'device' when calling UpdateDevice");
             }
-            
             // verify the required parameter 'id' is set
             if (id == null)
             {
                 throw new KnetikException(400, "Missing required parameter 'id' when calling UpdateDevice");
             }
             
-            
-            string urlPath = "/devices/{id}";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
-    
+            mUpdateDevicePath = "/devices/{id}";
+            if (!string.IsNullOrEmpty(mUpdateDevicePath))
+            {
+                mUpdateDevicePath = mUpdateDevicePath.Replace("{format}", "json");
+            }
+            mUpdateDevicePath = mUpdateDevicePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             postBody = KnetikClient.Serialize(device); // http body (model) parameter
  
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mUpdateDeviceStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mUpdateDeviceStartTime, mUpdateDevicePath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mUpdateDeviceCoroutine.ResponseReceived += UpdateDeviceCallback;
+            mUpdateDeviceCoroutine.Start(mUpdateDevicePath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void UpdateDeviceCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling UpdateDevice: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling UpdateDevice: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling UpdateDevice: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling UpdateDevice: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (DeviceResource) KnetikClient.Deserialize(response.Content, typeof(DeviceResource), response.Headers);
+
+            UpdateDeviceData = (DeviceResource) KnetikClient.Deserialize(response.Content, typeof(DeviceResource), response.Headers);
+            KnetikLogger.LogResponse(mUpdateDeviceStartTime, mUpdateDevicePath, string.Format("Response received successfully:\n{0}", UpdateDeviceData.ToString()));
+
+            if (UpdateDeviceComplete != null)
+            {
+                UpdateDeviceComplete(UpdateDeviceData);
+            }
         }
         /// <summary>
         /// Update an device template 
         /// </summary>
-        /// <param name="id">The id of the template</param> 
-        /// <param name="deviceTemplateResource">The device template resource object</param> 
-        /// <returns>TemplateResource</returns>            
-        public TemplateResource UpdateDeviceTemplate(string id, TemplateResource deviceTemplateResource)
+        /// <param name="id">The id of the template</param>
+        /// <param name="deviceTemplateResource">The device template resource object</param>
+        public void UpdateDeviceTemplate(string id, TemplateResource deviceTemplateResource)
         {
             // verify the required parameter 'id' is set
             if (id == null)
@@ -764,38 +1008,50 @@ urlPath = urlPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(
                 throw new KnetikException(400, "Missing required parameter 'id' when calling UpdateDeviceTemplate");
             }
             
-            
-            string urlPath = "/devices/templates/{id}";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
-    
+            mUpdateDeviceTemplatePath = "/devices/templates/{id}";
+            if (!string.IsNullOrEmpty(mUpdateDeviceTemplatePath))
+            {
+                mUpdateDeviceTemplatePath = mUpdateDeviceTemplatePath.Replace("{format}", "json");
+            }
+            mUpdateDeviceTemplatePath = mUpdateDeviceTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             postBody = KnetikClient.Serialize(deviceTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mUpdateDeviceTemplateStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mUpdateDeviceTemplateStartTime, mUpdateDeviceTemplatePath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mUpdateDeviceTemplateCoroutine.ResponseReceived += UpdateDeviceTemplateCallback;
+            mUpdateDeviceTemplateCoroutine.Start(mUpdateDeviceTemplatePath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void UpdateDeviceTemplateCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling UpdateDeviceTemplate: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling UpdateDeviceTemplate: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling UpdateDeviceTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling UpdateDeviceTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+
+            UpdateDeviceTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mUpdateDeviceTemplateStartTime, mUpdateDeviceTemplatePath, string.Format("Response received successfully:\n{0}", UpdateDeviceTemplateData.ToString()));
+
+            if (UpdateDeviceTemplateComplete != null)
+            {
+                UpdateDeviceTemplateComplete(UpdateDeviceTemplateData);
+            }
         }
     }
 }

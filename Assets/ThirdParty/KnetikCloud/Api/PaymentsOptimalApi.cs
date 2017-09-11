@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using RestSharp;
 using com.knetikcloud.Client;
 using com.knetikcloud.Model;
+using com.knetikcloud.Utils;
 using UnityEngine;
 
 using Object = System.Object;
@@ -16,12 +17,15 @@ namespace com.knetikcloud.Api
     /// </summary>
     public interface IPaymentsOptimalApi
     {
+        string SilentPostOptimalData { get; }
+
+        
         /// <summary>
         /// Initiate silent post with Optimal Will return the url for a hosted payment endpoint to post to. See Optimal documentation for details.
         /// </summary>
         /// <param name="request">The payment request to initiate</param>
-        /// <returns>string</returns>
-        string SilentPostOptimal (OptimalPaymentRequest request);
+        void SilentPostOptimal(OptimalPaymentRequest request);
+
     }
   
     /// <summary>
@@ -29,6 +33,14 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class PaymentsOptimalApi : IPaymentsOptimalApi
     {
+        private readonly KnetikCoroutine mSilentPostOptimalCoroutine;
+        private DateTime mSilentPostOptimalStartTime;
+        private string mSilentPostOptimalPath;
+
+        public string SilentPostOptimalData { get; private set; }
+        public delegate void SilentPostOptimalCompleteDelegate(string response);
+        public SilentPostOptimalCompleteDelegate SilentPostOptimalComplete;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="PaymentsOptimalApi"/> class.
         /// </summary>
@@ -36,52 +48,65 @@ namespace com.knetikcloud.Api
         public PaymentsOptimalApi()
         {
             KnetikClient = KnetikConfiguration.DefaultClient;
+            mSilentPostOptimalCoroutine = new KnetikCoroutine(KnetikClient);
         }
     
         /// <summary>
         /// Gets the Knetik client.
         /// </summary>
         /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient {get; private set;}
+        public KnetikClient KnetikClient { get; private set; }
 
         /// <summary>
         /// Initiate silent post with Optimal Will return the url for a hosted payment endpoint to post to. See Optimal documentation for details.
         /// </summary>
-        /// <param name="request">The payment request to initiate</param> 
-        /// <returns>string</returns>            
-        public string SilentPostOptimal(OptimalPaymentRequest request)
+        /// <param name="request">The payment request to initiate</param>
+        public void SilentPostOptimal(OptimalPaymentRequest request)
         {
             
-            string urlPath = "/payment/provider/optimal/silent";
-            //urlPath = urlPath.Replace("{format}", "json");
-                
+            mSilentPostOptimalPath = "/payment/provider/optimal/silent";
+            if (!string.IsNullOrEmpty(mSilentPostOptimalPath))
+            {
+                mSilentPostOptimalPath = mSilentPostOptimalPath.Replace("{format}", "json");
+            }
+            
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             postBody = KnetikClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mSilentPostOptimalStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mSilentPostOptimalStartTime, mSilentPostOptimalPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mSilentPostOptimalCoroutine.ResponseReceived += SilentPostOptimalCallback;
+            mSilentPostOptimalCoroutine.Start(mSilentPostOptimalPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void SilentPostOptimalCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling SilentPostOptimal: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling SilentPostOptimal: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling SilentPostOptimal: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling SilentPostOptimal: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (string) KnetikClient.Deserialize(response.Content, typeof(string), response.Headers);
+
+            SilentPostOptimalData = (string) KnetikClient.Deserialize(response.Content, typeof(string), response.Headers);
+            KnetikLogger.LogResponse(mSilentPostOptimalStartTime, mSilentPostOptimalPath, string.Format("Response received successfully:\n{0}", SilentPostOptimalData.ToString()));
+
+            if (SilentPostOptimalComplete != null)
+            {
+                SilentPostOptimalComplete(SilentPostOptimalData);
+            }
         }
     }
 }

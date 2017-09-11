@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using com.knetikcloud.Utils;
 using com.knetikcloud.Client;
 using UnityEditor;
 using UnityEngine;
@@ -35,7 +36,7 @@ namespace com.knetikcloud.UnityEditor
         {
             if (string.IsNullOrEmpty(directoryPath))
             {
-                Debug.LogError("Unity directory is empty!");
+                KnetikLogger.LogError("Unity directory is empty!");
                 return;
             }
 

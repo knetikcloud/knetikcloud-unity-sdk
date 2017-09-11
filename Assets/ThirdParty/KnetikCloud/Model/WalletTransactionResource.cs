@@ -16,7 +16,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The new balance of the wallet after the transaction</value>
         [JsonProperty(PropertyName = "balance")]
-        public double? Balance { get; set; }
+        public decimal? Balance { get; set; }
 
         /// <summary>
         /// The unix timestamp in seconds of the transaction
@@ -114,7 +114,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The amount of the transaction, positive if a gain, negative if an expenditure</value>
         [JsonProperty(PropertyName = "value")]
-        public double? Value { get; set; }
+        public decimal? Value { get; set; }
 
         /// <summary>
         /// The id of the wallet this transaction affected

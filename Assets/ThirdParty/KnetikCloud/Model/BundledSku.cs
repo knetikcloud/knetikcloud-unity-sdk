@@ -16,7 +16,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The amount this item will cost inside the bundle instead of its regular price</value>
         [JsonProperty(PropertyName = "price_override")]
-        public double? PriceOverride { get; set; }
+        public decimal? PriceOverride { get; set; }
 
         /// <summary>
         /// The quantity of this item within the bundle

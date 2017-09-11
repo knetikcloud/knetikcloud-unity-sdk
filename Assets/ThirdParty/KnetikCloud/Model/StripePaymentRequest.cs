@@ -16,7 +16,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The amount to pay, if not the full remaining balance (leave out to pay in full, but be careful no other partial payment has been started)</value>
         [JsonProperty(PropertyName = "amount")]
-        public double? Amount { get; set; }
+        public decimal? Amount { get; set; }
 
         /// <summary>
         /// The id of the invoice to pay

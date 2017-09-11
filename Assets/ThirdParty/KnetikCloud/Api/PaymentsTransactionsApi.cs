@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using RestSharp;
 using com.knetikcloud.Client;
 using com.knetikcloud.Model;
+using com.knetikcloud.Utils;
 using UnityEngine;
 
 using Object = System.Object;
@@ -16,12 +17,19 @@ namespace com.knetikcloud.Api
     /// </summary>
     public interface IPaymentsTransactionsApi
     {
+        TransactionResource GetTransactionData { get; }
+
+        PageResourceTransactionResource GetTransactionsData { get; }
+
+        RefundResource RefundTransactionData { get; }
+
+        
         /// <summary>
         /// Get the details for a single transaction 
         /// </summary>
         /// <param name="id">id</param>
-        /// <returns>TransactionResource</returns>
-        TransactionResource GetTransaction (int? id);
+        void GetTransaction(int? id);
+
         /// <summary>
         /// List and search transactions 
         /// </summary>
@@ -29,15 +37,15 @@ namespace com.knetikcloud.Api
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
-        /// <returns>PageResourceTransactionResource</returns>
-        PageResourceTransactionResource GetTransactions (int? filterInvoice, int? size, int? page, string order);
+        void GetTransactions(int? filterInvoice, int? size, int? page, string order);
+
         /// <summary>
         /// Refund a payment transaction, in full or in part Will not allow for refunding more than the full amount even with multiple partial refunds. Money is refunded to the payment method used to make the original payment. Payment method must support refunds.
         /// </summary>
         /// <param name="id">The id of the transaction to refund</param>
         /// <param name="request">Request containing refund details</param>
-        /// <returns>RefundResource</returns>
-        RefundResource RefundTransaction (int? id, RefundRequest request);
+        void RefundTransaction(int? id, RefundRequest request);
+
     }
   
     /// <summary>
@@ -45,6 +53,28 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class PaymentsTransactionsApi : IPaymentsTransactionsApi
     {
+        private readonly KnetikCoroutine mGetTransactionCoroutine;
+        private DateTime mGetTransactionStartTime;
+        private string mGetTransactionPath;
+        private readonly KnetikCoroutine mGetTransactionsCoroutine;
+        private DateTime mGetTransactionsStartTime;
+        private string mGetTransactionsPath;
+        private readonly KnetikCoroutine mRefundTransactionCoroutine;
+        private DateTime mRefundTransactionStartTime;
+        private string mRefundTransactionPath;
+
+        public TransactionResource GetTransactionData { get; private set; }
+        public delegate void GetTransactionCompleteDelegate(TransactionResource response);
+        public GetTransactionCompleteDelegate GetTransactionComplete;
+
+        public PageResourceTransactionResource GetTransactionsData { get; private set; }
+        public delegate void GetTransactionsCompleteDelegate(PageResourceTransactionResource response);
+        public GetTransactionsCompleteDelegate GetTransactionsComplete;
+
+        public RefundResource RefundTransactionData { get; private set; }
+        public delegate void RefundTransactionCompleteDelegate(RefundResource response);
+        public RefundTransactionCompleteDelegate RefundTransactionComplete;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="PaymentsTransactionsApi"/> class.
         /// </summary>
@@ -52,20 +82,22 @@ namespace com.knetikcloud.Api
         public PaymentsTransactionsApi()
         {
             KnetikClient = KnetikConfiguration.DefaultClient;
+            mGetTransactionCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetTransactionsCoroutine = new KnetikCoroutine(KnetikClient);
+            mRefundTransactionCoroutine = new KnetikCoroutine(KnetikClient);
         }
     
         /// <summary>
         /// Gets the Knetik client.
         /// </summary>
         /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient {get; private set;}
+        public KnetikClient KnetikClient { get; private set; }
 
         /// <summary>
         /// Get the details for a single transaction 
         /// </summary>
-        /// <param name="id">id</param> 
-        /// <returns>TransactionResource</returns>            
-        public TransactionResource GetTransaction(int? id)
+        /// <param name="id">id</param>
+        public void GetTransaction(int? id)
         {
             // verify the required parameter 'id' is set
             if (id == null)
@@ -73,104 +105,127 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetTransaction");
             }
             
-            
-            string urlPath = "/transactions/{id}";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
-    
+            mGetTransactionPath = "/transactions/{id}";
+            if (!string.IsNullOrEmpty(mGetTransactionPath))
+            {
+                mGetTransactionPath = mGetTransactionPath.Replace("{format}", "json");
+            }
+            mGetTransactionPath = mGetTransactionPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mGetTransactionStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetTransactionStartTime, mGetTransactionPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetTransactionCoroutine.ResponseReceived += GetTransactionCallback;
+            mGetTransactionCoroutine.Start(mGetTransactionPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetTransactionCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetTransaction: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetTransaction: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetTransaction: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetTransaction: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (TransactionResource) KnetikClient.Deserialize(response.Content, typeof(TransactionResource), response.Headers);
+
+            GetTransactionData = (TransactionResource) KnetikClient.Deserialize(response.Content, typeof(TransactionResource), response.Headers);
+            KnetikLogger.LogResponse(mGetTransactionStartTime, mGetTransactionPath, string.Format("Response received successfully:\n{0}", GetTransactionData.ToString()));
+
+            if (GetTransactionComplete != null)
+            {
+                GetTransactionComplete(GetTransactionData);
+            }
         }
         /// <summary>
         /// List and search transactions 
         /// </summary>
-        /// <param name="filterInvoice">Filter for transactions from a specific invoice</param> 
-        /// <param name="size">The number of objects returned per page</param> 
-        /// <param name="page">The number of the page returned, starting with 1</param> 
-        /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param> 
-        /// <returns>PageResourceTransactionResource</returns>            
-        public PageResourceTransactionResource GetTransactions(int? filterInvoice, int? size, int? page, string order)
+        /// <param name="filterInvoice">Filter for transactions from a specific invoice</param>
+        /// <param name="size">The number of objects returned per page</param>
+        /// <param name="page">The number of the page returned, starting with 1</param>
+        /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
+        public void GetTransactions(int? filterInvoice, int? size, int? page, string order)
         {
             
-            string urlPath = "/transactions";
-            //urlPath = urlPath.Replace("{format}", "json");
-                
+            mGetTransactionsPath = "/transactions";
+            if (!string.IsNullOrEmpty(mGetTransactionsPath))
+            {
+                mGetTransactionsPath = mGetTransactionsPath.Replace("{format}", "json");
+            }
+            
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             if (filterInvoice != null)
             {
                 queryParams.Add("filter_invoice", KnetikClient.ParameterToString(filterInvoice));
             }
-            
+
             if (size != null)
             {
                 queryParams.Add("size", KnetikClient.ParameterToString(size));
             }
-            
+
             if (page != null)
             {
                 queryParams.Add("page", KnetikClient.ParameterToString(page));
             }
-            
+
             if (order != null)
             {
                 queryParams.Add("order", KnetikClient.ParameterToString(order));
             }
-            
-            // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            // authentication setting, if any
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+
+            mGetTransactionsStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetTransactionsStartTime, mGetTransactionsPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetTransactionsCoroutine.ResponseReceived += GetTransactionsCallback;
+            mGetTransactionsCoroutine.Start(mGetTransactionsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetTransactionsCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetTransactions: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetTransactions: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetTransactions: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetTransactions: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (PageResourceTransactionResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceTransactionResource), response.Headers);
+
+            GetTransactionsData = (PageResourceTransactionResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceTransactionResource), response.Headers);
+            KnetikLogger.LogResponse(mGetTransactionsStartTime, mGetTransactionsPath, string.Format("Response received successfully:\n{0}", GetTransactionsData.ToString()));
+
+            if (GetTransactionsComplete != null)
+            {
+                GetTransactionsComplete(GetTransactionsData);
+            }
         }
         /// <summary>
         /// Refund a payment transaction, in full or in part Will not allow for refunding more than the full amount even with multiple partial refunds. Money is refunded to the payment method used to make the original payment. Payment method must support refunds.
         /// </summary>
-        /// <param name="id">The id of the transaction to refund</param> 
-        /// <param name="request">Request containing refund details</param> 
-        /// <returns>RefundResource</returns>            
-        public RefundResource RefundTransaction(int? id, RefundRequest request)
+        /// <param name="id">The id of the transaction to refund</param>
+        /// <param name="request">Request containing refund details</param>
+        public void RefundTransaction(int? id, RefundRequest request)
         {
             // verify the required parameter 'id' is set
             if (id == null)
@@ -178,38 +233,50 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling RefundTransaction");
             }
             
-            
-            string urlPath = "/transactions/{id}/refunds";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
-    
+            mRefundTransactionPath = "/transactions/{id}/refunds";
+            if (!string.IsNullOrEmpty(mRefundTransactionPath))
+            {
+                mRefundTransactionPath = mRefundTransactionPath.Replace("{format}", "json");
+            }
+            mRefundTransactionPath = mRefundTransactionPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             postBody = KnetikClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mRefundTransactionStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mRefundTransactionStartTime, mRefundTransactionPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mRefundTransactionCoroutine.ResponseReceived += RefundTransactionCallback;
+            mRefundTransactionCoroutine.Start(mRefundTransactionPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void RefundTransactionCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling RefundTransaction: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling RefundTransaction: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling RefundTransaction: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling RefundTransaction: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (RefundResource) KnetikClient.Deserialize(response.Content, typeof(RefundResource), response.Headers);
+
+            RefundTransactionData = (RefundResource) KnetikClient.Deserialize(response.Content, typeof(RefundResource), response.Headers);
+            KnetikLogger.LogResponse(mRefundTransactionStartTime, mRefundTransactionPath, string.Format("Response received successfully:\n{0}", RefundTransactionData.ToString()));
+
+            if (RefundTransactionComplete != null)
+            {
+                RefundTransactionComplete(RefundTransactionData);
+            }
         }
     }
 }

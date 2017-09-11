@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using RestSharp;
 using com.knetikcloud.Client;
 using com.knetikcloud.Model;
+using com.knetikcloud.Utils;
 using UnityEngine;
 
 using Object = System.Object;
@@ -16,49 +17,56 @@ namespace com.knetikcloud.Api
     /// </summary>
     public interface IUsersFriendshipsApi
     {
+        PageResourceSimpleUserResource GetFriendsData { get; }
+
+        string GetInviteTokenData { get; }
+
+        PageResourceSimpleUserResource GetInvitesData { get; }
+
+        
         /// <summary>
         /// Add a friend As a user, either creates or confirm a pending request. As an admin, call this endpoint twice while inverting the IDs to create a confirmed friendship.
         /// </summary>
         /// <param name="userId">The id of the user or &#39;me&#39; if logged in</param>
         /// <param name="id">The id of the user to befriend</param>
-        /// <returns></returns>
-        void AddFriend (string userId, int? id);
+        void AddFriend(string userId, int? id);
+
         /// <summary>
         /// Get friends list 
         /// </summary>
         /// <param name="userId">The id of the user or &#39;me&#39;</param>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
-        /// <returns>PageResourceSimpleUserResource</returns>
-        PageResourceSimpleUserResource GetFriends (string userId, int? size, int? page);
+        void GetFriends(string userId, int? size, int? page);
+
         /// <summary>
         /// Returns the invite token This is a unique invite token that allows direct connection to the request user.  Exposing that token presents privacy issues if the token is leaked. Use friend request flow instead if confirmation is required
         /// </summary>
         /// <param name="userId">The id of the user or &#39;me&#39; if logged in</param>
-        /// <returns>string</returns>
-        string GetInviteToken (string userId);
+        void GetInviteToken(string userId);
+
         /// <summary>
         /// Get pending invites Invites that the specified user received
         /// </summary>
         /// <param name="userId">The id of the user or &#39;me&#39;</param>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
-        /// <returns>PageResourceSimpleUserResource</returns>
-        PageResourceSimpleUserResource GetInvites (string userId, int? size, int? page);
+        void GetInvites(string userId, int? size, int? page);
+
         /// <summary>
         /// Redeem friendship token Immediately connects the requested user with the user mapped by the provided invite token
         /// </summary>
         /// <param name="userId">The id of the user or &#39;me&#39; if logged in</param>
         /// <param name="token">The invite token</param>
-        /// <returns></returns>
-        void RedeemFriendshipToken (string userId, StringWrapper token);
+        void RedeemFriendshipToken(string userId, StringWrapper token);
+
         /// <summary>
         /// Remove or decline a friend 
         /// </summary>
         /// <param name="userId">The id of the user or &#39;me&#39; if logged in</param>
         /// <param name="id">The id of the user to befriend</param>
-        /// <returns></returns>
-        void RemoveOrDeclineFriend (string userId, int? id);
+        void RemoveOrDeclineFriend(string userId, int? id);
+
     }
   
     /// <summary>
@@ -66,6 +74,46 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class UsersFriendshipsApi : IUsersFriendshipsApi
     {
+        private readonly KnetikCoroutine mAddFriendCoroutine;
+        private DateTime mAddFriendStartTime;
+        private string mAddFriendPath;
+        private readonly KnetikCoroutine mGetFriendsCoroutine;
+        private DateTime mGetFriendsStartTime;
+        private string mGetFriendsPath;
+        private readonly KnetikCoroutine mGetInviteTokenCoroutine;
+        private DateTime mGetInviteTokenStartTime;
+        private string mGetInviteTokenPath;
+        private readonly KnetikCoroutine mGetInvitesCoroutine;
+        private DateTime mGetInvitesStartTime;
+        private string mGetInvitesPath;
+        private readonly KnetikCoroutine mRedeemFriendshipTokenCoroutine;
+        private DateTime mRedeemFriendshipTokenStartTime;
+        private string mRedeemFriendshipTokenPath;
+        private readonly KnetikCoroutine mRemoveOrDeclineFriendCoroutine;
+        private DateTime mRemoveOrDeclineFriendStartTime;
+        private string mRemoveOrDeclineFriendPath;
+
+        public delegate void AddFriendCompleteDelegate();
+        public AddFriendCompleteDelegate AddFriendComplete;
+
+        public PageResourceSimpleUserResource GetFriendsData { get; private set; }
+        public delegate void GetFriendsCompleteDelegate(PageResourceSimpleUserResource response);
+        public GetFriendsCompleteDelegate GetFriendsComplete;
+
+        public string GetInviteTokenData { get; private set; }
+        public delegate void GetInviteTokenCompleteDelegate(string response);
+        public GetInviteTokenCompleteDelegate GetInviteTokenComplete;
+
+        public PageResourceSimpleUserResource GetInvitesData { get; private set; }
+        public delegate void GetInvitesCompleteDelegate(PageResourceSimpleUserResource response);
+        public GetInvitesCompleteDelegate GetInvitesComplete;
+
+        public delegate void RedeemFriendshipTokenCompleteDelegate();
+        public RedeemFriendshipTokenCompleteDelegate RedeemFriendshipTokenComplete;
+
+        public delegate void RemoveOrDeclineFriendCompleteDelegate();
+        public RemoveOrDeclineFriendCompleteDelegate RemoveOrDeclineFriendComplete;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="UsersFriendshipsApi"/> class.
         /// </summary>
@@ -73,20 +121,25 @@ namespace com.knetikcloud.Api
         public UsersFriendshipsApi()
         {
             KnetikClient = KnetikConfiguration.DefaultClient;
+            mAddFriendCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetFriendsCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetInviteTokenCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetInvitesCoroutine = new KnetikCoroutine(KnetikClient);
+            mRedeemFriendshipTokenCoroutine = new KnetikCoroutine(KnetikClient);
+            mRemoveOrDeclineFriendCoroutine = new KnetikCoroutine(KnetikClient);
         }
     
         /// <summary>
         /// Gets the Knetik client.
         /// </summary>
         /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient {get; private set;}
+        public KnetikClient KnetikClient { get; private set; }
 
         /// <summary>
         /// Add a friend As a user, either creates or confirm a pending request. As an admin, call this endpoint twice while inverting the IDs to create a confirmed friendship.
         /// </summary>
-        /// <param name="userId">The id of the user or &#39;me&#39; if logged in</param> 
-        /// <param name="id">The id of the user to befriend</param> 
-        /// <returns></returns>            
+        /// <param name="userId">The id of the user or &#39;me&#39; if logged in</param>
+        /// <param name="id">The id of the user to befriend</param>
         public void AddFriend(string userId, int? id)
         {
             // verify the required parameter 'userId' is set
@@ -94,53 +147,61 @@ namespace com.knetikcloud.Api
             {
                 throw new KnetikException(400, "Missing required parameter 'userId' when calling AddFriend");
             }
-            
             // verify the required parameter 'id' is set
             if (id == null)
             {
                 throw new KnetikException(400, "Missing required parameter 'id' when calling AddFriend");
             }
             
-            
-            string urlPath = "/users/{user_id}/friends/{id}";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-urlPath = urlPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
-    
+            mAddFriendPath = "/users/{user_id}/friends/{id}";
+            if (!string.IsNullOrEmpty(mAddFriendPath))
+            {
+                mAddFriendPath = mAddFriendPath.Replace("{format}", "json");
+            }
+            mAddFriendPath = mAddFriendPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+mAddFriendPath = mAddFriendPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mAddFriendStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mAddFriendStartTime, mAddFriendPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mAddFriendCoroutine.ResponseReceived += AddFriendCallback;
+            mAddFriendCoroutine.Start(mAddFriendPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void AddFriendCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling AddFriend: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling AddFriend: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling AddFriend: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling AddFriend: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return;
+
+            KnetikLogger.LogResponse(mAddFriendStartTime, mAddFriendPath, "Response received successfully.");
+            if (AddFriendComplete != null)
+            {
+                AddFriendComplete();
+            }
         }
         /// <summary>
         /// Get friends list 
         /// </summary>
-        /// <param name="userId">The id of the user or &#39;me&#39;</param> 
-        /// <param name="size">The number of objects returned per page</param> 
-        /// <param name="page">The number of the page returned, starting with 1</param> 
-        /// <returns>PageResourceSimpleUserResource</returns>            
-        public PageResourceSimpleUserResource GetFriends(string userId, int? size, int? page)
+        /// <param name="userId">The id of the user or &#39;me&#39;</param>
+        /// <param name="size">The number of objects returned per page</param>
+        /// <param name="page">The number of the page returned, starting with 1</param>
+        public void GetFriends(string userId, int? size, int? page)
         {
             // verify the required parameter 'userId' is set
             if (userId == null)
@@ -148,53 +209,64 @@ urlPath = urlPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
                 throw new KnetikException(400, "Missing required parameter 'userId' when calling GetFriends");
             }
             
-            
-            string urlPath = "/users/{user_id}/friends";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-    
+            mGetFriendsPath = "/users/{user_id}/friends";
+            if (!string.IsNullOrEmpty(mGetFriendsPath))
+            {
+                mGetFriendsPath = mGetFriendsPath.Replace("{format}", "json");
+            }
+            mGetFriendsPath = mGetFriendsPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             if (size != null)
             {
                 queryParams.Add("size", KnetikClient.ParameterToString(size));
             }
-            
+
             if (page != null)
             {
                 queryParams.Add("page", KnetikClient.ParameterToString(page));
             }
-            
-            // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            // authentication setting, if any
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+
+            mGetFriendsStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetFriendsStartTime, mGetFriendsPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetFriendsCoroutine.ResponseReceived += GetFriendsCallback;
+            mGetFriendsCoroutine.Start(mGetFriendsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetFriendsCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetFriends: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetFriends: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetFriends: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetFriends: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (PageResourceSimpleUserResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceSimpleUserResource), response.Headers);
+
+            GetFriendsData = (PageResourceSimpleUserResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceSimpleUserResource), response.Headers);
+            KnetikLogger.LogResponse(mGetFriendsStartTime, mGetFriendsPath, string.Format("Response received successfully:\n{0}", GetFriendsData.ToString()));
+
+            if (GetFriendsComplete != null)
+            {
+                GetFriendsComplete(GetFriendsData);
+            }
         }
         /// <summary>
         /// Returns the invite token This is a unique invite token that allows direct connection to the request user.  Exposing that token presents privacy issues if the token is leaked. Use friend request flow instead if confirmation is required
         /// </summary>
-        /// <param name="userId">The id of the user or &#39;me&#39; if logged in</param> 
-        /// <returns>string</returns>            
-        public string GetInviteToken(string userId)
+        /// <param name="userId">The id of the user or &#39;me&#39; if logged in</param>
+        public void GetInviteToken(string userId)
         {
             // verify the required parameter 'userId' is set
             if (userId == null)
@@ -202,45 +274,56 @@ urlPath = urlPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
                 throw new KnetikException(400, "Missing required parameter 'userId' when calling GetInviteToken");
             }
             
-            
-            string urlPath = "/users/{user_id}/invite-token";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-    
+            mGetInviteTokenPath = "/users/{user_id}/invite-token";
+            if (!string.IsNullOrEmpty(mGetInviteTokenPath))
+            {
+                mGetInviteTokenPath = mGetInviteTokenPath.Replace("{format}", "json");
+            }
+            mGetInviteTokenPath = mGetInviteTokenPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mGetInviteTokenStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetInviteTokenStartTime, mGetInviteTokenPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetInviteTokenCoroutine.ResponseReceived += GetInviteTokenCallback;
+            mGetInviteTokenCoroutine.Start(mGetInviteTokenPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetInviteTokenCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetInviteToken: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetInviteToken: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetInviteToken: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetInviteToken: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (string) KnetikClient.Deserialize(response.Content, typeof(string), response.Headers);
+
+            GetInviteTokenData = (string) KnetikClient.Deserialize(response.Content, typeof(string), response.Headers);
+            KnetikLogger.LogResponse(mGetInviteTokenStartTime, mGetInviteTokenPath, string.Format("Response received successfully:\n{0}", GetInviteTokenData.ToString()));
+
+            if (GetInviteTokenComplete != null)
+            {
+                GetInviteTokenComplete(GetInviteTokenData);
+            }
         }
         /// <summary>
         /// Get pending invites Invites that the specified user received
         /// </summary>
-        /// <param name="userId">The id of the user or &#39;me&#39;</param> 
-        /// <param name="size">The number of objects returned per page</param> 
-        /// <param name="page">The number of the page returned, starting with 1</param> 
-        /// <returns>PageResourceSimpleUserResource</returns>            
-        public PageResourceSimpleUserResource GetInvites(string userId, int? size, int? page)
+        /// <param name="userId">The id of the user or &#39;me&#39;</param>
+        /// <param name="size">The number of objects returned per page</param>
+        /// <param name="page">The number of the page returned, starting with 1</param>
+        public void GetInvites(string userId, int? size, int? page)
         {
             // verify the required parameter 'userId' is set
             if (userId == null)
@@ -248,53 +331,64 @@ urlPath = urlPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
                 throw new KnetikException(400, "Missing required parameter 'userId' when calling GetInvites");
             }
             
-            
-            string urlPath = "/users/{user_id}/invites";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-    
+            mGetInvitesPath = "/users/{user_id}/invites";
+            if (!string.IsNullOrEmpty(mGetInvitesPath))
+            {
+                mGetInvitesPath = mGetInvitesPath.Replace("{format}", "json");
+            }
+            mGetInvitesPath = mGetInvitesPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             if (size != null)
             {
                 queryParams.Add("size", KnetikClient.ParameterToString(size));
             }
-            
+
             if (page != null)
             {
                 queryParams.Add("page", KnetikClient.ParameterToString(page));
             }
-            
-            // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            // authentication setting, if any
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+
+            mGetInvitesStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetInvitesStartTime, mGetInvitesPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetInvitesCoroutine.ResponseReceived += GetInvitesCallback;
+            mGetInvitesCoroutine.Start(mGetInvitesPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetInvitesCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetInvites: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetInvites: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetInvites: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetInvites: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (PageResourceSimpleUserResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceSimpleUserResource), response.Headers);
+
+            GetInvitesData = (PageResourceSimpleUserResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceSimpleUserResource), response.Headers);
+            KnetikLogger.LogResponse(mGetInvitesStartTime, mGetInvitesPath, string.Format("Response received successfully:\n{0}", GetInvitesData.ToString()));
+
+            if (GetInvitesComplete != null)
+            {
+                GetInvitesComplete(GetInvitesData);
+            }
         }
         /// <summary>
         /// Redeem friendship token Immediately connects the requested user with the user mapped by the provided invite token
         /// </summary>
-        /// <param name="userId">The id of the user or &#39;me&#39; if logged in</param> 
-        /// <param name="token">The invite token</param> 
-        /// <returns></returns>            
+        /// <param name="userId">The id of the user or &#39;me&#39; if logged in</param>
+        /// <param name="token">The invite token</param>
         public void RedeemFriendshipToken(string userId, StringWrapper token)
         {
             // verify the required parameter 'userId' is set
@@ -303,45 +397,54 @@ urlPath = urlPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
                 throw new KnetikException(400, "Missing required parameter 'userId' when calling RedeemFriendshipToken");
             }
             
-            
-            string urlPath = "/users/{user_id}/friends/tokens";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-    
+            mRedeemFriendshipTokenPath = "/users/{user_id}/friends/tokens";
+            if (!string.IsNullOrEmpty(mRedeemFriendshipTokenPath))
+            {
+                mRedeemFriendshipTokenPath = mRedeemFriendshipTokenPath.Replace("{format}", "json");
+            }
+            mRedeemFriendshipTokenPath = mRedeemFriendshipTokenPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             postBody = KnetikClient.Serialize(token); // http body (model) parameter
  
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mRedeemFriendshipTokenStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mRedeemFriendshipTokenStartTime, mRedeemFriendshipTokenPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mRedeemFriendshipTokenCoroutine.ResponseReceived += RedeemFriendshipTokenCallback;
+            mRedeemFriendshipTokenCoroutine.Start(mRedeemFriendshipTokenPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void RedeemFriendshipTokenCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling RedeemFriendshipToken: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling RedeemFriendshipToken: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling RedeemFriendshipToken: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling RedeemFriendshipToken: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return;
+
+            KnetikLogger.LogResponse(mRedeemFriendshipTokenStartTime, mRedeemFriendshipTokenPath, "Response received successfully.");
+            if (RedeemFriendshipTokenComplete != null)
+            {
+                RedeemFriendshipTokenComplete();
+            }
         }
         /// <summary>
         /// Remove or decline a friend 
         /// </summary>
-        /// <param name="userId">The id of the user or &#39;me&#39; if logged in</param> 
-        /// <param name="id">The id of the user to befriend</param> 
-        /// <returns></returns>            
+        /// <param name="userId">The id of the user or &#39;me&#39; if logged in</param>
+        /// <param name="id">The id of the user to befriend</param>
         public void RemoveOrDeclineFriend(string userId, int? id)
         {
             // verify the required parameter 'userId' is set
@@ -349,44 +452,53 @@ urlPath = urlPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
             {
                 throw new KnetikException(400, "Missing required parameter 'userId' when calling RemoveOrDeclineFriend");
             }
-            
             // verify the required parameter 'id' is set
             if (id == null)
             {
                 throw new KnetikException(400, "Missing required parameter 'id' when calling RemoveOrDeclineFriend");
             }
             
-            
-            string urlPath = "/users/{user_id}/friends/{id}";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-urlPath = urlPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
-    
+            mRemoveOrDeclineFriendPath = "/users/{user_id}/friends/{id}";
+            if (!string.IsNullOrEmpty(mRemoveOrDeclineFriendPath))
+            {
+                mRemoveOrDeclineFriendPath = mRemoveOrDeclineFriendPath.Replace("{format}", "json");
+            }
+            mRemoveOrDeclineFriendPath = mRemoveOrDeclineFriendPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+mRemoveOrDeclineFriendPath = mRemoveOrDeclineFriendPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mRemoveOrDeclineFriendStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mRemoveOrDeclineFriendStartTime, mRemoveOrDeclineFriendPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mRemoveOrDeclineFriendCoroutine.ResponseReceived += RemoveOrDeclineFriendCallback;
+            mRemoveOrDeclineFriendCoroutine.Start(mRemoveOrDeclineFriendPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void RemoveOrDeclineFriendCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling RemoveOrDeclineFriend: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling RemoveOrDeclineFriend: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling RemoveOrDeclineFriend: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling RemoveOrDeclineFriend: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return;
+
+            KnetikLogger.LogResponse(mRemoveOrDeclineFriendStartTime, mRemoveOrDeclineFriendPath, "Response received successfully.");
+            if (RemoveOrDeclineFriendComplete != null)
+            {
+                RemoveOrDeclineFriendComplete();
+            }
         }
     }
 }

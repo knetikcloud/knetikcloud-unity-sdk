@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using RestSharp;
 using com.knetikcloud.Client;
 using com.knetikcloud.Model;
+using com.knetikcloud.Utils;
 using UnityEngine;
 
 using Object = System.Object;
@@ -16,27 +17,36 @@ namespace com.knetikcloud.Api
     /// </summary>
     public interface IUsersAddressesApi
     {
+        SavedAddressResource CreateAddressData { get; }
+
+        SavedAddressResource GetAddressData { get; }
+
+        PageResourceSavedAddressResource GetAddressesData { get; }
+
+        SavedAddressResource UpdateAddressData { get; }
+
+        
         /// <summary>
         /// Create a new address 
         /// </summary>
         /// <param name="userId">The id of the user</param>
         /// <param name="savedAddressResource">The new address</param>
-        /// <returns>SavedAddressResource</returns>
-        SavedAddressResource CreateAddress (string userId, SavedAddressResource savedAddressResource);
+        void CreateAddress(string userId, SavedAddressResource savedAddressResource);
+
         /// <summary>
         /// Delete an address 
         /// </summary>
         /// <param name="userId">The id of the user</param>
         /// <param name="id">The id of the address</param>
-        /// <returns></returns>
-        void DeleteAddress (string userId, int? id);
+        void DeleteAddress(string userId, int? id);
+
         /// <summary>
         /// Get a single address 
         /// </summary>
         /// <param name="userId">The id of the user</param>
         /// <param name="id">The id of the address</param>
-        /// <returns>SavedAddressResource</returns>
-        SavedAddressResource GetAddress (string userId, int? id);
+        void GetAddress(string userId, int? id);
+
         /// <summary>
         /// List and search addresses 
         /// </summary>
@@ -44,16 +54,16 @@ namespace com.knetikcloud.Api
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
-        /// <returns>PageResourceSavedAddressResource</returns>
-        PageResourceSavedAddressResource GetAddresses (string userId, int? size, int? page, string order);
+        void GetAddresses(string userId, int? size, int? page, string order);
+
         /// <summary>
         /// Update an address 
         /// </summary>
         /// <param name="userId">The id of the user</param>
         /// <param name="id">The id of the address</param>
         /// <param name="savedAddressResource">The saved address resource object</param>
-        /// <returns>SavedAddressResource</returns>
-        SavedAddressResource UpdateAddress (string userId, int? id, SavedAddressResource savedAddressResource);
+        void UpdateAddress(string userId, int? id, SavedAddressResource savedAddressResource);
+
     }
   
     /// <summary>
@@ -61,6 +71,41 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class UsersAddressesApi : IUsersAddressesApi
     {
+        private readonly KnetikCoroutine mCreateAddressCoroutine;
+        private DateTime mCreateAddressStartTime;
+        private string mCreateAddressPath;
+        private readonly KnetikCoroutine mDeleteAddressCoroutine;
+        private DateTime mDeleteAddressStartTime;
+        private string mDeleteAddressPath;
+        private readonly KnetikCoroutine mGetAddressCoroutine;
+        private DateTime mGetAddressStartTime;
+        private string mGetAddressPath;
+        private readonly KnetikCoroutine mGetAddressesCoroutine;
+        private DateTime mGetAddressesStartTime;
+        private string mGetAddressesPath;
+        private readonly KnetikCoroutine mUpdateAddressCoroutine;
+        private DateTime mUpdateAddressStartTime;
+        private string mUpdateAddressPath;
+
+        public SavedAddressResource CreateAddressData { get; private set; }
+        public delegate void CreateAddressCompleteDelegate(SavedAddressResource response);
+        public CreateAddressCompleteDelegate CreateAddressComplete;
+
+        public delegate void DeleteAddressCompleteDelegate();
+        public DeleteAddressCompleteDelegate DeleteAddressComplete;
+
+        public SavedAddressResource GetAddressData { get; private set; }
+        public delegate void GetAddressCompleteDelegate(SavedAddressResource response);
+        public GetAddressCompleteDelegate GetAddressComplete;
+
+        public PageResourceSavedAddressResource GetAddressesData { get; private set; }
+        public delegate void GetAddressesCompleteDelegate(PageResourceSavedAddressResource response);
+        public GetAddressesCompleteDelegate GetAddressesComplete;
+
+        public SavedAddressResource UpdateAddressData { get; private set; }
+        public delegate void UpdateAddressCompleteDelegate(SavedAddressResource response);
+        public UpdateAddressCompleteDelegate UpdateAddressComplete;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="UsersAddressesApi"/> class.
         /// </summary>
@@ -68,21 +113,25 @@ namespace com.knetikcloud.Api
         public UsersAddressesApi()
         {
             KnetikClient = KnetikConfiguration.DefaultClient;
+            mCreateAddressCoroutine = new KnetikCoroutine(KnetikClient);
+            mDeleteAddressCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetAddressCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetAddressesCoroutine = new KnetikCoroutine(KnetikClient);
+            mUpdateAddressCoroutine = new KnetikCoroutine(KnetikClient);
         }
     
         /// <summary>
         /// Gets the Knetik client.
         /// </summary>
         /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient {get; private set;}
+        public KnetikClient KnetikClient { get; private set; }
 
         /// <summary>
         /// Create a new address 
         /// </summary>
-        /// <param name="userId">The id of the user</param> 
-        /// <param name="savedAddressResource">The new address</param> 
-        /// <returns>SavedAddressResource</returns>            
-        public SavedAddressResource CreateAddress(string userId, SavedAddressResource savedAddressResource)
+        /// <param name="userId">The id of the user</param>
+        /// <param name="savedAddressResource">The new address</param>
+        public void CreateAddress(string userId, SavedAddressResource savedAddressResource)
         {
             // verify the required parameter 'userId' is set
             if (userId == null)
@@ -90,45 +139,56 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'userId' when calling CreateAddress");
             }
             
-            
-            string urlPath = "/users/{user_id}/addresses";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-    
+            mCreateAddressPath = "/users/{user_id}/addresses";
+            if (!string.IsNullOrEmpty(mCreateAddressPath))
+            {
+                mCreateAddressPath = mCreateAddressPath.Replace("{format}", "json");
+            }
+            mCreateAddressPath = mCreateAddressPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             postBody = KnetikClient.Serialize(savedAddressResource); // http body (model) parameter
  
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mCreateAddressStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mCreateAddressStartTime, mCreateAddressPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mCreateAddressCoroutine.ResponseReceived += CreateAddressCallback;
+            mCreateAddressCoroutine.Start(mCreateAddressPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void CreateAddressCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling CreateAddress: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling CreateAddress: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling CreateAddress: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling CreateAddress: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (SavedAddressResource) KnetikClient.Deserialize(response.Content, typeof(SavedAddressResource), response.Headers);
+
+            CreateAddressData = (SavedAddressResource) KnetikClient.Deserialize(response.Content, typeof(SavedAddressResource), response.Headers);
+            KnetikLogger.LogResponse(mCreateAddressStartTime, mCreateAddressPath, string.Format("Response received successfully:\n{0}", CreateAddressData.ToString()));
+
+            if (CreateAddressComplete != null)
+            {
+                CreateAddressComplete(CreateAddressData);
+            }
         }
         /// <summary>
         /// Delete an address 
         /// </summary>
-        /// <param name="userId">The id of the user</param> 
-        /// <param name="id">The id of the address</param> 
-        /// <returns></returns>            
+        /// <param name="userId">The id of the user</param>
+        /// <param name="id">The id of the address</param>
         public void DeleteAddress(string userId, int? id)
         {
             // verify the required parameter 'userId' is set
@@ -136,106 +196,124 @@ namespace com.knetikcloud.Api
             {
                 throw new KnetikException(400, "Missing required parameter 'userId' when calling DeleteAddress");
             }
-            
             // verify the required parameter 'id' is set
             if (id == null)
             {
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeleteAddress");
             }
             
-            
-            string urlPath = "/users/{user_id}/addresses/{id}";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-urlPath = urlPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
-    
+            mDeleteAddressPath = "/users/{user_id}/addresses/{id}";
+            if (!string.IsNullOrEmpty(mDeleteAddressPath))
+            {
+                mDeleteAddressPath = mDeleteAddressPath.Replace("{format}", "json");
+            }
+            mDeleteAddressPath = mDeleteAddressPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+mDeleteAddressPath = mDeleteAddressPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mDeleteAddressStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mDeleteAddressStartTime, mDeleteAddressPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mDeleteAddressCoroutine.ResponseReceived += DeleteAddressCallback;
+            mDeleteAddressCoroutine.Start(mDeleteAddressPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void DeleteAddressCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling DeleteAddress: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling DeleteAddress: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling DeleteAddress: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling DeleteAddress: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return;
+
+            KnetikLogger.LogResponse(mDeleteAddressStartTime, mDeleteAddressPath, "Response received successfully.");
+            if (DeleteAddressComplete != null)
+            {
+                DeleteAddressComplete();
+            }
         }
         /// <summary>
         /// Get a single address 
         /// </summary>
-        /// <param name="userId">The id of the user</param> 
-        /// <param name="id">The id of the address</param> 
-        /// <returns>SavedAddressResource</returns>            
-        public SavedAddressResource GetAddress(string userId, int? id)
+        /// <param name="userId">The id of the user</param>
+        /// <param name="id">The id of the address</param>
+        public void GetAddress(string userId, int? id)
         {
             // verify the required parameter 'userId' is set
             if (userId == null)
             {
                 throw new KnetikException(400, "Missing required parameter 'userId' when calling GetAddress");
             }
-            
             // verify the required parameter 'id' is set
             if (id == null)
             {
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetAddress");
             }
             
-            
-            string urlPath = "/users/{user_id}/addresses/{id}";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-urlPath = urlPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
-    
+            mGetAddressPath = "/users/{user_id}/addresses/{id}";
+            if (!string.IsNullOrEmpty(mGetAddressPath))
+            {
+                mGetAddressPath = mGetAddressPath.Replace("{format}", "json");
+            }
+            mGetAddressPath = mGetAddressPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+mGetAddressPath = mGetAddressPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mGetAddressStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetAddressStartTime, mGetAddressPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetAddressCoroutine.ResponseReceived += GetAddressCallback;
+            mGetAddressCoroutine.Start(mGetAddressPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetAddressCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetAddress: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetAddress: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetAddress: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetAddress: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (SavedAddressResource) KnetikClient.Deserialize(response.Content, typeof(SavedAddressResource), response.Headers);
+
+            GetAddressData = (SavedAddressResource) KnetikClient.Deserialize(response.Content, typeof(SavedAddressResource), response.Headers);
+            KnetikLogger.LogResponse(mGetAddressStartTime, mGetAddressPath, string.Format("Response received successfully:\n{0}", GetAddressData.ToString()));
+
+            if (GetAddressComplete != null)
+            {
+                GetAddressComplete(GetAddressData);
+            }
         }
         /// <summary>
         /// List and search addresses 
         /// </summary>
-        /// <param name="userId">The id of the user</param> 
-        /// <param name="size">The number of objects returned per page</param> 
-        /// <param name="page">The number of the page returned, starting with 1</param> 
-        /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param> 
-        /// <returns>PageResourceSavedAddressResource</returns>            
-        public PageResourceSavedAddressResource GetAddresses(string userId, int? size, int? page, string order)
+        /// <param name="userId">The id of the user</param>
+        /// <param name="size">The number of objects returned per page</param>
+        /// <param name="page">The number of the page returned, starting with 1</param>
+        /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
+        public void GetAddresses(string userId, int? size, int? page, string order)
         {
             // verify the required parameter 'userId' is set
             if (userId == null)
@@ -243,106 +321,128 @@ urlPath = urlPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
                 throw new KnetikException(400, "Missing required parameter 'userId' when calling GetAddresses");
             }
             
-            
-            string urlPath = "/users/{user_id}/addresses";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-    
+            mGetAddressesPath = "/users/{user_id}/addresses";
+            if (!string.IsNullOrEmpty(mGetAddressesPath))
+            {
+                mGetAddressesPath = mGetAddressesPath.Replace("{format}", "json");
+            }
+            mGetAddressesPath = mGetAddressesPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             if (size != null)
             {
                 queryParams.Add("size", KnetikClient.ParameterToString(size));
             }
-            
+
             if (page != null)
             {
                 queryParams.Add("page", KnetikClient.ParameterToString(page));
             }
-            
+
             if (order != null)
             {
                 queryParams.Add("order", KnetikClient.ParameterToString(order));
             }
-            
-            // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            // authentication setting, if any
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+
+            mGetAddressesStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetAddressesStartTime, mGetAddressesPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetAddressesCoroutine.ResponseReceived += GetAddressesCallback;
+            mGetAddressesCoroutine.Start(mGetAddressesPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetAddressesCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetAddresses: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetAddresses: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetAddresses: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetAddresses: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (PageResourceSavedAddressResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceSavedAddressResource), response.Headers);
+
+            GetAddressesData = (PageResourceSavedAddressResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceSavedAddressResource), response.Headers);
+            KnetikLogger.LogResponse(mGetAddressesStartTime, mGetAddressesPath, string.Format("Response received successfully:\n{0}", GetAddressesData.ToString()));
+
+            if (GetAddressesComplete != null)
+            {
+                GetAddressesComplete(GetAddressesData);
+            }
         }
         /// <summary>
         /// Update an address 
         /// </summary>
-        /// <param name="userId">The id of the user</param> 
-        /// <param name="id">The id of the address</param> 
-        /// <param name="savedAddressResource">The saved address resource object</param> 
-        /// <returns>SavedAddressResource</returns>            
-        public SavedAddressResource UpdateAddress(string userId, int? id, SavedAddressResource savedAddressResource)
+        /// <param name="userId">The id of the user</param>
+        /// <param name="id">The id of the address</param>
+        /// <param name="savedAddressResource">The saved address resource object</param>
+        public void UpdateAddress(string userId, int? id, SavedAddressResource savedAddressResource)
         {
             // verify the required parameter 'userId' is set
             if (userId == null)
             {
                 throw new KnetikException(400, "Missing required parameter 'userId' when calling UpdateAddress");
             }
-            
             // verify the required parameter 'id' is set
             if (id == null)
             {
                 throw new KnetikException(400, "Missing required parameter 'id' when calling UpdateAddress");
             }
             
-            
-            string urlPath = "/users/{user_id}/addresses/{id}";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-urlPath = urlPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
-    
+            mUpdateAddressPath = "/users/{user_id}/addresses/{id}";
+            if (!string.IsNullOrEmpty(mUpdateAddressPath))
+            {
+                mUpdateAddressPath = mUpdateAddressPath.Replace("{format}", "json");
+            }
+            mUpdateAddressPath = mUpdateAddressPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+mUpdateAddressPath = mUpdateAddressPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             postBody = KnetikClient.Serialize(savedAddressResource); // http body (model) parameter
  
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mUpdateAddressStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mUpdateAddressStartTime, mUpdateAddressPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mUpdateAddressCoroutine.ResponseReceived += UpdateAddressCallback;
+            mUpdateAddressCoroutine.Start(mUpdateAddressPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void UpdateAddressCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling UpdateAddress: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling UpdateAddress: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling UpdateAddress: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling UpdateAddress: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (SavedAddressResource) KnetikClient.Deserialize(response.Content, typeof(SavedAddressResource), response.Headers);
+
+            UpdateAddressData = (SavedAddressResource) KnetikClient.Deserialize(response.Content, typeof(SavedAddressResource), response.Headers);
+            KnetikLogger.LogResponse(mUpdateAddressStartTime, mUpdateAddressPath, string.Format("Response received successfully:\n{0}", UpdateAddressData.ToString()));
+
+            if (UpdateAddressComplete != null)
+            {
+                UpdateAddressComplete(UpdateAddressData);
+            }
         }
     }
 }

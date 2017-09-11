@@ -44,7 +44,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>For coupon_cart, a minimum total price that the cart must meet to be valid.</value>
         [JsonProperty(PropertyName = "max_discount")]
-        public double? MaxDiscount { get; set; }
+        public decimal? MaxDiscount { get; set; }
 
         /// <summary>
         /// The maximum number of items to count this discount for (not for cart_coupon).
@@ -58,7 +58,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>For coupon_cart, a minimum total price that the cart must meet to be valid.</value>
         [JsonProperty(PropertyName = "min_cart_total")]
-        public double? MinCartTotal { get; set; }
+        public decimal? MinCartTotal { get; set; }
 
         /// <summary>
         /// A name for the discount.
@@ -107,7 +107,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The amount of the discount. If discount_type is value then this is the raw currency amount to remove. If discount_type is percentage then this will be multiplied by the cart total or item price to get the discount amount (0.5 is half price).</value>
         [JsonProperty(PropertyName = "value")]
-        public double? Value { get; set; }
+        public decimal? Value { get; set; }
 
         /// <summary>
         /// Which vendor this applies for, if coupon_type is coupon_vendor.

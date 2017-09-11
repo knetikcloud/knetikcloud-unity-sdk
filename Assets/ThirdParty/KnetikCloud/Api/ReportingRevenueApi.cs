@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using RestSharp;
 using com.knetikcloud.Client;
 using com.knetikcloud.Model;
+using com.knetikcloud.Utils;
 using UnityEngine;
 
 using Object = System.Object;
@@ -16,22 +17,33 @@ namespace com.knetikcloud.Api
     /// </summary>
     public interface IReportingRevenueApi
     {
+        RevenueReportResource GetItemRevenueData { get; }
+
+        RevenueReportResource GetRefundRevenueData { get; }
+
+        PageResourceRevenueCountryReportResource GetRevenueByCountryData { get; }
+
+        PageResourceRevenueProductReportResource GetRevenueByItemData { get; }
+
+        RevenueReportResource GetSubscriptionRevenueData { get; }
+
+        
         /// <summary>
         /// Get item revenue info Get basic info about revenue from sales of items and bundles (not subscriptions, shipping, etc), summed up within a time range
         /// </summary>
         /// <param name="currencyCode">The code for a currency to get sales data for</param>
         /// <param name="startDate">The start of the time range to aggregate, unix timestamp in seconds. Default is beginning of time</param>
         /// <param name="endDate">The end of the time range to aggregate, unix timestamp in seconds. Default is end of time</param>
-        /// <returns>RevenueReportResource</returns>
-        RevenueReportResource GetItemRevenue (string currencyCode, long? startDate, long? endDate);
+        void GetItemRevenue(string currencyCode, long? startDate, long? endDate);
+
         /// <summary>
         /// Get refund revenue info Get basic info about revenue loss from refunds (for all item types), summed up within a time range.
         /// </summary>
         /// <param name="currencyCode">The code for a currency to get refund data for</param>
         /// <param name="startDate">The start of the time range to aggregate, unix timestamp in seconds. Default is beginning of time</param>
         /// <param name="endDate">The end of the time range to aggregate, unix timestamp in seconds. Default is end of time</param>
-        /// <returns>RevenueReportResource</returns>
-        RevenueReportResource GetRefundRevenue (string currencyCode, long? startDate, long? endDate);
+        void GetRefundRevenue(string currencyCode, long? startDate, long? endDate);
+
         /// <summary>
         /// Get revenue info by country Get basic info about revenue from sales of all types, summed up within a time range and split out by country. Sorted for largest revenue at the top
         /// </summary>
@@ -40,8 +52,8 @@ namespace com.knetikcloud.Api
         /// <param name="endDate">The end of the time range to aggregate, unix timestamp in seconds. Default is end of time</param>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
-        /// <returns>PageResourceRevenueCountryReportResource</returns>
-        PageResourceRevenueCountryReportResource GetRevenueByCountry (string currencyCode, long? startDate, long? endDate, int? size, int? page);
+        void GetRevenueByCountry(string currencyCode, long? startDate, long? endDate, int? size, int? page);
+
         /// <summary>
         /// Get revenue info by item Get basic info about revenue from sales of all types, summed up within a time range and split out by specific item. Sorted for largest revenue at the top
         /// </summary>
@@ -50,16 +62,16 @@ namespace com.knetikcloud.Api
         /// <param name="endDate">The end of the time range to aggregate, unix timestamp in seconds. Default is end of time</param>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
-        /// <returns>PageResourceRevenueProductReportResource</returns>
-        PageResourceRevenueProductReportResource GetRevenueByItem (string currencyCode, long? startDate, long? endDate, int? size, int? page);
+        void GetRevenueByItem(string currencyCode, long? startDate, long? endDate, int? size, int? page);
+
         /// <summary>
         /// Get subscription revenue info Get basic info about revenue from sales of new subscriptions as well as recurring payemnts, summed up within a time range
         /// </summary>
         /// <param name="currencyCode">The code for a currency to get sales data for</param>
         /// <param name="startDate">The start of the time range to aggregate, unix timestamp in seconds. Default is beginning of time</param>
         /// <param name="endDate">The end of the time range to aggregate, unix timestamp in seconds. Default is end of time</param>
-        /// <returns>RevenueReportResource</returns>
-        RevenueReportResource GetSubscriptionRevenue (string currencyCode, long? startDate, long? endDate);
+        void GetSubscriptionRevenue(string currencyCode, long? startDate, long? endDate);
+
     }
   
     /// <summary>
@@ -67,6 +79,42 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class ReportingRevenueApi : IReportingRevenueApi
     {
+        private readonly KnetikCoroutine mGetItemRevenueCoroutine;
+        private DateTime mGetItemRevenueStartTime;
+        private string mGetItemRevenuePath;
+        private readonly KnetikCoroutine mGetRefundRevenueCoroutine;
+        private DateTime mGetRefundRevenueStartTime;
+        private string mGetRefundRevenuePath;
+        private readonly KnetikCoroutine mGetRevenueByCountryCoroutine;
+        private DateTime mGetRevenueByCountryStartTime;
+        private string mGetRevenueByCountryPath;
+        private readonly KnetikCoroutine mGetRevenueByItemCoroutine;
+        private DateTime mGetRevenueByItemStartTime;
+        private string mGetRevenueByItemPath;
+        private readonly KnetikCoroutine mGetSubscriptionRevenueCoroutine;
+        private DateTime mGetSubscriptionRevenueStartTime;
+        private string mGetSubscriptionRevenuePath;
+
+        public RevenueReportResource GetItemRevenueData { get; private set; }
+        public delegate void GetItemRevenueCompleteDelegate(RevenueReportResource response);
+        public GetItemRevenueCompleteDelegate GetItemRevenueComplete;
+
+        public RevenueReportResource GetRefundRevenueData { get; private set; }
+        public delegate void GetRefundRevenueCompleteDelegate(RevenueReportResource response);
+        public GetRefundRevenueCompleteDelegate GetRefundRevenueComplete;
+
+        public PageResourceRevenueCountryReportResource GetRevenueByCountryData { get; private set; }
+        public delegate void GetRevenueByCountryCompleteDelegate(PageResourceRevenueCountryReportResource response);
+        public GetRevenueByCountryCompleteDelegate GetRevenueByCountryComplete;
+
+        public PageResourceRevenueProductReportResource GetRevenueByItemData { get; private set; }
+        public delegate void GetRevenueByItemCompleteDelegate(PageResourceRevenueProductReportResource response);
+        public GetRevenueByItemCompleteDelegate GetRevenueByItemComplete;
+
+        public RevenueReportResource GetSubscriptionRevenueData { get; private set; }
+        public delegate void GetSubscriptionRevenueCompleteDelegate(RevenueReportResource response);
+        public GetSubscriptionRevenueCompleteDelegate GetSubscriptionRevenueComplete;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ReportingRevenueApi"/> class.
         /// </summary>
@@ -74,22 +122,26 @@ namespace com.knetikcloud.Api
         public ReportingRevenueApi()
         {
             KnetikClient = KnetikConfiguration.DefaultClient;
+            mGetItemRevenueCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetRefundRevenueCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetRevenueByCountryCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetRevenueByItemCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetSubscriptionRevenueCoroutine = new KnetikCoroutine(KnetikClient);
         }
     
         /// <summary>
         /// Gets the Knetik client.
         /// </summary>
         /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient {get; private set;}
+        public KnetikClient KnetikClient { get; private set; }
 
         /// <summary>
         /// Get item revenue info Get basic info about revenue from sales of items and bundles (not subscriptions, shipping, etc), summed up within a time range
         /// </summary>
-        /// <param name="currencyCode">The code for a currency to get sales data for</param> 
-        /// <param name="startDate">The start of the time range to aggregate, unix timestamp in seconds. Default is beginning of time</param> 
-        /// <param name="endDate">The end of the time range to aggregate, unix timestamp in seconds. Default is end of time</param> 
-        /// <returns>RevenueReportResource</returns>            
-        public RevenueReportResource GetItemRevenue(string currencyCode, long? startDate, long? endDate)
+        /// <param name="currencyCode">The code for a currency to get sales data for</param>
+        /// <param name="startDate">The start of the time range to aggregate, unix timestamp in seconds. Default is beginning of time</param>
+        /// <param name="endDate">The end of the time range to aggregate, unix timestamp in seconds. Default is end of time</param>
+        public void GetItemRevenue(string currencyCode, long? startDate, long? endDate)
         {
             // verify the required parameter 'currencyCode' is set
             if (currencyCode == null)
@@ -97,55 +149,66 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'currencyCode' when calling GetItemRevenue");
             }
             
-            
-            string urlPath = "/reporting/revenue/item-sales/{currency_code}";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "currency_code" + "}", KnetikClient.ParameterToString(currencyCode));
-    
+            mGetItemRevenuePath = "/reporting/revenue/item-sales/{currency_code}";
+            if (!string.IsNullOrEmpty(mGetItemRevenuePath))
+            {
+                mGetItemRevenuePath = mGetItemRevenuePath.Replace("{format}", "json");
+            }
+            mGetItemRevenuePath = mGetItemRevenuePath.Replace("{" + "currency_code" + "}", KnetikClient.ParameterToString(currencyCode));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             if (startDate != null)
             {
                 queryParams.Add("start_date", KnetikClient.ParameterToString(startDate));
             }
-            
+
             if (endDate != null)
             {
                 queryParams.Add("end_date", KnetikClient.ParameterToString(endDate));
             }
-            
-            // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            // authentication setting, if any
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+
+            mGetItemRevenueStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetItemRevenueStartTime, mGetItemRevenuePath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetItemRevenueCoroutine.ResponseReceived += GetItemRevenueCallback;
+            mGetItemRevenueCoroutine.Start(mGetItemRevenuePath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetItemRevenueCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetItemRevenue: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetItemRevenue: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetItemRevenue: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetItemRevenue: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (RevenueReportResource) KnetikClient.Deserialize(response.Content, typeof(RevenueReportResource), response.Headers);
+
+            GetItemRevenueData = (RevenueReportResource) KnetikClient.Deserialize(response.Content, typeof(RevenueReportResource), response.Headers);
+            KnetikLogger.LogResponse(mGetItemRevenueStartTime, mGetItemRevenuePath, string.Format("Response received successfully:\n{0}", GetItemRevenueData.ToString()));
+
+            if (GetItemRevenueComplete != null)
+            {
+                GetItemRevenueComplete(GetItemRevenueData);
+            }
         }
         /// <summary>
         /// Get refund revenue info Get basic info about revenue loss from refunds (for all item types), summed up within a time range.
         /// </summary>
-        /// <param name="currencyCode">The code for a currency to get refund data for</param> 
-        /// <param name="startDate">The start of the time range to aggregate, unix timestamp in seconds. Default is beginning of time</param> 
-        /// <param name="endDate">The end of the time range to aggregate, unix timestamp in seconds. Default is end of time</param> 
-        /// <returns>RevenueReportResource</returns>            
-        public RevenueReportResource GetRefundRevenue(string currencyCode, long? startDate, long? endDate)
+        /// <param name="currencyCode">The code for a currency to get refund data for</param>
+        /// <param name="startDate">The start of the time range to aggregate, unix timestamp in seconds. Default is beginning of time</param>
+        /// <param name="endDate">The end of the time range to aggregate, unix timestamp in seconds. Default is end of time</param>
+        public void GetRefundRevenue(string currencyCode, long? startDate, long? endDate)
         {
             // verify the required parameter 'currencyCode' is set
             if (currencyCode == null)
@@ -153,57 +216,68 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'currencyCode' when calling GetRefundRevenue");
             }
             
-            
-            string urlPath = "/reporting/revenue/refunds/{currency_code}";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "currency_code" + "}", KnetikClient.ParameterToString(currencyCode));
-    
+            mGetRefundRevenuePath = "/reporting/revenue/refunds/{currency_code}";
+            if (!string.IsNullOrEmpty(mGetRefundRevenuePath))
+            {
+                mGetRefundRevenuePath = mGetRefundRevenuePath.Replace("{format}", "json");
+            }
+            mGetRefundRevenuePath = mGetRefundRevenuePath.Replace("{" + "currency_code" + "}", KnetikClient.ParameterToString(currencyCode));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             if (startDate != null)
             {
                 queryParams.Add("start_date", KnetikClient.ParameterToString(startDate));
             }
-            
+
             if (endDate != null)
             {
                 queryParams.Add("end_date", KnetikClient.ParameterToString(endDate));
             }
-            
-            // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            // authentication setting, if any
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+
+            mGetRefundRevenueStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetRefundRevenueStartTime, mGetRefundRevenuePath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetRefundRevenueCoroutine.ResponseReceived += GetRefundRevenueCallback;
+            mGetRefundRevenueCoroutine.Start(mGetRefundRevenuePath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetRefundRevenueCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetRefundRevenue: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetRefundRevenue: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetRefundRevenue: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetRefundRevenue: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (RevenueReportResource) KnetikClient.Deserialize(response.Content, typeof(RevenueReportResource), response.Headers);
+
+            GetRefundRevenueData = (RevenueReportResource) KnetikClient.Deserialize(response.Content, typeof(RevenueReportResource), response.Headers);
+            KnetikLogger.LogResponse(mGetRefundRevenueStartTime, mGetRefundRevenuePath, string.Format("Response received successfully:\n{0}", GetRefundRevenueData.ToString()));
+
+            if (GetRefundRevenueComplete != null)
+            {
+                GetRefundRevenueComplete(GetRefundRevenueData);
+            }
         }
         /// <summary>
         /// Get revenue info by country Get basic info about revenue from sales of all types, summed up within a time range and split out by country. Sorted for largest revenue at the top
         /// </summary>
-        /// <param name="currencyCode">The code for a currency to get sales data for</param> 
-        /// <param name="startDate">The start of the time range to aggregate, unix timestamp in seconds. Default is beginning of time</param> 
-        /// <param name="endDate">The end of the time range to aggregate, unix timestamp in seconds. Default is end of time</param> 
-        /// <param name="size">The number of objects returned per page</param> 
-        /// <param name="page">The number of the page returned, starting with 1</param> 
-        /// <returns>PageResourceRevenueCountryReportResource</returns>            
-        public PageResourceRevenueCountryReportResource GetRevenueByCountry(string currencyCode, long? startDate, long? endDate, int? size, int? page)
+        /// <param name="currencyCode">The code for a currency to get sales data for</param>
+        /// <param name="startDate">The start of the time range to aggregate, unix timestamp in seconds. Default is beginning of time</param>
+        /// <param name="endDate">The end of the time range to aggregate, unix timestamp in seconds. Default is end of time</param>
+        /// <param name="size">The number of objects returned per page</param>
+        /// <param name="page">The number of the page returned, starting with 1</param>
+        public void GetRevenueByCountry(string currencyCode, long? startDate, long? endDate, int? size, int? page)
         {
             // verify the required parameter 'currencyCode' is set
             if (currencyCode == null)
@@ -211,67 +285,78 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'currencyCode' when calling GetRevenueByCountry");
             }
             
-            
-            string urlPath = "/reporting/revenue/countries/{currency_code}";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "currency_code" + "}", KnetikClient.ParameterToString(currencyCode));
-    
+            mGetRevenueByCountryPath = "/reporting/revenue/countries/{currency_code}";
+            if (!string.IsNullOrEmpty(mGetRevenueByCountryPath))
+            {
+                mGetRevenueByCountryPath = mGetRevenueByCountryPath.Replace("{format}", "json");
+            }
+            mGetRevenueByCountryPath = mGetRevenueByCountryPath.Replace("{" + "currency_code" + "}", KnetikClient.ParameterToString(currencyCode));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             if (startDate != null)
             {
                 queryParams.Add("start_date", KnetikClient.ParameterToString(startDate));
             }
-            
+
             if (endDate != null)
             {
                 queryParams.Add("end_date", KnetikClient.ParameterToString(endDate));
             }
-            
+
             if (size != null)
             {
                 queryParams.Add("size", KnetikClient.ParameterToString(size));
             }
-            
+
             if (page != null)
             {
                 queryParams.Add("page", KnetikClient.ParameterToString(page));
             }
-            
-            // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            // authentication setting, if any
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+
+            mGetRevenueByCountryStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetRevenueByCountryStartTime, mGetRevenueByCountryPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetRevenueByCountryCoroutine.ResponseReceived += GetRevenueByCountryCallback;
+            mGetRevenueByCountryCoroutine.Start(mGetRevenueByCountryPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetRevenueByCountryCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetRevenueByCountry: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetRevenueByCountry: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetRevenueByCountry: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetRevenueByCountry: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (PageResourceRevenueCountryReportResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceRevenueCountryReportResource), response.Headers);
+
+            GetRevenueByCountryData = (PageResourceRevenueCountryReportResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceRevenueCountryReportResource), response.Headers);
+            KnetikLogger.LogResponse(mGetRevenueByCountryStartTime, mGetRevenueByCountryPath, string.Format("Response received successfully:\n{0}", GetRevenueByCountryData.ToString()));
+
+            if (GetRevenueByCountryComplete != null)
+            {
+                GetRevenueByCountryComplete(GetRevenueByCountryData);
+            }
         }
         /// <summary>
         /// Get revenue info by item Get basic info about revenue from sales of all types, summed up within a time range and split out by specific item. Sorted for largest revenue at the top
         /// </summary>
-        /// <param name="currencyCode">The code for a currency to get sales data for</param> 
-        /// <param name="startDate">The start of the time range to aggregate, unix timestamp in seconds. Default is beginning of time</param> 
-        /// <param name="endDate">The end of the time range to aggregate, unix timestamp in seconds. Default is end of time</param> 
-        /// <param name="size">The number of objects returned per page</param> 
-        /// <param name="page">The number of the page returned, starting with 1</param> 
-        /// <returns>PageResourceRevenueProductReportResource</returns>            
-        public PageResourceRevenueProductReportResource GetRevenueByItem(string currencyCode, long? startDate, long? endDate, int? size, int? page)
+        /// <param name="currencyCode">The code for a currency to get sales data for</param>
+        /// <param name="startDate">The start of the time range to aggregate, unix timestamp in seconds. Default is beginning of time</param>
+        /// <param name="endDate">The end of the time range to aggregate, unix timestamp in seconds. Default is end of time</param>
+        /// <param name="size">The number of objects returned per page</param>
+        /// <param name="page">The number of the page returned, starting with 1</param>
+        public void GetRevenueByItem(string currencyCode, long? startDate, long? endDate, int? size, int? page)
         {
             // verify the required parameter 'currencyCode' is set
             if (currencyCode == null)
@@ -279,65 +364,76 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'currencyCode' when calling GetRevenueByItem");
             }
             
-            
-            string urlPath = "/reporting/revenue/products/{currency_code}";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "currency_code" + "}", KnetikClient.ParameterToString(currencyCode));
-    
+            mGetRevenueByItemPath = "/reporting/revenue/products/{currency_code}";
+            if (!string.IsNullOrEmpty(mGetRevenueByItemPath))
+            {
+                mGetRevenueByItemPath = mGetRevenueByItemPath.Replace("{format}", "json");
+            }
+            mGetRevenueByItemPath = mGetRevenueByItemPath.Replace("{" + "currency_code" + "}", KnetikClient.ParameterToString(currencyCode));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             if (startDate != null)
             {
                 queryParams.Add("start_date", KnetikClient.ParameterToString(startDate));
             }
-            
+
             if (endDate != null)
             {
                 queryParams.Add("end_date", KnetikClient.ParameterToString(endDate));
             }
-            
+
             if (size != null)
             {
                 queryParams.Add("size", KnetikClient.ParameterToString(size));
             }
-            
+
             if (page != null)
             {
                 queryParams.Add("page", KnetikClient.ParameterToString(page));
             }
-            
-            // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            // authentication setting, if any
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+
+            mGetRevenueByItemStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetRevenueByItemStartTime, mGetRevenueByItemPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetRevenueByItemCoroutine.ResponseReceived += GetRevenueByItemCallback;
+            mGetRevenueByItemCoroutine.Start(mGetRevenueByItemPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetRevenueByItemCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetRevenueByItem: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetRevenueByItem: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetRevenueByItem: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetRevenueByItem: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (PageResourceRevenueProductReportResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceRevenueProductReportResource), response.Headers);
+
+            GetRevenueByItemData = (PageResourceRevenueProductReportResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceRevenueProductReportResource), response.Headers);
+            KnetikLogger.LogResponse(mGetRevenueByItemStartTime, mGetRevenueByItemPath, string.Format("Response received successfully:\n{0}", GetRevenueByItemData.ToString()));
+
+            if (GetRevenueByItemComplete != null)
+            {
+                GetRevenueByItemComplete(GetRevenueByItemData);
+            }
         }
         /// <summary>
         /// Get subscription revenue info Get basic info about revenue from sales of new subscriptions as well as recurring payemnts, summed up within a time range
         /// </summary>
-        /// <param name="currencyCode">The code for a currency to get sales data for</param> 
-        /// <param name="startDate">The start of the time range to aggregate, unix timestamp in seconds. Default is beginning of time</param> 
-        /// <param name="endDate">The end of the time range to aggregate, unix timestamp in seconds. Default is end of time</param> 
-        /// <returns>RevenueReportResource</returns>            
-        public RevenueReportResource GetSubscriptionRevenue(string currencyCode, long? startDate, long? endDate)
+        /// <param name="currencyCode">The code for a currency to get sales data for</param>
+        /// <param name="startDate">The start of the time range to aggregate, unix timestamp in seconds. Default is beginning of time</param>
+        /// <param name="endDate">The end of the time range to aggregate, unix timestamp in seconds. Default is end of time</param>
+        public void GetSubscriptionRevenue(string currencyCode, long? startDate, long? endDate)
         {
             // verify the required parameter 'currencyCode' is set
             if (currencyCode == null)
@@ -345,46 +441,58 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'currencyCode' when calling GetSubscriptionRevenue");
             }
             
-            
-            string urlPath = "/reporting/revenue/subscription-sales/{currency_code}";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "currency_code" + "}", KnetikClient.ParameterToString(currencyCode));
-    
+            mGetSubscriptionRevenuePath = "/reporting/revenue/subscription-sales/{currency_code}";
+            if (!string.IsNullOrEmpty(mGetSubscriptionRevenuePath))
+            {
+                mGetSubscriptionRevenuePath = mGetSubscriptionRevenuePath.Replace("{format}", "json");
+            }
+            mGetSubscriptionRevenuePath = mGetSubscriptionRevenuePath.Replace("{" + "currency_code" + "}", KnetikClient.ParameterToString(currencyCode));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             if (startDate != null)
             {
                 queryParams.Add("start_date", KnetikClient.ParameterToString(startDate));
             }
-            
+
             if (endDate != null)
             {
                 queryParams.Add("end_date", KnetikClient.ParameterToString(endDate));
             }
-            
-            // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            // authentication setting, if any
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+
+            mGetSubscriptionRevenueStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetSubscriptionRevenueStartTime, mGetSubscriptionRevenuePath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetSubscriptionRevenueCoroutine.ResponseReceived += GetSubscriptionRevenueCallback;
+            mGetSubscriptionRevenueCoroutine.Start(mGetSubscriptionRevenuePath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetSubscriptionRevenueCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetSubscriptionRevenue: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetSubscriptionRevenue: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetSubscriptionRevenue: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetSubscriptionRevenue: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (RevenueReportResource) KnetikClient.Deserialize(response.Content, typeof(RevenueReportResource), response.Headers);
+
+            GetSubscriptionRevenueData = (RevenueReportResource) KnetikClient.Deserialize(response.Content, typeof(RevenueReportResource), response.Headers);
+            KnetikLogger.LogResponse(mGetSubscriptionRevenueStartTime, mGetSubscriptionRevenuePath, string.Format("Response received successfully:\n{0}", GetSubscriptionRevenueData.ToString()));
+
+            if (GetSubscriptionRevenueComplete != null)
+            {
+                GetSubscriptionRevenueComplete(GetSubscriptionRevenueData);
+            }
         }
     }
 }

@@ -27,13 +27,13 @@ namespace com.knetikcloud.Model
         /// Gets or Sets SalesAverage
         /// </summary>
         [JsonProperty(PropertyName = "sales_average")]
-        public double? SalesAverage { get; set; }
+        public decimal? SalesAverage { get; set; }
 
         /// <summary>
         /// Gets or Sets SalesTotal
         /// </summary>
         [JsonProperty(PropertyName = "sales_total")]
-        public double? SalesTotal { get; set; }
+        public decimal? SalesTotal { get; set; }
 
         /// <summary>
         /// Get the string presentation of the object

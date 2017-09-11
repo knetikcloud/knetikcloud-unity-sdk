@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using RestSharp;
 using com.knetikcloud.Client;
 using com.knetikcloud.Model;
+using com.knetikcloud.Utils;
 using UnityEngine;
 
 using Object = System.Object;
@@ -16,18 +17,23 @@ namespace com.knetikcloud.Api
     /// </summary>
     public interface IUtilBatchApi
     {
+        List<BatchReturn> GetBatchData { get; }
+
+        List<BatchReturn> SendBatchData { get; }
+
+        
         /// <summary>
         /// Get batch result with token Tokens expire in 24 hours
         /// </summary>
         /// <param name="token">token</param>
-        /// <returns>List&lt;BatchReturn&gt;</returns>
-        List<BatchReturn> GetBatch (string token);
+        void GetBatch(string token);
+
         /// <summary>
         /// Request to run API call given the method, content type, path url, and body of request Should the request take longer than one of the alloted timeout parameters, a token will be returned instead, which can be used on the token endpoint in this service
         /// </summary>
         /// <param name="batch">The batch object</param>
-        /// <returns>List&lt;BatchReturn&gt;</returns>
-        List<BatchReturn> SendBatch (Batch batch);
+        void SendBatch(Batch batch);
+
     }
   
     /// <summary>
@@ -35,6 +41,21 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class UtilBatchApi : IUtilBatchApi
     {
+        private readonly KnetikCoroutine mGetBatchCoroutine;
+        private DateTime mGetBatchStartTime;
+        private string mGetBatchPath;
+        private readonly KnetikCoroutine mSendBatchCoroutine;
+        private DateTime mSendBatchStartTime;
+        private string mSendBatchPath;
+
+        public List<BatchReturn> GetBatchData { get; private set; }
+        public delegate void GetBatchCompleteDelegate(List<BatchReturn> response);
+        public GetBatchCompleteDelegate GetBatchComplete;
+
+        public List<BatchReturn> SendBatchData { get; private set; }
+        public delegate void SendBatchCompleteDelegate(List<BatchReturn> response);
+        public SendBatchCompleteDelegate SendBatchComplete;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="UtilBatchApi"/> class.
         /// </summary>
@@ -42,20 +63,21 @@ namespace com.knetikcloud.Api
         public UtilBatchApi()
         {
             KnetikClient = KnetikConfiguration.DefaultClient;
+            mGetBatchCoroutine = new KnetikCoroutine(KnetikClient);
+            mSendBatchCoroutine = new KnetikCoroutine(KnetikClient);
         }
     
         /// <summary>
         /// Gets the Knetik client.
         /// </summary>
         /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient {get; private set;}
+        public KnetikClient KnetikClient { get; private set; }
 
         /// <summary>
         /// Get batch result with token Tokens expire in 24 hours
         /// </summary>
-        /// <param name="token">token</param> 
-        /// <returns>List&lt;BatchReturn&gt;</returns>            
-        public List<BatchReturn> GetBatch(string token)
+        /// <param name="token">token</param>
+        public void GetBatch(string token)
         {
             // verify the required parameter 'token' is set
             if (token == null)
@@ -63,75 +85,99 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'token' when calling GetBatch");
             }
             
-            
-            string urlPath = "/batch/{token}";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "token" + "}", KnetikClient.ParameterToString(token));
-    
+            mGetBatchPath = "/batch/{token}";
+            if (!string.IsNullOrEmpty(mGetBatchPath))
+            {
+                mGetBatchPath = mGetBatchPath.Replace("{format}", "json");
+            }
+            mGetBatchPath = mGetBatchPath.Replace("{" + "token" + "}", KnetikClient.ParameterToString(token));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             // authentication setting, if any
-            String[] authSettings = new String[] {  };
+            string[] authSettings = new string[] {  };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mGetBatchStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetBatchStartTime, mGetBatchPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetBatchCoroutine.ResponseReceived += GetBatchCallback;
+            mGetBatchCoroutine.Start(mGetBatchPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetBatchCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetBatch: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetBatch: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetBatch: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetBatch: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (List<BatchReturn>) KnetikClient.Deserialize(response.Content, typeof(List<BatchReturn>), response.Headers);
+
+            GetBatchData = (List<BatchReturn>) KnetikClient.Deserialize(response.Content, typeof(List<BatchReturn>), response.Headers);
+            KnetikLogger.LogResponse(mGetBatchStartTime, mGetBatchPath, string.Format("Response received successfully:\n{0}", GetBatchData.ToString()));
+
+            if (GetBatchComplete != null)
+            {
+                GetBatchComplete(GetBatchData);
+            }
         }
         /// <summary>
         /// Request to run API call given the method, content type, path url, and body of request Should the request take longer than one of the alloted timeout parameters, a token will be returned instead, which can be used on the token endpoint in this service
         /// </summary>
-        /// <param name="batch">The batch object</param> 
-        /// <returns>List&lt;BatchReturn&gt;</returns>            
-        public List<BatchReturn> SendBatch(Batch batch)
+        /// <param name="batch">The batch object</param>
+        public void SendBatch(Batch batch)
         {
             
-            string urlPath = "/batch";
-            //urlPath = urlPath.Replace("{format}", "json");
-                
+            mSendBatchPath = "/batch";
+            if (!string.IsNullOrEmpty(mSendBatchPath))
+            {
+                mSendBatchPath = mSendBatchPath.Replace("{format}", "json");
+            }
+            
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             postBody = KnetikClient.Serialize(batch); // http body (model) parameter
  
             // authentication setting, if any
-            String[] authSettings = new String[] {  };
+            string[] authSettings = new string[] {  };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mSendBatchStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mSendBatchStartTime, mSendBatchPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mSendBatchCoroutine.ResponseReceived += SendBatchCallback;
+            mSendBatchCoroutine.Start(mSendBatchPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void SendBatchCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling SendBatch: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling SendBatch: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling SendBatch: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling SendBatch: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (List<BatchReturn>) KnetikClient.Deserialize(response.Content, typeof(List<BatchReturn>), response.Headers);
+
+            SendBatchData = (List<BatchReturn>) KnetikClient.Deserialize(response.Content, typeof(List<BatchReturn>), response.Headers);
+            KnetikLogger.LogResponse(mSendBatchStartTime, mSendBatchPath, string.Format("Response received successfully:\n{0}", SendBatchData.ToString()));
+
+            if (SendBatchComplete != null)
+            {
+                SendBatchComplete(SendBatchData);
+            }
         }
     }
 }

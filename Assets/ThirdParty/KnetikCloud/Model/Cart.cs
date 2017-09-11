@@ -21,7 +21,7 @@ namespace com.knetikcloud.Model
         /// Gets or Sets CountryTax
         /// </summary>
         [JsonProperty(PropertyName = "country_tax")]
-        public double? CountryTax { get; set; }
+        public decimal? CountryTax { get; set; }
 
         /// <summary>
         /// Gets or Sets Coupons
@@ -45,7 +45,7 @@ namespace com.knetikcloud.Model
         /// Gets or Sets DiscountTotal
         /// </summary>
         [JsonProperty(PropertyName = "discount_total")]
-        public double? DiscountTotal { get; set; }
+        public decimal? DiscountTotal { get; set; }
 
         /// <summary>
         /// Gets or Sets ErrorCode
@@ -63,7 +63,7 @@ namespace com.knetikcloud.Model
         /// Gets or Sets GrandTotal
         /// </summary>
         [JsonProperty(PropertyName = "grand_total")]
-        public double? GrandTotal { get; set; }
+        public decimal? GrandTotal { get; set; }
 
         /// <summary>
         /// Gets or Sets Id
@@ -75,7 +75,7 @@ namespace com.knetikcloud.Model
         /// Gets or Sets InvoiceId
         /// </summary>
         [JsonProperty(PropertyName = "invoice_id")]
-        public double? InvoiceId { get; set; }
+        public decimal? InvoiceId { get; set; }
 
         /// <summary>
         /// Gets or Sets Items
@@ -111,13 +111,13 @@ namespace com.knetikcloud.Model
         /// Gets or Sets ShippingCost
         /// </summary>
         [JsonProperty(PropertyName = "shipping_cost")]
-        public double? ShippingCost { get; set; }
+        public decimal? ShippingCost { get; set; }
 
         /// <summary>
         /// Gets or Sets StateTax
         /// </summary>
         [JsonProperty(PropertyName = "state_tax")]
-        public double? StateTax { get; set; }
+        public decimal? StateTax { get; set; }
 
         /// <summary>
         /// Gets or Sets Status
@@ -129,7 +129,7 @@ namespace com.knetikcloud.Model
         /// Gets or Sets Subtotal
         /// </summary>
         [JsonProperty(PropertyName = "subtotal")]
-        public double? Subtotal { get; set; }
+        public decimal? Subtotal { get; set; }
 
         /// <summary>
         /// Gets or Sets Updated
