@@ -39,7 +39,7 @@ namespace com.knetikcloud.Model
         /// Gets or Sets Value
         /// </summary>
         [JsonProperty(PropertyName = "value")]
-        public double? Value { get; set; }
+        public decimal? Value { get; set; }
 
         /// <summary>
         /// Get the string presentation of the object

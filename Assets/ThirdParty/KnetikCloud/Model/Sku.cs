@@ -51,14 +51,14 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The base price before any sale</value>
         [JsonProperty(PropertyName = "original_price")]
-        public double? OriginalPrice { get; set; }
+        public decimal? OriginalPrice { get; set; }
 
         /// <summary>
         /// The current price of the SKU with sales, if any. Set original_price for the base
         /// </summary>
         /// <value>The current price of the SKU with sales, if any. Set original_price for the base</value>
         [JsonProperty(PropertyName = "price")]
-        public double? Price { get; set; }
+        public decimal? Price { get; set; }
 
         /// <summary>
         /// Whether or not the SKU is currently published

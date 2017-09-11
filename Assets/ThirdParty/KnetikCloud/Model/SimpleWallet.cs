@@ -16,7 +16,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The current balance of the wallet</value>
         [JsonProperty(PropertyName = "balance")]
-        public double? Balance { get; set; }
+        public decimal? Balance { get; set; }
 
         /// <summary>
         /// The ISO currency code for the wallet

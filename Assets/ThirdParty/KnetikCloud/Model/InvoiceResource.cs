@@ -100,7 +100,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The amount of money saved through coupons</value>
         [JsonProperty(PropertyName = "discount")]
-        public double? Discount { get; set; }
+        public decimal? Discount { get; set; }
 
         /// <summary>
         /// The customer's email address
@@ -121,14 +121,14 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The amount of federal tax added</value>
         [JsonProperty(PropertyName = "fed_tax")]
-        public double? FedTax { get; set; }
+        public decimal? FedTax { get; set; }
 
         /// <summary>
         /// The final price of the invoice
         /// </summary>
         /// <value>The final price of the invoice</value>
         [JsonProperty(PropertyName = "grand_total")]
-        public double? GrandTotal { get; set; }
+        public decimal? GrandTotal { get; set; }
 
         /// <summary>
         /// The id of the invoice
@@ -198,14 +198,14 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The remaining price of the invoice (after any payments made so far)</value>
         [JsonProperty(PropertyName = "remaining_balance")]
-        public double? RemainingBalance { get; set; }
+        public decimal? RemainingBalance { get; set; }
 
         /// <summary>
         /// The shipping cost
         /// </summary>
         /// <value>The shipping cost</value>
         [JsonProperty(PropertyName = "shipping")]
-        public double? Shipping { get; set; }
+        public decimal? Shipping { get; set; }
 
         /// <summary>
         /// Line one of the customer's shipping address
@@ -268,14 +268,14 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The amount of state tax added</value>
         [JsonProperty(PropertyName = "state_tax")]
-        public double? StateTax { get; set; }
+        public decimal? StateTax { get; set; }
 
         /// <summary>
         /// The sum price of all items before shipping, coupons and tax
         /// </summary>
         /// <value>The sum price of all items before shipping, coupons and tax</value>
         [JsonProperty(PropertyName = "subtotal")]
-        public double? Subtotal { get; set; }
+        public decimal? Subtotal { get; set; }
 
         /// <summary>
         /// The date the invoice was last updated, unix timestamp in seconds

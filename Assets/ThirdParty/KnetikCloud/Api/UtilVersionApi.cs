@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using RestSharp;
 using com.knetikcloud.Client;
 using com.knetikcloud.Model;
+using com.knetikcloud.Utils;
 using UnityEngine;
 
 using Object = System.Object;
@@ -16,11 +17,14 @@ namespace com.knetikcloud.Api
     /// </summary>
     public interface IUtilVersionApi
     {
+        Version GetVersionData { get; }
+
+        
         /// <summary>
         /// Get current version info 
         /// </summary>
-        /// <returns>Version</returns>
-        Version GetVersion ();
+        void GetVersion();
+
     }
   
     /// <summary>
@@ -28,6 +32,14 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class UtilVersionApi : IUtilVersionApi
     {
+        private readonly KnetikCoroutine mGetVersionCoroutine;
+        private DateTime mGetVersionStartTime;
+        private string mGetVersionPath;
+
+        public Version GetVersionData { get; private set; }
+        public delegate void GetVersionCompleteDelegate(Version response);
+        public GetVersionCompleteDelegate GetVersionComplete;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="UtilVersionApi"/> class.
         /// </summary>
@@ -35,49 +47,62 @@ namespace com.knetikcloud.Api
         public UtilVersionApi()
         {
             KnetikClient = KnetikConfiguration.DefaultClient;
+            mGetVersionCoroutine = new KnetikCoroutine(KnetikClient);
         }
     
         /// <summary>
         /// Gets the Knetik client.
         /// </summary>
         /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient {get; private set;}
+        public KnetikClient KnetikClient { get; private set; }
 
         /// <summary>
         /// Get current version info 
         /// </summary>
-        /// <returns>Version</returns>            
-        public Version GetVersion()
+        public void GetVersion()
         {
             
-            string urlPath = "/version";
-            //urlPath = urlPath.Replace("{format}", "json");
-                
+            mGetVersionPath = "/version";
+            if (!string.IsNullOrEmpty(mGetVersionPath))
+            {
+                mGetVersionPath = mGetVersionPath.Replace("{format}", "json");
+            }
+            
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             // authentication setting, if any
-            String[] authSettings = new String[] {  };
+            string[] authSettings = new string[] {  };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mGetVersionStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetVersionStartTime, mGetVersionPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetVersionCoroutine.ResponseReceived += GetVersionCallback;
+            mGetVersionCoroutine.Start(mGetVersionPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetVersionCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetVersion: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetVersion: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetVersion: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetVersion: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (Version) KnetikClient.Deserialize(response.Content, typeof(Version), response.Headers);
+
+            GetVersionData = (Version) KnetikClient.Deserialize(response.Content, typeof(Version), response.Headers);
+            KnetikLogger.LogResponse(mGetVersionStartTime, mGetVersionPath, string.Format("Response received successfully:\n{0}", GetVersionData.ToString()));
+
+            if (GetVersionComplete != null)
+            {
+                GetVersionComplete(GetVersionData);
+            }
         }
     }
 }

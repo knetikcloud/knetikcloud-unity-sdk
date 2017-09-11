@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using RestSharp;
 using com.knetikcloud.Client;
 using com.knetikcloud.Model;
+using com.knetikcloud.Utils;
 using UnityEngine;
 
 using Object = System.Object;
@@ -16,18 +17,31 @@ namespace com.knetikcloud.Api
     /// </summary>
     public interface ILogsApi
     {
+        BreEventLog GetBREEventLogData { get; }
+
+        PageResourceBreEventLog GetBREEventLogsData { get; }
+
+        ForwardLog GetBREForwardLogData { get; }
+
+        PageResourceForwardLog GetBREForwardLogsData { get; }
+
+        UserActionLog GetUserLogData { get; }
+
+        PageResourceUserActionLog GetUserLogsData { get; }
+
+        
         /// <summary>
         /// Add a user log entry 
         /// </summary>
         /// <param name="logEntry">The user log entry to be added</param>
-        /// <returns></returns>
-        void AddUserLog (UserActionLog logEntry);
+        void AddUserLog(UserActionLog logEntry);
+
         /// <summary>
         /// Get an existing BRE event log entry by id 
         /// </summary>
         /// <param name="id">The BRE event log entry id</param>
-        /// <returns>BreEventLog</returns>
-        BreEventLog GetBREEventLog (string id);
+        void GetBREEventLog(string id);
+
         /// <summary>
         /// Returns a list of BRE event log entries 
         /// </summary>
@@ -37,14 +51,14 @@ namespace com.knetikcloud.Api
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
-        /// <returns>PageResourceBreEventLog</returns>
-        PageResourceBreEventLog GetBREEventLogs (string filterStartDate, string filterEventName, string filterEventId, int? size, int? page, string order);
+        void GetBREEventLogs(string filterStartDate, string filterEventName, string filterEventId, int? size, int? page, string order);
+
         /// <summary>
         /// Get an existing forward log entry by id 
         /// </summary>
         /// <param name="id">The forward log entry id</param>
-        /// <returns>ForwardLog</returns>
-        ForwardLog GetBREForwardLog (string id);
+        void GetBREForwardLog(string id);
+
         /// <summary>
         /// Returns a list of forward log entries 
         /// </summary>
@@ -54,14 +68,14 @@ namespace com.knetikcloud.Api
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
-        /// <returns>PageResourceForwardLog</returns>
-        PageResourceForwardLog GetBREForwardLogs (string filterStartDate, string filterEndDate, int? filterStatusCode, int? size, int? page, string order);
+        void GetBREForwardLogs(string filterStartDate, string filterEndDate, int? filterStatusCode, int? size, int? page, string order);
+
         /// <summary>
         /// Returns a user log entry by id 
         /// </summary>
         /// <param name="id">The user log entry id</param>
-        /// <returns>UserActionLog</returns>
-        UserActionLog GetUserLog (string id);
+        void GetUserLog(string id);
+
         /// <summary>
         /// Returns a page of user logs entries 
         /// </summary>
@@ -70,8 +84,8 @@ namespace com.knetikcloud.Api
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
-        /// <returns>PageResourceUserActionLog</returns>
-        PageResourceUserActionLog GetUserLogs (int? filterUser, string filterActionName, int? size, int? page, string order);
+        void GetUserLogs(int? filterUser, string filterActionName, int? size, int? page, string order);
+
     }
   
     /// <summary>
@@ -79,6 +93,55 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class LogsApi : ILogsApi
     {
+        private readonly KnetikCoroutine mAddUserLogCoroutine;
+        private DateTime mAddUserLogStartTime;
+        private string mAddUserLogPath;
+        private readonly KnetikCoroutine mGetBREEventLogCoroutine;
+        private DateTime mGetBREEventLogStartTime;
+        private string mGetBREEventLogPath;
+        private readonly KnetikCoroutine mGetBREEventLogsCoroutine;
+        private DateTime mGetBREEventLogsStartTime;
+        private string mGetBREEventLogsPath;
+        private readonly KnetikCoroutine mGetBREForwardLogCoroutine;
+        private DateTime mGetBREForwardLogStartTime;
+        private string mGetBREForwardLogPath;
+        private readonly KnetikCoroutine mGetBREForwardLogsCoroutine;
+        private DateTime mGetBREForwardLogsStartTime;
+        private string mGetBREForwardLogsPath;
+        private readonly KnetikCoroutine mGetUserLogCoroutine;
+        private DateTime mGetUserLogStartTime;
+        private string mGetUserLogPath;
+        private readonly KnetikCoroutine mGetUserLogsCoroutine;
+        private DateTime mGetUserLogsStartTime;
+        private string mGetUserLogsPath;
+
+        public delegate void AddUserLogCompleteDelegate();
+        public AddUserLogCompleteDelegate AddUserLogComplete;
+
+        public BreEventLog GetBREEventLogData { get; private set; }
+        public delegate void GetBREEventLogCompleteDelegate(BreEventLog response);
+        public GetBREEventLogCompleteDelegate GetBREEventLogComplete;
+
+        public PageResourceBreEventLog GetBREEventLogsData { get; private set; }
+        public delegate void GetBREEventLogsCompleteDelegate(PageResourceBreEventLog response);
+        public GetBREEventLogsCompleteDelegate GetBREEventLogsComplete;
+
+        public ForwardLog GetBREForwardLogData { get; private set; }
+        public delegate void GetBREForwardLogCompleteDelegate(ForwardLog response);
+        public GetBREForwardLogCompleteDelegate GetBREForwardLogComplete;
+
+        public PageResourceForwardLog GetBREForwardLogsData { get; private set; }
+        public delegate void GetBREForwardLogsCompleteDelegate(PageResourceForwardLog response);
+        public GetBREForwardLogsCompleteDelegate GetBREForwardLogsComplete;
+
+        public UserActionLog GetUserLogData { get; private set; }
+        public delegate void GetUserLogCompleteDelegate(UserActionLog response);
+        public GetUserLogCompleteDelegate GetUserLogComplete;
+
+        public PageResourceUserActionLog GetUserLogsData { get; private set; }
+        public delegate void GetUserLogsCompleteDelegate(PageResourceUserActionLog response);
+        public GetUserLogsCompleteDelegate GetUserLogsComplete;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="LogsApi"/> class.
         /// </summary>
@@ -86,59 +149,75 @@ namespace com.knetikcloud.Api
         public LogsApi()
         {
             KnetikClient = KnetikConfiguration.DefaultClient;
+            mAddUserLogCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetBREEventLogCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetBREEventLogsCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetBREForwardLogCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetBREForwardLogsCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetUserLogCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetUserLogsCoroutine = new KnetikCoroutine(KnetikClient);
         }
     
         /// <summary>
         /// Gets the Knetik client.
         /// </summary>
         /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient {get; private set;}
+        public KnetikClient KnetikClient { get; private set; }
 
         /// <summary>
         /// Add a user log entry 
         /// </summary>
-        /// <param name="logEntry">The user log entry to be added</param> 
-        /// <returns></returns>            
+        /// <param name="logEntry">The user log entry to be added</param>
         public void AddUserLog(UserActionLog logEntry)
         {
             
-            string urlPath = "/audit/logs";
-            //urlPath = urlPath.Replace("{format}", "json");
-                
+            mAddUserLogPath = "/audit/logs";
+            if (!string.IsNullOrEmpty(mAddUserLogPath))
+            {
+                mAddUserLogPath = mAddUserLogPath.Replace("{format}", "json");
+            }
+            
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             postBody = KnetikClient.Serialize(logEntry); // http body (model) parameter
  
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mAddUserLogStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mAddUserLogStartTime, mAddUserLogPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mAddUserLogCoroutine.ResponseReceived += AddUserLogCallback;
+            mAddUserLogCoroutine.Start(mAddUserLogPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void AddUserLogCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling AddUserLog: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling AddUserLog: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling AddUserLog: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling AddUserLog: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return;
+
+            KnetikLogger.LogResponse(mAddUserLogStartTime, mAddUserLogPath, "Response received successfully.");
+            if (AddUserLogComplete != null)
+            {
+                AddUserLogComplete();
+            }
         }
         /// <summary>
         /// Get an existing BRE event log entry by id 
         /// </summary>
-        /// <param name="id">The BRE event log entry id</param> 
-        /// <returns>BreEventLog</returns>            
-        public BreEventLog GetBREEventLog(string id)
+        /// <param name="id">The BRE event log entry id</param>
+        public void GetBREEventLog(string id)
         {
             // verify the required parameter 'id' is set
             if (id == null)
@@ -146,115 +225,138 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetBREEventLog");
             }
             
-            
-            string urlPath = "/bre/logs/event-log/{id}";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
-    
+            mGetBREEventLogPath = "/bre/logs/event-log/{id}";
+            if (!string.IsNullOrEmpty(mGetBREEventLogPath))
+            {
+                mGetBREEventLogPath = mGetBREEventLogPath.Replace("{format}", "json");
+            }
+            mGetBREEventLogPath = mGetBREEventLogPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mGetBREEventLogStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetBREEventLogStartTime, mGetBREEventLogPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetBREEventLogCoroutine.ResponseReceived += GetBREEventLogCallback;
+            mGetBREEventLogCoroutine.Start(mGetBREEventLogPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetBREEventLogCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetBREEventLog: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetBREEventLog: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetBREEventLog: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetBREEventLog: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (BreEventLog) KnetikClient.Deserialize(response.Content, typeof(BreEventLog), response.Headers);
+
+            GetBREEventLogData = (BreEventLog) KnetikClient.Deserialize(response.Content, typeof(BreEventLog), response.Headers);
+            KnetikLogger.LogResponse(mGetBREEventLogStartTime, mGetBREEventLogPath, string.Format("Response received successfully:\n{0}", GetBREEventLogData.ToString()));
+
+            if (GetBREEventLogComplete != null)
+            {
+                GetBREEventLogComplete(GetBREEventLogData);
+            }
         }
         /// <summary>
         /// Returns a list of BRE event log entries 
         /// </summary>
-        /// <param name="filterStartDate">A comma separated string without spaces.  First value is the operator to search on, second value is the event log start date, a unix timestamp in seconds.  Allowed operators: (GT, LT, EQ, GOE, LOE).</param> 
-        /// <param name="filterEventName">Filter event logs by event name</param> 
-        /// <param name="filterEventId">Filter event logs by request id</param> 
-        /// <param name="size">The number of objects returned per page</param> 
-        /// <param name="page">The number of the page returned, starting with 1</param> 
-        /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param> 
-        /// <returns>PageResourceBreEventLog</returns>            
-        public PageResourceBreEventLog GetBREEventLogs(string filterStartDate, string filterEventName, string filterEventId, int? size, int? page, string order)
+        /// <param name="filterStartDate">A comma separated string without spaces.  First value is the operator to search on, second value is the event log start date, a unix timestamp in seconds.  Allowed operators: (GT, LT, EQ, GOE, LOE).</param>
+        /// <param name="filterEventName">Filter event logs by event name</param>
+        /// <param name="filterEventId">Filter event logs by request id</param>
+        /// <param name="size">The number of objects returned per page</param>
+        /// <param name="page">The number of the page returned, starting with 1</param>
+        /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
+        public void GetBREEventLogs(string filterStartDate, string filterEventName, string filterEventId, int? size, int? page, string order)
         {
             
-            string urlPath = "/bre/logs/event-log";
-            //urlPath = urlPath.Replace("{format}", "json");
-                
+            mGetBREEventLogsPath = "/bre/logs/event-log";
+            if (!string.IsNullOrEmpty(mGetBREEventLogsPath))
+            {
+                mGetBREEventLogsPath = mGetBREEventLogsPath.Replace("{format}", "json");
+            }
+            
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             if (filterStartDate != null)
             {
                 queryParams.Add("filter_start_date", KnetikClient.ParameterToString(filterStartDate));
             }
-            
+
             if (filterEventName != null)
             {
                 queryParams.Add("filter_event_name", KnetikClient.ParameterToString(filterEventName));
             }
-            
+
             if (filterEventId != null)
             {
                 queryParams.Add("filter_event_id", KnetikClient.ParameterToString(filterEventId));
             }
-            
+
             if (size != null)
             {
                 queryParams.Add("size", KnetikClient.ParameterToString(size));
             }
-            
+
             if (page != null)
             {
                 queryParams.Add("page", KnetikClient.ParameterToString(page));
             }
-            
+
             if (order != null)
             {
                 queryParams.Add("order", KnetikClient.ParameterToString(order));
             }
-            
-            // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            // authentication setting, if any
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+
+            mGetBREEventLogsStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetBREEventLogsStartTime, mGetBREEventLogsPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetBREEventLogsCoroutine.ResponseReceived += GetBREEventLogsCallback;
+            mGetBREEventLogsCoroutine.Start(mGetBREEventLogsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetBREEventLogsCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetBREEventLogs: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetBREEventLogs: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetBREEventLogs: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetBREEventLogs: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (PageResourceBreEventLog) KnetikClient.Deserialize(response.Content, typeof(PageResourceBreEventLog), response.Headers);
+
+            GetBREEventLogsData = (PageResourceBreEventLog) KnetikClient.Deserialize(response.Content, typeof(PageResourceBreEventLog), response.Headers);
+            KnetikLogger.LogResponse(mGetBREEventLogsStartTime, mGetBREEventLogsPath, string.Format("Response received successfully:\n{0}", GetBREEventLogsData.ToString()));
+
+            if (GetBREEventLogsComplete != null)
+            {
+                GetBREEventLogsComplete(GetBREEventLogsData);
+            }
         }
         /// <summary>
         /// Get an existing forward log entry by id 
         /// </summary>
-        /// <param name="id">The forward log entry id</param> 
-        /// <returns>ForwardLog</returns>            
-        public ForwardLog GetBREForwardLog(string id)
+        /// <param name="id">The forward log entry id</param>
+        public void GetBREForwardLog(string id)
         {
             // verify the required parameter 'id' is set
             if (id == null)
@@ -262,115 +364,138 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetBREForwardLog");
             }
             
-            
-            string urlPath = "/bre/logs/forward-log/{id}";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
-    
+            mGetBREForwardLogPath = "/bre/logs/forward-log/{id}";
+            if (!string.IsNullOrEmpty(mGetBREForwardLogPath))
+            {
+                mGetBREForwardLogPath = mGetBREForwardLogPath.Replace("{format}", "json");
+            }
+            mGetBREForwardLogPath = mGetBREForwardLogPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mGetBREForwardLogStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetBREForwardLogStartTime, mGetBREForwardLogPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetBREForwardLogCoroutine.ResponseReceived += GetBREForwardLogCallback;
+            mGetBREForwardLogCoroutine.Start(mGetBREForwardLogPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetBREForwardLogCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetBREForwardLog: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetBREForwardLog: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetBREForwardLog: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetBREForwardLog: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (ForwardLog) KnetikClient.Deserialize(response.Content, typeof(ForwardLog), response.Headers);
+
+            GetBREForwardLogData = (ForwardLog) KnetikClient.Deserialize(response.Content, typeof(ForwardLog), response.Headers);
+            KnetikLogger.LogResponse(mGetBREForwardLogStartTime, mGetBREForwardLogPath, string.Format("Response received successfully:\n{0}", GetBREForwardLogData.ToString()));
+
+            if (GetBREForwardLogComplete != null)
+            {
+                GetBREForwardLogComplete(GetBREForwardLogData);
+            }
         }
         /// <summary>
         /// Returns a list of forward log entries 
         /// </summary>
-        /// <param name="filterStartDate">A comma separated string without spaces.  First value is the operator to search on, second value is the log start date, a unix timestamp in seconds.  Allowed operators: (GT, LT, EQ, GOE, LOE).</param> 
-        /// <param name="filterEndDate">A comma separated string without spaces.  First value is the operator to search on, second value is the log end date, a unix timestamp in seconds.  Allowed operators: (GT, LT, EQ, GOE, LOE).</param> 
-        /// <param name="filterStatusCode">Filter forward logs by http status code</param> 
-        /// <param name="size">The number of objects returned per page</param> 
-        /// <param name="page">The number of the page returned, starting with 1</param> 
-        /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param> 
-        /// <returns>PageResourceForwardLog</returns>            
-        public PageResourceForwardLog GetBREForwardLogs(string filterStartDate, string filterEndDate, int? filterStatusCode, int? size, int? page, string order)
+        /// <param name="filterStartDate">A comma separated string without spaces.  First value is the operator to search on, second value is the log start date, a unix timestamp in seconds.  Allowed operators: (GT, LT, EQ, GOE, LOE).</param>
+        /// <param name="filterEndDate">A comma separated string without spaces.  First value is the operator to search on, second value is the log end date, a unix timestamp in seconds.  Allowed operators: (GT, LT, EQ, GOE, LOE).</param>
+        /// <param name="filterStatusCode">Filter forward logs by http status code</param>
+        /// <param name="size">The number of objects returned per page</param>
+        /// <param name="page">The number of the page returned, starting with 1</param>
+        /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
+        public void GetBREForwardLogs(string filterStartDate, string filterEndDate, int? filterStatusCode, int? size, int? page, string order)
         {
             
-            string urlPath = "/bre/logs/forward-log";
-            //urlPath = urlPath.Replace("{format}", "json");
-                
+            mGetBREForwardLogsPath = "/bre/logs/forward-log";
+            if (!string.IsNullOrEmpty(mGetBREForwardLogsPath))
+            {
+                mGetBREForwardLogsPath = mGetBREForwardLogsPath.Replace("{format}", "json");
+            }
+            
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             if (filterStartDate != null)
             {
                 queryParams.Add("filter_start_date", KnetikClient.ParameterToString(filterStartDate));
             }
-            
+
             if (filterEndDate != null)
             {
                 queryParams.Add("filter_end_date", KnetikClient.ParameterToString(filterEndDate));
             }
-            
+
             if (filterStatusCode != null)
             {
                 queryParams.Add("filter_status_code", KnetikClient.ParameterToString(filterStatusCode));
             }
-            
+
             if (size != null)
             {
                 queryParams.Add("size", KnetikClient.ParameterToString(size));
             }
-            
+
             if (page != null)
             {
                 queryParams.Add("page", KnetikClient.ParameterToString(page));
             }
-            
+
             if (order != null)
             {
                 queryParams.Add("order", KnetikClient.ParameterToString(order));
             }
-            
-            // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            // authentication setting, if any
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+
+            mGetBREForwardLogsStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetBREForwardLogsStartTime, mGetBREForwardLogsPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetBREForwardLogsCoroutine.ResponseReceived += GetBREForwardLogsCallback;
+            mGetBREForwardLogsCoroutine.Start(mGetBREForwardLogsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetBREForwardLogsCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetBREForwardLogs: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetBREForwardLogs: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetBREForwardLogs: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetBREForwardLogs: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (PageResourceForwardLog) KnetikClient.Deserialize(response.Content, typeof(PageResourceForwardLog), response.Headers);
+
+            GetBREForwardLogsData = (PageResourceForwardLog) KnetikClient.Deserialize(response.Content, typeof(PageResourceForwardLog), response.Headers);
+            KnetikLogger.LogResponse(mGetBREForwardLogsStartTime, mGetBREForwardLogsPath, string.Format("Response received successfully:\n{0}", GetBREForwardLogsData.ToString()));
+
+            if (GetBREForwardLogsComplete != null)
+            {
+                GetBREForwardLogsComplete(GetBREForwardLogsData);
+            }
         }
         /// <summary>
         /// Returns a user log entry by id 
         /// </summary>
-        /// <param name="id">The user log entry id</param> 
-        /// <returns>UserActionLog</returns>            
-        public UserActionLog GetUserLog(string id)
+        /// <param name="id">The user log entry id</param>
+        public void GetUserLog(string id)
         {
             // verify the required parameter 'id' is set
             if (id == null)
@@ -378,102 +503,126 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetUserLog");
             }
             
-            
-            string urlPath = "/audit/logs/{id}";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
-    
+            mGetUserLogPath = "/audit/logs/{id}";
+            if (!string.IsNullOrEmpty(mGetUserLogPath))
+            {
+                mGetUserLogPath = mGetUserLogPath.Replace("{format}", "json");
+            }
+            mGetUserLogPath = mGetUserLogPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mGetUserLogStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetUserLogStartTime, mGetUserLogPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetUserLogCoroutine.ResponseReceived += GetUserLogCallback;
+            mGetUserLogCoroutine.Start(mGetUserLogPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetUserLogCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetUserLog: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetUserLog: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetUserLog: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetUserLog: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (UserActionLog) KnetikClient.Deserialize(response.Content, typeof(UserActionLog), response.Headers);
+
+            GetUserLogData = (UserActionLog) KnetikClient.Deserialize(response.Content, typeof(UserActionLog), response.Headers);
+            KnetikLogger.LogResponse(mGetUserLogStartTime, mGetUserLogPath, string.Format("Response received successfully:\n{0}", GetUserLogData.ToString()));
+
+            if (GetUserLogComplete != null)
+            {
+                GetUserLogComplete(GetUserLogData);
+            }
         }
         /// <summary>
         /// Returns a page of user logs entries 
         /// </summary>
-        /// <param name="filterUser">Filter for actions taken by a specific user by id</param> 
-        /// <param name="filterActionName">Filter for actions of a specific name</param> 
-        /// <param name="size">The number of objects returned per page</param> 
-        /// <param name="page">The number of the page returned, starting with 1</param> 
-        /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param> 
-        /// <returns>PageResourceUserActionLog</returns>            
-        public PageResourceUserActionLog GetUserLogs(int? filterUser, string filterActionName, int? size, int? page, string order)
+        /// <param name="filterUser">Filter for actions taken by a specific user by id</param>
+        /// <param name="filterActionName">Filter for actions of a specific name</param>
+        /// <param name="size">The number of objects returned per page</param>
+        /// <param name="page">The number of the page returned, starting with 1</param>
+        /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
+        public void GetUserLogs(int? filterUser, string filterActionName, int? size, int? page, string order)
         {
             
-            string urlPath = "/audit/logs";
-            //urlPath = urlPath.Replace("{format}", "json");
-                
+            mGetUserLogsPath = "/audit/logs";
+            if (!string.IsNullOrEmpty(mGetUserLogsPath))
+            {
+                mGetUserLogsPath = mGetUserLogsPath.Replace("{format}", "json");
+            }
+            
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             if (filterUser != null)
             {
                 queryParams.Add("filter_user", KnetikClient.ParameterToString(filterUser));
             }
-            
+
             if (filterActionName != null)
             {
                 queryParams.Add("filter_action_name", KnetikClient.ParameterToString(filterActionName));
             }
-            
+
             if (size != null)
             {
                 queryParams.Add("size", KnetikClient.ParameterToString(size));
             }
-            
+
             if (page != null)
             {
                 queryParams.Add("page", KnetikClient.ParameterToString(page));
             }
-            
+
             if (order != null)
             {
                 queryParams.Add("order", KnetikClient.ParameterToString(order));
             }
-            
-            // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            // authentication setting, if any
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+
+            mGetUserLogsStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetUserLogsStartTime, mGetUserLogsPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetUserLogsCoroutine.ResponseReceived += GetUserLogsCallback;
+            mGetUserLogsCoroutine.Start(mGetUserLogsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetUserLogsCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetUserLogs: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetUserLogs: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetUserLogs: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetUserLogs: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (PageResourceUserActionLog) KnetikClient.Deserialize(response.Content, typeof(PageResourceUserActionLog), response.Headers);
+
+            GetUserLogsData = (PageResourceUserActionLog) KnetikClient.Deserialize(response.Content, typeof(PageResourceUserActionLog), response.Headers);
+            KnetikLogger.LogResponse(mGetUserLogsStartTime, mGetUserLogsPath, string.Format("Response received successfully:\n{0}", GetUserLogsData.ToString()));
+
+            if (GetUserLogsComplete != null)
+            {
+                GetUserLogsComplete(GetUserLogsData);
+            }
         }
     }
 }

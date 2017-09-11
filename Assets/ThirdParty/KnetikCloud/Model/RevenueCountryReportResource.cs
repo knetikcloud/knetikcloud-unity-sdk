@@ -21,7 +21,7 @@ namespace com.knetikcloud.Model
         /// Gets or Sets Revenue
         /// </summary>
         [JsonProperty(PropertyName = "revenue")]
-        public double? Revenue { get; set; }
+        public decimal? Revenue { get; set; }
 
         /// <summary>
         /// Gets or Sets Volume

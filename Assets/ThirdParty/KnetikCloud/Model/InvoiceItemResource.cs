@@ -51,13 +51,13 @@ namespace com.knetikcloud.Model
         /// Gets or Sets OriginalTotalPrice
         /// </summary>
         [JsonProperty(PropertyName = "original_total_price")]
-        public double? OriginalTotalPrice { get; set; }
+        public decimal? OriginalTotalPrice { get; set; }
 
         /// <summary>
         /// Gets or Sets OriginalUnitPrice
         /// </summary>
         [JsonProperty(PropertyName = "original_unit_price")]
-        public double? OriginalUnitPrice { get; set; }
+        public decimal? OriginalUnitPrice { get; set; }
 
         /// <summary>
         /// Gets or Sets Qty
@@ -87,13 +87,13 @@ namespace com.knetikcloud.Model
         /// Gets or Sets SystemPrice
         /// </summary>
         [JsonProperty(PropertyName = "system_price")]
-        public double? SystemPrice { get; set; }
+        public decimal? SystemPrice { get; set; }
 
         /// <summary>
         /// Gets or Sets TotalPrice
         /// </summary>
         [JsonProperty(PropertyName = "total_price")]
-        public double? TotalPrice { get; set; }
+        public decimal? TotalPrice { get; set; }
 
         /// <summary>
         /// Gets or Sets TypeHint
@@ -105,7 +105,7 @@ namespace com.knetikcloud.Model
         /// Gets or Sets UnitPrice
         /// </summary>
         [JsonProperty(PropertyName = "unit_price")]
-        public double? UnitPrice { get; set; }
+        public decimal? UnitPrice { get; set; }
 
         /// <summary>
         /// Get the string presentation of the object

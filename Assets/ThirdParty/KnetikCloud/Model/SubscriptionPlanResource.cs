@@ -86,7 +86,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The fee charged when the subscription is purchased</value>
         [JsonProperty(PropertyName = "initial_fee")]
-        public double? InitialFee { get; set; }
+        public decimal? InitialFee { get; set; }
 
         /// <summary>
         /// The SKU to be used when purchasing the subscription through the cart
@@ -100,7 +100,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The fee to add to the bill when an invoice has gone unpaid passed the grace period</value>
         [JsonProperty(PropertyName = "late_payment_fee")]
-        public double? LatePaymentFee { get; set; }
+        public decimal? LatePaymentFee { get; set; }
 
         /// <summary>
         /// The SKU that will show on the invoice when the subscription is delinquent
@@ -163,7 +163,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The fee to charge when a suspended subscription is to be re-activated</value>
         [JsonProperty(PropertyName = "reactivation_fee")]
-        public double? ReactivationFee { get; set; }
+        public decimal? ReactivationFee { get; set; }
 
         /// <summary>
         /// The SKU that will show on the invoice when the subscription is re-activated after a suspension
@@ -177,7 +177,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The recurring fee to charge for each renewal</value>
         [JsonProperty(PropertyName = "recurring_fee")]
-        public double? RecurringFee { get; set; }
+        public decimal? RecurringFee { get; set; }
 
         /// <summary>
         /// The SKU that will show on the invoice when the subscription is activated

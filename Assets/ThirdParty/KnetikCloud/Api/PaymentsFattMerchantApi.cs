@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using RestSharp;
 using com.knetikcloud.Client;
 using com.knetikcloud.Model;
+using com.knetikcloud.Utils;
 using UnityEngine;
 
 using Object = System.Object;
@@ -16,12 +17,15 @@ namespace com.knetikcloud.Api
     /// </summary>
     public interface IPaymentsFattMerchantApi
     {
+        PaymentMethodResource CreateOrUpdateFattMerchantPaymentMethodData { get; }
+
+        
         /// <summary>
         /// Create or update a FattMerchant payment method for a user Stores customer information and creates a payment method that can be used to pay invoices through the payments endpoints.
         /// </summary>
         /// <param name="request">Request containing payment method information for user</param>
-        /// <returns>PaymentMethodResource</returns>
-        PaymentMethodResource CreateOrUpdateFattMerchantPaymentMethod (FattMerchantPaymentMethodRequest request);
+        void CreateOrUpdateFattMerchantPaymentMethod(FattMerchantPaymentMethodRequest request);
+
     }
   
     /// <summary>
@@ -29,6 +33,14 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class PaymentsFattMerchantApi : IPaymentsFattMerchantApi
     {
+        private readonly KnetikCoroutine mCreateOrUpdateFattMerchantPaymentMethodCoroutine;
+        private DateTime mCreateOrUpdateFattMerchantPaymentMethodStartTime;
+        private string mCreateOrUpdateFattMerchantPaymentMethodPath;
+
+        public PaymentMethodResource CreateOrUpdateFattMerchantPaymentMethodData { get; private set; }
+        public delegate void CreateOrUpdateFattMerchantPaymentMethodCompleteDelegate(PaymentMethodResource response);
+        public CreateOrUpdateFattMerchantPaymentMethodCompleteDelegate CreateOrUpdateFattMerchantPaymentMethodComplete;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="PaymentsFattMerchantApi"/> class.
         /// </summary>
@@ -36,52 +48,65 @@ namespace com.knetikcloud.Api
         public PaymentsFattMerchantApi()
         {
             KnetikClient = KnetikConfiguration.DefaultClient;
+            mCreateOrUpdateFattMerchantPaymentMethodCoroutine = new KnetikCoroutine(KnetikClient);
         }
     
         /// <summary>
         /// Gets the Knetik client.
         /// </summary>
         /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient {get; private set;}
+        public KnetikClient KnetikClient { get; private set; }
 
         /// <summary>
         /// Create or update a FattMerchant payment method for a user Stores customer information and creates a payment method that can be used to pay invoices through the payments endpoints.
         /// </summary>
-        /// <param name="request">Request containing payment method information for user</param> 
-        /// <returns>PaymentMethodResource</returns>            
-        public PaymentMethodResource CreateOrUpdateFattMerchantPaymentMethod(FattMerchantPaymentMethodRequest request)
+        /// <param name="request">Request containing payment method information for user</param>
+        public void CreateOrUpdateFattMerchantPaymentMethod(FattMerchantPaymentMethodRequest request)
         {
             
-            string urlPath = "/payment/provider/fattmerchant/payment-methods";
-            //urlPath = urlPath.Replace("{format}", "json");
-                
+            mCreateOrUpdateFattMerchantPaymentMethodPath = "/payment/provider/fattmerchant/payment-methods";
+            if (!string.IsNullOrEmpty(mCreateOrUpdateFattMerchantPaymentMethodPath))
+            {
+                mCreateOrUpdateFattMerchantPaymentMethodPath = mCreateOrUpdateFattMerchantPaymentMethodPath.Replace("{format}", "json");
+            }
+            
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             postBody = KnetikClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mCreateOrUpdateFattMerchantPaymentMethodStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mCreateOrUpdateFattMerchantPaymentMethodStartTime, mCreateOrUpdateFattMerchantPaymentMethodPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mCreateOrUpdateFattMerchantPaymentMethodCoroutine.ResponseReceived += CreateOrUpdateFattMerchantPaymentMethodCallback;
+            mCreateOrUpdateFattMerchantPaymentMethodCoroutine.Start(mCreateOrUpdateFattMerchantPaymentMethodPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void CreateOrUpdateFattMerchantPaymentMethodCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling CreateOrUpdateFattMerchantPaymentMethod: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling CreateOrUpdateFattMerchantPaymentMethod: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling CreateOrUpdateFattMerchantPaymentMethod: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling CreateOrUpdateFattMerchantPaymentMethod: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (PaymentMethodResource) KnetikClient.Deserialize(response.Content, typeof(PaymentMethodResource), response.Headers);
+
+            CreateOrUpdateFattMerchantPaymentMethodData = (PaymentMethodResource) KnetikClient.Deserialize(response.Content, typeof(PaymentMethodResource), response.Headers);
+            KnetikLogger.LogResponse(mCreateOrUpdateFattMerchantPaymentMethodStartTime, mCreateOrUpdateFattMerchantPaymentMethodPath, string.Format("Response received successfully:\n{0}", CreateOrUpdateFattMerchantPaymentMethodData.ToString()));
+
+            if (CreateOrUpdateFattMerchantPaymentMethodComplete != null)
+            {
+                CreateOrUpdateFattMerchantPaymentMethodComplete(CreateOrUpdateFattMerchantPaymentMethodData);
+            }
         }
     }
 }

@@ -100,7 +100,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The amount of the transaction, positive if a gain, negative if an expenditure</value>
         [JsonProperty(PropertyName = "value")]
-        public double? Value { get; set; }
+        public decimal? Value { get; set; }
 
         /// <summary>
         /// Get the string presentation of the object

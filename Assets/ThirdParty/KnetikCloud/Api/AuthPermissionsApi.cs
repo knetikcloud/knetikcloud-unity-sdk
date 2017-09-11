@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using RestSharp;
 using com.knetikcloud.Client;
 using com.knetikcloud.Model;
+using com.knetikcloud.Utils;
 using UnityEngine;
 
 using Object = System.Object;
@@ -16,40 +17,49 @@ namespace com.knetikcloud.Api
     /// </summary>
     public interface IAuthPermissionsApi
     {
+        PermissionResource CreatePermissionData { get; }
+
+        PermissionResource GetPermissionData { get; }
+
+        PageResourcePermissionResource GetPermissionsData { get; }
+
+        PermissionResource UpdatePermissionData { get; }
+
+        
         /// <summary>
         /// Create a new permission 
         /// </summary>
         /// <param name="permissionResource">The permission resource object</param>
-        /// <returns>PermissionResource</returns>
-        PermissionResource CreatePermission (PermissionResource permissionResource);
+        void CreatePermission(PermissionResource permissionResource);
+
         /// <summary>
         /// Delete a permission 
         /// </summary>
         /// <param name="permission">The permission value</param>
         /// <param name="force">If true, removes permission assigned to roles</param>
-        /// <returns></returns>
-        void DeletePermission (string permission, bool? force);
+        void DeletePermission(string permission, bool? force);
+
         /// <summary>
         /// Get a single permission 
         /// </summary>
         /// <param name="permission">The permission value</param>
-        /// <returns>PermissionResource</returns>
-        PermissionResource GetPermission (string permission);
+        void GetPermission(string permission);
+
         /// <summary>
         /// List and search permissions 
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
-        /// <returns>PageResourcePermissionResource</returns>
-        PageResourcePermissionResource GetPermissions (int? size, int? page, string order);
+        void GetPermissions(int? size, int? page, string order);
+
         /// <summary>
         /// Update a permission 
         /// </summary>
         /// <param name="permission">The permission value</param>
         /// <param name="permissionResource">The permission resource object</param>
-        /// <returns>PermissionResource</returns>
-        PermissionResource UpdatePermission (string permission, PermissionResource permissionResource);
+        void UpdatePermission(string permission, PermissionResource permissionResource);
+
     }
   
     /// <summary>
@@ -57,6 +67,41 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class AuthPermissionsApi : IAuthPermissionsApi
     {
+        private readonly KnetikCoroutine mCreatePermissionCoroutine;
+        private DateTime mCreatePermissionStartTime;
+        private string mCreatePermissionPath;
+        private readonly KnetikCoroutine mDeletePermissionCoroutine;
+        private DateTime mDeletePermissionStartTime;
+        private string mDeletePermissionPath;
+        private readonly KnetikCoroutine mGetPermissionCoroutine;
+        private DateTime mGetPermissionStartTime;
+        private string mGetPermissionPath;
+        private readonly KnetikCoroutine mGetPermissionsCoroutine;
+        private DateTime mGetPermissionsStartTime;
+        private string mGetPermissionsPath;
+        private readonly KnetikCoroutine mUpdatePermissionCoroutine;
+        private DateTime mUpdatePermissionStartTime;
+        private string mUpdatePermissionPath;
+
+        public PermissionResource CreatePermissionData { get; private set; }
+        public delegate void CreatePermissionCompleteDelegate(PermissionResource response);
+        public CreatePermissionCompleteDelegate CreatePermissionComplete;
+
+        public delegate void DeletePermissionCompleteDelegate();
+        public DeletePermissionCompleteDelegate DeletePermissionComplete;
+
+        public PermissionResource GetPermissionData { get; private set; }
+        public delegate void GetPermissionCompleteDelegate(PermissionResource response);
+        public GetPermissionCompleteDelegate GetPermissionComplete;
+
+        public PageResourcePermissionResource GetPermissionsData { get; private set; }
+        public delegate void GetPermissionsCompleteDelegate(PageResourcePermissionResource response);
+        public GetPermissionsCompleteDelegate GetPermissionsComplete;
+
+        public PermissionResource UpdatePermissionData { get; private set; }
+        public delegate void UpdatePermissionCompleteDelegate(PermissionResource response);
+        public UpdatePermissionCompleteDelegate UpdatePermissionComplete;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthPermissionsApi"/> class.
         /// </summary>
@@ -64,59 +109,75 @@ namespace com.knetikcloud.Api
         public AuthPermissionsApi()
         {
             KnetikClient = KnetikConfiguration.DefaultClient;
+            mCreatePermissionCoroutine = new KnetikCoroutine(KnetikClient);
+            mDeletePermissionCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetPermissionCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetPermissionsCoroutine = new KnetikCoroutine(KnetikClient);
+            mUpdatePermissionCoroutine = new KnetikCoroutine(KnetikClient);
         }
     
         /// <summary>
         /// Gets the Knetik client.
         /// </summary>
         /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient {get; private set;}
+        public KnetikClient KnetikClient { get; private set; }
 
         /// <summary>
         /// Create a new permission 
         /// </summary>
-        /// <param name="permissionResource">The permission resource object</param> 
-        /// <returns>PermissionResource</returns>            
-        public PermissionResource CreatePermission(PermissionResource permissionResource)
+        /// <param name="permissionResource">The permission resource object</param>
+        public void CreatePermission(PermissionResource permissionResource)
         {
             
-            string urlPath = "/auth/permissions";
-            //urlPath = urlPath.Replace("{format}", "json");
-                
+            mCreatePermissionPath = "/auth/permissions";
+            if (!string.IsNullOrEmpty(mCreatePermissionPath))
+            {
+                mCreatePermissionPath = mCreatePermissionPath.Replace("{format}", "json");
+            }
+            
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             postBody = KnetikClient.Serialize(permissionResource); // http body (model) parameter
  
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mCreatePermissionStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mCreatePermissionStartTime, mCreatePermissionPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mCreatePermissionCoroutine.ResponseReceived += CreatePermissionCallback;
+            mCreatePermissionCoroutine.Start(mCreatePermissionPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void CreatePermissionCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling CreatePermission: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling CreatePermission: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling CreatePermission: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling CreatePermission: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (PermissionResource) KnetikClient.Deserialize(response.Content, typeof(PermissionResource), response.Headers);
+
+            CreatePermissionData = (PermissionResource) KnetikClient.Deserialize(response.Content, typeof(PermissionResource), response.Headers);
+            KnetikLogger.LogResponse(mCreatePermissionStartTime, mCreatePermissionPath, string.Format("Response received successfully:\n{0}", CreatePermissionData.ToString()));
+
+            if (CreatePermissionComplete != null)
+            {
+                CreatePermissionComplete(CreatePermissionData);
+            }
         }
         /// <summary>
         /// Delete a permission 
         /// </summary>
-        /// <param name="permission">The permission value</param> 
-        /// <param name="force">If true, removes permission assigned to roles</param> 
-        /// <returns></returns>            
+        /// <param name="permission">The permission value</param>
+        /// <param name="force">If true, removes permission assigned to roles</param>
         public void DeletePermission(string permission, bool? force)
         {
             // verify the required parameter 'permission' is set
@@ -125,48 +186,57 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'permission' when calling DeletePermission");
             }
             
-            
-            string urlPath = "/auth/permissions/{permission}";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "permission" + "}", KnetikClient.ParameterToString(permission));
-    
+            mDeletePermissionPath = "/auth/permissions/{permission}";
+            if (!string.IsNullOrEmpty(mDeletePermissionPath))
+            {
+                mDeletePermissionPath = mDeletePermissionPath.Replace("{format}", "json");
+            }
+            mDeletePermissionPath = mDeletePermissionPath.Replace("{" + "permission" + "}", KnetikClient.ParameterToString(permission));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             if (force != null)
             {
                 queryParams.Add("force", KnetikClient.ParameterToString(force));
             }
-            
-            // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            // authentication setting, if any
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+
+            mDeletePermissionStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mDeletePermissionStartTime, mDeletePermissionPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mDeletePermissionCoroutine.ResponseReceived += DeletePermissionCallback;
+            mDeletePermissionCoroutine.Start(mDeletePermissionPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void DeletePermissionCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling DeletePermission: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling DeletePermission: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling DeletePermission: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling DeletePermission: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return;
+
+            KnetikLogger.LogResponse(mDeletePermissionStartTime, mDeletePermissionPath, "Response received successfully.");
+            if (DeletePermissionComplete != null)
+            {
+                DeletePermissionComplete();
+            }
         }
         /// <summary>
         /// Get a single permission 
         /// </summary>
-        /// <param name="permission">The permission value</param> 
-        /// <returns>PermissionResource</returns>            
-        public PermissionResource GetPermission(string permission)
+        /// <param name="permission">The permission value</param>
+        public void GetPermission(string permission)
         {
             // verify the required parameter 'permission' is set
             if (permission == null)
@@ -174,98 +244,121 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'permission' when calling GetPermission");
             }
             
-            
-            string urlPath = "/auth/permissions/{permission}";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "permission" + "}", KnetikClient.ParameterToString(permission));
-    
+            mGetPermissionPath = "/auth/permissions/{permission}";
+            if (!string.IsNullOrEmpty(mGetPermissionPath))
+            {
+                mGetPermissionPath = mGetPermissionPath.Replace("{format}", "json");
+            }
+            mGetPermissionPath = mGetPermissionPath.Replace("{" + "permission" + "}", KnetikClient.ParameterToString(permission));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mGetPermissionStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetPermissionStartTime, mGetPermissionPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetPermissionCoroutine.ResponseReceived += GetPermissionCallback;
+            mGetPermissionCoroutine.Start(mGetPermissionPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetPermissionCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetPermission: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetPermission: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetPermission: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetPermission: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (PermissionResource) KnetikClient.Deserialize(response.Content, typeof(PermissionResource), response.Headers);
+
+            GetPermissionData = (PermissionResource) KnetikClient.Deserialize(response.Content, typeof(PermissionResource), response.Headers);
+            KnetikLogger.LogResponse(mGetPermissionStartTime, mGetPermissionPath, string.Format("Response received successfully:\n{0}", GetPermissionData.ToString()));
+
+            if (GetPermissionComplete != null)
+            {
+                GetPermissionComplete(GetPermissionData);
+            }
         }
         /// <summary>
         /// List and search permissions 
         /// </summary>
-        /// <param name="size">The number of objects returned per page</param> 
-        /// <param name="page">The number of the page returned, starting with 1</param> 
-        /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param> 
-        /// <returns>PageResourcePermissionResource</returns>            
-        public PageResourcePermissionResource GetPermissions(int? size, int? page, string order)
+        /// <param name="size">The number of objects returned per page</param>
+        /// <param name="page">The number of the page returned, starting with 1</param>
+        /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
+        public void GetPermissions(int? size, int? page, string order)
         {
             
-            string urlPath = "/auth/permissions";
-            //urlPath = urlPath.Replace("{format}", "json");
-                
+            mGetPermissionsPath = "/auth/permissions";
+            if (!string.IsNullOrEmpty(mGetPermissionsPath))
+            {
+                mGetPermissionsPath = mGetPermissionsPath.Replace("{format}", "json");
+            }
+            
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             if (size != null)
             {
                 queryParams.Add("size", KnetikClient.ParameterToString(size));
             }
-            
+
             if (page != null)
             {
                 queryParams.Add("page", KnetikClient.ParameterToString(page));
             }
-            
+
             if (order != null)
             {
                 queryParams.Add("order", KnetikClient.ParameterToString(order));
             }
-            
-            // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            // authentication setting, if any
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+
+            mGetPermissionsStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetPermissionsStartTime, mGetPermissionsPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetPermissionsCoroutine.ResponseReceived += GetPermissionsCallback;
+            mGetPermissionsCoroutine.Start(mGetPermissionsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetPermissionsCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetPermissions: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetPermissions: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetPermissions: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetPermissions: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (PageResourcePermissionResource) KnetikClient.Deserialize(response.Content, typeof(PageResourcePermissionResource), response.Headers);
+
+            GetPermissionsData = (PageResourcePermissionResource) KnetikClient.Deserialize(response.Content, typeof(PageResourcePermissionResource), response.Headers);
+            KnetikLogger.LogResponse(mGetPermissionsStartTime, mGetPermissionsPath, string.Format("Response received successfully:\n{0}", GetPermissionsData.ToString()));
+
+            if (GetPermissionsComplete != null)
+            {
+                GetPermissionsComplete(GetPermissionsData);
+            }
         }
         /// <summary>
         /// Update a permission 
         /// </summary>
-        /// <param name="permission">The permission value</param> 
-        /// <param name="permissionResource">The permission resource object</param> 
-        /// <returns>PermissionResource</returns>            
-        public PermissionResource UpdatePermission(string permission, PermissionResource permissionResource)
+        /// <param name="permission">The permission value</param>
+        /// <param name="permissionResource">The permission resource object</param>
+        public void UpdatePermission(string permission, PermissionResource permissionResource)
         {
             // verify the required parameter 'permission' is set
             if (permission == null)
@@ -273,38 +366,50 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'permission' when calling UpdatePermission");
             }
             
-            
-            string urlPath = "/auth/permissions/{permission}";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "permission" + "}", KnetikClient.ParameterToString(permission));
-    
+            mUpdatePermissionPath = "/auth/permissions/{permission}";
+            if (!string.IsNullOrEmpty(mUpdatePermissionPath))
+            {
+                mUpdatePermissionPath = mUpdatePermissionPath.Replace("{format}", "json");
+            }
+            mUpdatePermissionPath = mUpdatePermissionPath.Replace("{" + "permission" + "}", KnetikClient.ParameterToString(permission));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             postBody = KnetikClient.Serialize(permissionResource); // http body (model) parameter
  
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mUpdatePermissionStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mUpdatePermissionStartTime, mUpdatePermissionPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mUpdatePermissionCoroutine.ResponseReceived += UpdatePermissionCallback;
+            mUpdatePermissionCoroutine.Start(mUpdatePermissionPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void UpdatePermissionCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling UpdatePermission: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling UpdatePermission: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling UpdatePermission: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling UpdatePermission: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (PermissionResource) KnetikClient.Deserialize(response.Content, typeof(PermissionResource), response.Headers);
+
+            UpdatePermissionData = (PermissionResource) KnetikClient.Deserialize(response.Content, typeof(PermissionResource), response.Headers);
+            KnetikLogger.LogResponse(mUpdatePermissionStartTime, mUpdatePermissionPath, string.Format("Response received successfully:\n{0}", UpdatePermissionData.ToString()));
+
+            if (UpdatePermissionComplete != null)
+            {
+                UpdatePermissionComplete(UpdatePermissionData);
+            }
         }
     }
 }

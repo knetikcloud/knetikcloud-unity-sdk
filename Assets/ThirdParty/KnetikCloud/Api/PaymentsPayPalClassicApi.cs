@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using RestSharp;
 using com.knetikcloud.Client;
 using com.knetikcloud.Model;
+using com.knetikcloud.Utils;
 using UnityEngine;
 
 using Object = System.Object;
@@ -16,30 +17,37 @@ namespace com.knetikcloud.Api
     /// </summary>
     public interface IPaymentsPayPalClassicApi
     {
+        string CreatePayPalBillingAgreementUrlData { get; }
+
+        string CreatePayPalExpressCheckoutData { get; }
+
+        int? FinalizePayPalBillingAgreementData { get; }
+
+        
         /// <summary>
         /// Create a PayPal Classic billing agreement for the user Returns the token that should be used to forward the user to PayPal so they can accept the agreement.
         /// </summary>
         /// <param name="request">The request to create a PayPal billing agreement</param>
-        /// <returns>string</returns>
-        string CreatePayPalBillingAgreementUrl (CreateBillingAgreementRequest request);
+        void CreatePayPalBillingAgreementUrl(CreateBillingAgreementRequest request);
+
         /// <summary>
         /// Create a payment token for PayPal express checkout Returns the token that should be used to forward the user to PayPal so they can complete the checkout.
         /// </summary>
         /// <param name="request">The request to create a PayPal payment token</param>
-        /// <returns>string</returns>
-        string CreatePayPalExpressCheckout (CreatePayPalPaymentRequest request);
+        void CreatePayPalExpressCheckout(CreatePayPalPaymentRequest request);
+
         /// <summary>
         /// Finalizes a billing agreement after the user has accepted through PayPal Returns the ID of the new payment method created for the user for the billing agreement.
         /// </summary>
         /// <param name="request">The request to finalize a PayPal billing agreement</param>
-        /// <returns>int?</returns>
-        int? FinalizePayPalBillingAgreement (FinalizeBillingAgreementRequest request);
+        void FinalizePayPalBillingAgreement(FinalizeBillingAgreementRequest request);
+
         /// <summary>
         /// Finalizes a payment after the user has completed checkout with PayPal The invoice will be marked paid/failed by asynchronous IPN callback.
         /// </summary>
         /// <param name="request">The request to finalize the payment</param>
-        /// <returns></returns>
-        void FinalizePayPalCheckout (FinalizePayPalPaymentRequest request);
+        void FinalizePayPalCheckout(FinalizePayPalPaymentRequest request);
+
     }
   
     /// <summary>
@@ -47,6 +55,34 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class PaymentsPayPalClassicApi : IPaymentsPayPalClassicApi
     {
+        private readonly KnetikCoroutine mCreatePayPalBillingAgreementUrlCoroutine;
+        private DateTime mCreatePayPalBillingAgreementUrlStartTime;
+        private string mCreatePayPalBillingAgreementUrlPath;
+        private readonly KnetikCoroutine mCreatePayPalExpressCheckoutCoroutine;
+        private DateTime mCreatePayPalExpressCheckoutStartTime;
+        private string mCreatePayPalExpressCheckoutPath;
+        private readonly KnetikCoroutine mFinalizePayPalBillingAgreementCoroutine;
+        private DateTime mFinalizePayPalBillingAgreementStartTime;
+        private string mFinalizePayPalBillingAgreementPath;
+        private readonly KnetikCoroutine mFinalizePayPalCheckoutCoroutine;
+        private DateTime mFinalizePayPalCheckoutStartTime;
+        private string mFinalizePayPalCheckoutPath;
+
+        public string CreatePayPalBillingAgreementUrlData { get; private set; }
+        public delegate void CreatePayPalBillingAgreementUrlCompleteDelegate(string response);
+        public CreatePayPalBillingAgreementUrlCompleteDelegate CreatePayPalBillingAgreementUrlComplete;
+
+        public string CreatePayPalExpressCheckoutData { get; private set; }
+        public delegate void CreatePayPalExpressCheckoutCompleteDelegate(string response);
+        public CreatePayPalExpressCheckoutCompleteDelegate CreatePayPalExpressCheckoutComplete;
+
+        public int? FinalizePayPalBillingAgreementData { get; private set; }
+        public delegate void FinalizePayPalBillingAgreementCompleteDelegate(int? response);
+        public FinalizePayPalBillingAgreementCompleteDelegate FinalizePayPalBillingAgreementComplete;
+
+        public delegate void FinalizePayPalCheckoutCompleteDelegate();
+        public FinalizePayPalCheckoutCompleteDelegate FinalizePayPalCheckoutComplete;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="PaymentsPayPalClassicApi"/> class.
         /// </summary>
@@ -54,169 +90,219 @@ namespace com.knetikcloud.Api
         public PaymentsPayPalClassicApi()
         {
             KnetikClient = KnetikConfiguration.DefaultClient;
+            mCreatePayPalBillingAgreementUrlCoroutine = new KnetikCoroutine(KnetikClient);
+            mCreatePayPalExpressCheckoutCoroutine = new KnetikCoroutine(KnetikClient);
+            mFinalizePayPalBillingAgreementCoroutine = new KnetikCoroutine(KnetikClient);
+            mFinalizePayPalCheckoutCoroutine = new KnetikCoroutine(KnetikClient);
         }
     
         /// <summary>
         /// Gets the Knetik client.
         /// </summary>
         /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient {get; private set;}
+        public KnetikClient KnetikClient { get; private set; }
 
         /// <summary>
         /// Create a PayPal Classic billing agreement for the user Returns the token that should be used to forward the user to PayPal so they can accept the agreement.
         /// </summary>
-        /// <param name="request">The request to create a PayPal billing agreement</param> 
-        /// <returns>string</returns>            
-        public string CreatePayPalBillingAgreementUrl(CreateBillingAgreementRequest request)
+        /// <param name="request">The request to create a PayPal billing agreement</param>
+        public void CreatePayPalBillingAgreementUrl(CreateBillingAgreementRequest request)
         {
             
-            string urlPath = "/payment/provider/paypal/classic/agreements/start";
-            //urlPath = urlPath.Replace("{format}", "json");
-                
+            mCreatePayPalBillingAgreementUrlPath = "/payment/provider/paypal/classic/agreements/start";
+            if (!string.IsNullOrEmpty(mCreatePayPalBillingAgreementUrlPath))
+            {
+                mCreatePayPalBillingAgreementUrlPath = mCreatePayPalBillingAgreementUrlPath.Replace("{format}", "json");
+            }
+            
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             postBody = KnetikClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mCreatePayPalBillingAgreementUrlStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mCreatePayPalBillingAgreementUrlStartTime, mCreatePayPalBillingAgreementUrlPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mCreatePayPalBillingAgreementUrlCoroutine.ResponseReceived += CreatePayPalBillingAgreementUrlCallback;
+            mCreatePayPalBillingAgreementUrlCoroutine.Start(mCreatePayPalBillingAgreementUrlPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void CreatePayPalBillingAgreementUrlCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling CreatePayPalBillingAgreementUrl: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling CreatePayPalBillingAgreementUrl: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling CreatePayPalBillingAgreementUrl: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling CreatePayPalBillingAgreementUrl: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (string) KnetikClient.Deserialize(response.Content, typeof(string), response.Headers);
+
+            CreatePayPalBillingAgreementUrlData = (string) KnetikClient.Deserialize(response.Content, typeof(string), response.Headers);
+            KnetikLogger.LogResponse(mCreatePayPalBillingAgreementUrlStartTime, mCreatePayPalBillingAgreementUrlPath, string.Format("Response received successfully:\n{0}", CreatePayPalBillingAgreementUrlData.ToString()));
+
+            if (CreatePayPalBillingAgreementUrlComplete != null)
+            {
+                CreatePayPalBillingAgreementUrlComplete(CreatePayPalBillingAgreementUrlData);
+            }
         }
         /// <summary>
         /// Create a payment token for PayPal express checkout Returns the token that should be used to forward the user to PayPal so they can complete the checkout.
         /// </summary>
-        /// <param name="request">The request to create a PayPal payment token</param> 
-        /// <returns>string</returns>            
-        public string CreatePayPalExpressCheckout(CreatePayPalPaymentRequest request)
+        /// <param name="request">The request to create a PayPal payment token</param>
+        public void CreatePayPalExpressCheckout(CreatePayPalPaymentRequest request)
         {
             
-            string urlPath = "/payment/provider/paypal/classic/checkout/start";
-            //urlPath = urlPath.Replace("{format}", "json");
-                
+            mCreatePayPalExpressCheckoutPath = "/payment/provider/paypal/classic/checkout/start";
+            if (!string.IsNullOrEmpty(mCreatePayPalExpressCheckoutPath))
+            {
+                mCreatePayPalExpressCheckoutPath = mCreatePayPalExpressCheckoutPath.Replace("{format}", "json");
+            }
+            
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             postBody = KnetikClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mCreatePayPalExpressCheckoutStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mCreatePayPalExpressCheckoutStartTime, mCreatePayPalExpressCheckoutPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mCreatePayPalExpressCheckoutCoroutine.ResponseReceived += CreatePayPalExpressCheckoutCallback;
+            mCreatePayPalExpressCheckoutCoroutine.Start(mCreatePayPalExpressCheckoutPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void CreatePayPalExpressCheckoutCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling CreatePayPalExpressCheckout: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling CreatePayPalExpressCheckout: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling CreatePayPalExpressCheckout: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling CreatePayPalExpressCheckout: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (string) KnetikClient.Deserialize(response.Content, typeof(string), response.Headers);
+
+            CreatePayPalExpressCheckoutData = (string) KnetikClient.Deserialize(response.Content, typeof(string), response.Headers);
+            KnetikLogger.LogResponse(mCreatePayPalExpressCheckoutStartTime, mCreatePayPalExpressCheckoutPath, string.Format("Response received successfully:\n{0}", CreatePayPalExpressCheckoutData.ToString()));
+
+            if (CreatePayPalExpressCheckoutComplete != null)
+            {
+                CreatePayPalExpressCheckoutComplete(CreatePayPalExpressCheckoutData);
+            }
         }
         /// <summary>
         /// Finalizes a billing agreement after the user has accepted through PayPal Returns the ID of the new payment method created for the user for the billing agreement.
         /// </summary>
-        /// <param name="request">The request to finalize a PayPal billing agreement</param> 
-        /// <returns>int?</returns>            
-        public int? FinalizePayPalBillingAgreement(FinalizeBillingAgreementRequest request)
+        /// <param name="request">The request to finalize a PayPal billing agreement</param>
+        public void FinalizePayPalBillingAgreement(FinalizeBillingAgreementRequest request)
         {
             
-            string urlPath = "/payment/provider/paypal/classic/agreements/finish";
-            //urlPath = urlPath.Replace("{format}", "json");
-                
+            mFinalizePayPalBillingAgreementPath = "/payment/provider/paypal/classic/agreements/finish";
+            if (!string.IsNullOrEmpty(mFinalizePayPalBillingAgreementPath))
+            {
+                mFinalizePayPalBillingAgreementPath = mFinalizePayPalBillingAgreementPath.Replace("{format}", "json");
+            }
+            
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             postBody = KnetikClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mFinalizePayPalBillingAgreementStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mFinalizePayPalBillingAgreementStartTime, mFinalizePayPalBillingAgreementPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mFinalizePayPalBillingAgreementCoroutine.ResponseReceived += FinalizePayPalBillingAgreementCallback;
+            mFinalizePayPalBillingAgreementCoroutine.Start(mFinalizePayPalBillingAgreementPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void FinalizePayPalBillingAgreementCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling FinalizePayPalBillingAgreement: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling FinalizePayPalBillingAgreement: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling FinalizePayPalBillingAgreement: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling FinalizePayPalBillingAgreement: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (int?) KnetikClient.Deserialize(response.Content, typeof(int?), response.Headers);
+
+            FinalizePayPalBillingAgreementData = (int?) KnetikClient.Deserialize(response.Content, typeof(int?), response.Headers);
+            KnetikLogger.LogResponse(mFinalizePayPalBillingAgreementStartTime, mFinalizePayPalBillingAgreementPath, string.Format("Response received successfully:\n{0}", FinalizePayPalBillingAgreementData.ToString()));
+
+            if (FinalizePayPalBillingAgreementComplete != null)
+            {
+                FinalizePayPalBillingAgreementComplete(FinalizePayPalBillingAgreementData);
+            }
         }
         /// <summary>
         /// Finalizes a payment after the user has completed checkout with PayPal The invoice will be marked paid/failed by asynchronous IPN callback.
         /// </summary>
-        /// <param name="request">The request to finalize the payment</param> 
-        /// <returns></returns>            
+        /// <param name="request">The request to finalize the payment</param>
         public void FinalizePayPalCheckout(FinalizePayPalPaymentRequest request)
         {
             
-            string urlPath = "/payment/provider/paypal/classic/checkout/finish";
-            //urlPath = urlPath.Replace("{format}", "json");
-                
+            mFinalizePayPalCheckoutPath = "/payment/provider/paypal/classic/checkout/finish";
+            if (!string.IsNullOrEmpty(mFinalizePayPalCheckoutPath))
+            {
+                mFinalizePayPalCheckoutPath = mFinalizePayPalCheckoutPath.Replace("{format}", "json");
+            }
+            
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             postBody = KnetikClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mFinalizePayPalCheckoutStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mFinalizePayPalCheckoutStartTime, mFinalizePayPalCheckoutPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mFinalizePayPalCheckoutCoroutine.ResponseReceived += FinalizePayPalCheckoutCallback;
+            mFinalizePayPalCheckoutCoroutine.Start(mFinalizePayPalCheckoutPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void FinalizePayPalCheckoutCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling FinalizePayPalCheckout: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling FinalizePayPalCheckout: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling FinalizePayPalCheckout: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling FinalizePayPalCheckout: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return;
+
+            KnetikLogger.LogResponse(mFinalizePayPalCheckoutStartTime, mFinalizePayPalCheckoutPath, "Response received successfully.");
+            if (FinalizePayPalCheckoutComplete != null)
+            {
+                FinalizePayPalCheckoutComplete();
+            }
         }
     }
 }

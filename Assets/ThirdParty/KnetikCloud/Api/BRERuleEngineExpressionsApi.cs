@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using RestSharp;
 using com.knetikcloud.Client;
 using com.knetikcloud.Model;
+using com.knetikcloud.Utils;
 using UnityEngine;
 
 using Object = System.Object;
@@ -16,11 +17,14 @@ namespace com.knetikcloud.Api
     /// </summary>
     public interface IBRERuleEngineExpressionsApi
     {
+        List<LookupTypeResource> GetBREExpressionsData { get; }
+
+        
         /// <summary>
         /// Get a list of &#39;lookup&#39; type expressions These are expression types that take a second expression as input and produce a value. These can be used in addition to the standard types, like parameter, global and constant (see BRE documentation for details).
         /// </summary>
-        /// <returns>List&lt;LookupTypeResource&gt;</returns>
-        List<LookupTypeResource> GetBREExpressions ();
+        void GetBREExpressions();
+
     }
   
     /// <summary>
@@ -28,6 +32,14 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class BRERuleEngineExpressionsApi : IBRERuleEngineExpressionsApi
     {
+        private readonly KnetikCoroutine mGetBREExpressionsCoroutine;
+        private DateTime mGetBREExpressionsStartTime;
+        private string mGetBREExpressionsPath;
+
+        public List<LookupTypeResource> GetBREExpressionsData { get; private set; }
+        public delegate void GetBREExpressionsCompleteDelegate(List<LookupTypeResource> response);
+        public GetBREExpressionsCompleteDelegate GetBREExpressionsComplete;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="BRERuleEngineExpressionsApi"/> class.
         /// </summary>
@@ -35,49 +47,62 @@ namespace com.knetikcloud.Api
         public BRERuleEngineExpressionsApi()
         {
             KnetikClient = KnetikConfiguration.DefaultClient;
+            mGetBREExpressionsCoroutine = new KnetikCoroutine(KnetikClient);
         }
     
         /// <summary>
         /// Gets the Knetik client.
         /// </summary>
         /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient {get; private set;}
+        public KnetikClient KnetikClient { get; private set; }
 
         /// <summary>
         /// Get a list of &#39;lookup&#39; type expressions These are expression types that take a second expression as input and produce a value. These can be used in addition to the standard types, like parameter, global and constant (see BRE documentation for details).
         /// </summary>
-        /// <returns>List&lt;LookupTypeResource&gt;</returns>            
-        public List<LookupTypeResource> GetBREExpressions()
+        public void GetBREExpressions()
         {
             
-            string urlPath = "/bre/expressions/lookup";
-            //urlPath = urlPath.Replace("{format}", "json");
-                
+            mGetBREExpressionsPath = "/bre/expressions/lookup";
+            if (!string.IsNullOrEmpty(mGetBREExpressionsPath))
+            {
+                mGetBREExpressionsPath = mGetBREExpressionsPath.Replace("{format}", "json");
+            }
+            
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mGetBREExpressionsStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetBREExpressionsStartTime, mGetBREExpressionsPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetBREExpressionsCoroutine.ResponseReceived += GetBREExpressionsCallback;
+            mGetBREExpressionsCoroutine.Start(mGetBREExpressionsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetBREExpressionsCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetBREExpressions: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetBREExpressions: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetBREExpressions: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetBREExpressions: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (List<LookupTypeResource>) KnetikClient.Deserialize(response.Content, typeof(List<LookupTypeResource>), response.Headers);
+
+            GetBREExpressionsData = (List<LookupTypeResource>) KnetikClient.Deserialize(response.Content, typeof(List<LookupTypeResource>), response.Headers);
+            KnetikLogger.LogResponse(mGetBREExpressionsStartTime, mGetBREExpressionsPath, string.Format("Response received successfully:\n{0}", GetBREExpressionsData.ToString()));
+
+            if (GetBREExpressionsComplete != null)
+            {
+                GetBREExpressionsComplete(GetBREExpressionsData);
+            }
         }
     }
 }

@@ -30,7 +30,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The grand total for the cart</value>
         [JsonProperty(PropertyName = "grand_total")]
-        public double? GrandTotal { get; set; }
+        public decimal? GrandTotal { get; set; }
 
         /// <summary>
         /// The unique ID for the cart
@@ -44,7 +44,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The ID of the invoice associated with this cart</value>
         [JsonProperty(PropertyName = "invoice_id")]
-        public double? InvoiceId { get; set; }
+        public decimal? InvoiceId { get; set; }
 
         /// <summary>
         /// The number of items in the cart
@@ -65,7 +65,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The subtotal of all items in the cart</value>
         [JsonProperty(PropertyName = "subtotal")]
-        public double? Subtotal { get; set; }
+        public decimal? Subtotal { get; set; }
 
         /// <summary>
         /// Get the string presentation of the object

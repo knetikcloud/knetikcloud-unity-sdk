@@ -16,7 +16,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The amount of the credit, negative for debt</value>
         [JsonProperty(PropertyName = "amount")]
-        public double? Amount { get; set; }
+        public decimal? Amount { get; set; }
 
         /// <summary>
         /// The date this credit was added, unix timestamp in seconds

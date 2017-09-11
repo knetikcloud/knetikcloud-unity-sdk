@@ -23,7 +23,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>A credit of money already applied to a subscription for the next bill, or a debt if negative</value>
         [JsonProperty(PropertyName = "credit")]
-        public double? Credit { get; set; }
+        public decimal? Credit { get; set; }
 
         /// <summary>
         /// A record of past and present credit/debt changes
@@ -72,7 +72,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The recurring price that has been set to override the base price. Null if not overriding</value>
         [JsonProperty(PropertyName = "price_override")]
-        public double? PriceOverride { get; set; }
+        public decimal? PriceOverride { get; set; }
 
         /// <summary>
         /// An explanation for the reason the price is being overridden
@@ -86,7 +86,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The default recurring price</value>
         [JsonProperty(PropertyName = "recurring_price")]
-        public double? RecurringPrice { get; set; }
+        public decimal? RecurringPrice { get; set; }
 
         /// <summary>
         /// The recurring sku of the subscription

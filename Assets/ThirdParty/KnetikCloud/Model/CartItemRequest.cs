@@ -30,7 +30,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>Allows to override the price of an item, if the behavior configuration permits it</value>
         [JsonProperty(PropertyName = "price_override")]
-        public double? PriceOverride { get; set; }
+        public decimal? PriceOverride { get; set; }
 
         /// <summary>
         /// The quantity of the item

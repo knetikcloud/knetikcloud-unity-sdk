@@ -33,7 +33,7 @@ namespace com.knetikcloud.Model
         /// Gets or Sets LineTotal
         /// </summary>
         [JsonProperty(PropertyName = "line_total")]
-        public double? LineTotal { get; set; }
+        public decimal? LineTotal { get; set; }
 
         /// <summary>
         /// Gets or Sets Name
@@ -45,13 +45,13 @@ namespace com.knetikcloud.Model
         /// Gets or Sets OriginalLineTotal
         /// </summary>
         [JsonProperty(PropertyName = "original_line_total")]
-        public double? OriginalLineTotal { get; set; }
+        public decimal? OriginalLineTotal { get; set; }
 
         /// <summary>
         /// Gets or Sets OriginalUnitPrice
         /// </summary>
         [JsonProperty(PropertyName = "original_unit_price")]
-        public double? OriginalUnitPrice { get; set; }
+        public decimal? OriginalUnitPrice { get; set; }
 
         /// <summary>
         /// Gets or Sets Qty
@@ -105,7 +105,7 @@ namespace com.knetikcloud.Model
         /// Gets or Sets UnitPrice
         /// </summary>
         [JsonProperty(PropertyName = "unit_price")]
-        public double? UnitPrice { get; set; }
+        public decimal? UnitPrice { get; set; }
 
         /// <summary>
         /// Gets or Sets VendorId

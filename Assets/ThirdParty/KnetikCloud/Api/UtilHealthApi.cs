@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using RestSharp;
 using com.knetikcloud.Client;
 using com.knetikcloud.Model;
+using com.knetikcloud.Utils;
 using UnityEngine;
 
 using Object = System.Object;
@@ -16,11 +17,14 @@ namespace com.knetikcloud.Api
     /// </summary>
     public interface IUtilHealthApi
     {
+        Object GetHealthData { get; }
+
+        
         /// <summary>
         /// Get health info 
         /// </summary>
-        /// <returns>Object</returns>
-        Object GetHealth ();
+        void GetHealth();
+
     }
   
     /// <summary>
@@ -28,6 +32,14 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class UtilHealthApi : IUtilHealthApi
     {
+        private readonly KnetikCoroutine mGetHealthCoroutine;
+        private DateTime mGetHealthStartTime;
+        private string mGetHealthPath;
+
+        public Object GetHealthData { get; private set; }
+        public delegate void GetHealthCompleteDelegate(Object response);
+        public GetHealthCompleteDelegate GetHealthComplete;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="UtilHealthApi"/> class.
         /// </summary>
@@ -35,49 +47,62 @@ namespace com.knetikcloud.Api
         public UtilHealthApi()
         {
             KnetikClient = KnetikConfiguration.DefaultClient;
+            mGetHealthCoroutine = new KnetikCoroutine(KnetikClient);
         }
     
         /// <summary>
         /// Gets the Knetik client.
         /// </summary>
         /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient {get; private set;}
+        public KnetikClient KnetikClient { get; private set; }
 
         /// <summary>
         /// Get health info 
         /// </summary>
-        /// <returns>Object</returns>            
-        public Object GetHealth()
+        public void GetHealth()
         {
             
-            string urlPath = "/health";
-            //urlPath = urlPath.Replace("{format}", "json");
-                
+            mGetHealthPath = "/health";
+            if (!string.IsNullOrEmpty(mGetHealthPath))
+            {
+                mGetHealthPath = mGetHealthPath.Replace("{format}", "json");
+            }
+            
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             // authentication setting, if any
-            String[] authSettings = new String[] {  };
+            string[] authSettings = new string[] {  };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mGetHealthStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetHealthStartTime, mGetHealthPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetHealthCoroutine.ResponseReceived += GetHealthCallback;
+            mGetHealthCoroutine.Start(mGetHealthPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetHealthCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetHealth: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetHealth: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetHealth: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetHealth: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (Object) KnetikClient.Deserialize(response.Content, typeof(Object), response.Headers);
+
+            GetHealthData = (Object) KnetikClient.Deserialize(response.Content, typeof(Object), response.Headers);
+            KnetikLogger.LogResponse(mGetHealthStartTime, mGetHealthPath, string.Format("Response received successfully:\n{0}", GetHealthData.ToString()));
+
+            if (GetHealthComplete != null)
+            {
+                GetHealthComplete(GetHealthData);
+            }
         }
     }
 }

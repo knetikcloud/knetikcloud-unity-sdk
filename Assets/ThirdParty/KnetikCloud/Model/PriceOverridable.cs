@@ -16,14 +16,14 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The maximum price allowed</value>
         [JsonProperty(PropertyName = "max_price")]
-        public int? MaxPrice { get; set; }
+        public decimal? MaxPrice { get; set; }
 
         /// <summary>
         /// The minimum price allowed
         /// </summary>
         /// <value>The minimum price allowed</value>
         [JsonProperty(PropertyName = "min_price")]
-        public int? MinPrice { get; set; }
+        public decimal? MinPrice { get; set; }
 
         /// <summary>
         /// Get the string presentation of the object

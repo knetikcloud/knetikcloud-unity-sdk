@@ -23,7 +23,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The sum of all wallets in the system for this currency</value>
         [JsonProperty(PropertyName = "total")]
-        public double? Total { get; set; }
+        public decimal? Total { get; set; }
 
         /// <summary>
         /// Get the string presentation of the object

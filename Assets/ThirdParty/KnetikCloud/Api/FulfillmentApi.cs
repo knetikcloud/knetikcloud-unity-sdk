@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using RestSharp;
 using com.knetikcloud.Client;
 using com.knetikcloud.Model;
+using com.knetikcloud.Utils;
 using UnityEngine;
 
 using Object = System.Object;
@@ -16,39 +17,46 @@ namespace com.knetikcloud.Api
     /// </summary>
     public interface IFulfillmentApi
     {
+        FulfillmentType CreateFulfillmentTypeData { get; }
+
+        FulfillmentType GetFulfillmentTypeData { get; }
+
+        PageResourceFulfillmentType GetFulfillmentTypesData { get; }
+
+        
         /// <summary>
         /// Create a fulfillment type 
         /// </summary>
         /// <param name="type">The fulfillment type</param>
-        /// <returns>FulfillmentType</returns>
-        FulfillmentType CreateFulfillmentType (FulfillmentType type);
+        void CreateFulfillmentType(FulfillmentType type);
+
         /// <summary>
         /// Delete a fulfillment type 
         /// </summary>
         /// <param name="id">The id</param>
-        /// <returns></returns>
-        void DeleteFulfillmentType (int? id);
+        void DeleteFulfillmentType(int? id);
+
         /// <summary>
         /// Get a single fulfillment type 
         /// </summary>
         /// <param name="id">The id</param>
-        /// <returns>FulfillmentType</returns>
-        FulfillmentType GetFulfillmentType (int? id);
+        void GetFulfillmentType(int? id);
+
         /// <summary>
         /// List and search fulfillment types 
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
-        /// <returns>PageResourceFulfillmentType</returns>
-        PageResourceFulfillmentType GetFulfillmentTypes (int? size, int? page, string order);
+        void GetFulfillmentTypes(int? size, int? page, string order);
+
         /// <summary>
         /// Update a fulfillment type 
         /// </summary>
         /// <param name="id">The id</param>
         /// <param name="fulfillmentType">The fulfillment type</param>
-        /// <returns></returns>
-        void UpdateFulfillmentType (int? id, FulfillmentType fulfillmentType);
+        void UpdateFulfillmentType(int? id, FulfillmentType fulfillmentType);
+
     }
   
     /// <summary>
@@ -56,6 +64,40 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class FulfillmentApi : IFulfillmentApi
     {
+        private readonly KnetikCoroutine mCreateFulfillmentTypeCoroutine;
+        private DateTime mCreateFulfillmentTypeStartTime;
+        private string mCreateFulfillmentTypePath;
+        private readonly KnetikCoroutine mDeleteFulfillmentTypeCoroutine;
+        private DateTime mDeleteFulfillmentTypeStartTime;
+        private string mDeleteFulfillmentTypePath;
+        private readonly KnetikCoroutine mGetFulfillmentTypeCoroutine;
+        private DateTime mGetFulfillmentTypeStartTime;
+        private string mGetFulfillmentTypePath;
+        private readonly KnetikCoroutine mGetFulfillmentTypesCoroutine;
+        private DateTime mGetFulfillmentTypesStartTime;
+        private string mGetFulfillmentTypesPath;
+        private readonly KnetikCoroutine mUpdateFulfillmentTypeCoroutine;
+        private DateTime mUpdateFulfillmentTypeStartTime;
+        private string mUpdateFulfillmentTypePath;
+
+        public FulfillmentType CreateFulfillmentTypeData { get; private set; }
+        public delegate void CreateFulfillmentTypeCompleteDelegate(FulfillmentType response);
+        public CreateFulfillmentTypeCompleteDelegate CreateFulfillmentTypeComplete;
+
+        public delegate void DeleteFulfillmentTypeCompleteDelegate();
+        public DeleteFulfillmentTypeCompleteDelegate DeleteFulfillmentTypeComplete;
+
+        public FulfillmentType GetFulfillmentTypeData { get; private set; }
+        public delegate void GetFulfillmentTypeCompleteDelegate(FulfillmentType response);
+        public GetFulfillmentTypeCompleteDelegate GetFulfillmentTypeComplete;
+
+        public PageResourceFulfillmentType GetFulfillmentTypesData { get; private set; }
+        public delegate void GetFulfillmentTypesCompleteDelegate(PageResourceFulfillmentType response);
+        public GetFulfillmentTypesCompleteDelegate GetFulfillmentTypesComplete;
+
+        public delegate void UpdateFulfillmentTypeCompleteDelegate();
+        public UpdateFulfillmentTypeCompleteDelegate UpdateFulfillmentTypeComplete;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="FulfillmentApi"/> class.
         /// </summary>
@@ -63,58 +105,74 @@ namespace com.knetikcloud.Api
         public FulfillmentApi()
         {
             KnetikClient = KnetikConfiguration.DefaultClient;
+            mCreateFulfillmentTypeCoroutine = new KnetikCoroutine(KnetikClient);
+            mDeleteFulfillmentTypeCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetFulfillmentTypeCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetFulfillmentTypesCoroutine = new KnetikCoroutine(KnetikClient);
+            mUpdateFulfillmentTypeCoroutine = new KnetikCoroutine(KnetikClient);
         }
     
         /// <summary>
         /// Gets the Knetik client.
         /// </summary>
         /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient {get; private set;}
+        public KnetikClient KnetikClient { get; private set; }
 
         /// <summary>
         /// Create a fulfillment type 
         /// </summary>
-        /// <param name="type">The fulfillment type</param> 
-        /// <returns>FulfillmentType</returns>            
-        public FulfillmentType CreateFulfillmentType(FulfillmentType type)
+        /// <param name="type">The fulfillment type</param>
+        public void CreateFulfillmentType(FulfillmentType type)
         {
             
-            string urlPath = "/store/fulfillment/types";
-            //urlPath = urlPath.Replace("{format}", "json");
-                
+            mCreateFulfillmentTypePath = "/store/fulfillment/types";
+            if (!string.IsNullOrEmpty(mCreateFulfillmentTypePath))
+            {
+                mCreateFulfillmentTypePath = mCreateFulfillmentTypePath.Replace("{format}", "json");
+            }
+            
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             postBody = KnetikClient.Serialize(type); // http body (model) parameter
  
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mCreateFulfillmentTypeStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mCreateFulfillmentTypeStartTime, mCreateFulfillmentTypePath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mCreateFulfillmentTypeCoroutine.ResponseReceived += CreateFulfillmentTypeCallback;
+            mCreateFulfillmentTypeCoroutine.Start(mCreateFulfillmentTypePath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void CreateFulfillmentTypeCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling CreateFulfillmentType: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling CreateFulfillmentType: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling CreateFulfillmentType: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling CreateFulfillmentType: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (FulfillmentType) KnetikClient.Deserialize(response.Content, typeof(FulfillmentType), response.Headers);
+
+            CreateFulfillmentTypeData = (FulfillmentType) KnetikClient.Deserialize(response.Content, typeof(FulfillmentType), response.Headers);
+            KnetikLogger.LogResponse(mCreateFulfillmentTypeStartTime, mCreateFulfillmentTypePath, string.Format("Response received successfully:\n{0}", CreateFulfillmentTypeData.ToString()));
+
+            if (CreateFulfillmentTypeComplete != null)
+            {
+                CreateFulfillmentTypeComplete(CreateFulfillmentTypeData);
+            }
         }
         /// <summary>
         /// Delete a fulfillment type 
         /// </summary>
-        /// <param name="id">The id</param> 
-        /// <returns></returns>            
+        /// <param name="id">The id</param>
         public void DeleteFulfillmentType(int? id)
         {
             // verify the required parameter 'id' is set
@@ -123,43 +181,52 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeleteFulfillmentType");
             }
             
-            
-            string urlPath = "/store/fulfillment/types/{id}";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
-    
+            mDeleteFulfillmentTypePath = "/store/fulfillment/types/{id}";
+            if (!string.IsNullOrEmpty(mDeleteFulfillmentTypePath))
+            {
+                mDeleteFulfillmentTypePath = mDeleteFulfillmentTypePath.Replace("{format}", "json");
+            }
+            mDeleteFulfillmentTypePath = mDeleteFulfillmentTypePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mDeleteFulfillmentTypeStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mDeleteFulfillmentTypeStartTime, mDeleteFulfillmentTypePath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mDeleteFulfillmentTypeCoroutine.ResponseReceived += DeleteFulfillmentTypeCallback;
+            mDeleteFulfillmentTypeCoroutine.Start(mDeleteFulfillmentTypePath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void DeleteFulfillmentTypeCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling DeleteFulfillmentType: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling DeleteFulfillmentType: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling DeleteFulfillmentType: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling DeleteFulfillmentType: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return;
+
+            KnetikLogger.LogResponse(mDeleteFulfillmentTypeStartTime, mDeleteFulfillmentTypePath, "Response received successfully.");
+            if (DeleteFulfillmentTypeComplete != null)
+            {
+                DeleteFulfillmentTypeComplete();
+            }
         }
         /// <summary>
         /// Get a single fulfillment type 
         /// </summary>
-        /// <param name="id">The id</param> 
-        /// <returns>FulfillmentType</returns>            
-        public FulfillmentType GetFulfillmentType(int? id)
+        /// <param name="id">The id</param>
+        public void GetFulfillmentType(int? id)
         {
             // verify the required parameter 'id' is set
             if (id == null)
@@ -167,97 +234,120 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetFulfillmentType");
             }
             
-            
-            string urlPath = "/store/fulfillment/types/{id}";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
-    
+            mGetFulfillmentTypePath = "/store/fulfillment/types/{id}";
+            if (!string.IsNullOrEmpty(mGetFulfillmentTypePath))
+            {
+                mGetFulfillmentTypePath = mGetFulfillmentTypePath.Replace("{format}", "json");
+            }
+            mGetFulfillmentTypePath = mGetFulfillmentTypePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             // authentication setting, if any
-            String[] authSettings = new String[] {  };
+            string[] authSettings = new string[] {  };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mGetFulfillmentTypeStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetFulfillmentTypeStartTime, mGetFulfillmentTypePath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetFulfillmentTypeCoroutine.ResponseReceived += GetFulfillmentTypeCallback;
+            mGetFulfillmentTypeCoroutine.Start(mGetFulfillmentTypePath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetFulfillmentTypeCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetFulfillmentType: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetFulfillmentType: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetFulfillmentType: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetFulfillmentType: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (FulfillmentType) KnetikClient.Deserialize(response.Content, typeof(FulfillmentType), response.Headers);
+
+            GetFulfillmentTypeData = (FulfillmentType) KnetikClient.Deserialize(response.Content, typeof(FulfillmentType), response.Headers);
+            KnetikLogger.LogResponse(mGetFulfillmentTypeStartTime, mGetFulfillmentTypePath, string.Format("Response received successfully:\n{0}", GetFulfillmentTypeData.ToString()));
+
+            if (GetFulfillmentTypeComplete != null)
+            {
+                GetFulfillmentTypeComplete(GetFulfillmentTypeData);
+            }
         }
         /// <summary>
         /// List and search fulfillment types 
         /// </summary>
-        /// <param name="size">The number of objects returned per page</param> 
-        /// <param name="page">The number of the page returned, starting with 1</param> 
-        /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param> 
-        /// <returns>PageResourceFulfillmentType</returns>            
-        public PageResourceFulfillmentType GetFulfillmentTypes(int? size, int? page, string order)
+        /// <param name="size">The number of objects returned per page</param>
+        /// <param name="page">The number of the page returned, starting with 1</param>
+        /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
+        public void GetFulfillmentTypes(int? size, int? page, string order)
         {
             
-            string urlPath = "/store/fulfillment/types";
-            //urlPath = urlPath.Replace("{format}", "json");
-                
+            mGetFulfillmentTypesPath = "/store/fulfillment/types";
+            if (!string.IsNullOrEmpty(mGetFulfillmentTypesPath))
+            {
+                mGetFulfillmentTypesPath = mGetFulfillmentTypesPath.Replace("{format}", "json");
+            }
+            
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             if (size != null)
             {
                 queryParams.Add("size", KnetikClient.ParameterToString(size));
             }
-            
+
             if (page != null)
             {
                 queryParams.Add("page", KnetikClient.ParameterToString(page));
             }
-            
+
             if (order != null)
             {
                 queryParams.Add("order", KnetikClient.ParameterToString(order));
             }
-            
-            // authentication setting, if any
-            String[] authSettings = new String[] {  };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            // authentication setting, if any
+            string[] authSettings = new string[] {  };
+
+            mGetFulfillmentTypesStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetFulfillmentTypesStartTime, mGetFulfillmentTypesPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mGetFulfillmentTypesCoroutine.ResponseReceived += GetFulfillmentTypesCallback;
+            mGetFulfillmentTypesCoroutine.Start(mGetFulfillmentTypesPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetFulfillmentTypesCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetFulfillmentTypes: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetFulfillmentTypes: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling GetFulfillmentTypes: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling GetFulfillmentTypes: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (PageResourceFulfillmentType) KnetikClient.Deserialize(response.Content, typeof(PageResourceFulfillmentType), response.Headers);
+
+            GetFulfillmentTypesData = (PageResourceFulfillmentType) KnetikClient.Deserialize(response.Content, typeof(PageResourceFulfillmentType), response.Headers);
+            KnetikLogger.LogResponse(mGetFulfillmentTypesStartTime, mGetFulfillmentTypesPath, string.Format("Response received successfully:\n{0}", GetFulfillmentTypesData.ToString()));
+
+            if (GetFulfillmentTypesComplete != null)
+            {
+                GetFulfillmentTypesComplete(GetFulfillmentTypesData);
+            }
         }
         /// <summary>
         /// Update a fulfillment type 
         /// </summary>
-        /// <param name="id">The id</param> 
-        /// <param name="fulfillmentType">The fulfillment type</param> 
-        /// <returns></returns>            
+        /// <param name="id">The id</param>
+        /// <param name="fulfillmentType">The fulfillment type</param>
         public void UpdateFulfillmentType(int? id, FulfillmentType fulfillmentType)
         {
             // verify the required parameter 'id' is set
@@ -266,38 +356,48 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling UpdateFulfillmentType");
             }
             
-            
-            string urlPath = "/store/fulfillment/types/{id}";
-            //urlPath = urlPath.Replace("{format}", "json");
-            urlPath = urlPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
-    
+            mUpdateFulfillmentTypePath = "/store/fulfillment/types/{id}";
+            if (!string.IsNullOrEmpty(mUpdateFulfillmentTypePath))
+            {
+                mUpdateFulfillmentTypePath = mUpdateFulfillmentTypePath.Replace("{format}", "json");
+            }
+            mUpdateFulfillmentTypePath = mUpdateFulfillmentTypePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             postBody = KnetikClient.Serialize(fulfillmentType); // http body (model) parameter
  
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mUpdateFulfillmentTypeStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mUpdateFulfillmentTypeStartTime, mUpdateFulfillmentTypePath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mUpdateFulfillmentTypeCoroutine.ResponseReceived += UpdateFulfillmentTypeCallback;
+            mUpdateFulfillmentTypeCoroutine.Start(mUpdateFulfillmentTypePath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void UpdateFulfillmentTypeCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling UpdateFulfillmentType: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling UpdateFulfillmentType: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling UpdateFulfillmentType: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling UpdateFulfillmentType: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return;
+
+            KnetikLogger.LogResponse(mUpdateFulfillmentTypeStartTime, mUpdateFulfillmentTypePath, "Response received successfully.");
+            if (UpdateFulfillmentTypeComplete != null)
+            {
+                UpdateFulfillmentTypeComplete();
+            }
         }
     }
 }

@@ -16,7 +16,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The recurring price that has been set to override the base price. Null if not overriding</value>
         [JsonProperty(PropertyName = "new_price")]
-        public double? NewPrice { get; set; }
+        public decimal? NewPrice { get; set; }
 
         /// <summary>
         /// An explanation for the reason the price is being overridden

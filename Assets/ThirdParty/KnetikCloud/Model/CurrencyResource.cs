@@ -37,7 +37,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The decimal to multiply the system base currency (from config 'currency') to localize to this one. Should be 1 for the base currency itself.</value>
         [JsonProperty(PropertyName = "factor")]
-        public double? Factor { get; set; }
+        public decimal? Factor { get; set; }
 
         /// <summary>
         /// The url for an icon of the currency

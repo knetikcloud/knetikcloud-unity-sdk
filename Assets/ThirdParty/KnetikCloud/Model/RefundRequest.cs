@@ -16,7 +16,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The amount to refund. If left off, will refund the remaining balance of the transaction or specific item balance (if SKU provided), whichever is less.</value>
         [JsonProperty(PropertyName = "amount")]
-        public double? Amount { get; set; }
+        public decimal? Amount { get; set; }
 
         /// <summary>
         /// The SKU of a bundle item from the invoice that the target item is within.

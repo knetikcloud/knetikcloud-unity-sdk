@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using RestSharp;
 using com.knetikcloud.Client;
 using com.knetikcloud.Model;
+using com.knetikcloud.Utils;
 using UnityEngine;
 
 using Object = System.Object;
@@ -16,12 +17,15 @@ namespace com.knetikcloud.Api
     /// </summary>
     public interface IPaymentsXsollaApi
     {
+        string CreateXsollaTokenUrlData { get; }
+
+        
         /// <summary>
         /// Create a payment token that should be used to forward the user to Xsolla so they can complete payment 
         /// </summary>
         /// <param name="request">The payment request to be sent to XSolla</param>
-        /// <returns>string</returns>
-        string CreateXsollaTokenUrl (XsollaPaymentRequest request);
+        void CreateXsollaTokenUrl(XsollaPaymentRequest request);
+
     }
   
     /// <summary>
@@ -29,6 +33,14 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class PaymentsXsollaApi : IPaymentsXsollaApi
     {
+        private readonly KnetikCoroutine mCreateXsollaTokenUrlCoroutine;
+        private DateTime mCreateXsollaTokenUrlStartTime;
+        private string mCreateXsollaTokenUrlPath;
+
+        public string CreateXsollaTokenUrlData { get; private set; }
+        public delegate void CreateXsollaTokenUrlCompleteDelegate(string response);
+        public CreateXsollaTokenUrlCompleteDelegate CreateXsollaTokenUrlComplete;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="PaymentsXsollaApi"/> class.
         /// </summary>
@@ -36,52 +48,65 @@ namespace com.knetikcloud.Api
         public PaymentsXsollaApi()
         {
             KnetikClient = KnetikConfiguration.DefaultClient;
+            mCreateXsollaTokenUrlCoroutine = new KnetikCoroutine(KnetikClient);
         }
     
         /// <summary>
         /// Gets the Knetik client.
         /// </summary>
         /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient {get; private set;}
+        public KnetikClient KnetikClient { get; private set; }
 
         /// <summary>
         /// Create a payment token that should be used to forward the user to Xsolla so they can complete payment 
         /// </summary>
-        /// <param name="request">The payment request to be sent to XSolla</param> 
-        /// <returns>string</returns>            
-        public string CreateXsollaTokenUrl(XsollaPaymentRequest request)
+        /// <param name="request">The payment request to be sent to XSolla</param>
+        public void CreateXsollaTokenUrl(XsollaPaymentRequest request)
         {
             
-            string urlPath = "/payment/provider/xsolla/payment";
-            //urlPath = urlPath.Replace("{format}", "json");
-                
+            mCreateXsollaTokenUrlPath = "/payment/provider/xsolla/payment";
+            if (!string.IsNullOrEmpty(mCreateXsollaTokenUrlPath))
+            {
+                mCreateXsollaTokenUrlPath = mCreateXsollaTokenUrlPath.Replace("{format}", "json");
+            }
+            
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            String postBody = null;
+            string postBody = null;
 
             postBody = KnetikClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
-            String[] authSettings = new String[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
-            Debug.LogFormat("Knetik Cloud: Calling '{0}'...", urlPath);
+            mCreateXsollaTokenUrlStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mCreateXsollaTokenUrlStartTime, mCreateXsollaTokenUrlPath, "Sending server request...");
 
             // make the HTTP request
-            IRestResponse response = (IRestResponse) KnetikClient.CallApi(urlPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
+            mCreateXsollaTokenUrlCoroutine.ResponseReceived += CreateXsollaTokenUrlCallback;
+            mCreateXsollaTokenUrlCoroutine.Start(mCreateXsollaTokenUrlPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void CreateXsollaTokenUrlCallback(IRestResponse response)
+        {
             if (((int)response.StatusCode) >= 400)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling CreateXsollaTokenUrl: " + response.Content, response.Content);
+                throw new KnetikException((int)response.StatusCode, "Error calling CreateXsollaTokenUrl: " + response.Content, response.Content);
             }
             else if (((int)response.StatusCode) == 0)
             {
-                throw new KnetikException ((int)response.StatusCode, "Error calling CreateXsollaTokenUrl: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException((int)response.StatusCode, "Error calling CreateXsollaTokenUrl: " + response.ErrorMessage, response.ErrorMessage);
             }
-    
-            Debug.LogFormat("Knetik Cloud: '{0}' returned successfully.", urlPath);
-            return (string) KnetikClient.Deserialize(response.Content, typeof(string), response.Headers);
+
+            CreateXsollaTokenUrlData = (string) KnetikClient.Deserialize(response.Content, typeof(string), response.Headers);
+            KnetikLogger.LogResponse(mCreateXsollaTokenUrlStartTime, mCreateXsollaTokenUrlPath, string.Format("Response received successfully:\n{0}", CreateXsollaTokenUrlData.ToString()));
+
+            if (CreateXsollaTokenUrlComplete != null)
+            {
+                CreateXsollaTokenUrlComplete(CreateXsollaTokenUrlData);
+            }
         }
     }
 }

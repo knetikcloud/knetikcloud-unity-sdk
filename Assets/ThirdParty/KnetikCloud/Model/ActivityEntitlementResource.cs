@@ -37,7 +37,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The price of the sku, if available</value>
         [JsonProperty(PropertyName = "price")]
-        public double? Price { get; set; }
+        public decimal? Price { get; set; }
 
         /// <summary>
         /// The sku id, if available. If multiple are available, then first one is returned

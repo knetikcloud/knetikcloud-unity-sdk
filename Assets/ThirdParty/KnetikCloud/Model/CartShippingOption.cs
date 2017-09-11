@@ -33,13 +33,13 @@ namespace com.knetikcloud.Model
         /// Gets or Sets OriginalPrice
         /// </summary>
         [JsonProperty(PropertyName = "original_price")]
-        public double? OriginalPrice { get; set; }
+        public decimal? OriginalPrice { get; set; }
 
         /// <summary>
         /// Gets or Sets Price
         /// </summary>
         [JsonProperty(PropertyName = "price")]
-        public double? Price { get; set; }
+        public decimal? Price { get; set; }
 
         /// <summary>
         /// Gets or Sets ShippingItemId
