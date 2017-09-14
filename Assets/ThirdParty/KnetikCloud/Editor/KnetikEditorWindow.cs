@@ -7,20 +7,19 @@ namespace com.knetikcloud.UnityEditor
 {
     public class KnetikEditorWindow : EditorWindow
     {
-        private KnetikProjectSettings _projectSettings;
-        private KnetikUserCredentials _userCredentials;
+        private KnetikUserCredentials mUserCredentials;
 
-        private GUIContent _projectSettingsHeaderLabel;
-        private GUIContent _baseUrl;
-        private GUIContent _grantType;
-        private GUIContent _clientId;
-        private GUIContent _clientSecret;
+        private GUIContent mProjectSettingsHeaderLabel;
+        private GUIContent mBaseUrl;
+        private GUIContent mGrantType;
+        private GUIContent mClientId;
+        private GUIContent mClientSecret;
 
-        private GUIContent _userSettingsHeaderLabel;
-        private GUIContent _userId;
-        private GUIContent _password;
+        private GUIContent mUserSettingsHeaderLabel;
+        private GUIContent mUserId;
+        private GUIContent mPassword;
 
-        private GUIContent _saveButton;
+        private GUIContent mSaveButton;
 
         [MenuItem("Knetik Cloud/Project Settings...")]
         private static void KnetikCloudProjectSettings()
@@ -30,27 +29,22 @@ namespace com.knetikcloud.UnityEditor
 
         private void OnEnable()
         {
-            _projectSettings = KnetikEditorScriptableObjectUtis.LoadPersistentData<KnetikProjectSettings>(KnetikProjectSettings.SaveDataPath);
-            if (_projectSettings == null)
-            {
-                _projectSettings = ScriptableObject.CreateInstance<KnetikProjectSettings>();
-                KnetikEditorAssetDatabaseUtils.CreateAssetAndDirectories(_projectSettings, KnetikProjectSettings.SaveDataPath);
-            }
+            KnetikEditorExtensions.LoadProjectSettings();
 
-            _userCredentials = KnetikUserCredentials.Load();
+            mUserCredentials = KnetikUserCredentials.Load();
 
-            _projectSettingsHeaderLabel = new GUIContent("Project KnetikConfiguration");
+            mProjectSettingsHeaderLabel = new GUIContent("Project KnetikConfiguration");
 
-            _baseUrl = new GUIContent("Base URL");
-            _grantType = new GUIContent("Grant Type");
-            _clientId = new GUIContent("Client Id");
-            _clientSecret = new GUIContent("Client Secret");
+            mBaseUrl = new GUIContent("Base URL");
+            mGrantType = new GUIContent("Grant Type");
+            mClientId = new GUIContent("Client Id");
+            mClientSecret = new GUIContent("Client Secret");
 
-            _userSettingsHeaderLabel = new GUIContent("Per User Settings");
-            _userId = new GUIContent("User Id");
-            _password = new GUIContent("Password");
+            mUserSettingsHeaderLabel = new GUIContent("Per User Settings");
+            mUserId = new GUIContent("User Id");
+            mPassword = new GUIContent("Password");
 
-            _saveButton = new GUIContent("Save");
+            mSaveButton = new GUIContent("Save");
         }
 
         private void OnGUI()
@@ -60,10 +54,10 @@ namespace com.knetikcloud.UnityEditor
 
             if (GUI.changed)
             {
-                EditorUtility.SetDirty(_projectSettings);
+                EditorUtility.SetDirty(KnetikEditorExtensions.ProjectSettings);
             }
 
-            if (GUILayout.Button(_saveButton))
+            if (GUILayout.Button(mSaveButton))
             {
                 SaveSettings();
             }
@@ -73,27 +67,27 @@ namespace com.knetikcloud.UnityEditor
 
         private void DrawProjectSettingsGUI()
         {
-            EditorGUILayout.LabelField(_projectSettingsHeaderLabel, EditorStyles.boldLabel);
+            EditorGUILayout.LabelField(mProjectSettingsHeaderLabel, EditorStyles.boldLabel);
 
-            _projectSettings.BaseUrl = EditorGUILayout.TextField(_baseUrl, _projectSettings.BaseUrl);
-            _projectSettings.GrantType = EditorGUILayout.TextField(_grantType, _projectSettings.GrantType);
-            _projectSettings.ClientId = EditorGUILayout.TextField(_clientId, _projectSettings.ClientId);
-            _projectSettings.ClientSecret = EditorGUILayout.TextField(_clientSecret, _projectSettings.ClientSecret);
+            KnetikEditorExtensions.ProjectSettings.BaseUrl = EditorGUILayout.TextField(mBaseUrl, KnetikEditorExtensions.ProjectSettings.BaseUrl);
+            KnetikEditorExtensions.ProjectSettings.GrantType = EditorGUILayout.TextField(mGrantType, KnetikEditorExtensions.ProjectSettings.GrantType);
+            KnetikEditorExtensions.ProjectSettings.ClientId = EditorGUILayout.TextField(mClientId, KnetikEditorExtensions.ProjectSettings.ClientId);
+            KnetikEditorExtensions.ProjectSettings.ClientSecret = EditorGUILayout.TextField(mClientSecret, KnetikEditorExtensions.ProjectSettings.ClientSecret);
             EditorGUILayout.Space();
         }
 
         private void DrawUserSettingsGUI()
         {
-            EditorGUILayout.LabelField(_userSettingsHeaderLabel, EditorStyles.boldLabel);
-            _userCredentials.UserId = EditorGUILayout.TextField(_userId, _userCredentials.UserId);
-            _userCredentials.Password = EditorGUILayout.TextField(_password, _userCredentials.Password);
+            EditorGUILayout.LabelField(mUserSettingsHeaderLabel, EditorStyles.boldLabel);
+            mUserCredentials.UserId = EditorGUILayout.TextField(mUserId, mUserCredentials.UserId);
+            mUserCredentials.Password = EditorGUILayout.TextField(mPassword, mUserCredentials.Password);
             EditorGUILayout.Space();
         }
 
         private void SaveSettings()
         {
             KnetikEditorScriptableObjectUtis.SavePersistentData();
-            KnetikUserCredentials.Save(_userCredentials);
+            KnetikUserCredentials.Save(mUserCredentials);
         }
     }
 }
