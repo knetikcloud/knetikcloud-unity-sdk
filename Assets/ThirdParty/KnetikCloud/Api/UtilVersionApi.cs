@@ -46,16 +46,9 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public UtilVersionApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mGetVersionCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetVersionCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Get current version info 
         /// </summary>
@@ -96,7 +89,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetVersion: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetVersionData = (Version) KnetikClient.Deserialize(response.Content, typeof(Version), response.Headers);
+            GetVersionData = (Version) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(Version), response.Headers);
             KnetikLogger.LogResponse(mGetVersionStartTime, mGetVersionPath, string.Format("Response received successfully:\n{0}", GetVersionData.ToString()));
 
             if (GetVersionComplete != null)

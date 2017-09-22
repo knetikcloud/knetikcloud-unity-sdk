@@ -32,6 +32,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "result")]
         public List<ErrorResource> _Result { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

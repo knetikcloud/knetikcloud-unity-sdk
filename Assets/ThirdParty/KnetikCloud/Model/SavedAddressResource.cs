@@ -101,6 +101,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "state_code")]
         public string StateCode { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

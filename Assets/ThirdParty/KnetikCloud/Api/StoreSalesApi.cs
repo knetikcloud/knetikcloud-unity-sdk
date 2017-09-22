@@ -107,20 +107,13 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public StoreSalesApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mCreateCatalogSaleCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteCatalogSaleCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetCatalogSaleCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetCatalogSalesCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateCatalogSaleCoroutine = new KnetikCoroutine(KnetikClient);
+            mCreateCatalogSaleCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mDeleteCatalogSaleCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetCatalogSaleCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetCatalogSalesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mUpdateCatalogSaleCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Create a sale 
         /// </summary>
@@ -140,7 +133,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(catalogSale); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(catalogSale); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -164,7 +157,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateCatalogSale: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateCatalogSaleData = (CatalogSale) KnetikClient.Deserialize(response.Content, typeof(CatalogSale), response.Headers);
+            CreateCatalogSaleData = (CatalogSale) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CatalogSale), response.Headers);
             KnetikLogger.LogResponse(mCreateCatalogSaleStartTime, mCreateCatalogSalePath, string.Format("Response received successfully:\n{0}", CreateCatalogSaleData.ToString()));
 
             if (CreateCatalogSaleComplete != null)
@@ -189,7 +182,7 @@ namespace com.knetikcloud.Api
             {
                 mDeleteCatalogSalePath = mDeleteCatalogSalePath.Replace("{format}", "json");
             }
-            mDeleteCatalogSalePath = mDeleteCatalogSalePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteCatalogSalePath = mDeleteCatalogSalePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -242,7 +235,7 @@ namespace com.knetikcloud.Api
             {
                 mGetCatalogSalePath = mGetCatalogSalePath.Replace("{format}", "json");
             }
-            mGetCatalogSalePath = mGetCatalogSalePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetCatalogSalePath = mGetCatalogSalePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -272,7 +265,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetCatalogSale: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetCatalogSaleData = (CatalogSale) KnetikClient.Deserialize(response.Content, typeof(CatalogSale), response.Headers);
+            GetCatalogSaleData = (CatalogSale) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CatalogSale), response.Headers);
             KnetikLogger.LogResponse(mGetCatalogSaleStartTime, mGetCatalogSalePath, string.Format("Response received successfully:\n{0}", GetCatalogSaleData.ToString()));
 
             if (GetCatalogSaleComplete != null)
@@ -303,17 +296,17 @@ namespace com.knetikcloud.Api
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
@@ -338,7 +331,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetCatalogSales: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetCatalogSalesData = (PageResourceCatalogSale) KnetikClient.Deserialize(response.Content, typeof(PageResourceCatalogSale), response.Headers);
+            GetCatalogSalesData = (PageResourceCatalogSale) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceCatalogSale), response.Headers);
             KnetikLogger.LogResponse(mGetCatalogSalesStartTime, mGetCatalogSalesPath, string.Format("Response received successfully:\n{0}", GetCatalogSalesData.ToString()));
 
             if (GetCatalogSalesComplete != null)
@@ -364,7 +357,7 @@ namespace com.knetikcloud.Api
             {
                 mUpdateCatalogSalePath = mUpdateCatalogSalePath.Replace("{format}", "json");
             }
-            mUpdateCatalogSalePath = mUpdateCatalogSalePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateCatalogSalePath = mUpdateCatalogSalePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -372,7 +365,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(catalogSale); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(catalogSale); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -396,7 +389,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateCatalogSale: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateCatalogSaleData = (CatalogSale) KnetikClient.Deserialize(response.Content, typeof(CatalogSale), response.Headers);
+            UpdateCatalogSaleData = (CatalogSale) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CatalogSale), response.Headers);
             KnetikLogger.LogResponse(mUpdateCatalogSaleStartTime, mUpdateCatalogSalePath, string.Format("Response received successfully:\n{0}", UpdateCatalogSaleData.ToString()));
 
             if (UpdateCatalogSaleComplete != null)

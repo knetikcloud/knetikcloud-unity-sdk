@@ -147,23 +147,16 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public AuthClientsApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mCreateClientCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteClientCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetClientCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetClientGrantTypesCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetClientsCoroutine = new KnetikCoroutine(KnetikClient);
-            mSetClientGrantTypesCoroutine = new KnetikCoroutine(KnetikClient);
-            mSetClientRedirectUrisCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateClientCoroutine = new KnetikCoroutine(KnetikClient);
+            mCreateClientCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mDeleteClientCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetClientCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetClientGrantTypesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetClientsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mSetClientGrantTypesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mSetClientRedirectUrisCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mUpdateClientCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Create a new client 
         /// </summary>
@@ -183,7 +176,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(clientResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(clientResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -207,7 +200,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateClient: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateClientData = (ClientResource) KnetikClient.Deserialize(response.Content, typeof(ClientResource), response.Headers);
+            CreateClientData = (ClientResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ClientResource), response.Headers);
             KnetikLogger.LogResponse(mCreateClientStartTime, mCreateClientPath, string.Format("Response received successfully:\n{0}", CreateClientData.ToString()));
 
             if (CreateClientComplete != null)
@@ -232,7 +225,7 @@ namespace com.knetikcloud.Api
             {
                 mDeleteClientPath = mDeleteClientPath.Replace("{format}", "json");
             }
-            mDeleteClientPath = mDeleteClientPath.Replace("{" + "client_key" + "}", KnetikClient.ParameterToString(clientKey));
+            mDeleteClientPath = mDeleteClientPath.Replace("{" + "client_key" + "}", KnetikClient.DefaultClient.ParameterToString(clientKey));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -285,7 +278,7 @@ namespace com.knetikcloud.Api
             {
                 mGetClientPath = mGetClientPath.Replace("{format}", "json");
             }
-            mGetClientPath = mGetClientPath.Replace("{" + "client_key" + "}", KnetikClient.ParameterToString(clientKey));
+            mGetClientPath = mGetClientPath.Replace("{" + "client_key" + "}", KnetikClient.DefaultClient.ParameterToString(clientKey));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -315,7 +308,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetClient: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetClientData = (ClientResource) KnetikClient.Deserialize(response.Content, typeof(ClientResource), response.Headers);
+            GetClientData = (ClientResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ClientResource), response.Headers);
             KnetikLogger.LogResponse(mGetClientStartTime, mGetClientPath, string.Format("Response received successfully:\n{0}", GetClientData.ToString()));
 
             if (GetClientComplete != null)
@@ -363,7 +356,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetClientGrantTypes: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetClientGrantTypesData = (List<GrantTypeResource>) KnetikClient.Deserialize(response.Content, typeof(List<GrantTypeResource>), response.Headers);
+            GetClientGrantTypesData = (List<GrantTypeResource>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<GrantTypeResource>), response.Headers);
             KnetikLogger.LogResponse(mGetClientGrantTypesStartTime, mGetClientGrantTypesPath, string.Format("Response received successfully:\n{0}", GetClientGrantTypesData.ToString()));
 
             if (GetClientGrantTypesComplete != null)
@@ -394,17 +387,17 @@ namespace com.knetikcloud.Api
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
@@ -429,7 +422,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetClients: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetClientsData = (PageResourceClientResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceClientResource), response.Headers);
+            GetClientsData = (PageResourceClientResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceClientResource), response.Headers);
             KnetikLogger.LogResponse(mGetClientsStartTime, mGetClientsPath, string.Format("Response received successfully:\n{0}", GetClientsData.ToString()));
 
             if (GetClientsComplete != null)
@@ -455,7 +448,7 @@ namespace com.knetikcloud.Api
             {
                 mSetClientGrantTypesPath = mSetClientGrantTypesPath.Replace("{format}", "json");
             }
-            mSetClientGrantTypesPath = mSetClientGrantTypesPath.Replace("{" + "client_key" + "}", KnetikClient.ParameterToString(clientKey));
+            mSetClientGrantTypesPath = mSetClientGrantTypesPath.Replace("{" + "client_key" + "}", KnetikClient.DefaultClient.ParameterToString(clientKey));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -463,7 +456,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(grantList); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(grantList); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -511,7 +504,7 @@ namespace com.knetikcloud.Api
             {
                 mSetClientRedirectUrisPath = mSetClientRedirectUrisPath.Replace("{format}", "json");
             }
-            mSetClientRedirectUrisPath = mSetClientRedirectUrisPath.Replace("{" + "client_key" + "}", KnetikClient.ParameterToString(clientKey));
+            mSetClientRedirectUrisPath = mSetClientRedirectUrisPath.Replace("{" + "client_key" + "}", KnetikClient.DefaultClient.ParameterToString(clientKey));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -519,7 +512,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(redirectList); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(redirectList); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -567,7 +560,7 @@ namespace com.knetikcloud.Api
             {
                 mUpdateClientPath = mUpdateClientPath.Replace("{format}", "json");
             }
-            mUpdateClientPath = mUpdateClientPath.Replace("{" + "client_key" + "}", KnetikClient.ParameterToString(clientKey));
+            mUpdateClientPath = mUpdateClientPath.Replace("{" + "client_key" + "}", KnetikClient.DefaultClient.ParameterToString(clientKey));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -575,7 +568,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(clientResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(clientResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -599,7 +592,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateClient: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateClientData = (ClientResource) KnetikClient.Deserialize(response.Content, typeof(ClientResource), response.Headers);
+            UpdateClientData = (ClientResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ClientResource), response.Headers);
             KnetikLogger.LogResponse(mUpdateClientStartTime, mUpdateClientPath, string.Format("Response received successfully:\n{0}", UpdateClientData.ToString()));
 
             if (UpdateClientComplete != null)

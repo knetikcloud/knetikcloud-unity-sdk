@@ -32,6 +32,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "user_id")]
         public int? UserId { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

@@ -108,20 +108,13 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public AuthPermissionsApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mCreatePermissionCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeletePermissionCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetPermissionCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetPermissionsCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdatePermissionCoroutine = new KnetikCoroutine(KnetikClient);
+            mCreatePermissionCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mDeletePermissionCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetPermissionCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetPermissionsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mUpdatePermissionCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Create a new permission 
         /// </summary>
@@ -141,7 +134,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(permissionResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(permissionResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -165,7 +158,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreatePermission: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreatePermissionData = (PermissionResource) KnetikClient.Deserialize(response.Content, typeof(PermissionResource), response.Headers);
+            CreatePermissionData = (PermissionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PermissionResource), response.Headers);
             KnetikLogger.LogResponse(mCreatePermissionStartTime, mCreatePermissionPath, string.Format("Response received successfully:\n{0}", CreatePermissionData.ToString()));
 
             if (CreatePermissionComplete != null)
@@ -191,7 +184,7 @@ namespace com.knetikcloud.Api
             {
                 mDeletePermissionPath = mDeletePermissionPath.Replace("{format}", "json");
             }
-            mDeletePermissionPath = mDeletePermissionPath.Replace("{" + "permission" + "}", KnetikClient.ParameterToString(permission));
+            mDeletePermissionPath = mDeletePermissionPath.Replace("{" + "permission" + "}", KnetikClient.DefaultClient.ParameterToString(permission));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -201,7 +194,7 @@ namespace com.knetikcloud.Api
 
             if (force != null)
             {
-                queryParams.Add("force", KnetikClient.ParameterToString(force));
+                queryParams.Add("force", KnetikClient.DefaultClient.ParameterToString(force));
             }
 
             // authentication setting, if any
@@ -249,7 +242,7 @@ namespace com.knetikcloud.Api
             {
                 mGetPermissionPath = mGetPermissionPath.Replace("{format}", "json");
             }
-            mGetPermissionPath = mGetPermissionPath.Replace("{" + "permission" + "}", KnetikClient.ParameterToString(permission));
+            mGetPermissionPath = mGetPermissionPath.Replace("{" + "permission" + "}", KnetikClient.DefaultClient.ParameterToString(permission));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -279,7 +272,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetPermission: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetPermissionData = (PermissionResource) KnetikClient.Deserialize(response.Content, typeof(PermissionResource), response.Headers);
+            GetPermissionData = (PermissionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PermissionResource), response.Headers);
             KnetikLogger.LogResponse(mGetPermissionStartTime, mGetPermissionPath, string.Format("Response received successfully:\n{0}", GetPermissionData.ToString()));
 
             if (GetPermissionComplete != null)
@@ -310,17 +303,17 @@ namespace com.knetikcloud.Api
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
@@ -345,7 +338,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetPermissions: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetPermissionsData = (PageResourcePermissionResource) KnetikClient.Deserialize(response.Content, typeof(PageResourcePermissionResource), response.Headers);
+            GetPermissionsData = (PageResourcePermissionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourcePermissionResource), response.Headers);
             KnetikLogger.LogResponse(mGetPermissionsStartTime, mGetPermissionsPath, string.Format("Response received successfully:\n{0}", GetPermissionsData.ToString()));
 
             if (GetPermissionsComplete != null)
@@ -371,7 +364,7 @@ namespace com.knetikcloud.Api
             {
                 mUpdatePermissionPath = mUpdatePermissionPath.Replace("{format}", "json");
             }
-            mUpdatePermissionPath = mUpdatePermissionPath.Replace("{" + "permission" + "}", KnetikClient.ParameterToString(permission));
+            mUpdatePermissionPath = mUpdatePermissionPath.Replace("{" + "permission" + "}", KnetikClient.DefaultClient.ParameterToString(permission));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -379,7 +372,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(permissionResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(permissionResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -403,7 +396,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdatePermission: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdatePermissionData = (PermissionResource) KnetikClient.Deserialize(response.Content, typeof(PermissionResource), response.Headers);
+            UpdatePermissionData = (PermissionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PermissionResource), response.Headers);
             KnetikLogger.LogResponse(mUpdatePermissionStartTime, mUpdatePermissionPath, string.Format("Response received successfully:\n{0}", UpdatePermissionData.ToString()));
 
             if (UpdatePermissionComplete != null)

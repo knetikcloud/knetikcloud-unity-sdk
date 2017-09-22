@@ -120,21 +120,14 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public UsersFriendshipsApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mAddFriendCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetFriendsCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetInviteTokenCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetInvitesCoroutine = new KnetikCoroutine(KnetikClient);
-            mRedeemFriendshipTokenCoroutine = new KnetikCoroutine(KnetikClient);
-            mRemoveOrDeclineFriendCoroutine = new KnetikCoroutine(KnetikClient);
+            mAddFriendCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetFriendsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetInviteTokenCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetInvitesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mRedeemFriendshipTokenCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mRemoveOrDeclineFriendCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Add a friend As a user, either creates or confirm a pending request. As an admin, call this endpoint twice while inverting the IDs to create a confirmed friendship.
         /// </summary>
@@ -158,8 +151,8 @@ namespace com.knetikcloud.Api
             {
                 mAddFriendPath = mAddFriendPath.Replace("{format}", "json");
             }
-            mAddFriendPath = mAddFriendPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-mAddFriendPath = mAddFriendPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mAddFriendPath = mAddFriendPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
+mAddFriendPath = mAddFriendPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -214,7 +207,7 @@ mAddFriendPath = mAddFriendPath.Replace("{" + "id" + "}", KnetikClient.Parameter
             {
                 mGetFriendsPath = mGetFriendsPath.Replace("{format}", "json");
             }
-            mGetFriendsPath = mGetFriendsPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+            mGetFriendsPath = mGetFriendsPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -224,12 +217,12 @@ mAddFriendPath = mAddFriendPath.Replace("{" + "id" + "}", KnetikClient.Parameter
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             // authentication setting, if any
@@ -254,7 +247,7 @@ mAddFriendPath = mAddFriendPath.Replace("{" + "id" + "}", KnetikClient.Parameter
                 throw new KnetikException((int)response.StatusCode, "Error calling GetFriends: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetFriendsData = (PageResourceSimpleUserResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceSimpleUserResource), response.Headers);
+            GetFriendsData = (PageResourceSimpleUserResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceSimpleUserResource), response.Headers);
             KnetikLogger.LogResponse(mGetFriendsStartTime, mGetFriendsPath, string.Format("Response received successfully:\n{0}", GetFriendsData.ToString()));
 
             if (GetFriendsComplete != null)
@@ -279,7 +272,7 @@ mAddFriendPath = mAddFriendPath.Replace("{" + "id" + "}", KnetikClient.Parameter
             {
                 mGetInviteTokenPath = mGetInviteTokenPath.Replace("{format}", "json");
             }
-            mGetInviteTokenPath = mGetInviteTokenPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+            mGetInviteTokenPath = mGetInviteTokenPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -309,7 +302,7 @@ mAddFriendPath = mAddFriendPath.Replace("{" + "id" + "}", KnetikClient.Parameter
                 throw new KnetikException((int)response.StatusCode, "Error calling GetInviteToken: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetInviteTokenData = (string) KnetikClient.Deserialize(response.Content, typeof(string), response.Headers);
+            GetInviteTokenData = (string) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(string), response.Headers);
             KnetikLogger.LogResponse(mGetInviteTokenStartTime, mGetInviteTokenPath, string.Format("Response received successfully:\n{0}", GetInviteTokenData.ToString()));
 
             if (GetInviteTokenComplete != null)
@@ -336,7 +329,7 @@ mAddFriendPath = mAddFriendPath.Replace("{" + "id" + "}", KnetikClient.Parameter
             {
                 mGetInvitesPath = mGetInvitesPath.Replace("{format}", "json");
             }
-            mGetInvitesPath = mGetInvitesPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+            mGetInvitesPath = mGetInvitesPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -346,12 +339,12 @@ mAddFriendPath = mAddFriendPath.Replace("{" + "id" + "}", KnetikClient.Parameter
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             // authentication setting, if any
@@ -376,7 +369,7 @@ mAddFriendPath = mAddFriendPath.Replace("{" + "id" + "}", KnetikClient.Parameter
                 throw new KnetikException((int)response.StatusCode, "Error calling GetInvites: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetInvitesData = (PageResourceSimpleUserResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceSimpleUserResource), response.Headers);
+            GetInvitesData = (PageResourceSimpleUserResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceSimpleUserResource), response.Headers);
             KnetikLogger.LogResponse(mGetInvitesStartTime, mGetInvitesPath, string.Format("Response received successfully:\n{0}", GetInvitesData.ToString()));
 
             if (GetInvitesComplete != null)
@@ -402,7 +395,7 @@ mAddFriendPath = mAddFriendPath.Replace("{" + "id" + "}", KnetikClient.Parameter
             {
                 mRedeemFriendshipTokenPath = mRedeemFriendshipTokenPath.Replace("{format}", "json");
             }
-            mRedeemFriendshipTokenPath = mRedeemFriendshipTokenPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+            mRedeemFriendshipTokenPath = mRedeemFriendshipTokenPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -410,7 +403,7 @@ mAddFriendPath = mAddFriendPath.Replace("{" + "id" + "}", KnetikClient.Parameter
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(token); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(token); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -463,8 +456,8 @@ mAddFriendPath = mAddFriendPath.Replace("{" + "id" + "}", KnetikClient.Parameter
             {
                 mRemoveOrDeclineFriendPath = mRemoveOrDeclineFriendPath.Replace("{format}", "json");
             }
-            mRemoveOrDeclineFriendPath = mRemoveOrDeclineFriendPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-mRemoveOrDeclineFriendPath = mRemoveOrDeclineFriendPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mRemoveOrDeclineFriendPath = mRemoveOrDeclineFriendPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
+mRemoveOrDeclineFriendPath = mRemoveOrDeclineFriendPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();

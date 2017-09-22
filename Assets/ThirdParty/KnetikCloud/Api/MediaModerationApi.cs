@@ -78,18 +78,11 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public MediaModerationApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mGetModerationReportCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetModerationReportsCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateModerationReportCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetModerationReportCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetModerationReportsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mUpdateModerationReportCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Get a flag report 
         /// </summary>
@@ -107,7 +100,7 @@ namespace com.knetikcloud.Api
             {
                 mGetModerationReportPath = mGetModerationReportPath.Replace("{format}", "json");
             }
-            mGetModerationReportPath = mGetModerationReportPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetModerationReportPath = mGetModerationReportPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -137,7 +130,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetModerationReport: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetModerationReportData = (FlagReportResource) KnetikClient.Deserialize(response.Content, typeof(FlagReportResource), response.Headers);
+            GetModerationReportData = (FlagReportResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(FlagReportResource), response.Headers);
             KnetikLogger.LogResponse(mGetModerationReportStartTime, mGetModerationReportPath, string.Format("Response received successfully:\n{0}", GetModerationReportData.ToString()));
 
             if (GetModerationReportComplete != null)
@@ -169,22 +162,22 @@ namespace com.knetikcloud.Api
 
             if (excludeResolved != null)
             {
-                queryParams.Add("exclude_resolved", KnetikClient.ParameterToString(excludeResolved));
+                queryParams.Add("exclude_resolved", KnetikClient.DefaultClient.ParameterToString(excludeResolved));
             }
 
             if (filterContext != null)
             {
-                queryParams.Add("filter_context", KnetikClient.ParameterToString(filterContext));
+                queryParams.Add("filter_context", KnetikClient.DefaultClient.ParameterToString(filterContext));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             // authentication setting, if any
@@ -209,7 +202,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetModerationReports: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetModerationReportsData = (PageResourceFlagReportResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceFlagReportResource), response.Headers);
+            GetModerationReportsData = (PageResourceFlagReportResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceFlagReportResource), response.Headers);
             KnetikLogger.LogResponse(mGetModerationReportsStartTime, mGetModerationReportsPath, string.Format("Response received successfully:\n{0}", GetModerationReportsData.ToString()));
 
             if (GetModerationReportsComplete != null)
@@ -235,7 +228,7 @@ namespace com.knetikcloud.Api
             {
                 mUpdateModerationReportPath = mUpdateModerationReportPath.Replace("{format}", "json");
             }
-            mUpdateModerationReportPath = mUpdateModerationReportPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateModerationReportPath = mUpdateModerationReportPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -243,7 +236,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(flagReportResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(flagReportResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };

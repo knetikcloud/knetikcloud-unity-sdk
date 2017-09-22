@@ -176,24 +176,17 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public PaymentsApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mCreatePaymentMethodCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeletePaymentMethodCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetPaymentMethodCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetPaymentMethodTypeCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetPaymentMethodTypesCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetPaymentMethodsCoroutine = new KnetikCoroutine(KnetikClient);
-            mPaymentAuthorizationCoroutine = new KnetikCoroutine(KnetikClient);
-            mPaymentCaptureCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdatePaymentMethodCoroutine = new KnetikCoroutine(KnetikClient);
+            mCreatePaymentMethodCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mDeletePaymentMethodCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetPaymentMethodCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetPaymentMethodTypeCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetPaymentMethodTypesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetPaymentMethodsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mPaymentAuthorizationCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mPaymentCaptureCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mUpdatePaymentMethodCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Create a new payment method for a user 
         /// </summary>
@@ -212,7 +205,7 @@ namespace com.knetikcloud.Api
             {
                 mCreatePaymentMethodPath = mCreatePaymentMethodPath.Replace("{format}", "json");
             }
-            mCreatePaymentMethodPath = mCreatePaymentMethodPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+            mCreatePaymentMethodPath = mCreatePaymentMethodPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -220,7 +213,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(paymentMethod); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(paymentMethod); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -244,7 +237,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreatePaymentMethod: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreatePaymentMethodData = (PaymentMethodResource) KnetikClient.Deserialize(response.Content, typeof(PaymentMethodResource), response.Headers);
+            CreatePaymentMethodData = (PaymentMethodResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PaymentMethodResource), response.Headers);
             KnetikLogger.LogResponse(mCreatePaymentMethodStartTime, mCreatePaymentMethodPath, string.Format("Response received successfully:\n{0}", CreatePaymentMethodData.ToString()));
 
             if (CreatePaymentMethodComplete != null)
@@ -275,8 +268,8 @@ namespace com.knetikcloud.Api
             {
                 mDeletePaymentMethodPath = mDeletePaymentMethodPath.Replace("{format}", "json");
             }
-            mDeletePaymentMethodPath = mDeletePaymentMethodPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-mDeletePaymentMethodPath = mDeletePaymentMethodPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeletePaymentMethodPath = mDeletePaymentMethodPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
+mDeletePaymentMethodPath = mDeletePaymentMethodPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -335,8 +328,8 @@ mDeletePaymentMethodPath = mDeletePaymentMethodPath.Replace("{" + "id" + "}", Kn
             {
                 mGetPaymentMethodPath = mGetPaymentMethodPath.Replace("{format}", "json");
             }
-            mGetPaymentMethodPath = mGetPaymentMethodPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-mGetPaymentMethodPath = mGetPaymentMethodPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetPaymentMethodPath = mGetPaymentMethodPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
+mGetPaymentMethodPath = mGetPaymentMethodPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -366,7 +359,7 @@ mGetPaymentMethodPath = mGetPaymentMethodPath.Replace("{" + "id" + "}", KnetikCl
                 throw new KnetikException((int)response.StatusCode, "Error calling GetPaymentMethod: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetPaymentMethodData = (PaymentMethodResource) KnetikClient.Deserialize(response.Content, typeof(PaymentMethodResource), response.Headers);
+            GetPaymentMethodData = (PaymentMethodResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PaymentMethodResource), response.Headers);
             KnetikLogger.LogResponse(mGetPaymentMethodStartTime, mGetPaymentMethodPath, string.Format("Response received successfully:\n{0}", GetPaymentMethodData.ToString()));
 
             if (GetPaymentMethodComplete != null)
@@ -391,7 +384,7 @@ mGetPaymentMethodPath = mGetPaymentMethodPath.Replace("{" + "id" + "}", KnetikCl
             {
                 mGetPaymentMethodTypePath = mGetPaymentMethodTypePath.Replace("{format}", "json");
             }
-            mGetPaymentMethodTypePath = mGetPaymentMethodTypePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetPaymentMethodTypePath = mGetPaymentMethodTypePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -421,7 +414,7 @@ mGetPaymentMethodPath = mGetPaymentMethodPath.Replace("{" + "id" + "}", KnetikCl
                 throw new KnetikException((int)response.StatusCode, "Error calling GetPaymentMethodType: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetPaymentMethodTypeData = (PaymentMethodTypeResource) KnetikClient.Deserialize(response.Content, typeof(PaymentMethodTypeResource), response.Headers);
+            GetPaymentMethodTypeData = (PaymentMethodTypeResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PaymentMethodTypeResource), response.Headers);
             KnetikLogger.LogResponse(mGetPaymentMethodTypeStartTime, mGetPaymentMethodTypePath, string.Format("Response received successfully:\n{0}", GetPaymentMethodTypeData.ToString()));
 
             if (GetPaymentMethodTypeComplete != null)
@@ -453,22 +446,22 @@ mGetPaymentMethodPath = mGetPaymentMethodPath.Replace("{" + "id" + "}", KnetikCl
 
             if (filterName != null)
             {
-                queryParams.Add("filter_name", KnetikClient.ParameterToString(filterName));
+                queryParams.Add("filter_name", KnetikClient.DefaultClient.ParameterToString(filterName));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
@@ -493,7 +486,7 @@ mGetPaymentMethodPath = mGetPaymentMethodPath.Replace("{" + "id" + "}", KnetikCl
                 throw new KnetikException((int)response.StatusCode, "Error calling GetPaymentMethodTypes: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetPaymentMethodTypesData = (PageResourcePaymentMethodTypeResource) KnetikClient.Deserialize(response.Content, typeof(PageResourcePaymentMethodTypeResource), response.Headers);
+            GetPaymentMethodTypesData = (PageResourcePaymentMethodTypeResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourcePaymentMethodTypeResource), response.Headers);
             KnetikLogger.LogResponse(mGetPaymentMethodTypesStartTime, mGetPaymentMethodTypesPath, string.Format("Response received successfully:\n{0}", GetPaymentMethodTypesData.ToString()));
 
             if (GetPaymentMethodTypesComplete != null)
@@ -525,7 +518,7 @@ mGetPaymentMethodPath = mGetPaymentMethodPath.Replace("{" + "id" + "}", KnetikCl
             {
                 mGetPaymentMethodsPath = mGetPaymentMethodsPath.Replace("{format}", "json");
             }
-            mGetPaymentMethodsPath = mGetPaymentMethodsPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+            mGetPaymentMethodsPath = mGetPaymentMethodsPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -535,37 +528,37 @@ mGetPaymentMethodPath = mGetPaymentMethodPath.Replace("{" + "id" + "}", KnetikCl
 
             if (filterName != null)
             {
-                queryParams.Add("filter_name", KnetikClient.ParameterToString(filterName));
+                queryParams.Add("filter_name", KnetikClient.DefaultClient.ParameterToString(filterName));
             }
 
             if (filterPaymentType != null)
             {
-                queryParams.Add("filter_payment_type", KnetikClient.ParameterToString(filterPaymentType));
+                queryParams.Add("filter_payment_type", KnetikClient.DefaultClient.ParameterToString(filterPaymentType));
             }
 
             if (filterPaymentMethodTypeId != null)
             {
-                queryParams.Add("filter_payment_method_type_id", KnetikClient.ParameterToString(filterPaymentMethodTypeId));
+                queryParams.Add("filter_payment_method_type_id", KnetikClient.DefaultClient.ParameterToString(filterPaymentMethodTypeId));
             }
 
             if (filterPaymentMethodTypeName != null)
             {
-                queryParams.Add("filter_payment_method_type_name", KnetikClient.ParameterToString(filterPaymentMethodTypeName));
+                queryParams.Add("filter_payment_method_type_name", KnetikClient.DefaultClient.ParameterToString(filterPaymentMethodTypeName));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
@@ -590,7 +583,7 @@ mGetPaymentMethodPath = mGetPaymentMethodPath.Replace("{" + "id" + "}", KnetikCl
                 throw new KnetikException((int)response.StatusCode, "Error calling GetPaymentMethods: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetPaymentMethodsData = (List<PaymentMethodResource>) KnetikClient.Deserialize(response.Content, typeof(List<PaymentMethodResource>), response.Headers);
+            GetPaymentMethodsData = (List<PaymentMethodResource>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<PaymentMethodResource>), response.Headers);
             KnetikLogger.LogResponse(mGetPaymentMethodsStartTime, mGetPaymentMethodsPath, string.Format("Response received successfully:\n{0}", GetPaymentMethodsData.ToString()));
 
             if (GetPaymentMethodsComplete != null)
@@ -617,7 +610,7 @@ mGetPaymentMethodPath = mGetPaymentMethodPath.Replace("{" + "id" + "}", KnetikCl
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(request); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -641,7 +634,7 @@ mGetPaymentMethodPath = mGetPaymentMethodPath.Replace("{" + "id" + "}", KnetikCl
                 throw new KnetikException((int)response.StatusCode, "Error calling PaymentAuthorization: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            PaymentAuthorizationData = (PaymentAuthorizationResource) KnetikClient.Deserialize(response.Content, typeof(PaymentAuthorizationResource), response.Headers);
+            PaymentAuthorizationData = (PaymentAuthorizationResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PaymentAuthorizationResource), response.Headers);
             KnetikLogger.LogResponse(mPaymentAuthorizationStartTime, mPaymentAuthorizationPath, string.Format("Response received successfully:\n{0}", PaymentAuthorizationData.ToString()));
 
             if (PaymentAuthorizationComplete != null)
@@ -666,7 +659,7 @@ mGetPaymentMethodPath = mGetPaymentMethodPath.Replace("{" + "id" + "}", KnetikCl
             {
                 mPaymentCapturePath = mPaymentCapturePath.Replace("{format}", "json");
             }
-            mPaymentCapturePath = mPaymentCapturePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mPaymentCapturePath = mPaymentCapturePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -726,8 +719,8 @@ mGetPaymentMethodPath = mGetPaymentMethodPath.Replace("{" + "id" + "}", KnetikCl
             {
                 mUpdatePaymentMethodPath = mUpdatePaymentMethodPath.Replace("{format}", "json");
             }
-            mUpdatePaymentMethodPath = mUpdatePaymentMethodPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-mUpdatePaymentMethodPath = mUpdatePaymentMethodPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdatePaymentMethodPath = mUpdatePaymentMethodPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
+mUpdatePaymentMethodPath = mUpdatePaymentMethodPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -735,7 +728,7 @@ mUpdatePaymentMethodPath = mUpdatePaymentMethodPath.Replace("{" + "id" + "}", Kn
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(paymentMethod); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(paymentMethod); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -759,7 +752,7 @@ mUpdatePaymentMethodPath = mUpdatePaymentMethodPath.Replace("{" + "id" + "}", Kn
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdatePaymentMethod: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdatePaymentMethodData = (PaymentMethodResource) KnetikClient.Deserialize(response.Content, typeof(PaymentMethodResource), response.Headers);
+            UpdatePaymentMethodData = (PaymentMethodResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PaymentMethodResource), response.Headers);
             KnetikLogger.LogResponse(mUpdatePaymentMethodStartTime, mUpdatePaymentMethodPath, string.Format("Response received successfully:\n{0}", UpdatePaymentMethodData.ToString()));
 
             if (UpdatePaymentMethodComplete != null)

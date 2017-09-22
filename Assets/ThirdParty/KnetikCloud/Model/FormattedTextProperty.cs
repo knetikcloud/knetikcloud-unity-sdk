@@ -12,12 +12,20 @@ namespace com.knetikcloud.Model
     public class FormattedTextProperty : Property
     {
         /// <summary>
+        /// The type of the property. Used for polymorphic type recognition and thus must match an expected type with additional properties.
+        /// </summary>
+        /// <value>The type of the property. Used for polymorphic type recognition and thus must match an expected type with additional properties.</value>
+        [JsonProperty(PropertyName = "type")]
+        public string Type { get; set; }
+
+        /// <summary>
         /// The value
         /// </summary>
         /// <value>The value</value>
         [JsonProperty(PropertyName = "value")]
         public string Value { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

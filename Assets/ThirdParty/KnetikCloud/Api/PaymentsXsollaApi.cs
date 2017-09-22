@@ -47,16 +47,9 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public PaymentsXsollaApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mCreateXsollaTokenUrlCoroutine = new KnetikCoroutine(KnetikClient);
+            mCreateXsollaTokenUrlCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Create a payment token that should be used to forward the user to Xsolla so they can complete payment 
         /// </summary>
@@ -76,7 +69,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(request); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -100,7 +93,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateXsollaTokenUrl: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateXsollaTokenUrlData = (string) KnetikClient.Deserialize(response.Content, typeof(string), response.Headers);
+            CreateXsollaTokenUrlData = (string) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(string), response.Headers);
             KnetikLogger.LogResponse(mCreateXsollaTokenUrlStartTime, mCreateXsollaTokenUrlPath, string.Format("Response received successfully:\n{0}", CreateXsollaTokenUrlData.ToString()));
 
             if (CreateXsollaTokenUrlComplete != null)

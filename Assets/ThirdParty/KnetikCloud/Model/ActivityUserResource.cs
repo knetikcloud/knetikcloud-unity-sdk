@@ -60,6 +60,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "user")]
         public SimpleUserResource User { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

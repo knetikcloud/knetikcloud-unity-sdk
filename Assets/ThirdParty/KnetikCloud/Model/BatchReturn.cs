@@ -32,6 +32,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "uri")]
         public string Uri { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

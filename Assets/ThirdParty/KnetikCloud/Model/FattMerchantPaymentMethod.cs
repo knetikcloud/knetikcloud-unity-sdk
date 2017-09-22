@@ -92,6 +92,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "updated_at")]
         public string UpdatedAt { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

@@ -60,6 +60,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "trigger_name")]
         public string TriggerName { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

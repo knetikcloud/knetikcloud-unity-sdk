@@ -35,6 +35,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "user_count")]
         public long? UserCount { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

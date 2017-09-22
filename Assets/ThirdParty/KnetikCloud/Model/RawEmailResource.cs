@@ -46,6 +46,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "subject")]
         public string Subject { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

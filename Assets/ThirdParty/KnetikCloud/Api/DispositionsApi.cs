@@ -109,20 +109,13 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public DispositionsApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mAddDispositionCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteDispositionCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetDispositionCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetDispositionCountsCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetDispositionsCoroutine = new KnetikCoroutine(KnetikClient);
+            mAddDispositionCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mDeleteDispositionCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetDispositionCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetDispositionCountsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetDispositionsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Add a new disposition 
         /// </summary>
@@ -142,7 +135,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(disposition); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(disposition); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -166,7 +159,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling AddDisposition: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            AddDispositionData = (DispositionResource) KnetikClient.Deserialize(response.Content, typeof(DispositionResource), response.Headers);
+            AddDispositionData = (DispositionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(DispositionResource), response.Headers);
             KnetikLogger.LogResponse(mAddDispositionStartTime, mAddDispositionPath, string.Format("Response received successfully:\n{0}", AddDispositionData.ToString()));
 
             if (AddDispositionComplete != null)
@@ -191,7 +184,7 @@ namespace com.knetikcloud.Api
             {
                 mDeleteDispositionPath = mDeleteDispositionPath.Replace("{format}", "json");
             }
-            mDeleteDispositionPath = mDeleteDispositionPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteDispositionPath = mDeleteDispositionPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -244,7 +237,7 @@ namespace com.knetikcloud.Api
             {
                 mGetDispositionPath = mGetDispositionPath.Replace("{format}", "json");
             }
-            mGetDispositionPath = mGetDispositionPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetDispositionPath = mGetDispositionPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -274,7 +267,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetDisposition: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetDispositionData = (DispositionResource) KnetikClient.Deserialize(response.Content, typeof(DispositionResource), response.Headers);
+            GetDispositionData = (DispositionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(DispositionResource), response.Headers);
             KnetikLogger.LogResponse(mGetDispositionStartTime, mGetDispositionPath, string.Format("Response received successfully:\n{0}", GetDispositionData.ToString()));
 
             if (GetDispositionComplete != null)
@@ -304,12 +297,12 @@ namespace com.knetikcloud.Api
 
             if (filterContext != null)
             {
-                queryParams.Add("filter_context", KnetikClient.ParameterToString(filterContext));
+                queryParams.Add("filter_context", KnetikClient.DefaultClient.ParameterToString(filterContext));
             }
 
             if (filterOwner != null)
             {
-                queryParams.Add("filter_owner", KnetikClient.ParameterToString(filterOwner));
+                queryParams.Add("filter_owner", KnetikClient.DefaultClient.ParameterToString(filterOwner));
             }
 
             // authentication setting, if any
@@ -334,7 +327,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetDispositionCounts: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetDispositionCountsData = (List<DispositionCount>) KnetikClient.Deserialize(response.Content, typeof(List<DispositionCount>), response.Headers);
+            GetDispositionCountsData = (List<DispositionCount>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<DispositionCount>), response.Headers);
             KnetikLogger.LogResponse(mGetDispositionCountsStartTime, mGetDispositionCountsPath, string.Format("Response received successfully:\n{0}", GetDispositionCountsData.ToString()));
 
             if (GetDispositionCountsComplete != null)
@@ -367,27 +360,27 @@ namespace com.knetikcloud.Api
 
             if (filterContext != null)
             {
-                queryParams.Add("filter_context", KnetikClient.ParameterToString(filterContext));
+                queryParams.Add("filter_context", KnetikClient.DefaultClient.ParameterToString(filterContext));
             }
 
             if (filterOwner != null)
             {
-                queryParams.Add("filter_owner", KnetikClient.ParameterToString(filterOwner));
+                queryParams.Add("filter_owner", KnetikClient.DefaultClient.ParameterToString(filterOwner));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
@@ -412,7 +405,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetDispositions: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetDispositionsData = (PageResourceDispositionResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceDispositionResource), response.Headers);
+            GetDispositionsData = (PageResourceDispositionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceDispositionResource), response.Headers);
             KnetikLogger.LogResponse(mGetDispositionsStartTime, mGetDispositionsPath, string.Format("Response received successfully:\n{0}", GetDispositionsData.ToString()));
 
             if (GetDispositionsComplete != null)

@@ -35,6 +35,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "sales_total")]
         public decimal? SalesTotal { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

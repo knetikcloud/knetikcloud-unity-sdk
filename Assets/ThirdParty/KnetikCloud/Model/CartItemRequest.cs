@@ -39,6 +39,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "quantity")]
         public int? Quantity { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

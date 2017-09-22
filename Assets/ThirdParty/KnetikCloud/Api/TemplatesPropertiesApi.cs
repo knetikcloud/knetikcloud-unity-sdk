@@ -61,17 +61,10 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public TemplatesPropertiesApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mGetTemplatePropertyTypeCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetTemplatePropertyTypesCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetTemplatePropertyTypeCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetTemplatePropertyTypesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Get details for a template property type 
         /// </summary>
@@ -89,7 +82,7 @@ namespace com.knetikcloud.Api
             {
                 mGetTemplatePropertyTypePath = mGetTemplatePropertyTypePath.Replace("{format}", "json");
             }
-            mGetTemplatePropertyTypePath = mGetTemplatePropertyTypePath.Replace("{" + "type" + "}", KnetikClient.ParameterToString(type));
+            mGetTemplatePropertyTypePath = mGetTemplatePropertyTypePath.Replace("{" + "type" + "}", KnetikClient.DefaultClient.ParameterToString(type));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -119,7 +112,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetTemplatePropertyType: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetTemplatePropertyTypeData = (PropertyFieldListResource) KnetikClient.Deserialize(response.Content, typeof(PropertyFieldListResource), response.Headers);
+            GetTemplatePropertyTypeData = (PropertyFieldListResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PropertyFieldListResource), response.Headers);
             KnetikLogger.LogResponse(mGetTemplatePropertyTypeStartTime, mGetTemplatePropertyTypePath, string.Format("Response received successfully:\n{0}", GetTemplatePropertyTypeData.ToString()));
 
             if (GetTemplatePropertyTypeComplete != null)
@@ -167,7 +160,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetTemplatePropertyTypes: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetTemplatePropertyTypesData = (List<PropertyFieldListResource>) KnetikClient.Deserialize(response.Content, typeof(List<PropertyFieldListResource>), response.Headers);
+            GetTemplatePropertyTypesData = (List<PropertyFieldListResource>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<PropertyFieldListResource>), response.Headers);
             KnetikLogger.LogResponse(mGetTemplatePropertyTypesStartTime, mGetTemplatePropertyTypesPath, string.Format("Response received successfully:\n{0}", GetTemplatePropertyTypesData.ToString()));
 
             if (GetTemplatePropertyTypesComplete != null)

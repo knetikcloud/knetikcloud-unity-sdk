@@ -18,6 +18,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "users")]
         public List<UserActivityResultsResource> Users { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

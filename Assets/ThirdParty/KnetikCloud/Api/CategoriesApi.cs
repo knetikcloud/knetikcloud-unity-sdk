@@ -201,26 +201,19 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public CategoriesApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mCreateCategoryCoroutine = new KnetikCoroutine(KnetikClient);
-            mCreateCategoryTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteCategoryCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteCategoryTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetCategoriesCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetCategoryCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetCategoryTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetCategoryTemplatesCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetTagsCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateCategoryCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateCategoryTemplateCoroutine = new KnetikCoroutine(KnetikClient);
+            mCreateCategoryCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateCategoryTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mDeleteCategoryCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mDeleteCategoryTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetCategoriesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetCategoryCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetCategoryTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetCategoryTemplatesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetTagsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mUpdateCategoryCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mUpdateCategoryTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Create a new category 
         /// </summary>
@@ -240,7 +233,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(category); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(category); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -264,7 +257,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateCategory: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateCategoryData = (CategoryResource) KnetikClient.Deserialize(response.Content, typeof(CategoryResource), response.Headers);
+            CreateCategoryData = (CategoryResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CategoryResource), response.Headers);
             KnetikLogger.LogResponse(mCreateCategoryStartTime, mCreateCategoryPath, string.Format("Response received successfully:\n{0}", CreateCategoryData.ToString()));
 
             if (CreateCategoryComplete != null)
@@ -291,7 +284,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(template); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(template); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -315,7 +308,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateCategoryTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateCategoryTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            CreateCategoryTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
             KnetikLogger.LogResponse(mCreateCategoryTemplateStartTime, mCreateCategoryTemplatePath, string.Format("Response received successfully:\n{0}", CreateCategoryTemplateData.ToString()));
 
             if (CreateCategoryTemplateComplete != null)
@@ -340,7 +333,7 @@ namespace com.knetikcloud.Api
             {
                 mDeleteCategoryPath = mDeleteCategoryPath.Replace("{format}", "json");
             }
-            mDeleteCategoryPath = mDeleteCategoryPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteCategoryPath = mDeleteCategoryPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -394,7 +387,7 @@ namespace com.knetikcloud.Api
             {
                 mDeleteCategoryTemplatePath = mDeleteCategoryTemplatePath.Replace("{format}", "json");
             }
-            mDeleteCategoryTemplatePath = mDeleteCategoryTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteCategoryTemplatePath = mDeleteCategoryTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -404,7 +397,7 @@ namespace com.knetikcloud.Api
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.ParameterToString(cascade));
+                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
             }
 
             // authentication setting, if any
@@ -460,27 +453,27 @@ namespace com.knetikcloud.Api
 
             if (filterSearch != null)
             {
-                queryParams.Add("filter_search", KnetikClient.ParameterToString(filterSearch));
+                queryParams.Add("filter_search", KnetikClient.DefaultClient.ParameterToString(filterSearch));
             }
 
             if (filterActive != null)
             {
-                queryParams.Add("filter_active", KnetikClient.ParameterToString(filterActive));
+                queryParams.Add("filter_active", KnetikClient.DefaultClient.ParameterToString(filterActive));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
@@ -505,7 +498,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetCategories: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetCategoriesData = (PageResourceCategoryResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceCategoryResource), response.Headers);
+            GetCategoriesData = (PageResourceCategoryResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceCategoryResource), response.Headers);
             KnetikLogger.LogResponse(mGetCategoriesStartTime, mGetCategoriesPath, string.Format("Response received successfully:\n{0}", GetCategoriesData.ToString()));
 
             if (GetCategoriesComplete != null)
@@ -530,7 +523,7 @@ namespace com.knetikcloud.Api
             {
                 mGetCategoryPath = mGetCategoryPath.Replace("{format}", "json");
             }
-            mGetCategoryPath = mGetCategoryPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetCategoryPath = mGetCategoryPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -560,7 +553,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetCategory: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetCategoryData = (CategoryResource) KnetikClient.Deserialize(response.Content, typeof(CategoryResource), response.Headers);
+            GetCategoryData = (CategoryResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CategoryResource), response.Headers);
             KnetikLogger.LogResponse(mGetCategoryStartTime, mGetCategoryPath, string.Format("Response received successfully:\n{0}", GetCategoryData.ToString()));
 
             if (GetCategoryComplete != null)
@@ -585,7 +578,7 @@ namespace com.knetikcloud.Api
             {
                 mGetCategoryTemplatePath = mGetCategoryTemplatePath.Replace("{format}", "json");
             }
-            mGetCategoryTemplatePath = mGetCategoryTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetCategoryTemplatePath = mGetCategoryTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -615,7 +608,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetCategoryTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetCategoryTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            GetCategoryTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
             KnetikLogger.LogResponse(mGetCategoryTemplateStartTime, mGetCategoryTemplatePath, string.Format("Response received successfully:\n{0}", GetCategoryTemplateData.ToString()));
 
             if (GetCategoryTemplateComplete != null)
@@ -646,17 +639,17 @@ namespace com.knetikcloud.Api
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
@@ -681,7 +674,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetCategoryTemplates: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetCategoryTemplatesData = (PageResourceTemplateResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceTemplateResource), response.Headers);
+            GetCategoryTemplatesData = (PageResourceTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceTemplateResource), response.Headers);
             KnetikLogger.LogResponse(mGetCategoryTemplatesStartTime, mGetCategoryTemplatesPath, string.Format("Response received successfully:\n{0}", GetCategoryTemplatesData.ToString()));
 
             if (GetCategoryTemplatesComplete != null)
@@ -711,12 +704,12 @@ namespace com.knetikcloud.Api
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             // authentication setting, if any
@@ -741,7 +734,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetTags: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetTagsData = (PageResourcestring) KnetikClient.Deserialize(response.Content, typeof(PageResourcestring), response.Headers);
+            GetTagsData = (PageResourcestring) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourcestring), response.Headers);
             KnetikLogger.LogResponse(mGetTagsStartTime, mGetTagsPath, string.Format("Response received successfully:\n{0}", GetTagsData.ToString()));
 
             if (GetTagsComplete != null)
@@ -767,7 +760,7 @@ namespace com.knetikcloud.Api
             {
                 mUpdateCategoryPath = mUpdateCategoryPath.Replace("{format}", "json");
             }
-            mUpdateCategoryPath = mUpdateCategoryPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateCategoryPath = mUpdateCategoryPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -775,7 +768,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(category); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(category); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -799,7 +792,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateCategory: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateCategoryData = (CategoryResource) KnetikClient.Deserialize(response.Content, typeof(CategoryResource), response.Headers);
+            UpdateCategoryData = (CategoryResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CategoryResource), response.Headers);
             KnetikLogger.LogResponse(mUpdateCategoryStartTime, mUpdateCategoryPath, string.Format("Response received successfully:\n{0}", UpdateCategoryData.ToString()));
 
             if (UpdateCategoryComplete != null)
@@ -825,7 +818,7 @@ namespace com.knetikcloud.Api
             {
                 mUpdateCategoryTemplatePath = mUpdateCategoryTemplatePath.Replace("{format}", "json");
             }
-            mUpdateCategoryTemplatePath = mUpdateCategoryTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateCategoryTemplatePath = mUpdateCategoryTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -833,7 +826,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(template); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(template); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -857,7 +850,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateCategoryTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateCategoryTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            UpdateCategoryTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
             KnetikLogger.LogResponse(mUpdateCategoryTemplateStartTime, mUpdateCategoryTemplatePath, string.Format("Response received successfully:\n{0}", UpdateCategoryTemplateData.ToString()));
 
             if (UpdateCategoryTemplateComplete != null)

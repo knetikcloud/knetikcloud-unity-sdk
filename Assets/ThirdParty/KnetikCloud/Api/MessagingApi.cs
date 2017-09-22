@@ -80,19 +80,12 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public MessagingApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mSendRawEmailCoroutine = new KnetikCoroutine(KnetikClient);
-            mSendRawSMSCoroutine = new KnetikCoroutine(KnetikClient);
-            mSendTemplatedEmailCoroutine = new KnetikCoroutine(KnetikClient);
-            mSendTemplatedSMSCoroutine = new KnetikCoroutine(KnetikClient);
+            mSendRawEmailCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mSendRawSMSCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mSendTemplatedEmailCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mSendTemplatedSMSCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Send a raw email to one or more users 
         /// </summary>
@@ -112,7 +105,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(rawEmailResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(rawEmailResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -161,7 +154,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(rawSMSResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(rawSMSResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -210,7 +203,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(messageResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(messageResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -259,7 +252,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(templateSMSResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(templateSMSResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };

@@ -107,6 +107,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "unit_price")]
         public decimal? UnitPrice { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

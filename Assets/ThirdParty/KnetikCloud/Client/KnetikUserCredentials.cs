@@ -25,10 +25,12 @@ namespace com.knetikcloud.Client
 
         public static KnetikUserCredentials Load()
         {
-            KnetikUserCredentials credentials = new KnetikUserCredentials();
+            KnetikUserCredentials credentials = new KnetikUserCredentials
+            {
+                UserId = PlayerPrefs.GetString(UserIdKey),
+                Password = PlayerPrefs.GetString(PasswordIdKey)
+            };
 
-            credentials.UserId = PlayerPrefs.GetString(UserIdKey);
-            credentials.Password = PlayerPrefs.GetString(PasswordIdKey);
 
             return credentials;
         }

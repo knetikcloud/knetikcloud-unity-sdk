@@ -47,16 +47,9 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public PaymentsAppleApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mVerifyAppleReceiptCoroutine = new KnetikCoroutine(KnetikClient);
+            mVerifyAppleReceiptCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Pay invoice with Apple receipt Mark an invoice paid using Apple payment receipt. A receipt will only be accepted once and the details of the transaction must match the invoice, including the product_id matching the sku text of the item in the invoice. Returns the transaction ID if successful.
         /// </summary>
@@ -76,7 +69,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(request); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  };
@@ -100,7 +93,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling VerifyAppleReceipt: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            VerifyAppleReceiptData = (string) KnetikClient.Deserialize(response.Content, typeof(string), response.Headers);
+            VerifyAppleReceiptData = (string) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(string), response.Headers);
             KnetikLogger.LogResponse(mVerifyAppleReceiptStartTime, mVerifyAppleReceiptPath, string.Format("Response received successfully:\n{0}", VerifyAppleReceiptData.ToString()));
 
             if (VerifyAppleReceiptComplete != null)

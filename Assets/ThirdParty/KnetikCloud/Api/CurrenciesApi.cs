@@ -106,20 +106,13 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public CurrenciesApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mCreateCurrencyCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteCurrencyCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetCurrenciesCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetCurrencyCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateCurrencyCoroutine = new KnetikCoroutine(KnetikClient);
+            mCreateCurrencyCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mDeleteCurrencyCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetCurrenciesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetCurrencyCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mUpdateCurrencyCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Create a currency 
         /// </summary>
@@ -139,7 +132,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(currency); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(currency); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -163,7 +156,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateCurrency: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateCurrencyData = (CurrencyResource) KnetikClient.Deserialize(response.Content, typeof(CurrencyResource), response.Headers);
+            CreateCurrencyData = (CurrencyResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CurrencyResource), response.Headers);
             KnetikLogger.LogResponse(mCreateCurrencyStartTime, mCreateCurrencyPath, string.Format("Response received successfully:\n{0}", CreateCurrencyData.ToString()));
 
             if (CreateCurrencyComplete != null)
@@ -188,7 +181,7 @@ namespace com.knetikcloud.Api
             {
                 mDeleteCurrencyPath = mDeleteCurrencyPath.Replace("{format}", "json");
             }
-            mDeleteCurrencyPath = mDeleteCurrencyPath.Replace("{" + "code" + "}", KnetikClient.ParameterToString(code));
+            mDeleteCurrencyPath = mDeleteCurrencyPath.Replace("{" + "code" + "}", KnetikClient.DefaultClient.ParameterToString(code));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -249,27 +242,27 @@ namespace com.knetikcloud.Api
 
             if (filterEnabledCurrencies != null)
             {
-                queryParams.Add("filter_enabled_currencies", KnetikClient.ParameterToString(filterEnabledCurrencies));
+                queryParams.Add("filter_enabled_currencies", KnetikClient.DefaultClient.ParameterToString(filterEnabledCurrencies));
             }
 
             if (filterType != null)
             {
-                queryParams.Add("filter_type", KnetikClient.ParameterToString(filterType));
+                queryParams.Add("filter_type", KnetikClient.DefaultClient.ParameterToString(filterType));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
@@ -294,7 +287,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetCurrencies: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetCurrenciesData = (PageResourceCurrencyResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceCurrencyResource), response.Headers);
+            GetCurrenciesData = (PageResourceCurrencyResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceCurrencyResource), response.Headers);
             KnetikLogger.LogResponse(mGetCurrenciesStartTime, mGetCurrenciesPath, string.Format("Response received successfully:\n{0}", GetCurrenciesData.ToString()));
 
             if (GetCurrenciesComplete != null)
@@ -319,7 +312,7 @@ namespace com.knetikcloud.Api
             {
                 mGetCurrencyPath = mGetCurrencyPath.Replace("{format}", "json");
             }
-            mGetCurrencyPath = mGetCurrencyPath.Replace("{" + "code" + "}", KnetikClient.ParameterToString(code));
+            mGetCurrencyPath = mGetCurrencyPath.Replace("{" + "code" + "}", KnetikClient.DefaultClient.ParameterToString(code));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -349,7 +342,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetCurrency: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetCurrencyData = (CurrencyResource) KnetikClient.Deserialize(response.Content, typeof(CurrencyResource), response.Headers);
+            GetCurrencyData = (CurrencyResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CurrencyResource), response.Headers);
             KnetikLogger.LogResponse(mGetCurrencyStartTime, mGetCurrencyPath, string.Format("Response received successfully:\n{0}", GetCurrencyData.ToString()));
 
             if (GetCurrencyComplete != null)
@@ -375,7 +368,7 @@ namespace com.knetikcloud.Api
             {
                 mUpdateCurrencyPath = mUpdateCurrencyPath.Replace("{format}", "json");
             }
-            mUpdateCurrencyPath = mUpdateCurrencyPath.Replace("{" + "code" + "}", KnetikClient.ParameterToString(code));
+            mUpdateCurrencyPath = mUpdateCurrencyPath.Replace("{" + "code" + "}", KnetikClient.DefaultClient.ParameterToString(code));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -383,7 +376,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(currency); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(currency); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };

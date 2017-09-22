@@ -123,6 +123,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "wallet_id")]
         public int? WalletId { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

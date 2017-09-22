@@ -24,7 +24,7 @@ namespace com.knetikcloud.UnityEditor
         [MenuItem("Knetik Cloud/Project Settings...")]
         private static void KnetikCloudProjectSettings()
         {
-            EditorWindow.GetWindow<KnetikEditorWindow>("Knetik Editor Window");
+            GetWindow<KnetikEditorWindow>("Knetik Editor Window");
         }
 
         private void OnEnable()
@@ -39,7 +39,7 @@ namespace com.knetikcloud.UnityEditor
             mBaseUrl = new GUIContent("Base URL", "The base URL for your project.  E.g. https://<my_project_name>.devsandbox.knetikcloud.com");
             mGrantType = new GUIContent("Grant Type", "The type of credentials you will use to authenticate.  E.g. 'password', 'client_credentials', 'facebook', or 'google'.");
             mClientId = new GUIContent("Client ID", "The client ID as configured in the administrative panel.");
-            mClientSecret = new GUIContent("Client Secret", "Optional: Only used with a grant type of 'client_credentials'.");
+            mClientSecret = new GUIContent("Client Secret", "Optional: Only used with a grant type of 'client_credentials'.  Configured in the administrative panel.");
 
             mUserSettingsHeaderLabel = new GUIContent("Per User Settings", "Optional: Per developer settings that are only used if the grant type is set to 'password'.");
             mUserId = new GUIContent("User Id", "Optional: User account to use for development if the grant type is set to 'client_credentials'.");

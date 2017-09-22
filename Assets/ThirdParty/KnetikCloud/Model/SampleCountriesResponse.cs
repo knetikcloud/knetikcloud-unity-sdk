@@ -23,6 +23,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "vendor_id2")]
         public List<Country> VendorId2 { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

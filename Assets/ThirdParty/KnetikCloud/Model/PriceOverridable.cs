@@ -12,6 +12,19 @@ namespace com.knetikcloud.Model
     public class PriceOverridable : Behavior
     {
         /// <summary>
+        /// Gets or Sets Description
+        /// </summary>
+        [JsonProperty(PropertyName = "description")]
+        public string Description { get; set; }
+
+        /// <summary>
+        /// Used for polymorphic type recognition and thus must match an expected type with additional properties
+        /// </summary>
+        /// <value>Used for polymorphic type recognition and thus must match an expected type with additional properties</value>
+        [JsonProperty(PropertyName = "type_hint")]
+        public string TypeHint { get; set; }
+
+        /// <summary>
         /// The maximum price allowed
         /// </summary>
         /// <value>The maximum price allowed</value>
@@ -25,6 +38,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "min_price")]
         public decimal? MinPrice { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

@@ -39,6 +39,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "template_vars")]
         public List<KeyValuePairstringstring> TemplateVars { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

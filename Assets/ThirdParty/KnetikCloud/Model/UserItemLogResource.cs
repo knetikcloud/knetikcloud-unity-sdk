@@ -60,6 +60,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "user_inventory")]
         public int? UserInventory { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

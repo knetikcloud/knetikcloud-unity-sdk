@@ -25,6 +25,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "return_url")]
         public string ReturnUrl { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

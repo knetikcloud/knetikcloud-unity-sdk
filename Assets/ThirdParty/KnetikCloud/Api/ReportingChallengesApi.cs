@@ -68,17 +68,10 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public ReportingChallengesApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mGetChallengeEventLeaderboardCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetChallengeEventParticipantsCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetChallengeEventLeaderboardCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetChallengeEventParticipantsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Retrieve a challenge event leaderboard details Lists all leaderboard entries with additional user details
         /// </summary>
@@ -103,22 +96,22 @@ namespace com.knetikcloud.Api
 
             if (filterEvent != null)
             {
-                queryParams.Add("filter_event", KnetikClient.ParameterToString(filterEvent));
+                queryParams.Add("filter_event", KnetikClient.DefaultClient.ParameterToString(filterEvent));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
@@ -143,7 +136,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetChallengeEventLeaderboard: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetChallengeEventLeaderboardData = (PageResourceChallengeEventParticipantResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceChallengeEventParticipantResource), response.Headers);
+            GetChallengeEventLeaderboardData = (PageResourceChallengeEventParticipantResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceChallengeEventParticipantResource), response.Headers);
             KnetikLogger.LogResponse(mGetChallengeEventLeaderboardStartTime, mGetChallengeEventLeaderboardPath, string.Format("Response received successfully:\n{0}", GetChallengeEventLeaderboardData.ToString()));
 
             if (GetChallengeEventLeaderboardComplete != null)
@@ -175,22 +168,22 @@ namespace com.knetikcloud.Api
 
             if (filterEvent != null)
             {
-                queryParams.Add("filter_event", KnetikClient.ParameterToString(filterEvent));
+                queryParams.Add("filter_event", KnetikClient.DefaultClient.ParameterToString(filterEvent));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
@@ -215,7 +208,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetChallengeEventParticipants: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetChallengeEventParticipantsData = (PageResourceChallengeEventParticipantResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceChallengeEventParticipantResource), response.Headers);
+            GetChallengeEventParticipantsData = (PageResourceChallengeEventParticipantResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceChallengeEventParticipantResource), response.Headers);
             KnetikLogger.LogResponse(mGetChallengeEventParticipantsStartTime, mGetChallengeEventParticipantsPath, string.Format("Response received successfully:\n{0}", GetChallengeEventParticipantsData.ToString()));
 
             if (GetChallengeEventParticipantsComplete != null)

@@ -46,16 +46,9 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public BRERuleEngineExpressionsApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mGetBREExpressionsCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetBREExpressionsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Get a list of &#39;lookup&#39; type expressions These are expression types that take a second expression as input and produce a value. These can be used in addition to the standard types, like parameter, global and constant (see BRE documentation for details).
         /// </summary>
@@ -96,7 +89,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetBREExpressions: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetBREExpressionsData = (List<LookupTypeResource>) KnetikClient.Deserialize(response.Content, typeof(List<LookupTypeResource>), response.Headers);
+            GetBREExpressionsData = (List<LookupTypeResource>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<LookupTypeResource>), response.Headers);
             KnetikLogger.LogResponse(mGetBREExpressionsStartTime, mGetBREExpressionsPath, string.Format("Response received successfully:\n{0}", GetBREExpressionsData.ToString()));
 
             if (GetBREExpressionsComplete != null)

@@ -192,26 +192,19 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public StoreSubscriptionsApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mCreateSubscriptionCoroutine = new KnetikCoroutine(KnetikClient);
-            mCreateSubscriptionTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteSubscriptionCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteSubscriptionTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetSubscriptionCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetSubscriptionTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetSubscriptionTemplatesCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetSubscriptionsCoroutine = new KnetikCoroutine(KnetikClient);
-            mProcessSubscriptionsCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateSubscriptionCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateSubscriptionTemplateCoroutine = new KnetikCoroutine(KnetikClient);
+            mCreateSubscriptionCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateSubscriptionTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mDeleteSubscriptionCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mDeleteSubscriptionTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetSubscriptionCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetSubscriptionTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetSubscriptionTemplatesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetSubscriptionsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mProcessSubscriptionsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mUpdateSubscriptionCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mUpdateSubscriptionTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Creates a subscription item and associated plans 
         /// </summary>
@@ -231,7 +224,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(subscriptionResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(subscriptionResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -255,7 +248,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateSubscription: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateSubscriptionData = (SubscriptionResource) KnetikClient.Deserialize(response.Content, typeof(SubscriptionResource), response.Headers);
+            CreateSubscriptionData = (SubscriptionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(SubscriptionResource), response.Headers);
             KnetikLogger.LogResponse(mCreateSubscriptionStartTime, mCreateSubscriptionPath, string.Format("Response received successfully:\n{0}", CreateSubscriptionData.ToString()));
 
             if (CreateSubscriptionComplete != null)
@@ -282,7 +275,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(subscriptionTemplateResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(subscriptionTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -306,7 +299,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateSubscriptionTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateSubscriptionTemplateData = (SubscriptionTemplateResource) KnetikClient.Deserialize(response.Content, typeof(SubscriptionTemplateResource), response.Headers);
+            CreateSubscriptionTemplateData = (SubscriptionTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(SubscriptionTemplateResource), response.Headers);
             KnetikLogger.LogResponse(mCreateSubscriptionTemplateStartTime, mCreateSubscriptionTemplatePath, string.Format("Response received successfully:\n{0}", CreateSubscriptionTemplateData.ToString()));
 
             if (CreateSubscriptionTemplateComplete != null)
@@ -337,8 +330,8 @@ namespace com.knetikcloud.Api
             {
                 mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{format}", "json");
             }
-            mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
-mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}", KnetikClient.ParameterToString(planId));
+            mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}", KnetikClient.DefaultClient.ParameterToString(planId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -392,7 +385,7 @@ mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}",
             {
                 mDeleteSubscriptionTemplatePath = mDeleteSubscriptionTemplatePath.Replace("{format}", "json");
             }
-            mDeleteSubscriptionTemplatePath = mDeleteSubscriptionTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteSubscriptionTemplatePath = mDeleteSubscriptionTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -402,7 +395,7 @@ mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}",
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.ParameterToString(cascade));
+                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
             }
 
             // authentication setting, if any
@@ -450,7 +443,7 @@ mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}",
             {
                 mGetSubscriptionPath = mGetSubscriptionPath.Replace("{format}", "json");
             }
-            mGetSubscriptionPath = mGetSubscriptionPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetSubscriptionPath = mGetSubscriptionPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -480,7 +473,7 @@ mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}",
                 throw new KnetikException((int)response.StatusCode, "Error calling GetSubscription: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetSubscriptionData = (SubscriptionResource) KnetikClient.Deserialize(response.Content, typeof(SubscriptionResource), response.Headers);
+            GetSubscriptionData = (SubscriptionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(SubscriptionResource), response.Headers);
             KnetikLogger.LogResponse(mGetSubscriptionStartTime, mGetSubscriptionPath, string.Format("Response received successfully:\n{0}", GetSubscriptionData.ToString()));
 
             if (GetSubscriptionComplete != null)
@@ -505,7 +498,7 @@ mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}",
             {
                 mGetSubscriptionTemplatePath = mGetSubscriptionTemplatePath.Replace("{format}", "json");
             }
-            mGetSubscriptionTemplatePath = mGetSubscriptionTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetSubscriptionTemplatePath = mGetSubscriptionTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -535,7 +528,7 @@ mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}",
                 throw new KnetikException((int)response.StatusCode, "Error calling GetSubscriptionTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetSubscriptionTemplateData = (SubscriptionTemplateResource) KnetikClient.Deserialize(response.Content, typeof(SubscriptionTemplateResource), response.Headers);
+            GetSubscriptionTemplateData = (SubscriptionTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(SubscriptionTemplateResource), response.Headers);
             KnetikLogger.LogResponse(mGetSubscriptionTemplateStartTime, mGetSubscriptionTemplatePath, string.Format("Response received successfully:\n{0}", GetSubscriptionTemplateData.ToString()));
 
             if (GetSubscriptionTemplateComplete != null)
@@ -566,17 +559,17 @@ mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}",
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
@@ -601,7 +594,7 @@ mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}",
                 throw new KnetikException((int)response.StatusCode, "Error calling GetSubscriptionTemplates: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetSubscriptionTemplatesData = (PageResourceSubscriptionTemplateResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceSubscriptionTemplateResource), response.Headers);
+            GetSubscriptionTemplatesData = (PageResourceSubscriptionTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceSubscriptionTemplateResource), response.Headers);
             KnetikLogger.LogResponse(mGetSubscriptionTemplatesStartTime, mGetSubscriptionTemplatesPath, string.Format("Response received successfully:\n{0}", GetSubscriptionTemplatesData.ToString()));
 
             if (GetSubscriptionTemplatesComplete != null)
@@ -632,17 +625,17 @@ mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}",
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
@@ -667,7 +660,7 @@ mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}",
                 throw new KnetikException((int)response.StatusCode, "Error calling GetSubscriptions: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetSubscriptionsData = (PageResourceSubscriptionResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceSubscriptionResource), response.Headers);
+            GetSubscriptionsData = (PageResourceSubscriptionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceSubscriptionResource), response.Headers);
             KnetikLogger.LogResponse(mGetSubscriptionsStartTime, mGetSubscriptionsPath, string.Format("Response received successfully:\n{0}", GetSubscriptionsData.ToString()));
 
             if (GetSubscriptionsComplete != null)
@@ -739,7 +732,7 @@ mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}",
             {
                 mUpdateSubscriptionPath = mUpdateSubscriptionPath.Replace("{format}", "json");
             }
-            mUpdateSubscriptionPath = mUpdateSubscriptionPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateSubscriptionPath = mUpdateSubscriptionPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -747,7 +740,7 @@ mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}",
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(subscriptionResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(subscriptionResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -795,7 +788,7 @@ mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}",
             {
                 mUpdateSubscriptionTemplatePath = mUpdateSubscriptionTemplatePath.Replace("{format}", "json");
             }
-            mUpdateSubscriptionTemplatePath = mUpdateSubscriptionTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateSubscriptionTemplatePath = mUpdateSubscriptionTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -803,7 +796,7 @@ mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}",
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(subscriptionTemplateResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(subscriptionTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -827,7 +820,7 @@ mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}",
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateSubscriptionTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateSubscriptionTemplateData = (SubscriptionTemplateResource) KnetikClient.Deserialize(response.Content, typeof(SubscriptionTemplateResource), response.Headers);
+            UpdateSubscriptionTemplateData = (SubscriptionTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(SubscriptionTemplateResource), response.Headers);
             KnetikLogger.LogResponse(mUpdateSubscriptionTemplateStartTime, mUpdateSubscriptionTemplatePath, string.Format("Response received successfully:\n{0}", UpdateSubscriptionTemplateData.ToString()));
 
             if (UpdateSubscriptionTemplateComplete != null)

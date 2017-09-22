@@ -193,6 +193,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "start_date")]
         public long? StartDate { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

@@ -32,6 +32,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "value")]
         public long? Value { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

@@ -60,6 +60,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "on_success")]
         public string OnSuccess { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

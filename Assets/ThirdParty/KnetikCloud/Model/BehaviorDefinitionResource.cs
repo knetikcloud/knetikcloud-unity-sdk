@@ -39,6 +39,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "type_hint")]
         public string TypeHint { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

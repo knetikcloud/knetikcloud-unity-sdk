@@ -25,6 +25,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "line_number")]
         public long? LineNumber { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

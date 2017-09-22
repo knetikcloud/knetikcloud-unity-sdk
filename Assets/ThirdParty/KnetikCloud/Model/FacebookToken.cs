@@ -18,6 +18,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "access_token")]
         public string AccessToken { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

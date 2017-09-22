@@ -18,6 +18,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "files")]
         public List<FileProperty> Files { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

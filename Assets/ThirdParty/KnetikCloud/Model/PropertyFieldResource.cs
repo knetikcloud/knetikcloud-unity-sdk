@@ -60,6 +60,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "valid_values")]
         public List<string> ValidValues { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

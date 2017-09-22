@@ -101,20 +101,13 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public SearchApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mAddSearchIndexCoroutine = new KnetikCoroutine(KnetikClient);
-            mAddSearchMappingsCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteSearchIndexCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteSearchIndexesCoroutine = new KnetikCoroutine(KnetikClient);
-            mSearchIndexCoroutine = new KnetikCoroutine(KnetikClient);
+            mAddSearchIndexCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mAddSearchMappingsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mDeleteSearchIndexCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mDeleteSearchIndexesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mSearchIndexCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Add a new object to an index Mainly intended for internal use.
         /// </summary>
@@ -139,8 +132,8 @@ namespace com.knetikcloud.Api
             {
                 mAddSearchIndexPath = mAddSearchIndexPath.Replace("{format}", "json");
             }
-            mAddSearchIndexPath = mAddSearchIndexPath.Replace("{" + "type" + "}", KnetikClient.ParameterToString(type));
-mAddSearchIndexPath = mAddSearchIndexPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mAddSearchIndexPath = mAddSearchIndexPath.Replace("{" + "type" + "}", KnetikClient.DefaultClient.ParameterToString(type));
+mAddSearchIndexPath = mAddSearchIndexPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -148,7 +141,7 @@ mAddSearchIndexPath = mAddSearchIndexPath.Replace("{" + "id" + "}", KnetikClient
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(_object); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(_object); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -197,7 +190,7 @@ mAddSearchIndexPath = mAddSearchIndexPath.Replace("{" + "id" + "}", KnetikClient
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(mappings); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(mappings); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -250,8 +243,8 @@ mAddSearchIndexPath = mAddSearchIndexPath.Replace("{" + "id" + "}", KnetikClient
             {
                 mDeleteSearchIndexPath = mDeleteSearchIndexPath.Replace("{format}", "json");
             }
-            mDeleteSearchIndexPath = mDeleteSearchIndexPath.Replace("{" + "type" + "}", KnetikClient.ParameterToString(type));
-mDeleteSearchIndexPath = mDeleteSearchIndexPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteSearchIndexPath = mDeleteSearchIndexPath.Replace("{" + "type" + "}", KnetikClient.DefaultClient.ParameterToString(type));
+mDeleteSearchIndexPath = mDeleteSearchIndexPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -304,7 +297,7 @@ mDeleteSearchIndexPath = mDeleteSearchIndexPath.Replace("{" + "id" + "}", Knetik
             {
                 mDeleteSearchIndexesPath = mDeleteSearchIndexesPath.Replace("{format}", "json");
             }
-            mDeleteSearchIndexesPath = mDeleteSearchIndexesPath.Replace("{" + "type" + "}", KnetikClient.ParameterToString(type));
+            mDeleteSearchIndexesPath = mDeleteSearchIndexesPath.Replace("{" + "type" + "}", KnetikClient.DefaultClient.ParameterToString(type));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -360,7 +353,7 @@ mDeleteSearchIndexPath = mDeleteSearchIndexPath.Replace("{" + "id" + "}", Knetik
             {
                 mSearchIndexPath = mSearchIndexPath.Replace("{format}", "json");
             }
-            mSearchIndexPath = mSearchIndexPath.Replace("{" + "type" + "}", KnetikClient.ParameterToString(type));
+            mSearchIndexPath = mSearchIndexPath.Replace("{" + "type" + "}", KnetikClient.DefaultClient.ParameterToString(type));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -370,15 +363,15 @@ mDeleteSearchIndexPath = mDeleteSearchIndexPath.Replace("{" + "id" + "}", Knetik
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
-            postBody = KnetikClient.Serialize(query); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(query); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  };
@@ -402,7 +395,7 @@ mDeleteSearchIndexPath = mDeleteSearchIndexPath.Replace("{" + "id" + "}", Knetik
                 throw new KnetikException((int)response.StatusCode, "Error calling SearchIndex: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            SearchIndexData = (PageResourceMapstringobject) KnetikClient.Deserialize(response.Content, typeof(PageResourceMapstringobject), response.Headers);
+            SearchIndexData = (PageResourceMapstringobject) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceMapstringobject), response.Headers);
             KnetikLogger.LogResponse(mSearchIndexStartTime, mSearchIndexPath, string.Format("Response received successfully:\n{0}", SearchIndexData.ToString()));
 
             if (SearchIndexComplete != null)

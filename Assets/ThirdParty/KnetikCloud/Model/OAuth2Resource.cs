@@ -46,6 +46,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "token_type")]
         public string TokenType { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

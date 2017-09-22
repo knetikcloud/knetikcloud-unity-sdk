@@ -12,12 +12,20 @@ namespace com.knetikcloud.Model
     public class MapProperty : Property
     {
         /// <summary>
+        /// The type of the property. Used for polymorphic type recognition and thus must match an expected type with additional properties.
+        /// </summary>
+        /// <value>The type of the property. Used for polymorphic type recognition and thus must match an expected type with additional properties.</value>
+        [JsonProperty(PropertyName = "type")]
+        public string Type { get; set; }
+
+        /// <summary>
         /// A map/object of string to sub-property
         /// </summary>
         /// <value>A map/object of string to sub-property</value>
         [JsonProperty(PropertyName = "map")]
         public Dictionary<string, Property> Map { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

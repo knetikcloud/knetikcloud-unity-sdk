@@ -25,6 +25,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "value")]
         public string Value { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

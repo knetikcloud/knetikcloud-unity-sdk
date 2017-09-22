@@ -7,6 +7,7 @@ namespace com.knetikcloud.UnityEditor
 {
     public class KnetikEditorConfigurationManager
     {
+        [SerializeField]
         private static KnetikProjectSettings sProjectSettings;
 
         public static bool IsBaseUrlSet

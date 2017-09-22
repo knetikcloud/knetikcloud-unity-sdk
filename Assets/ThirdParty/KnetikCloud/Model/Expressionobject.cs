@@ -11,6 +11,7 @@ namespace com.knetikcloud.Model
     /// </summary>
     public class Expressionobject
     {
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

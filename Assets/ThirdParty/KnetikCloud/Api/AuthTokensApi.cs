@@ -80,18 +80,11 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public AuthTokensApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mDeleteTokensCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetTokenCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetTokensCoroutine = new KnetikCoroutine(KnetikClient);
+            mDeleteTokensCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetTokenCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetTokensCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Delete tokens by username, client id, or both 
         /// </summary>
@@ -114,12 +107,12 @@ namespace com.knetikcloud.Api
 
             if (username != null)
             {
-                queryParams.Add("username", KnetikClient.ParameterToString(username));
+                queryParams.Add("username", KnetikClient.DefaultClient.ParameterToString(username));
             }
 
             if (clientId != null)
             {
-                queryParams.Add("client_id", KnetikClient.ParameterToString(clientId));
+                queryParams.Add("client_id", KnetikClient.DefaultClient.ParameterToString(clientId));
             }
 
             // authentication setting, if any
@@ -173,8 +166,8 @@ namespace com.knetikcloud.Api
             {
                 mGetTokenPath = mGetTokenPath.Replace("{format}", "json");
             }
-            mGetTokenPath = mGetTokenPath.Replace("{" + "username" + "}", KnetikClient.ParameterToString(username));
-mGetTokenPath = mGetTokenPath.Replace("{" + "client_id" + "}", KnetikClient.ParameterToString(clientId));
+            mGetTokenPath = mGetTokenPath.Replace("{" + "username" + "}", KnetikClient.DefaultClient.ParameterToString(username));
+mGetTokenPath = mGetTokenPath.Replace("{" + "client_id" + "}", KnetikClient.DefaultClient.ParameterToString(clientId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -204,7 +197,7 @@ mGetTokenPath = mGetTokenPath.Replace("{" + "client_id" + "}", KnetikClient.Para
                 throw new KnetikException((int)response.StatusCode, "Error calling GetToken: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetTokenData = (OauthAccessTokenResource) KnetikClient.Deserialize(response.Content, typeof(OauthAccessTokenResource), response.Headers);
+            GetTokenData = (OauthAccessTokenResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(OauthAccessTokenResource), response.Headers);
             KnetikLogger.LogResponse(mGetTokenStartTime, mGetTokenPath, string.Format("Response received successfully:\n{0}", GetTokenData.ToString()));
 
             if (GetTokenComplete != null)
@@ -237,27 +230,27 @@ mGetTokenPath = mGetTokenPath.Replace("{" + "client_id" + "}", KnetikClient.Para
 
             if (filterClientId != null)
             {
-                queryParams.Add("filter_client_id", KnetikClient.ParameterToString(filterClientId));
+                queryParams.Add("filter_client_id", KnetikClient.DefaultClient.ParameterToString(filterClientId));
             }
 
             if (filterUsername != null)
             {
-                queryParams.Add("filter_username", KnetikClient.ParameterToString(filterUsername));
+                queryParams.Add("filter_username", KnetikClient.DefaultClient.ParameterToString(filterUsername));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
@@ -282,7 +275,7 @@ mGetTokenPath = mGetTokenPath.Replace("{" + "client_id" + "}", KnetikClient.Para
                 throw new KnetikException((int)response.StatusCode, "Error calling GetTokens: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetTokensData = (PageResourceOauthAccessTokenResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceOauthAccessTokenResource), response.Headers);
+            GetTokensData = (PageResourceOauthAccessTokenResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceOauthAccessTokenResource), response.Headers);
             KnetikLogger.LogResponse(mGetTokensStartTime, mGetTokensPath, string.Format("Response received successfully:\n{0}", GetTokensData.ToString()));
 
             if (GetTokensComplete != null)

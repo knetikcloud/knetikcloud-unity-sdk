@@ -47,6 +47,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "owner_username")]
         public string OwnerUsername { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

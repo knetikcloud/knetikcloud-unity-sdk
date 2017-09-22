@@ -204,26 +204,19 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public TaxesApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mCreateCountryTaxCoroutine = new KnetikCoroutine(KnetikClient);
-            mCreateStateTaxCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteCountryTaxCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteStateTaxCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetCountryTaxCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetCountryTaxesCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetStateTaxCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetStateTaxesForCountriesCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetStateTaxesForCountryCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateCountryTaxCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateStateTaxCoroutine = new KnetikCoroutine(KnetikClient);
+            mCreateCountryTaxCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateStateTaxCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mDeleteCountryTaxCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mDeleteStateTaxCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetCountryTaxCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetCountryTaxesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetStateTaxCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetStateTaxesForCountriesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetStateTaxesForCountryCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mUpdateCountryTaxCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mUpdateStateTaxCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Create a country tax 
         /// </summary>
@@ -243,7 +236,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(taxResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(taxResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -267,7 +260,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateCountryTax: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateCountryTaxData = (CountryTaxResource) KnetikClient.Deserialize(response.Content, typeof(CountryTaxResource), response.Headers);
+            CreateCountryTaxData = (CountryTaxResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CountryTaxResource), response.Headers);
             KnetikLogger.LogResponse(mCreateCountryTaxStartTime, mCreateCountryTaxPath, string.Format("Response received successfully:\n{0}", CreateCountryTaxData.ToString()));
 
             if (CreateCountryTaxComplete != null)
@@ -293,7 +286,7 @@ namespace com.knetikcloud.Api
             {
                 mCreateStateTaxPath = mCreateStateTaxPath.Replace("{format}", "json");
             }
-            mCreateStateTaxPath = mCreateStateTaxPath.Replace("{" + "country_code_iso3" + "}", KnetikClient.ParameterToString(countryCodeIso3));
+            mCreateStateTaxPath = mCreateStateTaxPath.Replace("{" + "country_code_iso3" + "}", KnetikClient.DefaultClient.ParameterToString(countryCodeIso3));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -301,7 +294,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(taxResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(taxResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -325,7 +318,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateStateTax: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateStateTaxData = (StateTaxResource) KnetikClient.Deserialize(response.Content, typeof(StateTaxResource), response.Headers);
+            CreateStateTaxData = (StateTaxResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(StateTaxResource), response.Headers);
             KnetikLogger.LogResponse(mCreateStateTaxStartTime, mCreateStateTaxPath, string.Format("Response received successfully:\n{0}", CreateStateTaxData.ToString()));
 
             if (CreateStateTaxComplete != null)
@@ -350,7 +343,7 @@ namespace com.knetikcloud.Api
             {
                 mDeleteCountryTaxPath = mDeleteCountryTaxPath.Replace("{format}", "json");
             }
-            mDeleteCountryTaxPath = mDeleteCountryTaxPath.Replace("{" + "country_code_iso3" + "}", KnetikClient.ParameterToString(countryCodeIso3));
+            mDeleteCountryTaxPath = mDeleteCountryTaxPath.Replace("{" + "country_code_iso3" + "}", KnetikClient.DefaultClient.ParameterToString(countryCodeIso3));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -409,8 +402,8 @@ namespace com.knetikcloud.Api
             {
                 mDeleteStateTaxPath = mDeleteStateTaxPath.Replace("{format}", "json");
             }
-            mDeleteStateTaxPath = mDeleteStateTaxPath.Replace("{" + "country_code_iso3" + "}", KnetikClient.ParameterToString(countryCodeIso3));
-mDeleteStateTaxPath = mDeleteStateTaxPath.Replace("{" + "state_code" + "}", KnetikClient.ParameterToString(stateCode));
+            mDeleteStateTaxPath = mDeleteStateTaxPath.Replace("{" + "country_code_iso3" + "}", KnetikClient.DefaultClient.ParameterToString(countryCodeIso3));
+mDeleteStateTaxPath = mDeleteStateTaxPath.Replace("{" + "state_code" + "}", KnetikClient.DefaultClient.ParameterToString(stateCode));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -463,7 +456,7 @@ mDeleteStateTaxPath = mDeleteStateTaxPath.Replace("{" + "state_code" + "}", Knet
             {
                 mGetCountryTaxPath = mGetCountryTaxPath.Replace("{format}", "json");
             }
-            mGetCountryTaxPath = mGetCountryTaxPath.Replace("{" + "country_code_iso3" + "}", KnetikClient.ParameterToString(countryCodeIso3));
+            mGetCountryTaxPath = mGetCountryTaxPath.Replace("{" + "country_code_iso3" + "}", KnetikClient.DefaultClient.ParameterToString(countryCodeIso3));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -493,7 +486,7 @@ mDeleteStateTaxPath = mDeleteStateTaxPath.Replace("{" + "state_code" + "}", Knet
                 throw new KnetikException((int)response.StatusCode, "Error calling GetCountryTax: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetCountryTaxData = (CountryTaxResource) KnetikClient.Deserialize(response.Content, typeof(CountryTaxResource), response.Headers);
+            GetCountryTaxData = (CountryTaxResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CountryTaxResource), response.Headers);
             KnetikLogger.LogResponse(mGetCountryTaxStartTime, mGetCountryTaxPath, string.Format("Response received successfully:\n{0}", GetCountryTaxData.ToString()));
 
             if (GetCountryTaxComplete != null)
@@ -524,17 +517,17 @@ mDeleteStateTaxPath = mDeleteStateTaxPath.Replace("{" + "state_code" + "}", Knet
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
@@ -559,7 +552,7 @@ mDeleteStateTaxPath = mDeleteStateTaxPath.Replace("{" + "state_code" + "}", Knet
                 throw new KnetikException((int)response.StatusCode, "Error calling GetCountryTaxes: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetCountryTaxesData = (PageResourceCountryTaxResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceCountryTaxResource), response.Headers);
+            GetCountryTaxesData = (PageResourceCountryTaxResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceCountryTaxResource), response.Headers);
             KnetikLogger.LogResponse(mGetCountryTaxesStartTime, mGetCountryTaxesPath, string.Format("Response received successfully:\n{0}", GetCountryTaxesData.ToString()));
 
             if (GetCountryTaxesComplete != null)
@@ -590,8 +583,8 @@ mDeleteStateTaxPath = mDeleteStateTaxPath.Replace("{" + "state_code" + "}", Knet
             {
                 mGetStateTaxPath = mGetStateTaxPath.Replace("{format}", "json");
             }
-            mGetStateTaxPath = mGetStateTaxPath.Replace("{" + "country_code_iso3" + "}", KnetikClient.ParameterToString(countryCodeIso3));
-mGetStateTaxPath = mGetStateTaxPath.Replace("{" + "state_code" + "}", KnetikClient.ParameterToString(stateCode));
+            mGetStateTaxPath = mGetStateTaxPath.Replace("{" + "country_code_iso3" + "}", KnetikClient.DefaultClient.ParameterToString(countryCodeIso3));
+mGetStateTaxPath = mGetStateTaxPath.Replace("{" + "state_code" + "}", KnetikClient.DefaultClient.ParameterToString(stateCode));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -621,7 +614,7 @@ mGetStateTaxPath = mGetStateTaxPath.Replace("{" + "state_code" + "}", KnetikClie
                 throw new KnetikException((int)response.StatusCode, "Error calling GetStateTax: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetStateTaxData = (StateTaxResource) KnetikClient.Deserialize(response.Content, typeof(StateTaxResource), response.Headers);
+            GetStateTaxData = (StateTaxResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(StateTaxResource), response.Headers);
             KnetikLogger.LogResponse(mGetStateTaxStartTime, mGetStateTaxPath, string.Format("Response received successfully:\n{0}", GetStateTaxData.ToString()));
 
             if (GetStateTaxComplete != null)
@@ -652,17 +645,17 @@ mGetStateTaxPath = mGetStateTaxPath.Replace("{" + "state_code" + "}", KnetikClie
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
@@ -687,7 +680,7 @@ mGetStateTaxPath = mGetStateTaxPath.Replace("{" + "state_code" + "}", KnetikClie
                 throw new KnetikException((int)response.StatusCode, "Error calling GetStateTaxesForCountries: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetStateTaxesForCountriesData = (PageResourceStateTaxResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceStateTaxResource), response.Headers);
+            GetStateTaxesForCountriesData = (PageResourceStateTaxResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceStateTaxResource), response.Headers);
             KnetikLogger.LogResponse(mGetStateTaxesForCountriesStartTime, mGetStateTaxesForCountriesPath, string.Format("Response received successfully:\n{0}", GetStateTaxesForCountriesData.ToString()));
 
             if (GetStateTaxesForCountriesComplete != null)
@@ -715,7 +708,7 @@ mGetStateTaxPath = mGetStateTaxPath.Replace("{" + "state_code" + "}", KnetikClie
             {
                 mGetStateTaxesForCountryPath = mGetStateTaxesForCountryPath.Replace("{format}", "json");
             }
-            mGetStateTaxesForCountryPath = mGetStateTaxesForCountryPath.Replace("{" + "country_code_iso3" + "}", KnetikClient.ParameterToString(countryCodeIso3));
+            mGetStateTaxesForCountryPath = mGetStateTaxesForCountryPath.Replace("{" + "country_code_iso3" + "}", KnetikClient.DefaultClient.ParameterToString(countryCodeIso3));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -725,17 +718,17 @@ mGetStateTaxPath = mGetStateTaxPath.Replace("{" + "state_code" + "}", KnetikClie
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
@@ -760,7 +753,7 @@ mGetStateTaxPath = mGetStateTaxPath.Replace("{" + "state_code" + "}", KnetikClie
                 throw new KnetikException((int)response.StatusCode, "Error calling GetStateTaxesForCountry: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetStateTaxesForCountryData = (PageResourceStateTaxResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceStateTaxResource), response.Headers);
+            GetStateTaxesForCountryData = (PageResourceStateTaxResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceStateTaxResource), response.Headers);
             KnetikLogger.LogResponse(mGetStateTaxesForCountryStartTime, mGetStateTaxesForCountryPath, string.Format("Response received successfully:\n{0}", GetStateTaxesForCountryData.ToString()));
 
             if (GetStateTaxesForCountryComplete != null)
@@ -786,7 +779,7 @@ mGetStateTaxPath = mGetStateTaxPath.Replace("{" + "state_code" + "}", KnetikClie
             {
                 mUpdateCountryTaxPath = mUpdateCountryTaxPath.Replace("{format}", "json");
             }
-            mUpdateCountryTaxPath = mUpdateCountryTaxPath.Replace("{" + "country_code_iso3" + "}", KnetikClient.ParameterToString(countryCodeIso3));
+            mUpdateCountryTaxPath = mUpdateCountryTaxPath.Replace("{" + "country_code_iso3" + "}", KnetikClient.DefaultClient.ParameterToString(countryCodeIso3));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -794,7 +787,7 @@ mGetStateTaxPath = mGetStateTaxPath.Replace("{" + "state_code" + "}", KnetikClie
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(taxResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(taxResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -818,7 +811,7 @@ mGetStateTaxPath = mGetStateTaxPath.Replace("{" + "state_code" + "}", KnetikClie
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateCountryTax: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateCountryTaxData = (CountryTaxResource) KnetikClient.Deserialize(response.Content, typeof(CountryTaxResource), response.Headers);
+            UpdateCountryTaxData = (CountryTaxResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CountryTaxResource), response.Headers);
             KnetikLogger.LogResponse(mUpdateCountryTaxStartTime, mUpdateCountryTaxPath, string.Format("Response received successfully:\n{0}", UpdateCountryTaxData.ToString()));
 
             if (UpdateCountryTaxComplete != null)
@@ -850,8 +843,8 @@ mGetStateTaxPath = mGetStateTaxPath.Replace("{" + "state_code" + "}", KnetikClie
             {
                 mUpdateStateTaxPath = mUpdateStateTaxPath.Replace("{format}", "json");
             }
-            mUpdateStateTaxPath = mUpdateStateTaxPath.Replace("{" + "country_code_iso3" + "}", KnetikClient.ParameterToString(countryCodeIso3));
-mUpdateStateTaxPath = mUpdateStateTaxPath.Replace("{" + "state_code" + "}", KnetikClient.ParameterToString(stateCode));
+            mUpdateStateTaxPath = mUpdateStateTaxPath.Replace("{" + "country_code_iso3" + "}", KnetikClient.DefaultClient.ParameterToString(countryCodeIso3));
+mUpdateStateTaxPath = mUpdateStateTaxPath.Replace("{" + "state_code" + "}", KnetikClient.DefaultClient.ParameterToString(stateCode));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -859,7 +852,7 @@ mUpdateStateTaxPath = mUpdateStateTaxPath.Replace("{" + "state_code" + "}", Knet
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(taxResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(taxResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -883,7 +876,7 @@ mUpdateStateTaxPath = mUpdateStateTaxPath.Replace("{" + "state_code" + "}", Knet
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateStateTax: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateStateTaxData = (StateTaxResource) KnetikClient.Deserialize(response.Content, typeof(StateTaxResource), response.Headers);
+            UpdateStateTaxData = (StateTaxResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(StateTaxResource), response.Headers);
             KnetikLogger.LogResponse(mUpdateStateTaxStartTime, mUpdateStateTaxPath, string.Format("Response received successfully:\n{0}", UpdateStateTaxData.ToString()));
 
             if (UpdateStateTaxComplete != null)

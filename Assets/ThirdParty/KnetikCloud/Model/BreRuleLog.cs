@@ -53,6 +53,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "rule_start_date")]
         public long? RuleStartDate { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

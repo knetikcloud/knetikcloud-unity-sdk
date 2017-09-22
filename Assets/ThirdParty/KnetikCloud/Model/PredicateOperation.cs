@@ -23,6 +23,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "operator")]
         public ModelOperator _Operator { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

@@ -39,6 +39,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "tax_shipping")]
         public bool? TaxShipping { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

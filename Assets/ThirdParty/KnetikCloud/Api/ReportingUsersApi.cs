@@ -51,16 +51,9 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public ReportingUsersApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mGetUserRegistrationsCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetUserRegistrationsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Get user registration info Get user registration counts grouped by time range
         /// </summary>
@@ -86,27 +79,27 @@ namespace com.knetikcloud.Api
 
             if (granularity != null)
             {
-                queryParams.Add("granularity", KnetikClient.ParameterToString(granularity));
+                queryParams.Add("granularity", KnetikClient.DefaultClient.ParameterToString(granularity));
             }
 
             if (startDate != null)
             {
-                queryParams.Add("start_date", KnetikClient.ParameterToString(startDate));
+                queryParams.Add("start_date", KnetikClient.DefaultClient.ParameterToString(startDate));
             }
 
             if (endDate != null)
             {
-                queryParams.Add("end_date", KnetikClient.ParameterToString(endDate));
+                queryParams.Add("end_date", KnetikClient.DefaultClient.ParameterToString(endDate));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             // authentication setting, if any
@@ -131,7 +124,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetUserRegistrations: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetUserRegistrationsData = (PageResourceAggregateCountResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceAggregateCountResource), response.Headers);
+            GetUserRegistrationsData = (PageResourceAggregateCountResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceAggregateCountResource), response.Headers);
             KnetikLogger.LogResponse(mGetUserRegistrationsStartTime, mGetUserRegistrationsPath, string.Format("Response received successfully:\n{0}", GetUserRegistrationsData.ToString()));
 
             if (GetUserRegistrationsComplete != null)

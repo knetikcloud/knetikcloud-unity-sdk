@@ -247,28 +247,21 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public StoreApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mCreateItemTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mCreateStoreItemCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteItemTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteStoreItemCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetBehaviorsCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetItemTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetItemTemplatesCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetStoreCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetStoreItemCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetStoreItemsCoroutine = new KnetikCoroutine(KnetikClient);
-            mQuickBuyCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateItemTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateStoreItemCoroutine = new KnetikCoroutine(KnetikClient);
+            mCreateItemTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateStoreItemCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mDeleteItemTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mDeleteStoreItemCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetBehaviorsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetItemTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetItemTemplatesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetStoreCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetStoreItemCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetStoreItemsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mQuickBuyCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mUpdateItemTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mUpdateStoreItemCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Create an item template Item Templates define a type of item and the properties they have.
         /// </summary>
@@ -288,7 +281,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(itemTemplateResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(itemTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -312,7 +305,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateItemTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateItemTemplateData = (StoreItemTemplateResource) KnetikClient.Deserialize(response.Content, typeof(StoreItemTemplateResource), response.Headers);
+            CreateItemTemplateData = (StoreItemTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(StoreItemTemplateResource), response.Headers);
             KnetikLogger.LogResponse(mCreateItemTemplateStartTime, mCreateItemTemplatePath, string.Format("Response received successfully:\n{0}", CreateItemTemplateData.ToString()));
 
             if (CreateItemTemplateComplete != null)
@@ -342,10 +335,10 @@ namespace com.knetikcloud.Api
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.ParameterToString(cascade));
+                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
             }
 
-            postBody = KnetikClient.Serialize(storeItem); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(storeItem); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -369,7 +362,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateStoreItem: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateStoreItemData = (StoreItem) KnetikClient.Deserialize(response.Content, typeof(StoreItem), response.Headers);
+            CreateStoreItemData = (StoreItem) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(StoreItem), response.Headers);
             KnetikLogger.LogResponse(mCreateStoreItemStartTime, mCreateStoreItemPath, string.Format("Response received successfully:\n{0}", CreateStoreItemData.ToString()));
 
             if (CreateStoreItemComplete != null)
@@ -395,7 +388,7 @@ namespace com.knetikcloud.Api
             {
                 mDeleteItemTemplatePath = mDeleteItemTemplatePath.Replace("{format}", "json");
             }
-            mDeleteItemTemplatePath = mDeleteItemTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteItemTemplatePath = mDeleteItemTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -405,7 +398,7 @@ namespace com.knetikcloud.Api
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.ParameterToString(cascade));
+                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
             }
 
             // authentication setting, if any
@@ -453,7 +446,7 @@ namespace com.knetikcloud.Api
             {
                 mDeleteStoreItemPath = mDeleteStoreItemPath.Replace("{format}", "json");
             }
-            mDeleteStoreItemPath = mDeleteStoreItemPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteStoreItemPath = mDeleteStoreItemPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -529,7 +522,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetBehaviors: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetBehaviorsData = (List<BehaviorDefinitionResource>) KnetikClient.Deserialize(response.Content, typeof(List<BehaviorDefinitionResource>), response.Headers);
+            GetBehaviorsData = (List<BehaviorDefinitionResource>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<BehaviorDefinitionResource>), response.Headers);
             KnetikLogger.LogResponse(mGetBehaviorsStartTime, mGetBehaviorsPath, string.Format("Response received successfully:\n{0}", GetBehaviorsData.ToString()));
 
             if (GetBehaviorsComplete != null)
@@ -554,7 +547,7 @@ namespace com.knetikcloud.Api
             {
                 mGetItemTemplatePath = mGetItemTemplatePath.Replace("{format}", "json");
             }
-            mGetItemTemplatePath = mGetItemTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetItemTemplatePath = mGetItemTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -584,7 +577,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetItemTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetItemTemplateData = (StoreItemTemplateResource) KnetikClient.Deserialize(response.Content, typeof(StoreItemTemplateResource), response.Headers);
+            GetItemTemplateData = (StoreItemTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(StoreItemTemplateResource), response.Headers);
             KnetikLogger.LogResponse(mGetItemTemplateStartTime, mGetItemTemplatePath, string.Format("Response received successfully:\n{0}", GetItemTemplateData.ToString()));
 
             if (GetItemTemplateComplete != null)
@@ -615,17 +608,17 @@ namespace com.knetikcloud.Api
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
@@ -650,7 +643,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetItemTemplates: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetItemTemplatesData = (PageResourceStoreItemTemplateResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceStoreItemTemplateResource), response.Headers);
+            GetItemTemplatesData = (PageResourceStoreItemTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceStoreItemTemplateResource), response.Headers);
             KnetikLogger.LogResponse(mGetItemTemplatesStartTime, mGetItemTemplatesPath, string.Format("Response received successfully:\n{0}", GetItemTemplatesData.ToString()));
 
             if (GetItemTemplatesComplete != null)
@@ -683,27 +676,27 @@ namespace com.knetikcloud.Api
 
             if (limit != null)
             {
-                queryParams.Add("limit", KnetikClient.ParameterToString(limit));
+                queryParams.Add("limit", KnetikClient.DefaultClient.ParameterToString(limit));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (useCatalog != null)
             {
-                queryParams.Add("use_catalog", KnetikClient.ParameterToString(useCatalog));
+                queryParams.Add("use_catalog", KnetikClient.DefaultClient.ParameterToString(useCatalog));
             }
 
             if (ignoreLocation != null)
             {
-                queryParams.Add("ignore_location", KnetikClient.ParameterToString(ignoreLocation));
+                queryParams.Add("ignore_location", KnetikClient.DefaultClient.ParameterToString(ignoreLocation));
             }
 
             if (inStockOnly != null)
             {
-                queryParams.Add("in_stock_only", KnetikClient.ParameterToString(inStockOnly));
+                queryParams.Add("in_stock_only", KnetikClient.DefaultClient.ParameterToString(inStockOnly));
             }
 
             // authentication setting, if any
@@ -728,7 +721,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetStore: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetStoreData = (PageResourceStoreItem) KnetikClient.Deserialize(response.Content, typeof(PageResourceStoreItem), response.Headers);
+            GetStoreData = (PageResourceStoreItem) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceStoreItem), response.Headers);
             KnetikLogger.LogResponse(mGetStoreStartTime, mGetStorePath, string.Format("Response received successfully:\n{0}", GetStoreData.ToString()));
 
             if (GetStoreComplete != null)
@@ -753,7 +746,7 @@ namespace com.knetikcloud.Api
             {
                 mGetStoreItemPath = mGetStoreItemPath.Replace("{format}", "json");
             }
-            mGetStoreItemPath = mGetStoreItemPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetStoreItemPath = mGetStoreItemPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -783,7 +776,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetStoreItem: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetStoreItemData = (StoreItem) KnetikClient.Deserialize(response.Content, typeof(StoreItem), response.Headers);
+            GetStoreItemData = (StoreItem) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(StoreItem), response.Headers);
             KnetikLogger.LogResponse(mGetStoreItemStartTime, mGetStoreItemPath, string.Format("Response received successfully:\n{0}", GetStoreItemData.ToString()));
 
             if (GetStoreItemComplete != null)
@@ -828,87 +821,87 @@ namespace com.knetikcloud.Api
 
             if (filterNameSearch != null)
             {
-                queryParams.Add("filter_name_search", KnetikClient.ParameterToString(filterNameSearch));
+                queryParams.Add("filter_name_search", KnetikClient.DefaultClient.ParameterToString(filterNameSearch));
             }
 
             if (filterUniqueKey != null)
             {
-                queryParams.Add("filter_unique_key", KnetikClient.ParameterToString(filterUniqueKey));
+                queryParams.Add("filter_unique_key", KnetikClient.DefaultClient.ParameterToString(filterUniqueKey));
             }
 
             if (filterPublished != null)
             {
-                queryParams.Add("filter_published", KnetikClient.ParameterToString(filterPublished));
+                queryParams.Add("filter_published", KnetikClient.DefaultClient.ParameterToString(filterPublished));
             }
 
             if (filterDisplayable != null)
             {
-                queryParams.Add("filter_displayable", KnetikClient.ParameterToString(filterDisplayable));
+                queryParams.Add("filter_displayable", KnetikClient.DefaultClient.ParameterToString(filterDisplayable));
             }
 
             if (filterStart != null)
             {
-                queryParams.Add("filter_start", KnetikClient.ParameterToString(filterStart));
+                queryParams.Add("filter_start", KnetikClient.DefaultClient.ParameterToString(filterStart));
             }
 
             if (filterEnd != null)
             {
-                queryParams.Add("filter_end", KnetikClient.ParameterToString(filterEnd));
+                queryParams.Add("filter_end", KnetikClient.DefaultClient.ParameterToString(filterEnd));
             }
 
             if (filterStartDate != null)
             {
-                queryParams.Add("filter_start_date", KnetikClient.ParameterToString(filterStartDate));
+                queryParams.Add("filter_start_date", KnetikClient.DefaultClient.ParameterToString(filterStartDate));
             }
 
             if (filterStopDate != null)
             {
-                queryParams.Add("filter_stop_date", KnetikClient.ParameterToString(filterStopDate));
+                queryParams.Add("filter_stop_date", KnetikClient.DefaultClient.ParameterToString(filterStopDate));
             }
 
             if (filterSku != null)
             {
-                queryParams.Add("filter_sku", KnetikClient.ParameterToString(filterSku));
+                queryParams.Add("filter_sku", KnetikClient.DefaultClient.ParameterToString(filterSku));
             }
 
             if (filterPrice != null)
             {
-                queryParams.Add("filter_price", KnetikClient.ParameterToString(filterPrice));
+                queryParams.Add("filter_price", KnetikClient.DefaultClient.ParameterToString(filterPrice));
             }
 
             if (filterTag != null)
             {
-                queryParams.Add("filter_tag", KnetikClient.ParameterToString(filterTag));
+                queryParams.Add("filter_tag", KnetikClient.DefaultClient.ParameterToString(filterTag));
             }
 
             if (filterItemsByType != null)
             {
-                queryParams.Add("filter_items_by_type", KnetikClient.ParameterToString(filterItemsByType));
+                queryParams.Add("filter_items_by_type", KnetikClient.DefaultClient.ParameterToString(filterItemsByType));
             }
 
             if (filterBundledSkus != null)
             {
-                queryParams.Add("filter_bundled_skus", KnetikClient.ParameterToString(filterBundledSkus));
+                queryParams.Add("filter_bundled_skus", KnetikClient.DefaultClient.ParameterToString(filterBundledSkus));
             }
 
             if (filterVendor != null)
             {
-                queryParams.Add("filter_vendor", KnetikClient.ParameterToString(filterVendor));
+                queryParams.Add("filter_vendor", KnetikClient.DefaultClient.ParameterToString(filterVendor));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
@@ -933,7 +926,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetStoreItems: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetStoreItemsData = (PageResourceStoreItem) KnetikClient.Deserialize(response.Content, typeof(PageResourceStoreItem), response.Headers);
+            GetStoreItemsData = (PageResourceStoreItem) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceStoreItem), response.Headers);
             KnetikLogger.LogResponse(mGetStoreItemsStartTime, mGetStoreItemsPath, string.Format("Response received successfully:\n{0}", GetStoreItemsData.ToString()));
 
             if (GetStoreItemsComplete != null)
@@ -960,7 +953,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(quickBuyRequest); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(quickBuyRequest); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -984,7 +977,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling QuickBuy: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            QuickBuyData = (InvoiceResource) KnetikClient.Deserialize(response.Content, typeof(InvoiceResource), response.Headers);
+            QuickBuyData = (InvoiceResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(InvoiceResource), response.Headers);
             KnetikLogger.LogResponse(mQuickBuyStartTime, mQuickBuyPath, string.Format("Response received successfully:\n{0}", QuickBuyData.ToString()));
 
             if (QuickBuyComplete != null)
@@ -1010,7 +1003,7 @@ namespace com.knetikcloud.Api
             {
                 mUpdateItemTemplatePath = mUpdateItemTemplatePath.Replace("{format}", "json");
             }
-            mUpdateItemTemplatePath = mUpdateItemTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateItemTemplatePath = mUpdateItemTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1018,7 +1011,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(itemTemplateResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(itemTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -1042,7 +1035,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateItemTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateItemTemplateData = (StoreItemTemplateResource) KnetikClient.Deserialize(response.Content, typeof(StoreItemTemplateResource), response.Headers);
+            UpdateItemTemplateData = (StoreItemTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(StoreItemTemplateResource), response.Headers);
             KnetikLogger.LogResponse(mUpdateItemTemplateStartTime, mUpdateItemTemplatePath, string.Format("Response received successfully:\n{0}", UpdateItemTemplateData.ToString()));
 
             if (UpdateItemTemplateComplete != null)
@@ -1069,7 +1062,7 @@ namespace com.knetikcloud.Api
             {
                 mUpdateStoreItemPath = mUpdateStoreItemPath.Replace("{format}", "json");
             }
-            mUpdateStoreItemPath = mUpdateStoreItemPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateStoreItemPath = mUpdateStoreItemPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1079,10 +1072,10 @@ namespace com.knetikcloud.Api
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.ParameterToString(cascade));
+                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
             }
 
-            postBody = KnetikClient.Serialize(storeItem); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(storeItem); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -1106,7 +1099,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateStoreItem: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateStoreItemData = (StoreItem) KnetikClient.Deserialize(response.Content, typeof(StoreItem), response.Headers);
+            UpdateStoreItemData = (StoreItem) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(StoreItem), response.Headers);
             KnetikLogger.LogResponse(mUpdateStoreItemStartTime, mUpdateStoreItemPath, string.Format("Response received successfully:\n{0}", UpdateStoreItemData.ToString()));
 
             if (UpdateStoreItemComplete != null)

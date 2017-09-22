@@ -89,19 +89,12 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public PaymentsPayPalClassicApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mCreatePayPalBillingAgreementUrlCoroutine = new KnetikCoroutine(KnetikClient);
-            mCreatePayPalExpressCheckoutCoroutine = new KnetikCoroutine(KnetikClient);
-            mFinalizePayPalBillingAgreementCoroutine = new KnetikCoroutine(KnetikClient);
-            mFinalizePayPalCheckoutCoroutine = new KnetikCoroutine(KnetikClient);
+            mCreatePayPalBillingAgreementUrlCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreatePayPalExpressCheckoutCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mFinalizePayPalBillingAgreementCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mFinalizePayPalCheckoutCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Create a PayPal Classic billing agreement for the user Returns the token that should be used to forward the user to PayPal so they can accept the agreement.
         /// </summary>
@@ -121,7 +114,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(request); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -145,7 +138,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreatePayPalBillingAgreementUrl: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreatePayPalBillingAgreementUrlData = (string) KnetikClient.Deserialize(response.Content, typeof(string), response.Headers);
+            CreatePayPalBillingAgreementUrlData = (string) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(string), response.Headers);
             KnetikLogger.LogResponse(mCreatePayPalBillingAgreementUrlStartTime, mCreatePayPalBillingAgreementUrlPath, string.Format("Response received successfully:\n{0}", CreatePayPalBillingAgreementUrlData.ToString()));
 
             if (CreatePayPalBillingAgreementUrlComplete != null)
@@ -172,7 +165,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(request); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -196,7 +189,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreatePayPalExpressCheckout: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreatePayPalExpressCheckoutData = (string) KnetikClient.Deserialize(response.Content, typeof(string), response.Headers);
+            CreatePayPalExpressCheckoutData = (string) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(string), response.Headers);
             KnetikLogger.LogResponse(mCreatePayPalExpressCheckoutStartTime, mCreatePayPalExpressCheckoutPath, string.Format("Response received successfully:\n{0}", CreatePayPalExpressCheckoutData.ToString()));
 
             if (CreatePayPalExpressCheckoutComplete != null)
@@ -223,7 +216,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(request); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -247,7 +240,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling FinalizePayPalBillingAgreement: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            FinalizePayPalBillingAgreementData = (int?) KnetikClient.Deserialize(response.Content, typeof(int?), response.Headers);
+            FinalizePayPalBillingAgreementData = (int?) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(int?), response.Headers);
             KnetikLogger.LogResponse(mFinalizePayPalBillingAgreementStartTime, mFinalizePayPalBillingAgreementPath, string.Format("Response received successfully:\n{0}", FinalizePayPalBillingAgreementData.ToString()));
 
             if (FinalizePayPalBillingAgreementComplete != null)
@@ -274,7 +267,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(request); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };

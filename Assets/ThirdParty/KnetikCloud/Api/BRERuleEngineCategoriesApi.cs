@@ -155,23 +155,16 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public BRERuleEngineCategoriesApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mCreateBRECategoryTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteBRECategoryTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetBRECategoriesCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetBRECategoryCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetBRECategoryTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetBRECategoryTemplatesCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateBRECategoryCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateBRECategoryTemplateCoroutine = new KnetikCoroutine(KnetikClient);
+            mCreateBRECategoryTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mDeleteBRECategoryTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetBRECategoriesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetBRECategoryCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetBRECategoryTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetBRECategoryTemplatesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mUpdateBRECategoryCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mUpdateBRECategoryTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Create a BRE category template Templates define a type of BRE category and the properties they have
         /// </summary>
@@ -191,7 +184,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(template); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(template); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -215,7 +208,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateBRECategoryTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateBRECategoryTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            CreateBRECategoryTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
             KnetikLogger.LogResponse(mCreateBRECategoryTemplateStartTime, mCreateBRECategoryTemplatePath, string.Format("Response received successfully:\n{0}", CreateBRECategoryTemplateData.ToString()));
 
             if (CreateBRECategoryTemplateComplete != null)
@@ -241,7 +234,7 @@ namespace com.knetikcloud.Api
             {
                 mDeleteBRECategoryTemplatePath = mDeleteBRECategoryTemplatePath.Replace("{format}", "json");
             }
-            mDeleteBRECategoryTemplatePath = mDeleteBRECategoryTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteBRECategoryTemplatePath = mDeleteBRECategoryTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -251,7 +244,7 @@ namespace com.knetikcloud.Api
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.ParameterToString(cascade));
+                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
             }
 
             // authentication setting, if any
@@ -304,12 +297,12 @@ namespace com.knetikcloud.Api
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             // authentication setting, if any
@@ -334,7 +327,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetBRECategories: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetBRECategoriesData = (PageResourceBreCategoryResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceBreCategoryResource), response.Headers);
+            GetBRECategoriesData = (PageResourceBreCategoryResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceBreCategoryResource), response.Headers);
             KnetikLogger.LogResponse(mGetBRECategoriesStartTime, mGetBRECategoriesPath, string.Format("Response received successfully:\n{0}", GetBRECategoriesData.ToString()));
 
             if (GetBRECategoriesComplete != null)
@@ -359,7 +352,7 @@ namespace com.knetikcloud.Api
             {
                 mGetBRECategoryPath = mGetBRECategoryPath.Replace("{format}", "json");
             }
-            mGetBRECategoryPath = mGetBRECategoryPath.Replace("{" + "name" + "}", KnetikClient.ParameterToString(name));
+            mGetBRECategoryPath = mGetBRECategoryPath.Replace("{" + "name" + "}", KnetikClient.DefaultClient.ParameterToString(name));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -389,7 +382,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetBRECategory: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetBRECategoryData = (BreCategoryResource) KnetikClient.Deserialize(response.Content, typeof(BreCategoryResource), response.Headers);
+            GetBRECategoryData = (BreCategoryResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(BreCategoryResource), response.Headers);
             KnetikLogger.LogResponse(mGetBRECategoryStartTime, mGetBRECategoryPath, string.Format("Response received successfully:\n{0}", GetBRECategoryData.ToString()));
 
             if (GetBRECategoryComplete != null)
@@ -414,7 +407,7 @@ namespace com.knetikcloud.Api
             {
                 mGetBRECategoryTemplatePath = mGetBRECategoryTemplatePath.Replace("{format}", "json");
             }
-            mGetBRECategoryTemplatePath = mGetBRECategoryTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetBRECategoryTemplatePath = mGetBRECategoryTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -444,7 +437,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetBRECategoryTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetBRECategoryTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            GetBRECategoryTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
             KnetikLogger.LogResponse(mGetBRECategoryTemplateStartTime, mGetBRECategoryTemplatePath, string.Format("Response received successfully:\n{0}", GetBRECategoryTemplateData.ToString()));
 
             if (GetBRECategoryTemplateComplete != null)
@@ -475,17 +468,17 @@ namespace com.knetikcloud.Api
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
@@ -510,7 +503,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetBRECategoryTemplates: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetBRECategoryTemplatesData = (PageResourceTemplateResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceTemplateResource), response.Headers);
+            GetBRECategoryTemplatesData = (PageResourceTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceTemplateResource), response.Headers);
             KnetikLogger.LogResponse(mGetBRECategoryTemplatesStartTime, mGetBRECategoryTemplatesPath, string.Format("Response received successfully:\n{0}", GetBRECategoryTemplatesData.ToString()));
 
             if (GetBRECategoryTemplatesComplete != null)
@@ -536,7 +529,7 @@ namespace com.knetikcloud.Api
             {
                 mUpdateBRECategoryPath = mUpdateBRECategoryPath.Replace("{format}", "json");
             }
-            mUpdateBRECategoryPath = mUpdateBRECategoryPath.Replace("{" + "name" + "}", KnetikClient.ParameterToString(name));
+            mUpdateBRECategoryPath = mUpdateBRECategoryPath.Replace("{" + "name" + "}", KnetikClient.DefaultClient.ParameterToString(name));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -544,7 +537,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(category); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(category); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -568,7 +561,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateBRECategory: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateBRECategoryData = (BreCategoryResource) KnetikClient.Deserialize(response.Content, typeof(BreCategoryResource), response.Headers);
+            UpdateBRECategoryData = (BreCategoryResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(BreCategoryResource), response.Headers);
             KnetikLogger.LogResponse(mUpdateBRECategoryStartTime, mUpdateBRECategoryPath, string.Format("Response received successfully:\n{0}", UpdateBRECategoryData.ToString()));
 
             if (UpdateBRECategoryComplete != null)
@@ -594,7 +587,7 @@ namespace com.knetikcloud.Api
             {
                 mUpdateBRECategoryTemplatePath = mUpdateBRECategoryTemplatePath.Replace("{format}", "json");
             }
-            mUpdateBRECategoryTemplatePath = mUpdateBRECategoryTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateBRECategoryTemplatePath = mUpdateBRECategoryTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -602,7 +595,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(template); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(template); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -626,7 +619,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateBRECategoryTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateBRECategoryTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            UpdateBRECategoryTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
             KnetikLogger.LogResponse(mUpdateBRECategoryTemplateStartTime, mUpdateBRECategoryTemplatePath, string.Format("Response received successfully:\n{0}", UpdateBRECategoryTemplateData.ToString()));
 
             if (UpdateBRECategoryTemplateComplete != null)

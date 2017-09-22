@@ -25,6 +25,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "reactivation_fee")]
         public bool? ReactivationFee { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

@@ -232,28 +232,21 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public InvoicesApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mCreateInvoiceCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetFulFillmentStatusesCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetInvoiceCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetInvoiceLogsCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetInvoicesCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetPaymentStatusesCoroutine = new KnetikCoroutine(KnetikClient);
-            mPayInvoiceCoroutine = new KnetikCoroutine(KnetikClient);
-            mSetBundledInvoiceItemFulfillmentStatusCoroutine = new KnetikCoroutine(KnetikClient);
-            mSetExternalRefCoroutine = new KnetikCoroutine(KnetikClient);
-            mSetInvoiceItemFulfillmentStatusCoroutine = new KnetikCoroutine(KnetikClient);
-            mSetOrderNotesCoroutine = new KnetikCoroutine(KnetikClient);
-            mSetPaymentStatusCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateBillingInfoCoroutine = new KnetikCoroutine(KnetikClient);
+            mCreateInvoiceCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetFulFillmentStatusesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetInvoiceCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetInvoiceLogsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetInvoicesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetPaymentStatusesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mPayInvoiceCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mSetBundledInvoiceItemFulfillmentStatusCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mSetExternalRefCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mSetInvoiceItemFulfillmentStatusCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mSetOrderNotesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mSetPaymentStatusCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mUpdateBillingInfoCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Create an invoice Create an invoice(s) by providing a cart GUID. Note that there may be multiple invoices created, one per vendor.
         /// </summary>
@@ -273,7 +266,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(req); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(req); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -297,7 +290,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateInvoice: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateInvoiceData = (List<InvoiceResource>) KnetikClient.Deserialize(response.Content, typeof(List<InvoiceResource>), response.Headers);
+            CreateInvoiceData = (List<InvoiceResource>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<InvoiceResource>), response.Headers);
             KnetikLogger.LogResponse(mCreateInvoiceStartTime, mCreateInvoicePath, string.Format("Response received successfully:\n{0}", CreateInvoiceData.ToString()));
 
             if (CreateInvoiceComplete != null)
@@ -345,7 +338,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetFulFillmentStatuses: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetFulFillmentStatusesData = (List<string>) KnetikClient.Deserialize(response.Content, typeof(List<string>), response.Headers);
+            GetFulFillmentStatusesData = (List<string>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<string>), response.Headers);
             KnetikLogger.LogResponse(mGetFulFillmentStatusesStartTime, mGetFulFillmentStatusesPath, string.Format("Response received successfully:\n{0}", GetFulFillmentStatusesData.ToString()));
 
             if (GetFulFillmentStatusesComplete != null)
@@ -370,7 +363,7 @@ namespace com.knetikcloud.Api
             {
                 mGetInvoicePath = mGetInvoicePath.Replace("{format}", "json");
             }
-            mGetInvoicePath = mGetInvoicePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetInvoicePath = mGetInvoicePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -400,7 +393,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetInvoice: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetInvoiceData = (InvoiceResource) KnetikClient.Deserialize(response.Content, typeof(InvoiceResource), response.Headers);
+            GetInvoiceData = (InvoiceResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(InvoiceResource), response.Headers);
             KnetikLogger.LogResponse(mGetInvoiceStartTime, mGetInvoicePath, string.Format("Response received successfully:\n{0}", GetInvoiceData.ToString()));
 
             if (GetInvoiceComplete != null)
@@ -427,7 +420,7 @@ namespace com.knetikcloud.Api
             {
                 mGetInvoiceLogsPath = mGetInvoiceLogsPath.Replace("{format}", "json");
             }
-            mGetInvoiceLogsPath = mGetInvoiceLogsPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetInvoiceLogsPath = mGetInvoiceLogsPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -437,12 +430,12 @@ namespace com.knetikcloud.Api
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             // authentication setting, if any
@@ -467,7 +460,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetInvoiceLogs: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetInvoiceLogsData = (PageResourceInvoiceLogEntry) KnetikClient.Deserialize(response.Content, typeof(PageResourceInvoiceLogEntry), response.Headers);
+            GetInvoiceLogsData = (PageResourceInvoiceLogEntry) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceInvoiceLogEntry), response.Headers);
             KnetikLogger.LogResponse(mGetInvoiceLogsStartTime, mGetInvoiceLogsPath, string.Format("Response received successfully:\n{0}", GetInvoiceLogsData.ToString()));
 
             if (GetInvoiceLogsComplete != null)
@@ -512,87 +505,87 @@ namespace com.knetikcloud.Api
 
             if (filterUser != null)
             {
-                queryParams.Add("filter_user", KnetikClient.ParameterToString(filterUser));
+                queryParams.Add("filter_user", KnetikClient.DefaultClient.ParameterToString(filterUser));
             }
 
             if (filterEmail != null)
             {
-                queryParams.Add("filter_email", KnetikClient.ParameterToString(filterEmail));
+                queryParams.Add("filter_email", KnetikClient.DefaultClient.ParameterToString(filterEmail));
             }
 
             if (filterFulfillmentStatus != null)
             {
-                queryParams.Add("filter_fulfillment_status", KnetikClient.ParameterToString(filterFulfillmentStatus));
+                queryParams.Add("filter_fulfillment_status", KnetikClient.DefaultClient.ParameterToString(filterFulfillmentStatus));
             }
 
             if (filterPaymentStatus != null)
             {
-                queryParams.Add("filter_payment_status", KnetikClient.ParameterToString(filterPaymentStatus));
+                queryParams.Add("filter_payment_status", KnetikClient.DefaultClient.ParameterToString(filterPaymentStatus));
             }
 
             if (filterItemName != null)
             {
-                queryParams.Add("filter_item_name", KnetikClient.ParameterToString(filterItemName));
+                queryParams.Add("filter_item_name", KnetikClient.DefaultClient.ParameterToString(filterItemName));
             }
 
             if (filterExternalRef != null)
             {
-                queryParams.Add("filter_external_ref", KnetikClient.ParameterToString(filterExternalRef));
+                queryParams.Add("filter_external_ref", KnetikClient.DefaultClient.ParameterToString(filterExternalRef));
             }
 
             if (filterCreatedDate != null)
             {
-                queryParams.Add("filter_created_date", KnetikClient.ParameterToString(filterCreatedDate));
+                queryParams.Add("filter_created_date", KnetikClient.DefaultClient.ParameterToString(filterCreatedDate));
             }
 
             if (filterVendorIds != null)
             {
-                queryParams.Add("filter_vendor_ids", KnetikClient.ParameterToString(filterVendorIds));
+                queryParams.Add("filter_vendor_ids", KnetikClient.DefaultClient.ParameterToString(filterVendorIds));
             }
 
             if (filterCurrency != null)
             {
-                queryParams.Add("filter_currency", KnetikClient.ParameterToString(filterCurrency));
+                queryParams.Add("filter_currency", KnetikClient.DefaultClient.ParameterToString(filterCurrency));
             }
 
             if (filterShippingStateName != null)
             {
-                queryParams.Add("filter_shipping_state_name", KnetikClient.ParameterToString(filterShippingStateName));
+                queryParams.Add("filter_shipping_state_name", KnetikClient.DefaultClient.ParameterToString(filterShippingStateName));
             }
 
             if (filterShippingCountryName != null)
             {
-                queryParams.Add("filter_shipping_country_name", KnetikClient.ParameterToString(filterShippingCountryName));
+                queryParams.Add("filter_shipping_country_name", KnetikClient.DefaultClient.ParameterToString(filterShippingCountryName));
             }
 
             if (filterShipping != null)
             {
-                queryParams.Add("filter_shipping", KnetikClient.ParameterToString(filterShipping));
+                queryParams.Add("filter_shipping", KnetikClient.DefaultClient.ParameterToString(filterShipping));
             }
 
             if (filterVendorName != null)
             {
-                queryParams.Add("filter_vendor_name", KnetikClient.ParameterToString(filterVendorName));
+                queryParams.Add("filter_vendor_name", KnetikClient.DefaultClient.ParameterToString(filterVendorName));
             }
 
             if (filterSku != null)
             {
-                queryParams.Add("filter_sku", KnetikClient.ParameterToString(filterSku));
+                queryParams.Add("filter_sku", KnetikClient.DefaultClient.ParameterToString(filterSku));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
@@ -617,7 +610,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetInvoices: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetInvoicesData = (PageResourceInvoiceResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceInvoiceResource), response.Headers);
+            GetInvoicesData = (PageResourceInvoiceResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceInvoiceResource), response.Headers);
             KnetikLogger.LogResponse(mGetInvoicesStartTime, mGetInvoicesPath, string.Format("Response received successfully:\n{0}", GetInvoicesData.ToString()));
 
             if (GetInvoicesComplete != null)
@@ -665,7 +658,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetPaymentStatuses: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetPaymentStatusesData = (List<string>) KnetikClient.Deserialize(response.Content, typeof(List<string>), response.Headers);
+            GetPaymentStatusesData = (List<string>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<string>), response.Headers);
             KnetikLogger.LogResponse(mGetPaymentStatusesStartTime, mGetPaymentStatusesPath, string.Format("Response received successfully:\n{0}", GetPaymentStatusesData.ToString()));
 
             if (GetPaymentStatusesComplete != null)
@@ -691,7 +684,7 @@ namespace com.knetikcloud.Api
             {
                 mPayInvoicePath = mPayInvoicePath.Replace("{format}", "json");
             }
-            mPayInvoicePath = mPayInvoicePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mPayInvoicePath = mPayInvoicePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -699,7 +692,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(request); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -764,9 +757,9 @@ namespace com.knetikcloud.Api
             {
                 mSetBundledInvoiceItemFulfillmentStatusPath = mSetBundledInvoiceItemFulfillmentStatusPath.Replace("{format}", "json");
             }
-            mSetBundledInvoiceItemFulfillmentStatusPath = mSetBundledInvoiceItemFulfillmentStatusPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
-mSetBundledInvoiceItemFulfillmentStatusPath = mSetBundledInvoiceItemFulfillmentStatusPath.Replace("{" + "bundleSku" + "}", KnetikClient.ParameterToString(bundleSku));
-mSetBundledInvoiceItemFulfillmentStatusPath = mSetBundledInvoiceItemFulfillmentStatusPath.Replace("{" + "sku" + "}", KnetikClient.ParameterToString(sku));
+            mSetBundledInvoiceItemFulfillmentStatusPath = mSetBundledInvoiceItemFulfillmentStatusPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+mSetBundledInvoiceItemFulfillmentStatusPath = mSetBundledInvoiceItemFulfillmentStatusPath.Replace("{" + "bundleSku" + "}", KnetikClient.DefaultClient.ParameterToString(bundleSku));
+mSetBundledInvoiceItemFulfillmentStatusPath = mSetBundledInvoiceItemFulfillmentStatusPath.Replace("{" + "sku" + "}", KnetikClient.DefaultClient.ParameterToString(sku));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -774,7 +767,7 @@ mSetBundledInvoiceItemFulfillmentStatusPath = mSetBundledInvoiceItemFulfillmentS
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(status); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(status); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -822,7 +815,7 @@ mSetBundledInvoiceItemFulfillmentStatusPath = mSetBundledInvoiceItemFulfillmentS
             {
                 mSetExternalRefPath = mSetExternalRefPath.Replace("{format}", "json");
             }
-            mSetExternalRefPath = mSetExternalRefPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mSetExternalRefPath = mSetExternalRefPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -830,7 +823,7 @@ mSetBundledInvoiceItemFulfillmentStatusPath = mSetBundledInvoiceItemFulfillmentS
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(externalRef); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(externalRef); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -889,8 +882,8 @@ mSetBundledInvoiceItemFulfillmentStatusPath = mSetBundledInvoiceItemFulfillmentS
             {
                 mSetInvoiceItemFulfillmentStatusPath = mSetInvoiceItemFulfillmentStatusPath.Replace("{format}", "json");
             }
-            mSetInvoiceItemFulfillmentStatusPath = mSetInvoiceItemFulfillmentStatusPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
-mSetInvoiceItemFulfillmentStatusPath = mSetInvoiceItemFulfillmentStatusPath.Replace("{" + "sku" + "}", KnetikClient.ParameterToString(sku));
+            mSetInvoiceItemFulfillmentStatusPath = mSetInvoiceItemFulfillmentStatusPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+mSetInvoiceItemFulfillmentStatusPath = mSetInvoiceItemFulfillmentStatusPath.Replace("{" + "sku" + "}", KnetikClient.DefaultClient.ParameterToString(sku));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -898,7 +891,7 @@ mSetInvoiceItemFulfillmentStatusPath = mSetInvoiceItemFulfillmentStatusPath.Repl
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(status); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(status); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -946,7 +939,7 @@ mSetInvoiceItemFulfillmentStatusPath = mSetInvoiceItemFulfillmentStatusPath.Repl
             {
                 mSetOrderNotesPath = mSetOrderNotesPath.Replace("{format}", "json");
             }
-            mSetOrderNotesPath = mSetOrderNotesPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mSetOrderNotesPath = mSetOrderNotesPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -954,7 +947,7 @@ mSetInvoiceItemFulfillmentStatusPath = mSetInvoiceItemFulfillmentStatusPath.Repl
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(orderNotes); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(orderNotes); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -1002,7 +995,7 @@ mSetInvoiceItemFulfillmentStatusPath = mSetInvoiceItemFulfillmentStatusPath.Repl
             {
                 mSetPaymentStatusPath = mSetPaymentStatusPath.Replace("{format}", "json");
             }
-            mSetPaymentStatusPath = mSetPaymentStatusPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mSetPaymentStatusPath = mSetPaymentStatusPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1010,7 +1003,7 @@ mSetInvoiceItemFulfillmentStatusPath = mSetInvoiceItemFulfillmentStatusPath.Repl
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(request); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -1058,7 +1051,7 @@ mSetInvoiceItemFulfillmentStatusPath = mSetInvoiceItemFulfillmentStatusPath.Repl
             {
                 mUpdateBillingInfoPath = mUpdateBillingInfoPath.Replace("{format}", "json");
             }
-            mUpdateBillingInfoPath = mUpdateBillingInfoPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateBillingInfoPath = mUpdateBillingInfoPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1066,7 +1059,7 @@ mSetInvoiceItemFulfillmentStatusPath = mSetInvoiceItemFulfillmentStatusPath.Repl
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(billingInfoRequest); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(billingInfoRequest); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };

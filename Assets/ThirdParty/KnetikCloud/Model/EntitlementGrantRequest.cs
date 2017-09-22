@@ -18,6 +18,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "entitlement_id")]
         public int? EntitlementId { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

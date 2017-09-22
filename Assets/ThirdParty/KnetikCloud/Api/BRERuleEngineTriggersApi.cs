@@ -111,20 +111,13 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public BRERuleEngineTriggersApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mCreateBRETriggerCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteBRETriggerCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetBRETriggerCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetBRETriggersCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateBRETriggerCoroutine = new KnetikCoroutine(KnetikClient);
+            mCreateBRETriggerCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mDeleteBRETriggerCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetBRETriggerCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetBRETriggersCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mUpdateBRETriggerCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Create a trigger Customer added triggers will not be fired automatically or have rules associated with them by default. Custom rules must be added to get use from the trigger and it must then be fired from the outside. See the Bre Event services
         /// </summary>
@@ -144,7 +137,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(breTriggerResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(breTriggerResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -168,7 +161,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateBRETrigger: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateBRETriggerData = (BreTriggerResource) KnetikClient.Deserialize(response.Content, typeof(BreTriggerResource), response.Headers);
+            CreateBRETriggerData = (BreTriggerResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(BreTriggerResource), response.Headers);
             KnetikLogger.LogResponse(mCreateBRETriggerStartTime, mCreateBRETriggerPath, string.Format("Response received successfully:\n{0}", CreateBRETriggerData.ToString()));
 
             if (CreateBRETriggerComplete != null)
@@ -193,7 +186,7 @@ namespace com.knetikcloud.Api
             {
                 mDeleteBRETriggerPath = mDeleteBRETriggerPath.Replace("{format}", "json");
             }
-            mDeleteBRETriggerPath = mDeleteBRETriggerPath.Replace("{" + "event_name" + "}", KnetikClient.ParameterToString(eventName));
+            mDeleteBRETriggerPath = mDeleteBRETriggerPath.Replace("{" + "event_name" + "}", KnetikClient.DefaultClient.ParameterToString(eventName));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -246,7 +239,7 @@ namespace com.knetikcloud.Api
             {
                 mGetBRETriggerPath = mGetBRETriggerPath.Replace("{format}", "json");
             }
-            mGetBRETriggerPath = mGetBRETriggerPath.Replace("{" + "event_name" + "}", KnetikClient.ParameterToString(eventName));
+            mGetBRETriggerPath = mGetBRETriggerPath.Replace("{" + "event_name" + "}", KnetikClient.DefaultClient.ParameterToString(eventName));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -276,7 +269,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetBRETrigger: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetBRETriggerData = (BreTriggerResource) KnetikClient.Deserialize(response.Content, typeof(BreTriggerResource), response.Headers);
+            GetBRETriggerData = (BreTriggerResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(BreTriggerResource), response.Headers);
             KnetikLogger.LogResponse(mGetBRETriggerStartTime, mGetBRETriggerPath, string.Format("Response received successfully:\n{0}", GetBRETriggerData.ToString()));
 
             if (GetBRETriggerComplete != null)
@@ -311,37 +304,37 @@ namespace com.knetikcloud.Api
 
             if (filterSystem != null)
             {
-                queryParams.Add("filter_system", KnetikClient.ParameterToString(filterSystem));
+                queryParams.Add("filter_system", KnetikClient.DefaultClient.ParameterToString(filterSystem));
             }
 
             if (filterCategory != null)
             {
-                queryParams.Add("filter_category", KnetikClient.ParameterToString(filterCategory));
+                queryParams.Add("filter_category", KnetikClient.DefaultClient.ParameterToString(filterCategory));
             }
 
             if (filterTags != null)
             {
-                queryParams.Add("filter_tags", KnetikClient.ParameterToString(filterTags));
+                queryParams.Add("filter_tags", KnetikClient.DefaultClient.ParameterToString(filterTags));
             }
 
             if (filterName != null)
             {
-                queryParams.Add("filter_name", KnetikClient.ParameterToString(filterName));
+                queryParams.Add("filter_name", KnetikClient.DefaultClient.ParameterToString(filterName));
             }
 
             if (filterSearch != null)
             {
-                queryParams.Add("filter_search", KnetikClient.ParameterToString(filterSearch));
+                queryParams.Add("filter_search", KnetikClient.DefaultClient.ParameterToString(filterSearch));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             // authentication setting, if any
@@ -366,7 +359,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetBRETriggers: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetBRETriggersData = (PageResourceBreTriggerResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceBreTriggerResource), response.Headers);
+            GetBRETriggersData = (PageResourceBreTriggerResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceBreTriggerResource), response.Headers);
             KnetikLogger.LogResponse(mGetBRETriggersStartTime, mGetBRETriggersPath, string.Format("Response received successfully:\n{0}", GetBRETriggersData.ToString()));
 
             if (GetBRETriggersComplete != null)
@@ -392,7 +385,7 @@ namespace com.knetikcloud.Api
             {
                 mUpdateBRETriggerPath = mUpdateBRETriggerPath.Replace("{format}", "json");
             }
-            mUpdateBRETriggerPath = mUpdateBRETriggerPath.Replace("{" + "event_name" + "}", KnetikClient.ParameterToString(eventName));
+            mUpdateBRETriggerPath = mUpdateBRETriggerPath.Replace("{" + "event_name" + "}", KnetikClient.DefaultClient.ParameterToString(eventName));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -400,7 +393,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(breTriggerResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(breTriggerResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -424,7 +417,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateBRETrigger: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateBRETriggerData = (BreTriggerResource) KnetikClient.Deserialize(response.Content, typeof(BreTriggerResource), response.Headers);
+            UpdateBRETriggerData = (BreTriggerResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(BreTriggerResource), response.Headers);
             KnetikLogger.LogResponse(mUpdateBRETriggerStartTime, mUpdateBRETriggerPath, string.Format("Response received successfully:\n{0}", UpdateBRETriggerData.ToString()));
 
             if (UpdateBRETriggerComplete != null)

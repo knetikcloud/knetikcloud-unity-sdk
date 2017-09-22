@@ -47,16 +47,9 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public PaymentsFattMerchantApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mCreateOrUpdateFattMerchantPaymentMethodCoroutine = new KnetikCoroutine(KnetikClient);
+            mCreateOrUpdateFattMerchantPaymentMethodCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Create or update a FattMerchant payment method for a user Stores customer information and creates a payment method that can be used to pay invoices through the payments endpoints.
         /// </summary>
@@ -76,7 +69,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(request); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -100,7 +93,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateOrUpdateFattMerchantPaymentMethod: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateOrUpdateFattMerchantPaymentMethodData = (PaymentMethodResource) KnetikClient.Deserialize(response.Content, typeof(PaymentMethodResource), response.Headers);
+            CreateOrUpdateFattMerchantPaymentMethodData = (PaymentMethodResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PaymentMethodResource), response.Headers);
             KnetikLogger.LogResponse(mCreateOrUpdateFattMerchantPaymentMethodStartTime, mCreateOrUpdateFattMerchantPaymentMethodPath, string.Format("Response received successfully:\n{0}", CreateOrUpdateFattMerchantPaymentMethodData.ToString()));
 
             if (CreateOrUpdateFattMerchantPaymentMethodComplete != null)

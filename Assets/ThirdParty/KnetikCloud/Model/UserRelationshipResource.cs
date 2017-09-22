@@ -39,6 +39,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "parent")]
         public SimpleUserResource Parent { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

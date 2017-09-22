@@ -182,25 +182,18 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public MediaArtistsApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mAddArtistCoroutine = new KnetikCoroutine(KnetikClient);
-            mCreateArtistTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteArtistCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteArtistTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetArtistCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetArtistTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetArtistTemplatesCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetArtistsCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateArtistCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateArtistTemplateCoroutine = new KnetikCoroutine(KnetikClient);
+            mAddArtistCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateArtistTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mDeleteArtistCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mDeleteArtistTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetArtistCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetArtistTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetArtistTemplatesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetArtistsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mUpdateArtistCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mUpdateArtistTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Adds a new artist in the system Adds a new artist in the system. Use specific media contributions endpoint to add contributions
         /// </summary>
@@ -220,7 +213,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(artistResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(artistResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -244,7 +237,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling AddArtist: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            AddArtistData = (ArtistResource) KnetikClient.Deserialize(response.Content, typeof(ArtistResource), response.Headers);
+            AddArtistData = (ArtistResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ArtistResource), response.Headers);
             KnetikLogger.LogResponse(mAddArtistStartTime, mAddArtistPath, string.Format("Response received successfully:\n{0}", AddArtistData.ToString()));
 
             if (AddArtistComplete != null)
@@ -271,7 +264,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(artistTemplateResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(artistTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -295,7 +288,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateArtistTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateArtistTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            CreateArtistTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
             KnetikLogger.LogResponse(mCreateArtistTemplateStartTime, mCreateArtistTemplatePath, string.Format("Response received successfully:\n{0}", CreateArtistTemplateData.ToString()));
 
             if (CreateArtistTemplateComplete != null)
@@ -320,7 +313,7 @@ namespace com.knetikcloud.Api
             {
                 mDeleteArtistPath = mDeleteArtistPath.Replace("{format}", "json");
             }
-            mDeleteArtistPath = mDeleteArtistPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteArtistPath = mDeleteArtistPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -374,7 +367,7 @@ namespace com.knetikcloud.Api
             {
                 mDeleteArtistTemplatePath = mDeleteArtistTemplatePath.Replace("{format}", "json");
             }
-            mDeleteArtistTemplatePath = mDeleteArtistTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteArtistTemplatePath = mDeleteArtistTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -384,7 +377,7 @@ namespace com.knetikcloud.Api
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.ParameterToString(cascade));
+                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
             }
 
             // authentication setting, if any
@@ -433,7 +426,7 @@ namespace com.knetikcloud.Api
             {
                 mGetArtistPath = mGetArtistPath.Replace("{format}", "json");
             }
-            mGetArtistPath = mGetArtistPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetArtistPath = mGetArtistPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -443,7 +436,7 @@ namespace com.knetikcloud.Api
 
             if (showContributions != null)
             {
-                queryParams.Add("show_contributions", KnetikClient.ParameterToString(showContributions));
+                queryParams.Add("show_contributions", KnetikClient.DefaultClient.ParameterToString(showContributions));
             }
 
             // authentication setting, if any
@@ -468,7 +461,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetArtist: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetArtistData = (ArtistResource) KnetikClient.Deserialize(response.Content, typeof(ArtistResource), response.Headers);
+            GetArtistData = (ArtistResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ArtistResource), response.Headers);
             KnetikLogger.LogResponse(mGetArtistStartTime, mGetArtistPath, string.Format("Response received successfully:\n{0}", GetArtistData.ToString()));
 
             if (GetArtistComplete != null)
@@ -493,7 +486,7 @@ namespace com.knetikcloud.Api
             {
                 mGetArtistTemplatePath = mGetArtistTemplatePath.Replace("{format}", "json");
             }
-            mGetArtistTemplatePath = mGetArtistTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetArtistTemplatePath = mGetArtistTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -523,7 +516,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetArtistTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetArtistTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            GetArtistTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
             KnetikLogger.LogResponse(mGetArtistTemplateStartTime, mGetArtistTemplatePath, string.Format("Response received successfully:\n{0}", GetArtistTemplateData.ToString()));
 
             if (GetArtistTemplateComplete != null)
@@ -554,17 +547,17 @@ namespace com.knetikcloud.Api
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
@@ -589,7 +582,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetArtistTemplates: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetArtistTemplatesData = (PageResourceTemplateResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceTemplateResource), response.Headers);
+            GetArtistTemplatesData = (PageResourceTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceTemplateResource), response.Headers);
             KnetikLogger.LogResponse(mGetArtistTemplatesStartTime, mGetArtistTemplatesPath, string.Format("Response received successfully:\n{0}", GetArtistTemplatesData.ToString()));
 
             if (GetArtistTemplatesComplete != null)
@@ -621,22 +614,22 @@ namespace com.knetikcloud.Api
 
             if (filterArtistsByName != null)
             {
-                queryParams.Add("filter_artists_by_name", KnetikClient.ParameterToString(filterArtistsByName));
+                queryParams.Add("filter_artists_by_name", KnetikClient.DefaultClient.ParameterToString(filterArtistsByName));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
@@ -661,7 +654,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetArtists: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetArtistsData = (PageResourceArtistResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceArtistResource), response.Headers);
+            GetArtistsData = (PageResourceArtistResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceArtistResource), response.Headers);
             KnetikLogger.LogResponse(mGetArtistsStartTime, mGetArtistsPath, string.Format("Response received successfully:\n{0}", GetArtistsData.ToString()));
 
             if (GetArtistsComplete != null)
@@ -687,7 +680,7 @@ namespace com.knetikcloud.Api
             {
                 mUpdateArtistPath = mUpdateArtistPath.Replace("{format}", "json");
             }
-            mUpdateArtistPath = mUpdateArtistPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateArtistPath = mUpdateArtistPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -695,7 +688,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(artistResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(artistResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -743,7 +736,7 @@ namespace com.knetikcloud.Api
             {
                 mUpdateArtistTemplatePath = mUpdateArtistTemplatePath.Replace("{format}", "json");
             }
-            mUpdateArtistTemplatePath = mUpdateArtistTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateArtistTemplatePath = mUpdateArtistTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -751,7 +744,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(artistTemplateResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(artistTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -775,7 +768,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateArtistTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateArtistTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            UpdateArtistTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
             KnetikLogger.LogResponse(mUpdateArtistTemplateStartTime, mUpdateArtistTemplatePath, string.Format("Response received successfully:\n{0}", UpdateArtistTemplateData.ToString()));
 
             if (UpdateArtistTemplateComplete != null)

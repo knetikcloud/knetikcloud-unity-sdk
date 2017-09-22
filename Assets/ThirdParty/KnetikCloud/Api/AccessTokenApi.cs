@@ -34,6 +34,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -53,16 +54,10 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public AccessTokenApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mGetOAuthTokenCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetOAuthTokenCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
+        /// <inheritdoc />
         /// <summary>
         /// Get access token 
         /// </summary>
@@ -100,37 +95,37 @@ namespace com.knetikcloud.Api
 
             if (grantType != null)
             {
-                formParams.Add("grant_type", KnetikClient.ParameterToString(grantType)); // form parameter
+                formParams.Add("grant_type", KnetikClient.DefaultClient.ParameterToString(grantType)); // form parameter
             }			
 
             if (clientId != null)
             {
-                formParams.Add("client_id", KnetikClient.ParameterToString(clientId)); // form parameter
+                formParams.Add("client_id", KnetikClient.DefaultClient.ParameterToString(clientId)); // form parameter
             }			
 
             if (clientSecret != null)
             {
-                formParams.Add("client_secret", KnetikClient.ParameterToString(clientSecret)); // form parameter
+                formParams.Add("client_secret", KnetikClient.DefaultClient.ParameterToString(clientSecret)); // form parameter
             }			
 
             if (username != null)
             {
-                formParams.Add("username", KnetikClient.ParameterToString(username)); // form parameter
+                formParams.Add("username", KnetikClient.DefaultClient.ParameterToString(username)); // form parameter
             }			
 
             if (password != null)
             {
-                formParams.Add("password", KnetikClient.ParameterToString(password)); // form parameter
+                formParams.Add("password", KnetikClient.DefaultClient.ParameterToString(password)); // form parameter
             }			
 
             if (token != null)
             {
-                formParams.Add("token", KnetikClient.ParameterToString(token)); // form parameter
+                formParams.Add("token", KnetikClient.DefaultClient.ParameterToString(token)); // form parameter
             }			
 
             if (refreshToken != null)
             {
-                formParams.Add("refresh_token", KnetikClient.ParameterToString(refreshToken)); // form parameter
+                formParams.Add("refresh_token", KnetikClient.DefaultClient.ParameterToString(refreshToken)); // form parameter
             }			
 
             // authentication setting, if any
@@ -155,7 +150,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetOAuthToken: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetOAuthTokenData = (OAuth2Resource) KnetikClient.Deserialize(response.Content, typeof(OAuth2Resource), response.Headers);
+            GetOAuthTokenData = (OAuth2Resource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(OAuth2Resource), response.Headers);
             KnetikLogger.LogResponse(mGetOAuthTokenStartTime, mGetOAuthTokenPath, string.Format("Response received successfully:\n{0}", GetOAuthTokenData.ToString()));
 
             if (GetOAuthTokenComplete != null)

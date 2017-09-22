@@ -54,16 +54,9 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public ReportingOrdersApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mGetInvoiceReportsCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetInvoiceReportsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Retrieve invoice counts aggregated by time ranges 
         /// </summary>
@@ -88,7 +81,7 @@ namespace com.knetikcloud.Api
             {
                 mGetInvoiceReportsPath = mGetInvoiceReportsPath.Replace("{format}", "json");
             }
-            mGetInvoiceReportsPath = mGetInvoiceReportsPath.Replace("{" + "currency_code" + "}", KnetikClient.ParameterToString(currencyCode));
+            mGetInvoiceReportsPath = mGetInvoiceReportsPath.Replace("{" + "currency_code" + "}", KnetikClient.DefaultClient.ParameterToString(currencyCode));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -98,37 +91,37 @@ namespace com.knetikcloud.Api
 
             if (granularity != null)
             {
-                queryParams.Add("granularity", KnetikClient.ParameterToString(granularity));
+                queryParams.Add("granularity", KnetikClient.DefaultClient.ParameterToString(granularity));
             }
 
             if (filterPaymentStatus != null)
             {
-                queryParams.Add("filter_payment_status", KnetikClient.ParameterToString(filterPaymentStatus));
+                queryParams.Add("filter_payment_status", KnetikClient.DefaultClient.ParameterToString(filterPaymentStatus));
             }
 
             if (filterFulfillmentStatus != null)
             {
-                queryParams.Add("filter_fulfillment_status", KnetikClient.ParameterToString(filterFulfillmentStatus));
+                queryParams.Add("filter_fulfillment_status", KnetikClient.DefaultClient.ParameterToString(filterFulfillmentStatus));
             }
 
             if (startDate != null)
             {
-                queryParams.Add("start_date", KnetikClient.ParameterToString(startDate));
+                queryParams.Add("start_date", KnetikClient.DefaultClient.ParameterToString(startDate));
             }
 
             if (endDate != null)
             {
-                queryParams.Add("end_date", KnetikClient.ParameterToString(endDate));
+                queryParams.Add("end_date", KnetikClient.DefaultClient.ParameterToString(endDate));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             // authentication setting, if any
@@ -153,7 +146,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetInvoiceReports: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetInvoiceReportsData = (PageResourceAggregateInvoiceReportResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceAggregateInvoiceReportResource), response.Headers);
+            GetInvoiceReportsData = (PageResourceAggregateInvoiceReportResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceAggregateInvoiceReportResource), response.Headers);
             KnetikLogger.LogResponse(mGetInvoiceReportsStartTime, mGetInvoiceReportsPath, string.Format("Response received successfully:\n{0}", GetInvoiceReportsData.ToString()));
 
             if (GetInvoiceReportsComplete != null)

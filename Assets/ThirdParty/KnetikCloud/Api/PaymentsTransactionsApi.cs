@@ -81,18 +81,11 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public PaymentsTransactionsApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mGetTransactionCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetTransactionsCoroutine = new KnetikCoroutine(KnetikClient);
-            mRefundTransactionCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetTransactionCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetTransactionsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mRefundTransactionCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Get the details for a single transaction 
         /// </summary>
@@ -110,7 +103,7 @@ namespace com.knetikcloud.Api
             {
                 mGetTransactionPath = mGetTransactionPath.Replace("{format}", "json");
             }
-            mGetTransactionPath = mGetTransactionPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetTransactionPath = mGetTransactionPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -140,7 +133,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetTransaction: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetTransactionData = (TransactionResource) KnetikClient.Deserialize(response.Content, typeof(TransactionResource), response.Headers);
+            GetTransactionData = (TransactionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TransactionResource), response.Headers);
             KnetikLogger.LogResponse(mGetTransactionStartTime, mGetTransactionPath, string.Format("Response received successfully:\n{0}", GetTransactionData.ToString()));
 
             if (GetTransactionComplete != null)
@@ -172,22 +165,22 @@ namespace com.knetikcloud.Api
 
             if (filterInvoice != null)
             {
-                queryParams.Add("filter_invoice", KnetikClient.ParameterToString(filterInvoice));
+                queryParams.Add("filter_invoice", KnetikClient.DefaultClient.ParameterToString(filterInvoice));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
@@ -212,7 +205,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetTransactions: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetTransactionsData = (PageResourceTransactionResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceTransactionResource), response.Headers);
+            GetTransactionsData = (PageResourceTransactionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceTransactionResource), response.Headers);
             KnetikLogger.LogResponse(mGetTransactionsStartTime, mGetTransactionsPath, string.Format("Response received successfully:\n{0}", GetTransactionsData.ToString()));
 
             if (GetTransactionsComplete != null)
@@ -238,7 +231,7 @@ namespace com.knetikcloud.Api
             {
                 mRefundTransactionPath = mRefundTransactionPath.Replace("{format}", "json");
             }
-            mRefundTransactionPath = mRefundTransactionPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mRefundTransactionPath = mRefundTransactionPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -246,7 +239,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(request); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -270,7 +263,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling RefundTransaction: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            RefundTransactionData = (RefundResource) KnetikClient.Deserialize(response.Content, typeof(RefundResource), response.Headers);
+            RefundTransactionData = (RefundResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(RefundResource), response.Headers);
             KnetikLogger.LogResponse(mRefundTransactionStartTime, mRefundTransactionPath, string.Format("Response received successfully:\n{0}", RefundTransactionData.ToString()));
 
             if (RefundTransactionComplete != null)

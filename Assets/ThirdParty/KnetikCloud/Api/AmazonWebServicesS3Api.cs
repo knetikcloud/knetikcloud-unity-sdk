@@ -65,17 +65,10 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public AmazonWebServicesS3Api()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mGetDownloadURLCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetSignedS3URLCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetDownloadURLCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetSignedS3URLCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Get a temporary signed S3 URL for download To give access to files in your own S3 account, you will need to grant KnetikcCloud access to the file by adjusting your bucket policy accordingly. See S3 documentation for details.
         /// </summary>
@@ -99,17 +92,17 @@ namespace com.knetikcloud.Api
 
             if (bucket != null)
             {
-                queryParams.Add("bucket", KnetikClient.ParameterToString(bucket));
+                queryParams.Add("bucket", KnetikClient.DefaultClient.ParameterToString(bucket));
             }
 
             if (path != null)
             {
-                queryParams.Add("path", KnetikClient.ParameterToString(path));
+                queryParams.Add("path", KnetikClient.DefaultClient.ParameterToString(path));
             }
 
             if (expiration != null)
             {
-                queryParams.Add("expiration", KnetikClient.ParameterToString(expiration));
+                queryParams.Add("expiration", KnetikClient.DefaultClient.ParameterToString(expiration));
             }
 
             // authentication setting, if any
@@ -134,7 +127,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetDownloadURL: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetDownloadURLData = (string) KnetikClient.Deserialize(response.Content, typeof(string), response.Headers);
+            GetDownloadURLData = (string) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(string), response.Headers);
             KnetikLogger.LogResponse(mGetDownloadURLStartTime, mGetDownloadURLPath, string.Format("Response received successfully:\n{0}", GetDownloadURLData.ToString()));
 
             if (GetDownloadURLComplete != null)
@@ -164,12 +157,12 @@ namespace com.knetikcloud.Api
 
             if (filename != null)
             {
-                queryParams.Add("filename", KnetikClient.ParameterToString(filename));
+                queryParams.Add("filename", KnetikClient.DefaultClient.ParameterToString(filename));
             }
 
             if (contentType != null)
             {
-                queryParams.Add("content_type", KnetikClient.ParameterToString(contentType));
+                queryParams.Add("content_type", KnetikClient.DefaultClient.ParameterToString(contentType));
             }
 
             // authentication setting, if any
@@ -194,7 +187,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetSignedS3URL: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetSignedS3URLData = (AmazonS3Activity) KnetikClient.Deserialize(response.Content, typeof(AmazonS3Activity), response.Headers);
+            GetSignedS3URLData = (AmazonS3Activity) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(AmazonS3Activity), response.Headers);
             KnetikLogger.LogResponse(mGetSignedS3URLStartTime, mGetSignedS3URLPath, string.Format("Response received successfully:\n{0}", GetSignedS3URLData.ToString()));
 
             if (GetSignedS3URLComplete != null)

@@ -392,38 +392,31 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public CampaignsChallengesApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mCreateChallengeCoroutine = new KnetikCoroutine(KnetikClient);
-            mCreateChallengeActivityCoroutine = new KnetikCoroutine(KnetikClient);
-            mCreateChallengeActivityTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mCreateChallengeTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteChallengeCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteChallengeActivityCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteChallengeActivityTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteChallengeEventCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteChallengeTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetChallengeCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetChallengeActivitiesCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetChallengeActivityCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetChallengeActivityTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetChallengeActivityTemplatesCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetChallengeEventCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetChallengeEventsCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetChallengeTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetChallengeTemplatesCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetChallengesCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateChallengeCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateChallengeActivityCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateChallengeActivityTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateChallengeTemplateCoroutine = new KnetikCoroutine(KnetikClient);
+            mCreateChallengeCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateChallengeActivityCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateChallengeActivityTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateChallengeTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mDeleteChallengeCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mDeleteChallengeActivityCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mDeleteChallengeActivityTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mDeleteChallengeEventCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mDeleteChallengeTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetChallengeCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetChallengeActivitiesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetChallengeActivityCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetChallengeActivityTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetChallengeActivityTemplatesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetChallengeEventCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetChallengeEventsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetChallengeTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetChallengeTemplatesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetChallengesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mUpdateChallengeCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mUpdateChallengeActivityCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mUpdateChallengeActivityTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mUpdateChallengeTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Create a challenge Challenges do not run on their own.  They must be added to a campaign before events will spawn.
         /// </summary>
@@ -443,7 +436,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(challengeResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(challengeResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -467,7 +460,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateChallenge: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateChallengeData = (ChallengeResource) KnetikClient.Deserialize(response.Content, typeof(ChallengeResource), response.Headers);
+            CreateChallengeData = (ChallengeResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ChallengeResource), response.Headers);
             KnetikLogger.LogResponse(mCreateChallengeStartTime, mCreateChallengePath, string.Format("Response received successfully:\n{0}", CreateChallengeData.ToString()));
 
             if (CreateChallengeComplete != null)
@@ -494,7 +487,7 @@ namespace com.knetikcloud.Api
             {
                 mCreateChallengeActivityPath = mCreateChallengeActivityPath.Replace("{format}", "json");
             }
-            mCreateChallengeActivityPath = mCreateChallengeActivityPath.Replace("{" + "challenge_id" + "}", KnetikClient.ParameterToString(challengeId));
+            mCreateChallengeActivityPath = mCreateChallengeActivityPath.Replace("{" + "challenge_id" + "}", KnetikClient.DefaultClient.ParameterToString(challengeId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -504,10 +497,10 @@ namespace com.knetikcloud.Api
 
             if (validateSettings != null)
             {
-                queryParams.Add("validateSettings", KnetikClient.ParameterToString(validateSettings));
+                queryParams.Add("validateSettings", KnetikClient.DefaultClient.ParameterToString(validateSettings));
             }
 
-            postBody = KnetikClient.Serialize(challengeActivityResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(challengeActivityResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -531,7 +524,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateChallengeActivity: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateChallengeActivityData = (ChallengeActivityResource) KnetikClient.Deserialize(response.Content, typeof(ChallengeActivityResource), response.Headers);
+            CreateChallengeActivityData = (ChallengeActivityResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ChallengeActivityResource), response.Headers);
             KnetikLogger.LogResponse(mCreateChallengeActivityStartTime, mCreateChallengeActivityPath, string.Format("Response received successfully:\n{0}", CreateChallengeActivityData.ToString()));
 
             if (CreateChallengeActivityComplete != null)
@@ -558,7 +551,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(challengeActivityTemplateResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(challengeActivityTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -582,7 +575,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateChallengeActivityTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateChallengeActivityTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            CreateChallengeActivityTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
             KnetikLogger.LogResponse(mCreateChallengeActivityTemplateStartTime, mCreateChallengeActivityTemplatePath, string.Format("Response received successfully:\n{0}", CreateChallengeActivityTemplateData.ToString()));
 
             if (CreateChallengeActivityTemplateComplete != null)
@@ -609,7 +602,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(challengeTemplateResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(challengeTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -633,7 +626,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateChallengeTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateChallengeTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            CreateChallengeTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
             KnetikLogger.LogResponse(mCreateChallengeTemplateStartTime, mCreateChallengeTemplatePath, string.Format("Response received successfully:\n{0}", CreateChallengeTemplateData.ToString()));
 
             if (CreateChallengeTemplateComplete != null)
@@ -658,7 +651,7 @@ namespace com.knetikcloud.Api
             {
                 mDeleteChallengePath = mDeleteChallengePath.Replace("{format}", "json");
             }
-            mDeleteChallengePath = mDeleteChallengePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteChallengePath = mDeleteChallengePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -717,8 +710,8 @@ namespace com.knetikcloud.Api
             {
                 mDeleteChallengeActivityPath = mDeleteChallengeActivityPath.Replace("{format}", "json");
             }
-            mDeleteChallengeActivityPath = mDeleteChallengeActivityPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
-mDeleteChallengeActivityPath = mDeleteChallengeActivityPath.Replace("{" + "challenge_id" + "}", KnetikClient.ParameterToString(challengeId));
+            mDeleteChallengeActivityPath = mDeleteChallengeActivityPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+mDeleteChallengeActivityPath = mDeleteChallengeActivityPath.Replace("{" + "challenge_id" + "}", KnetikClient.DefaultClient.ParameterToString(challengeId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -772,7 +765,7 @@ mDeleteChallengeActivityPath = mDeleteChallengeActivityPath.Replace("{" + "chall
             {
                 mDeleteChallengeActivityTemplatePath = mDeleteChallengeActivityTemplatePath.Replace("{format}", "json");
             }
-            mDeleteChallengeActivityTemplatePath = mDeleteChallengeActivityTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteChallengeActivityTemplatePath = mDeleteChallengeActivityTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -782,7 +775,7 @@ mDeleteChallengeActivityPath = mDeleteChallengeActivityPath.Replace("{" + "chall
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.ParameterToString(cascade));
+                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
             }
 
             // authentication setting, if any
@@ -830,7 +823,7 @@ mDeleteChallengeActivityPath = mDeleteChallengeActivityPath.Replace("{" + "chall
             {
                 mDeleteChallengeEventPath = mDeleteChallengeEventPath.Replace("{format}", "json");
             }
-            mDeleteChallengeEventPath = mDeleteChallengeEventPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteChallengeEventPath = mDeleteChallengeEventPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -884,7 +877,7 @@ mDeleteChallengeActivityPath = mDeleteChallengeActivityPath.Replace("{" + "chall
             {
                 mDeleteChallengeTemplatePath = mDeleteChallengeTemplatePath.Replace("{format}", "json");
             }
-            mDeleteChallengeTemplatePath = mDeleteChallengeTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteChallengeTemplatePath = mDeleteChallengeTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -894,7 +887,7 @@ mDeleteChallengeActivityPath = mDeleteChallengeActivityPath.Replace("{" + "chall
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.ParameterToString(cascade));
+                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
             }
 
             // authentication setting, if any
@@ -942,7 +935,7 @@ mDeleteChallengeActivityPath = mDeleteChallengeActivityPath.Replace("{" + "chall
             {
                 mGetChallengePath = mGetChallengePath.Replace("{format}", "json");
             }
-            mGetChallengePath = mGetChallengePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetChallengePath = mGetChallengePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -972,7 +965,7 @@ mDeleteChallengeActivityPath = mDeleteChallengeActivityPath.Replace("{" + "chall
                 throw new KnetikException((int)response.StatusCode, "Error calling GetChallenge: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetChallengeData = (ChallengeResource) KnetikClient.Deserialize(response.Content, typeof(ChallengeResource), response.Headers);
+            GetChallengeData = (ChallengeResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ChallengeResource), response.Headers);
             KnetikLogger.LogResponse(mGetChallengeStartTime, mGetChallengePath, string.Format("Response received successfully:\n{0}", GetChallengeData.ToString()));
 
             if (GetChallengeComplete != null)
@@ -1000,7 +993,7 @@ mDeleteChallengeActivityPath = mDeleteChallengeActivityPath.Replace("{" + "chall
             {
                 mGetChallengeActivitiesPath = mGetChallengeActivitiesPath.Replace("{format}", "json");
             }
-            mGetChallengeActivitiesPath = mGetChallengeActivitiesPath.Replace("{" + "challenge_id" + "}", KnetikClient.ParameterToString(challengeId));
+            mGetChallengeActivitiesPath = mGetChallengeActivitiesPath.Replace("{" + "challenge_id" + "}", KnetikClient.DefaultClient.ParameterToString(challengeId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1010,17 +1003,17 @@ mDeleteChallengeActivityPath = mDeleteChallengeActivityPath.Replace("{" + "chall
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
@@ -1045,7 +1038,7 @@ mDeleteChallengeActivityPath = mDeleteChallengeActivityPath.Replace("{" + "chall
                 throw new KnetikException((int)response.StatusCode, "Error calling GetChallengeActivities: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetChallengeActivitiesData = (PageResourceBareChallengeActivityResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceBareChallengeActivityResource), response.Headers);
+            GetChallengeActivitiesData = (PageResourceBareChallengeActivityResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceBareChallengeActivityResource), response.Headers);
             KnetikLogger.LogResponse(mGetChallengeActivitiesStartTime, mGetChallengeActivitiesPath, string.Format("Response received successfully:\n{0}", GetChallengeActivitiesData.ToString()));
 
             if (GetChallengeActivitiesComplete != null)
@@ -1076,8 +1069,8 @@ mDeleteChallengeActivityPath = mDeleteChallengeActivityPath.Replace("{" + "chall
             {
                 mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{format}", "json");
             }
-            mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
-mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_id" + "}", KnetikClient.ParameterToString(challengeId));
+            mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_id" + "}", KnetikClient.DefaultClient.ParameterToString(challengeId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1107,7 +1100,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
                 throw new KnetikException((int)response.StatusCode, "Error calling GetChallengeActivity: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetChallengeActivityData = (ChallengeActivityResource) KnetikClient.Deserialize(response.Content, typeof(ChallengeActivityResource), response.Headers);
+            GetChallengeActivityData = (ChallengeActivityResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ChallengeActivityResource), response.Headers);
             KnetikLogger.LogResponse(mGetChallengeActivityStartTime, mGetChallengeActivityPath, string.Format("Response received successfully:\n{0}", GetChallengeActivityData.ToString()));
 
             if (GetChallengeActivityComplete != null)
@@ -1132,7 +1125,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
             {
                 mGetChallengeActivityTemplatePath = mGetChallengeActivityTemplatePath.Replace("{format}", "json");
             }
-            mGetChallengeActivityTemplatePath = mGetChallengeActivityTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetChallengeActivityTemplatePath = mGetChallengeActivityTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1162,7 +1155,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
                 throw new KnetikException((int)response.StatusCode, "Error calling GetChallengeActivityTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetChallengeActivityTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            GetChallengeActivityTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
             KnetikLogger.LogResponse(mGetChallengeActivityTemplateStartTime, mGetChallengeActivityTemplatePath, string.Format("Response received successfully:\n{0}", GetChallengeActivityTemplateData.ToString()));
 
             if (GetChallengeActivityTemplateComplete != null)
@@ -1193,17 +1186,17 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
@@ -1228,7 +1221,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
                 throw new KnetikException((int)response.StatusCode, "Error calling GetChallengeActivityTemplates: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetChallengeActivityTemplatesData = (PageResourceTemplateResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceTemplateResource), response.Headers);
+            GetChallengeActivityTemplatesData = (PageResourceTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceTemplateResource), response.Headers);
             KnetikLogger.LogResponse(mGetChallengeActivityTemplatesStartTime, mGetChallengeActivityTemplatesPath, string.Format("Response received successfully:\n{0}", GetChallengeActivityTemplatesData.ToString()));
 
             if (GetChallengeActivityTemplatesComplete != null)
@@ -1253,7 +1246,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
             {
                 mGetChallengeEventPath = mGetChallengeEventPath.Replace("{format}", "json");
             }
-            mGetChallengeEventPath = mGetChallengeEventPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetChallengeEventPath = mGetChallengeEventPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1283,7 +1276,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
                 throw new KnetikException((int)response.StatusCode, "Error calling GetChallengeEvent: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetChallengeEventData = (ChallengeEventResource) KnetikClient.Deserialize(response.Content, typeof(ChallengeEventResource), response.Headers);
+            GetChallengeEventData = (ChallengeEventResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ChallengeEventResource), response.Headers);
             KnetikLogger.LogResponse(mGetChallengeEventStartTime, mGetChallengeEventPath, string.Format("Response received successfully:\n{0}", GetChallengeEventData.ToString()));
 
             if (GetChallengeEventComplete != null)
@@ -1318,37 +1311,37 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
 
             if (filterStartDate != null)
             {
-                queryParams.Add("filter_start_date", KnetikClient.ParameterToString(filterStartDate));
+                queryParams.Add("filter_start_date", KnetikClient.DefaultClient.ParameterToString(filterStartDate));
             }
 
             if (filterEndDate != null)
             {
-                queryParams.Add("filter_end_date", KnetikClient.ParameterToString(filterEndDate));
+                queryParams.Add("filter_end_date", KnetikClient.DefaultClient.ParameterToString(filterEndDate));
             }
 
             if (filterCampaigns != null)
             {
-                queryParams.Add("filter_campaigns", KnetikClient.ParameterToString(filterCampaigns));
+                queryParams.Add("filter_campaigns", KnetikClient.DefaultClient.ParameterToString(filterCampaigns));
             }
 
             if (filterChallenge != null)
             {
-                queryParams.Add("filter_challenge", KnetikClient.ParameterToString(filterChallenge));
+                queryParams.Add("filter_challenge", KnetikClient.DefaultClient.ParameterToString(filterChallenge));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
@@ -1373,7 +1366,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
                 throw new KnetikException((int)response.StatusCode, "Error calling GetChallengeEvents: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetChallengeEventsData = (PageResourceChallengeEventResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceChallengeEventResource), response.Headers);
+            GetChallengeEventsData = (PageResourceChallengeEventResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceChallengeEventResource), response.Headers);
             KnetikLogger.LogResponse(mGetChallengeEventsStartTime, mGetChallengeEventsPath, string.Format("Response received successfully:\n{0}", GetChallengeEventsData.ToString()));
 
             if (GetChallengeEventsComplete != null)
@@ -1398,7 +1391,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
             {
                 mGetChallengeTemplatePath = mGetChallengeTemplatePath.Replace("{format}", "json");
             }
-            mGetChallengeTemplatePath = mGetChallengeTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetChallengeTemplatePath = mGetChallengeTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1428,7 +1421,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
                 throw new KnetikException((int)response.StatusCode, "Error calling GetChallengeTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetChallengeTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            GetChallengeTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
             KnetikLogger.LogResponse(mGetChallengeTemplateStartTime, mGetChallengeTemplatePath, string.Format("Response received successfully:\n{0}", GetChallengeTemplateData.ToString()));
 
             if (GetChallengeTemplateComplete != null)
@@ -1459,17 +1452,17 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
@@ -1494,7 +1487,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
                 throw new KnetikException((int)response.StatusCode, "Error calling GetChallengeTemplates: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetChallengeTemplatesData = (PageResourceTemplateResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceTemplateResource), response.Headers);
+            GetChallengeTemplatesData = (PageResourceTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceTemplateResource), response.Headers);
             KnetikLogger.LogResponse(mGetChallengeTemplatesStartTime, mGetChallengeTemplatesPath, string.Format("Response received successfully:\n{0}", GetChallengeTemplatesData.ToString()));
 
             if (GetChallengeTemplatesComplete != null)
@@ -1529,37 +1522,37 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
 
             if (filterTemplate != null)
             {
-                queryParams.Add("filter_template", KnetikClient.ParameterToString(filterTemplate));
+                queryParams.Add("filter_template", KnetikClient.DefaultClient.ParameterToString(filterTemplate));
             }
 
             if (filterActiveCampaign != null)
             {
-                queryParams.Add("filter_active_campaign", KnetikClient.ParameterToString(filterActiveCampaign));
+                queryParams.Add("filter_active_campaign", KnetikClient.DefaultClient.ParameterToString(filterActiveCampaign));
             }
 
             if (filterStartDate != null)
             {
-                queryParams.Add("filter_start_date", KnetikClient.ParameterToString(filterStartDate));
+                queryParams.Add("filter_start_date", KnetikClient.DefaultClient.ParameterToString(filterStartDate));
             }
 
             if (filterEndDate != null)
             {
-                queryParams.Add("filter_end_date", KnetikClient.ParameterToString(filterEndDate));
+                queryParams.Add("filter_end_date", KnetikClient.DefaultClient.ParameterToString(filterEndDate));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
@@ -1584,7 +1577,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
                 throw new KnetikException((int)response.StatusCode, "Error calling GetChallenges: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetChallengesData = (PageResourceChallengeResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceChallengeResource), response.Headers);
+            GetChallengesData = (PageResourceChallengeResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceChallengeResource), response.Headers);
             KnetikLogger.LogResponse(mGetChallengesStartTime, mGetChallengesPath, string.Format("Response received successfully:\n{0}", GetChallengesData.ToString()));
 
             if (GetChallengesComplete != null)
@@ -1610,7 +1603,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
             {
                 mUpdateChallengePath = mUpdateChallengePath.Replace("{format}", "json");
             }
-            mUpdateChallengePath = mUpdateChallengePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateChallengePath = mUpdateChallengePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1618,7 +1611,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(challengeResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(challengeResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -1642,7 +1635,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateChallenge: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateChallengeData = (ChallengeResource) KnetikClient.Deserialize(response.Content, typeof(ChallengeResource), response.Headers);
+            UpdateChallengeData = (ChallengeResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ChallengeResource), response.Headers);
             KnetikLogger.LogResponse(mUpdateChallengeStartTime, mUpdateChallengePath, string.Format("Response received successfully:\n{0}", UpdateChallengeData.ToString()));
 
             if (UpdateChallengeComplete != null)
@@ -1674,8 +1667,8 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
             {
                 mUpdateChallengeActivityPath = mUpdateChallengeActivityPath.Replace("{format}", "json");
             }
-            mUpdateChallengeActivityPath = mUpdateChallengeActivityPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
-mUpdateChallengeActivityPath = mUpdateChallengeActivityPath.Replace("{" + "challenge_id" + "}", KnetikClient.ParameterToString(challengeId));
+            mUpdateChallengeActivityPath = mUpdateChallengeActivityPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+mUpdateChallengeActivityPath = mUpdateChallengeActivityPath.Replace("{" + "challenge_id" + "}", KnetikClient.DefaultClient.ParameterToString(challengeId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1683,7 +1676,7 @@ mUpdateChallengeActivityPath = mUpdateChallengeActivityPath.Replace("{" + "chall
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(challengeActivityResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(challengeActivityResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -1707,7 +1700,7 @@ mUpdateChallengeActivityPath = mUpdateChallengeActivityPath.Replace("{" + "chall
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateChallengeActivity: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateChallengeActivityData = (ChallengeActivityResource) KnetikClient.Deserialize(response.Content, typeof(ChallengeActivityResource), response.Headers);
+            UpdateChallengeActivityData = (ChallengeActivityResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ChallengeActivityResource), response.Headers);
             KnetikLogger.LogResponse(mUpdateChallengeActivityStartTime, mUpdateChallengeActivityPath, string.Format("Response received successfully:\n{0}", UpdateChallengeActivityData.ToString()));
 
             if (UpdateChallengeActivityComplete != null)
@@ -1733,7 +1726,7 @@ mUpdateChallengeActivityPath = mUpdateChallengeActivityPath.Replace("{" + "chall
             {
                 mUpdateChallengeActivityTemplatePath = mUpdateChallengeActivityTemplatePath.Replace("{format}", "json");
             }
-            mUpdateChallengeActivityTemplatePath = mUpdateChallengeActivityTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateChallengeActivityTemplatePath = mUpdateChallengeActivityTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1741,7 +1734,7 @@ mUpdateChallengeActivityPath = mUpdateChallengeActivityPath.Replace("{" + "chall
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(challengeActivityTemplateResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(challengeActivityTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -1765,7 +1758,7 @@ mUpdateChallengeActivityPath = mUpdateChallengeActivityPath.Replace("{" + "chall
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateChallengeActivityTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateChallengeActivityTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            UpdateChallengeActivityTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
             KnetikLogger.LogResponse(mUpdateChallengeActivityTemplateStartTime, mUpdateChallengeActivityTemplatePath, string.Format("Response received successfully:\n{0}", UpdateChallengeActivityTemplateData.ToString()));
 
             if (UpdateChallengeActivityTemplateComplete != null)
@@ -1791,7 +1784,7 @@ mUpdateChallengeActivityPath = mUpdateChallengeActivityPath.Replace("{" + "chall
             {
                 mUpdateChallengeTemplatePath = mUpdateChallengeTemplatePath.Replace("{format}", "json");
             }
-            mUpdateChallengeTemplatePath = mUpdateChallengeTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateChallengeTemplatePath = mUpdateChallengeTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1799,7 +1792,7 @@ mUpdateChallengeActivityPath = mUpdateChallengeActivityPath.Replace("{" + "chall
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(challengeTemplateResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(challengeTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -1823,7 +1816,7 @@ mUpdateChallengeActivityPath = mUpdateChallengeActivityPath.Replace("{" + "chall
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateChallengeTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateChallengeTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            UpdateChallengeTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
             KnetikLogger.LogResponse(mUpdateChallengeTemplateStartTime, mUpdateChallengeTemplatePath, string.Format("Response received successfully:\n{0}", UpdateChallengeTemplateData.ToString()));
 
             if (UpdateChallengeTemplateComplete != null)

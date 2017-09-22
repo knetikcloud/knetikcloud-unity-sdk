@@ -44,16 +44,9 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public SocialFacebookApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mLinkAccountsCoroutine = new KnetikCoroutine(KnetikClient);
+            mLinkAccountsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Link facebook account Links the current user account to a facebook account, using the acccess token from facebook. Can also be used to update the access token after it has expired.
         /// </summary>
@@ -73,7 +66,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(facebookToken); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(facebookToken); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };

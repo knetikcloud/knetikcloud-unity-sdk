@@ -215,28 +215,21 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public StoreShoppingCartsApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mAddCustomDiscountCoroutine = new KnetikCoroutine(KnetikClient);
-            mAddDiscountToCartCoroutine = new KnetikCoroutine(KnetikClient);
-            mAddItemToCartCoroutine = new KnetikCoroutine(KnetikClient);
-            mCreateCartCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetCartCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetCartsCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetShippableCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetShippingCountriesCoroutine = new KnetikCoroutine(KnetikClient);
-            mRemoveDiscountFromCartCoroutine = new KnetikCoroutine(KnetikClient);
-            mSetCartCurrencyCoroutine = new KnetikCoroutine(KnetikClient);
-            mSetCartOwnerCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateItemInCartCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateShippingAddressCoroutine = new KnetikCoroutine(KnetikClient);
+            mAddCustomDiscountCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mAddDiscountToCartCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mAddItemToCartCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateCartCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetCartCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetCartsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetShippableCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetShippingCountriesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mRemoveDiscountFromCartCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mSetCartCurrencyCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mSetCartOwnerCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mUpdateItemInCartCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mUpdateShippingAddressCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Adds a custom discount to the cart 
         /// </summary>
@@ -255,7 +248,7 @@ namespace com.knetikcloud.Api
             {
                 mAddCustomDiscountPath = mAddCustomDiscountPath.Replace("{format}", "json");
             }
-            mAddCustomDiscountPath = mAddCustomDiscountPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mAddCustomDiscountPath = mAddCustomDiscountPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -263,7 +256,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(customDiscount); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(customDiscount); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -311,7 +304,7 @@ namespace com.knetikcloud.Api
             {
                 mAddDiscountToCartPath = mAddDiscountToCartPath.Replace("{format}", "json");
             }
-            mAddDiscountToCartPath = mAddDiscountToCartPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mAddDiscountToCartPath = mAddDiscountToCartPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -319,7 +312,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(skuRequest); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(skuRequest); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -367,7 +360,7 @@ namespace com.knetikcloud.Api
             {
                 mAddItemToCartPath = mAddItemToCartPath.Replace("{format}", "json");
             }
-            mAddItemToCartPath = mAddItemToCartPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mAddItemToCartPath = mAddItemToCartPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -375,7 +368,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(cartItemRequest); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(cartItemRequest); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -427,12 +420,12 @@ namespace com.knetikcloud.Api
 
             if (owner != null)
             {
-                queryParams.Add("owner", KnetikClient.ParameterToString(owner));
+                queryParams.Add("owner", KnetikClient.DefaultClient.ParameterToString(owner));
             }
 
             if (currencyCode != null)
             {
-                queryParams.Add("currency_code", KnetikClient.ParameterToString(currencyCode));
+                queryParams.Add("currency_code", KnetikClient.DefaultClient.ParameterToString(currencyCode));
             }
 
             // authentication setting, if any
@@ -457,7 +450,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateCart: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateCartData = (string) KnetikClient.Deserialize(response.Content, typeof(string), response.Headers);
+            CreateCartData = (string) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(string), response.Headers);
             KnetikLogger.LogResponse(mCreateCartStartTime, mCreateCartPath, string.Format("Response received successfully:\n{0}", CreateCartData.ToString()));
 
             if (CreateCartComplete != null)
@@ -482,7 +475,7 @@ namespace com.knetikcloud.Api
             {
                 mGetCartPath = mGetCartPath.Replace("{format}", "json");
             }
-            mGetCartPath = mGetCartPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetCartPath = mGetCartPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -512,7 +505,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetCart: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetCartData = (Cart) KnetikClient.Deserialize(response.Content, typeof(Cart), response.Headers);
+            GetCartData = (Cart) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(Cart), response.Headers);
             KnetikLogger.LogResponse(mGetCartStartTime, mGetCartPath, string.Format("Response received successfully:\n{0}", GetCartData.ToString()));
 
             if (GetCartComplete != null)
@@ -544,22 +537,22 @@ namespace com.knetikcloud.Api
 
             if (filterOwnerId != null)
             {
-                queryParams.Add("filter_owner_id", KnetikClient.ParameterToString(filterOwnerId));
+                queryParams.Add("filter_owner_id", KnetikClient.DefaultClient.ParameterToString(filterOwnerId));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
@@ -584,7 +577,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetCarts: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetCartsData = (PageResourceCartSummary) KnetikClient.Deserialize(response.Content, typeof(PageResourceCartSummary), response.Headers);
+            GetCartsData = (PageResourceCartSummary) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceCartSummary), response.Headers);
             KnetikLogger.LogResponse(mGetCartsStartTime, mGetCartsPath, string.Format("Response received successfully:\n{0}", GetCartsData.ToString()));
 
             if (GetCartsComplete != null)
@@ -609,7 +602,7 @@ namespace com.knetikcloud.Api
             {
                 mGetShippablePath = mGetShippablePath.Replace("{format}", "json");
             }
-            mGetShippablePath = mGetShippablePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetShippablePath = mGetShippablePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -639,7 +632,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetShippable: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetShippableData = (CartShippableResponse) KnetikClient.Deserialize(response.Content, typeof(CartShippableResponse), response.Headers);
+            GetShippableData = (CartShippableResponse) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CartShippableResponse), response.Headers);
             KnetikLogger.LogResponse(mGetShippableStartTime, mGetShippablePath, string.Format("Response received successfully:\n{0}", GetShippableData.ToString()));
 
             if (GetShippableComplete != null)
@@ -664,7 +657,7 @@ namespace com.knetikcloud.Api
             {
                 mGetShippingCountriesPath = mGetShippingCountriesPath.Replace("{format}", "json");
             }
-            mGetShippingCountriesPath = mGetShippingCountriesPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetShippingCountriesPath = mGetShippingCountriesPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -694,7 +687,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetShippingCountries: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetShippingCountriesData = (SampleCountriesResponse) KnetikClient.Deserialize(response.Content, typeof(SampleCountriesResponse), response.Headers);
+            GetShippingCountriesData = (SampleCountriesResponse) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(SampleCountriesResponse), response.Headers);
             KnetikLogger.LogResponse(mGetShippingCountriesStartTime, mGetShippingCountriesPath, string.Format("Response received successfully:\n{0}", GetShippingCountriesData.ToString()));
 
             if (GetShippingCountriesComplete != null)
@@ -725,8 +718,8 @@ namespace com.knetikcloud.Api
             {
                 mRemoveDiscountFromCartPath = mRemoveDiscountFromCartPath.Replace("{format}", "json");
             }
-            mRemoveDiscountFromCartPath = mRemoveDiscountFromCartPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
-mRemoveDiscountFromCartPath = mRemoveDiscountFromCartPath.Replace("{" + "code" + "}", KnetikClient.ParameterToString(code));
+            mRemoveDiscountFromCartPath = mRemoveDiscountFromCartPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+mRemoveDiscountFromCartPath = mRemoveDiscountFromCartPath.Replace("{" + "code" + "}", KnetikClient.DefaultClient.ParameterToString(code));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -780,7 +773,7 @@ mRemoveDiscountFromCartPath = mRemoveDiscountFromCartPath.Replace("{" + "code" +
             {
                 mSetCartCurrencyPath = mSetCartCurrencyPath.Replace("{format}", "json");
             }
-            mSetCartCurrencyPath = mSetCartCurrencyPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mSetCartCurrencyPath = mSetCartCurrencyPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -788,7 +781,7 @@ mRemoveDiscountFromCartPath = mRemoveDiscountFromCartPath.Replace("{" + "code" +
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(currencyCode); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(currencyCode); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -836,7 +829,7 @@ mRemoveDiscountFromCartPath = mRemoveDiscountFromCartPath.Replace("{" + "code" +
             {
                 mSetCartOwnerPath = mSetCartOwnerPath.Replace("{format}", "json");
             }
-            mSetCartOwnerPath = mSetCartOwnerPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mSetCartOwnerPath = mSetCartOwnerPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -844,7 +837,7 @@ mRemoveDiscountFromCartPath = mRemoveDiscountFromCartPath.Replace("{" + "code" +
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(userId); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(userId); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -892,7 +885,7 @@ mRemoveDiscountFromCartPath = mRemoveDiscountFromCartPath.Replace("{" + "code" +
             {
                 mUpdateItemInCartPath = mUpdateItemInCartPath.Replace("{format}", "json");
             }
-            mUpdateItemInCartPath = mUpdateItemInCartPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateItemInCartPath = mUpdateItemInCartPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -900,7 +893,7 @@ mRemoveDiscountFromCartPath = mRemoveDiscountFromCartPath.Replace("{" + "code" +
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(cartItemRequest); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(cartItemRequest); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -948,7 +941,7 @@ mRemoveDiscountFromCartPath = mRemoveDiscountFromCartPath.Replace("{" + "code" +
             {
                 mUpdateShippingAddressPath = mUpdateShippingAddressPath.Replace("{format}", "json");
             }
-            mUpdateShippingAddressPath = mUpdateShippingAddressPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateShippingAddressPath = mUpdateShippingAddressPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -956,7 +949,7 @@ mRemoveDiscountFromCartPath = mRemoveDiscountFromCartPath.Replace("{" + "code" +
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(cartShippingAddressRequest); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(cartShippingAddressRequest); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };

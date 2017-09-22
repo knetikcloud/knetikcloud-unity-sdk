@@ -12,6 +12,19 @@ namespace com.knetikcloud.Model
     public class TimePeriodUsable : Behavior
     {
         /// <summary>
+        /// Gets or Sets Description
+        /// </summary>
+        [JsonProperty(PropertyName = "description")]
+        public string Description { get; set; }
+
+        /// <summary>
+        /// Used for polymorphic type recognition and thus must match an expected type with additional properties
+        /// </summary>
+        /// <value>Used for polymorphic type recognition and thus must match an expected type with additional properties</value>
+        [JsonProperty(PropertyName = "type_hint")]
+        public string TypeHint { get; set; }
+
+        /// <summary>
         /// The amount of times it can be used
         /// </summary>
         /// <value>The amount of times it can be used</value>
@@ -32,6 +45,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "unit_of_time")]
         public string UnitOfTime { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

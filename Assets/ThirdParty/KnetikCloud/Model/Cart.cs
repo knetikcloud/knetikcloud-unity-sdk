@@ -137,6 +137,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "updated")]
         public long? Updated { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

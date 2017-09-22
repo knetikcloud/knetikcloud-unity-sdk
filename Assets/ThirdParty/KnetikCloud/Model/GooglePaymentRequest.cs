@@ -25,6 +25,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "signature")]
         public string Signature { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

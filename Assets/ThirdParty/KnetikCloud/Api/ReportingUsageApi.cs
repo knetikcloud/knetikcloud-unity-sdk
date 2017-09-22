@@ -153,21 +153,14 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public ReportingUsageApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mGetUsageByDayCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetUsageByHourCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetUsageByMinuteCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetUsageByMonthCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetUsageByYearCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetUsageEndpointsCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetUsageByDayCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetUsageByHourCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetUsageByMinuteCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetUsageByMonthCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetUsageByYearCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetUsageEndpointsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Returns aggregated endpoint usage information by day 
         /// </summary>
@@ -205,37 +198,37 @@ namespace com.knetikcloud.Api
 
             if (startDate != null)
             {
-                queryParams.Add("start_date", KnetikClient.ParameterToString(startDate));
+                queryParams.Add("start_date", KnetikClient.DefaultClient.ParameterToString(startDate));
             }
 
             if (endDate != null)
             {
-                queryParams.Add("end_date", KnetikClient.ParameterToString(endDate));
+                queryParams.Add("end_date", KnetikClient.DefaultClient.ParameterToString(endDate));
             }
 
             if (combineEndpoints != null)
             {
-                queryParams.Add("combine_endpoints", KnetikClient.ParameterToString(combineEndpoints));
+                queryParams.Add("combine_endpoints", KnetikClient.DefaultClient.ParameterToString(combineEndpoints));
             }
 
             if (method != null)
             {
-                queryParams.Add("method", KnetikClient.ParameterToString(method));
+                queryParams.Add("method", KnetikClient.DefaultClient.ParameterToString(method));
             }
 
             if (url != null)
             {
-                queryParams.Add("url", KnetikClient.ParameterToString(url));
+                queryParams.Add("url", KnetikClient.DefaultClient.ParameterToString(url));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             // authentication setting, if any
@@ -260,7 +253,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetUsageByDay: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetUsageByDayData = (PageResourceUsageInfo) KnetikClient.Deserialize(response.Content, typeof(PageResourceUsageInfo), response.Headers);
+            GetUsageByDayData = (PageResourceUsageInfo) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceUsageInfo), response.Headers);
             KnetikLogger.LogResponse(mGetUsageByDayStartTime, mGetUsageByDayPath, string.Format("Response received successfully:\n{0}", GetUsageByDayData.ToString()));
 
             if (GetUsageByDayComplete != null)
@@ -305,37 +298,37 @@ namespace com.knetikcloud.Api
 
             if (startDate != null)
             {
-                queryParams.Add("start_date", KnetikClient.ParameterToString(startDate));
+                queryParams.Add("start_date", KnetikClient.DefaultClient.ParameterToString(startDate));
             }
 
             if (endDate != null)
             {
-                queryParams.Add("end_date", KnetikClient.ParameterToString(endDate));
+                queryParams.Add("end_date", KnetikClient.DefaultClient.ParameterToString(endDate));
             }
 
             if (combineEndpoints != null)
             {
-                queryParams.Add("combine_endpoints", KnetikClient.ParameterToString(combineEndpoints));
+                queryParams.Add("combine_endpoints", KnetikClient.DefaultClient.ParameterToString(combineEndpoints));
             }
 
             if (method != null)
             {
-                queryParams.Add("method", KnetikClient.ParameterToString(method));
+                queryParams.Add("method", KnetikClient.DefaultClient.ParameterToString(method));
             }
 
             if (url != null)
             {
-                queryParams.Add("url", KnetikClient.ParameterToString(url));
+                queryParams.Add("url", KnetikClient.DefaultClient.ParameterToString(url));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             // authentication setting, if any
@@ -360,7 +353,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetUsageByHour: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetUsageByHourData = (PageResourceUsageInfo) KnetikClient.Deserialize(response.Content, typeof(PageResourceUsageInfo), response.Headers);
+            GetUsageByHourData = (PageResourceUsageInfo) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceUsageInfo), response.Headers);
             KnetikLogger.LogResponse(mGetUsageByHourStartTime, mGetUsageByHourPath, string.Format("Response received successfully:\n{0}", GetUsageByHourData.ToString()));
 
             if (GetUsageByHourComplete != null)
@@ -405,37 +398,37 @@ namespace com.knetikcloud.Api
 
             if (startDate != null)
             {
-                queryParams.Add("start_date", KnetikClient.ParameterToString(startDate));
+                queryParams.Add("start_date", KnetikClient.DefaultClient.ParameterToString(startDate));
             }
 
             if (endDate != null)
             {
-                queryParams.Add("end_date", KnetikClient.ParameterToString(endDate));
+                queryParams.Add("end_date", KnetikClient.DefaultClient.ParameterToString(endDate));
             }
 
             if (combineEndpoints != null)
             {
-                queryParams.Add("combine_endpoints", KnetikClient.ParameterToString(combineEndpoints));
+                queryParams.Add("combine_endpoints", KnetikClient.DefaultClient.ParameterToString(combineEndpoints));
             }
 
             if (method != null)
             {
-                queryParams.Add("method", KnetikClient.ParameterToString(method));
+                queryParams.Add("method", KnetikClient.DefaultClient.ParameterToString(method));
             }
 
             if (url != null)
             {
-                queryParams.Add("url", KnetikClient.ParameterToString(url));
+                queryParams.Add("url", KnetikClient.DefaultClient.ParameterToString(url));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             // authentication setting, if any
@@ -460,7 +453,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetUsageByMinute: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetUsageByMinuteData = (PageResourceUsageInfo) KnetikClient.Deserialize(response.Content, typeof(PageResourceUsageInfo), response.Headers);
+            GetUsageByMinuteData = (PageResourceUsageInfo) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceUsageInfo), response.Headers);
             KnetikLogger.LogResponse(mGetUsageByMinuteStartTime, mGetUsageByMinutePath, string.Format("Response received successfully:\n{0}", GetUsageByMinuteData.ToString()));
 
             if (GetUsageByMinuteComplete != null)
@@ -505,37 +498,37 @@ namespace com.knetikcloud.Api
 
             if (startDate != null)
             {
-                queryParams.Add("start_date", KnetikClient.ParameterToString(startDate));
+                queryParams.Add("start_date", KnetikClient.DefaultClient.ParameterToString(startDate));
             }
 
             if (endDate != null)
             {
-                queryParams.Add("end_date", KnetikClient.ParameterToString(endDate));
+                queryParams.Add("end_date", KnetikClient.DefaultClient.ParameterToString(endDate));
             }
 
             if (combineEndpoints != null)
             {
-                queryParams.Add("combine_endpoints", KnetikClient.ParameterToString(combineEndpoints));
+                queryParams.Add("combine_endpoints", KnetikClient.DefaultClient.ParameterToString(combineEndpoints));
             }
 
             if (method != null)
             {
-                queryParams.Add("method", KnetikClient.ParameterToString(method));
+                queryParams.Add("method", KnetikClient.DefaultClient.ParameterToString(method));
             }
 
             if (url != null)
             {
-                queryParams.Add("url", KnetikClient.ParameterToString(url));
+                queryParams.Add("url", KnetikClient.DefaultClient.ParameterToString(url));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             // authentication setting, if any
@@ -560,7 +553,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetUsageByMonth: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetUsageByMonthData = (PageResourceUsageInfo) KnetikClient.Deserialize(response.Content, typeof(PageResourceUsageInfo), response.Headers);
+            GetUsageByMonthData = (PageResourceUsageInfo) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceUsageInfo), response.Headers);
             KnetikLogger.LogResponse(mGetUsageByMonthStartTime, mGetUsageByMonthPath, string.Format("Response received successfully:\n{0}", GetUsageByMonthData.ToString()));
 
             if (GetUsageByMonthComplete != null)
@@ -605,37 +598,37 @@ namespace com.knetikcloud.Api
 
             if (startDate != null)
             {
-                queryParams.Add("start_date", KnetikClient.ParameterToString(startDate));
+                queryParams.Add("start_date", KnetikClient.DefaultClient.ParameterToString(startDate));
             }
 
             if (endDate != null)
             {
-                queryParams.Add("end_date", KnetikClient.ParameterToString(endDate));
+                queryParams.Add("end_date", KnetikClient.DefaultClient.ParameterToString(endDate));
             }
 
             if (combineEndpoints != null)
             {
-                queryParams.Add("combine_endpoints", KnetikClient.ParameterToString(combineEndpoints));
+                queryParams.Add("combine_endpoints", KnetikClient.DefaultClient.ParameterToString(combineEndpoints));
             }
 
             if (method != null)
             {
-                queryParams.Add("method", KnetikClient.ParameterToString(method));
+                queryParams.Add("method", KnetikClient.DefaultClient.ParameterToString(method));
             }
 
             if (url != null)
             {
-                queryParams.Add("url", KnetikClient.ParameterToString(url));
+                queryParams.Add("url", KnetikClient.DefaultClient.ParameterToString(url));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             // authentication setting, if any
@@ -660,7 +653,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetUsageByYear: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetUsageByYearData = (PageResourceUsageInfo) KnetikClient.Deserialize(response.Content, typeof(PageResourceUsageInfo), response.Headers);
+            GetUsageByYearData = (PageResourceUsageInfo) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceUsageInfo), response.Headers);
             KnetikLogger.LogResponse(mGetUsageByYearStartTime, mGetUsageByYearPath, string.Format("Response received successfully:\n{0}", GetUsageByYearData.ToString()));
 
             if (GetUsageByYearComplete != null)
@@ -700,12 +693,12 @@ namespace com.knetikcloud.Api
 
             if (startDate != null)
             {
-                queryParams.Add("start_date", KnetikClient.ParameterToString(startDate));
+                queryParams.Add("start_date", KnetikClient.DefaultClient.ParameterToString(startDate));
             }
 
             if (endDate != null)
             {
-                queryParams.Add("end_date", KnetikClient.ParameterToString(endDate));
+                queryParams.Add("end_date", KnetikClient.DefaultClient.ParameterToString(endDate));
             }
 
             // authentication setting, if any
@@ -730,7 +723,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetUsageEndpoints: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetUsageEndpointsData = (List<string>) KnetikClient.Deserialize(response.Content, typeof(List<string>), response.Headers);
+            GetUsageEndpointsData = (List<string>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<string>), response.Headers);
             KnetikLogger.LogResponse(mGetUsageEndpointsStartTime, mGetUsageEndpointsPath, string.Format("Response received successfully:\n{0}", GetUsageEndpointsData.ToString()));
 
             if (GetUsageEndpointsComplete != null)

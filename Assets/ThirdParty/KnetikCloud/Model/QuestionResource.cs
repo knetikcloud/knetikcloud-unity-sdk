@@ -116,6 +116,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "vendor")]
         public string Vendor { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

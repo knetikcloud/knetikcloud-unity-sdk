@@ -107,20 +107,13 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public CampaignsRewardsApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mCreateRewardSetCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteRewardSetCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetRewardSetCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetRewardSetsCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateRewardSetCoroutine = new KnetikCoroutine(KnetikClient);
+            mCreateRewardSetCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mDeleteRewardSetCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetRewardSetCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetRewardSetsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mUpdateRewardSetCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Create a reward set 
         /// </summary>
@@ -140,7 +133,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(rewardSetResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(rewardSetResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -164,7 +157,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateRewardSet: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateRewardSetData = (RewardSetResource) KnetikClient.Deserialize(response.Content, typeof(RewardSetResource), response.Headers);
+            CreateRewardSetData = (RewardSetResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(RewardSetResource), response.Headers);
             KnetikLogger.LogResponse(mCreateRewardSetStartTime, mCreateRewardSetPath, string.Format("Response received successfully:\n{0}", CreateRewardSetData.ToString()));
 
             if (CreateRewardSetComplete != null)
@@ -189,7 +182,7 @@ namespace com.knetikcloud.Api
             {
                 mDeleteRewardSetPath = mDeleteRewardSetPath.Replace("{format}", "json");
             }
-            mDeleteRewardSetPath = mDeleteRewardSetPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteRewardSetPath = mDeleteRewardSetPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -242,7 +235,7 @@ namespace com.knetikcloud.Api
             {
                 mGetRewardSetPath = mGetRewardSetPath.Replace("{format}", "json");
             }
-            mGetRewardSetPath = mGetRewardSetPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetRewardSetPath = mGetRewardSetPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -272,7 +265,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetRewardSet: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetRewardSetData = (RewardSetResource) KnetikClient.Deserialize(response.Content, typeof(RewardSetResource), response.Headers);
+            GetRewardSetData = (RewardSetResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(RewardSetResource), response.Headers);
             KnetikLogger.LogResponse(mGetRewardSetStartTime, mGetRewardSetPath, string.Format("Response received successfully:\n{0}", GetRewardSetData.ToString()));
 
             if (GetRewardSetComplete != null)
@@ -303,17 +296,17 @@ namespace com.knetikcloud.Api
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
@@ -338,7 +331,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetRewardSets: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetRewardSetsData = (PageResourceRewardSetResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceRewardSetResource), response.Headers);
+            GetRewardSetsData = (PageResourceRewardSetResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceRewardSetResource), response.Headers);
             KnetikLogger.LogResponse(mGetRewardSetsStartTime, mGetRewardSetsPath, string.Format("Response received successfully:\n{0}", GetRewardSetsData.ToString()));
 
             if (GetRewardSetsComplete != null)
@@ -364,7 +357,7 @@ namespace com.knetikcloud.Api
             {
                 mUpdateRewardSetPath = mUpdateRewardSetPath.Replace("{format}", "json");
             }
-            mUpdateRewardSetPath = mUpdateRewardSetPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateRewardSetPath = mUpdateRewardSetPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -372,7 +365,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(rewardSetResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(rewardSetResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -396,7 +389,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateRewardSet: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateRewardSetData = (RewardSetResource) KnetikClient.Deserialize(response.Content, typeof(RewardSetResource), response.Headers);
+            UpdateRewardSetData = (RewardSetResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(RewardSetResource), response.Headers);
             KnetikLogger.LogResponse(mUpdateRewardSetStartTime, mUpdateRewardSetPath, string.Format("Response received successfully:\n{0}", UpdateRewardSetData.ToString()));
 
             if (UpdateRewardSetComplete != null)

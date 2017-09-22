@@ -12,12 +12,20 @@ namespace com.knetikcloud.Model
     public class ListProperty : Property
     {
         /// <summary>
+        /// The type of the property. Used for polymorphic type recognition and thus must match an expected type with additional properties.
+        /// </summary>
+        /// <value>The type of the property. Used for polymorphic type recognition and thus must match an expected type with additional properties.</value>
+        [JsonProperty(PropertyName = "type")]
+        public string Type { get; set; }
+
+        /// <summary>
         /// The list of properties
         /// </summary>
         /// <value>The list of properties</value>
         [JsonProperty(PropertyName = "values")]
         public List<Property> Values { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

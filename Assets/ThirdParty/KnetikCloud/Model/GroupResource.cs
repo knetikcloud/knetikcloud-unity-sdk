@@ -81,6 +81,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "unique_name")]
         public string UniqueName { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

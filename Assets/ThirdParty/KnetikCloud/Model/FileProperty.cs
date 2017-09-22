@@ -12,6 +12,13 @@ namespace com.knetikcloud.Model
     public class FileProperty : Property
     {
         /// <summary>
+        /// The type of the property. Used for polymorphic type recognition and thus must match an expected type with additional properties.
+        /// </summary>
+        /// <value>The type of the property. Used for polymorphic type recognition and thus must match an expected type with additional properties.</value>
+        [JsonProperty(PropertyName = "type")]
+        public string Type { get; set; }
+
+        /// <summary>
         /// A crc value for file integrity verification
         /// </summary>
         /// <value>A crc value for file integrity verification</value>
@@ -39,6 +46,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "url")]
         public string Url { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

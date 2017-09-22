@@ -29,6 +29,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "time")]
         public long? Time { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

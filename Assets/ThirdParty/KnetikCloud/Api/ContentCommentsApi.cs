@@ -122,21 +122,14 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public ContentCommentsApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mAddCommentCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteCommentCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetCommentCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetCommentsCoroutine = new KnetikCoroutine(KnetikClient);
-            mSearchCommentsCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateCommentCoroutine = new KnetikCoroutine(KnetikClient);
+            mAddCommentCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mDeleteCommentCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetCommentCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetCommentsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mSearchCommentsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mUpdateCommentCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Add a new comment 
         /// </summary>
@@ -156,7 +149,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(commentResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(commentResource); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
@@ -180,7 +173,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling AddComment: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            AddCommentData = (CommentResource) KnetikClient.Deserialize(response.Content, typeof(CommentResource), response.Headers);
+            AddCommentData = (CommentResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CommentResource), response.Headers);
             KnetikLogger.LogResponse(mAddCommentStartTime, mAddCommentPath, string.Format("Response received successfully:\n{0}", AddCommentData.ToString()));
 
             if (AddCommentComplete != null)
@@ -205,7 +198,7 @@ namespace com.knetikcloud.Api
             {
                 mDeleteCommentPath = mDeleteCommentPath.Replace("{format}", "json");
             }
-            mDeleteCommentPath = mDeleteCommentPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteCommentPath = mDeleteCommentPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -258,7 +251,7 @@ namespace com.knetikcloud.Api
             {
                 mGetCommentPath = mGetCommentPath.Replace("{format}", "json");
             }
-            mGetCommentPath = mGetCommentPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetCommentPath = mGetCommentPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -288,7 +281,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetComment: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetCommentData = (CommentResource) KnetikClient.Deserialize(response.Content, typeof(CommentResource), response.Headers);
+            GetCommentData = (CommentResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CommentResource), response.Headers);
             KnetikLogger.LogResponse(mGetCommentStartTime, mGetCommentPath, string.Format("Response received successfully:\n{0}", GetCommentData.ToString()));
 
             if (GetCommentComplete != null)
@@ -330,22 +323,22 @@ namespace com.knetikcloud.Api
 
             if (context != null)
             {
-                queryParams.Add("context", KnetikClient.ParameterToString(context));
+                queryParams.Add("context", KnetikClient.DefaultClient.ParameterToString(context));
             }
 
             if (contextId != null)
             {
-                queryParams.Add("context_id", KnetikClient.ParameterToString(contextId));
+                queryParams.Add("context_id", KnetikClient.DefaultClient.ParameterToString(contextId));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             // authentication setting, if any
@@ -370,7 +363,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetComments: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetCommentsData = (PageResourceCommentResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceCommentResource), response.Headers);
+            GetCommentsData = (PageResourceCommentResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceCommentResource), response.Headers);
             KnetikLogger.LogResponse(mGetCommentsStartTime, mGetCommentsPath, string.Format("Response received successfully:\n{0}", GetCommentsData.ToString()));
 
             if (GetCommentsComplete != null)
@@ -401,15 +394,15 @@ namespace com.knetikcloud.Api
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
-            postBody = KnetikClient.Serialize(query); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(query); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  };
@@ -433,7 +426,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling SearchComments: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            SearchCommentsData = (CommentSearch) KnetikClient.Deserialize(response.Content, typeof(CommentSearch), response.Headers);
+            SearchCommentsData = (CommentSearch) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CommentSearch), response.Headers);
             KnetikLogger.LogResponse(mSearchCommentsStartTime, mSearchCommentsPath, string.Format("Response received successfully:\n{0}", SearchCommentsData.ToString()));
 
             if (SearchCommentsComplete != null)
@@ -459,7 +452,7 @@ namespace com.knetikcloud.Api
             {
                 mUpdateCommentPath = mUpdateCommentPath.Replace("{format}", "json");
             }
-            mUpdateCommentPath = mUpdateCommentPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateCommentPath = mUpdateCommentPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -467,7 +460,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(content); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(content); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };

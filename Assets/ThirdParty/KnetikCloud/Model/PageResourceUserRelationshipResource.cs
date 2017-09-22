@@ -65,6 +65,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "total_pages")]
         public int? TotalPages { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

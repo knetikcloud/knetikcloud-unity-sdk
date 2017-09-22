@@ -46,16 +46,9 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public UtilHealthApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mGetHealthCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetHealthCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Get health info 
         /// </summary>
@@ -96,7 +89,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetHealth: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetHealthData = (Object) KnetikClient.Deserialize(response.Content, typeof(Object), response.Headers);
+            GetHealthData = (Object) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(Object), response.Headers);
             KnetikLogger.LogResponse(mGetHealthStartTime, mGetHealthPath, string.Format("Response received successfully:\n{0}", GetHealthData.ToString()));
 
             if (GetHealthComplete != null)

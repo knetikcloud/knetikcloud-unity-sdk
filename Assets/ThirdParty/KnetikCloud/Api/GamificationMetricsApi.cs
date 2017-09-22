@@ -44,16 +44,9 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public GamificationMetricsApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mAddMetricCoroutine = new KnetikCoroutine(KnetikClient);
+            mAddMetricCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Add a metric Post a new score/stat for an activity occurrence without ending the occurrence itself
         /// </summary>
@@ -73,7 +66,7 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(metric); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(metric); // http body (model) parameter
  
             // authentication setting, if any
             string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };

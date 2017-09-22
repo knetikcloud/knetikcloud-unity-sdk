@@ -207,6 +207,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "width")]
         public int? Width { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

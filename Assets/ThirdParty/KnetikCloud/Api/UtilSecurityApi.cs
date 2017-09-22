@@ -64,17 +64,10 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public UtilSecurityApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mGetUserLocationLogCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetUserTokenDetailsCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetUserLocationLogCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetUserTokenDetailsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Returns the authentication log for a user A log entry is recorded everytime a user requests a new token. Standard pagination available
         /// </summary>
@@ -99,22 +92,22 @@ namespace com.knetikcloud.Api
 
             if (userId != null)
             {
-                queryParams.Add("user_id", KnetikClient.ParameterToString(userId));
+                queryParams.Add("user_id", KnetikClient.DefaultClient.ParameterToString(userId));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
@@ -139,7 +132,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetUserLocationLog: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetUserLocationLogData = (PageResourceLocationLogResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceLocationLogResource), response.Headers);
+            GetUserLocationLogData = (PageResourceLocationLogResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceLocationLogResource), response.Headers);
             KnetikLogger.LogResponse(mGetUserLocationLogStartTime, mGetUserLocationLogPath, string.Format("Response received successfully:\n{0}", GetUserLocationLogData.ToString()));
 
             if (GetUserLocationLogComplete != null)
@@ -187,7 +180,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetUserTokenDetails: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetUserTokenDetailsData = (TokenDetailsResource) KnetikClient.Deserialize(response.Content, typeof(TokenDetailsResource), response.Headers);
+            GetUserTokenDetailsData = (TokenDetailsResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TokenDetailsResource), response.Headers);
             KnetikLogger.LogResponse(mGetUserTokenDetailsStartTime, mGetUserTokenDetailsPath, string.Format("Response received successfully:\n{0}", GetUserTokenDetailsData.ToString()));
 
             if (GetUserTokenDetailsComplete != null)

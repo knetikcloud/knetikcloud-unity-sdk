@@ -35,6 +35,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "upload_prefix")]
         public string UploadPrefix { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

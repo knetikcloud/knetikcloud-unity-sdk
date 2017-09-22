@@ -64,17 +64,10 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public BRERuleEngineVariablesApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mGetBREVariableTypesCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetBREVariableValuesCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetBREVariableTypesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetBREVariableValuesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
         /// <summary>
         /// Get a list of variable types available Types include integer, string, user and invoice. These are used to qualify trigger parameters and action variables with strong typing.
         /// </summary>
@@ -115,7 +108,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetBREVariableTypes: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetBREVariableTypesData = (List<VariableTypeResource>) KnetikClient.Deserialize(response.Content, typeof(List<VariableTypeResource>), response.Headers);
+            GetBREVariableTypesData = (List<VariableTypeResource>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<VariableTypeResource>), response.Headers);
             KnetikLogger.LogResponse(mGetBREVariableTypesStartTime, mGetBREVariableTypesPath, string.Format("Response received successfully:\n{0}", GetBREVariableTypesData.ToString()));
 
             if (GetBREVariableTypesComplete != null)
@@ -143,7 +136,7 @@ namespace com.knetikcloud.Api
             {
                 mGetBREVariableValuesPath = mGetBREVariableValuesPath.Replace("{format}", "json");
             }
-            mGetBREVariableValuesPath = mGetBREVariableValuesPath.Replace("{" + "name" + "}", KnetikClient.ParameterToString(name));
+            mGetBREVariableValuesPath = mGetBREVariableValuesPath.Replace("{" + "name" + "}", KnetikClient.DefaultClient.ParameterToString(name));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -153,17 +146,17 @@ namespace com.knetikcloud.Api
 
             if (filterName != null)
             {
-                queryParams.Add("filter_name", KnetikClient.ParameterToString(filterName));
+                queryParams.Add("filter_name", KnetikClient.DefaultClient.ParameterToString(filterName));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             // authentication setting, if any
@@ -188,7 +181,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetBREVariableValues: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetBREVariableValuesData = (PageResourceSimpleReferenceResourceobject) KnetikClient.Deserialize(response.Content, typeof(PageResourceSimpleReferenceResourceobject), response.Headers);
+            GetBREVariableValuesData = (PageResourceSimpleReferenceResourceobject) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceSimpleReferenceResourceobject), response.Headers);
             KnetikLogger.LogResponse(mGetBREVariableValuesStartTime, mGetBREVariableValuesPath, string.Format("Response received successfully:\n{0}", GetBREVariableValuesData.ToString()));
 
             if (GetBREVariableValuesComplete != null)

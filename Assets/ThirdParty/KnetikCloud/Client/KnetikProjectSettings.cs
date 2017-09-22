@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 
 namespace com.knetikcloud.Client
 {
+    [Serializable]
     public class KnetikProjectSettings : ScriptableObject
     {
         public const string SaveDataPath = "Assets\\Resources\\KnetikCloud\\KnetikProjectSettings.asset";

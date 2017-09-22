@@ -131,6 +131,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "subscription_id")]
         public int? SubscriptionId { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

@@ -95,6 +95,7 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "system_rule")]
         public bool? SystemRule { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

@@ -12,12 +12,26 @@ namespace com.knetikcloud.Model
     public class Fulfillable : Behavior
     {
         /// <summary>
+        /// Gets or Sets Description
+        /// </summary>
+        [JsonProperty(PropertyName = "description")]
+        public string Description { get; set; }
+
+        /// <summary>
+        /// Used for polymorphic type recognition and thus must match an expected type with additional properties
+        /// </summary>
+        /// <value>Used for polymorphic type recognition and thus must match an expected type with additional properties</value>
+        [JsonProperty(PropertyName = "type_hint")]
+        public string TypeHint { get; set; }
+
+        /// <summary>
         /// The name of the fulfillment type that describes how the item should be fulfilled.  Examples: inventory, wallet, amazon
         /// </summary>
         /// <value>The name of the fulfillment type that describes how the item should be fulfilled.  Examples: inventory, wallet, amazon</value>
         [JsonProperty(PropertyName = "type_name")]
         public string TypeName { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>
