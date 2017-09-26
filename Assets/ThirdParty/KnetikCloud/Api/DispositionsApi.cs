@@ -63,6 +63,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -109,13 +110,14 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public DispositionsApi()
         {
-            mAddDispositionCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteDispositionCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetDispositionCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetDispositionCountsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetDispositionsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mAddDispositionCoroutine = new KnetikCoroutine();
+            mDeleteDispositionCoroutine = new KnetikCoroutine();
+            mGetDispositionCoroutine = new KnetikCoroutine();
+            mGetDispositionCountsCoroutine = new KnetikCoroutine();
+            mGetDispositionsCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Add a new disposition 
         /// </summary>
@@ -167,6 +169,7 @@ namespace com.knetikcloud.Api
                 AddDispositionComplete(AddDispositionData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete a disposition 
         /// </summary>
@@ -220,6 +223,7 @@ namespace com.knetikcloud.Api
                 DeleteDispositionComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Returns a disposition 
         /// </summary>
@@ -275,6 +279,7 @@ namespace com.knetikcloud.Api
                 GetDispositionComplete(GetDispositionData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Returns a list of disposition counts 
         /// </summary>
@@ -335,6 +340,7 @@ namespace com.knetikcloud.Api
                 GetDispositionCountsComplete(GetDispositionCountsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Returns a page of dispositions 
         /// </summary>

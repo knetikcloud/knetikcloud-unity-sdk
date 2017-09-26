@@ -48,6 +48,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -81,11 +82,12 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public PaymentsTransactionsApi()
         {
-            mGetTransactionCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetTransactionsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mRefundTransactionCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetTransactionCoroutine = new KnetikCoroutine();
+            mGetTransactionsCoroutine = new KnetikCoroutine();
+            mRefundTransactionCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Get the details for a single transaction 
         /// </summary>
@@ -141,6 +143,7 @@ namespace com.knetikcloud.Api
                 GetTransactionComplete(GetTransactionData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search transactions 
         /// </summary>
@@ -213,6 +216,7 @@ namespace com.knetikcloud.Api
                 GetTransactionsComplete(GetTransactionsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Refund a payment transaction, in full or in part Will not allow for refunding more than the full amount even with multiple partial refunds. Money is refunded to the payment method used to make the original payment. Payment method must support refunds.
         /// </summary>

@@ -46,6 +46,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -78,11 +79,12 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public MediaModerationApi()
         {
-            mGetModerationReportCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetModerationReportsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateModerationReportCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetModerationReportCoroutine = new KnetikCoroutine();
+            mGetModerationReportsCoroutine = new KnetikCoroutine();
+            mUpdateModerationReportCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Get a flag report 
         /// </summary>
@@ -138,6 +140,7 @@ namespace com.knetikcloud.Api
                 GetModerationReportComplete(GetModerationReportData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Returns a page of flag reports Context can be either a free-form string or a pre-defined context name
         /// </summary>
@@ -210,6 +213,7 @@ namespace com.knetikcloud.Api
                 GetModerationReportsComplete(GetModerationReportsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update a flag report Lets you set the resolution of a report. Resolution types is {banned,ignore} in case of &#39;banned&#39; you will need to pass the reason.
         /// </summary>

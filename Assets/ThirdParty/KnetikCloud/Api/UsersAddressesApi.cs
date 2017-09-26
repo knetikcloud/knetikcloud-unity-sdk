@@ -66,6 +66,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -112,13 +113,14 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public UsersAddressesApi()
         {
-            mCreateAddressCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteAddressCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetAddressCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetAddressesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateAddressCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateAddressCoroutine = new KnetikCoroutine();
+            mDeleteAddressCoroutine = new KnetikCoroutine();
+            mGetAddressCoroutine = new KnetikCoroutine();
+            mGetAddressesCoroutine = new KnetikCoroutine();
+            mUpdateAddressCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Create a new address 
         /// </summary>
@@ -177,6 +179,7 @@ namespace com.knetikcloud.Api
                 CreateAddressComplete(CreateAddressData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete an address 
         /// </summary>
@@ -237,6 +240,7 @@ mDeleteAddressPath = mDeleteAddressPath.Replace("{" + "id" + "}", KnetikClient.D
                 DeleteAddressComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single address 
         /// </summary>
@@ -299,6 +303,7 @@ mGetAddressPath = mGetAddressPath.Replace("{" + "id" + "}", KnetikClient.Default
                 GetAddressComplete(GetAddressData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search addresses 
         /// </summary>
@@ -372,6 +377,7 @@ mGetAddressPath = mGetAddressPath.Replace("{" + "id" + "}", KnetikClient.Default
                 GetAddressesComplete(GetAddressesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update an address 
         /// </summary>

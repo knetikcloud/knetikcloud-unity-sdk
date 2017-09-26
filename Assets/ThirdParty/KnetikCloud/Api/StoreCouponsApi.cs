@@ -95,6 +95,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -168,17 +169,18 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public StoreCouponsApi()
         {
-            mCreateCouponItemCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mCreateCouponTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteCouponItemCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteCouponTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetCouponItemCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetCouponTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetCouponTemplatesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateCouponItemCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateCouponTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateCouponItemCoroutine = new KnetikCoroutine();
+            mCreateCouponTemplateCoroutine = new KnetikCoroutine();
+            mDeleteCouponItemCoroutine = new KnetikCoroutine();
+            mDeleteCouponTemplateCoroutine = new KnetikCoroutine();
+            mGetCouponItemCoroutine = new KnetikCoroutine();
+            mGetCouponTemplateCoroutine = new KnetikCoroutine();
+            mGetCouponTemplatesCoroutine = new KnetikCoroutine();
+            mUpdateCouponItemCoroutine = new KnetikCoroutine();
+            mUpdateCouponTemplateCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Create a coupon item SKUs have to be unique in the entire store.
         /// </summary>
@@ -236,6 +238,7 @@ namespace com.knetikcloud.Api
                 CreateCouponItemComplete(CreateCouponItemData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Create a coupon template Coupon Templates define a type of coupon and the properties they have.
         /// </summary>
@@ -287,6 +290,7 @@ namespace com.knetikcloud.Api
                 CreateCouponTemplateComplete(CreateCouponTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete a coupon item 
         /// </summary>
@@ -340,6 +344,7 @@ namespace com.knetikcloud.Api
                 DeleteCouponItemComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete a coupon template 
         /// </summary>
@@ -399,6 +404,7 @@ namespace com.knetikcloud.Api
                 DeleteCouponTemplateComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single coupon item 
         /// </summary>
@@ -454,6 +460,7 @@ namespace com.knetikcloud.Api
                 GetCouponItemComplete(GetCouponItemData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single coupon template Coupon Templates define a type of coupon and the properties they have.
         /// </summary>
@@ -509,6 +516,7 @@ namespace com.knetikcloud.Api
                 GetCouponTemplateComplete(GetCouponTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search coupon templates 
         /// </summary>
@@ -575,6 +583,7 @@ namespace com.knetikcloud.Api
                 GetCouponTemplatesComplete(GetCouponTemplatesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update a coupon item 
         /// </summary>
@@ -639,6 +648,7 @@ namespace com.knetikcloud.Api
                 UpdateCouponItemComplete(UpdateCouponItemData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update a coupon template 
         /// </summary>

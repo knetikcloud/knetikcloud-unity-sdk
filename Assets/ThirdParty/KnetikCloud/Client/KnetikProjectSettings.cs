@@ -11,17 +11,17 @@ namespace com.knetikcloud.Client
         public const string ResourceName = "KnetikCloud\\KnetikProjectSettings";
 
         public string BaseUrl;
-        public string GrantType;
-
         public string ClientId;
-        public string ClientSecret;
+
+        public bool IsConfiguredProperly
+        {
+            get { return (!string.IsNullOrEmpty(BaseUrl) && (!string.IsNullOrEmpty(ClientId))); }
+        }
 
         public KnetikProjectSettings()
         {
             BaseUrl = string.Empty;
-            GrantType = string.Empty;
             ClientId = string.Empty;
-            ClientSecret = string.Empty;
         }
 
         public static KnetikProjectSettings Load()

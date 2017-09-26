@@ -98,6 +98,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -159,15 +160,16 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public PaymentsWalletsApi()
         {
-            mGetUserWalletCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetUserWalletTransactionsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetUserWalletsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetWalletBalancesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetWalletTransactionsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetWalletsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateWalletBalanceCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetUserWalletCoroutine = new KnetikCoroutine();
+            mGetUserWalletTransactionsCoroutine = new KnetikCoroutine();
+            mGetUserWalletsCoroutine = new KnetikCoroutine();
+            mGetWalletBalancesCoroutine = new KnetikCoroutine();
+            mGetWalletTransactionsCoroutine = new KnetikCoroutine();
+            mGetWalletsCoroutine = new KnetikCoroutine();
+            mUpdateWalletBalanceCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Returns the user&#39;s wallet for the given currency code 
         /// </summary>
@@ -230,6 +232,7 @@ mGetUserWalletPath = mGetUserWalletPath.Replace("{" + "currency_code" + "}", Kne
                 GetUserWalletComplete(GetUserWalletData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Retrieve a user&#39;s wallet transactions 
         /// </summary>
@@ -334,6 +337,7 @@ mGetUserWalletTransactionsPath = mGetUserWalletTransactionsPath.Replace("{" + "c
                 GetUserWalletTransactionsComplete(GetUserWalletTransactionsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List all of a user&#39;s wallets 
         /// </summary>
@@ -389,6 +393,7 @@ mGetUserWalletTransactionsPath = mGetUserWalletTransactionsPath.Replace("{" + "c
                 GetUserWalletsComplete(GetUserWalletsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Retrieves a summation of wallet balances by currency code 
         /// </summary>
@@ -437,6 +442,7 @@ mGetUserWalletTransactionsPath = mGetUserWalletTransactionsPath.Replace("{" + "c
                 GetWalletBalancesComplete(GetWalletBalancesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Retrieve wallet transactions across the system 
         /// </summary>
@@ -551,6 +557,7 @@ mGetUserWalletTransactionsPath = mGetUserWalletTransactionsPath.Replace("{" + "c
                 GetWalletTransactionsComplete(GetWalletTransactionsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Retrieve a list of wallets across the system 
         /// </summary>
@@ -617,6 +624,7 @@ mGetUserWalletTransactionsPath = mGetUserWalletTransactionsPath.Replace("{" + "c
                 GetWalletsComplete(GetWalletsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Updates the balance for a user&#39;s wallet 
         /// </summary>

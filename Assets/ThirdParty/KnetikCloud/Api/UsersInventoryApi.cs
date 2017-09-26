@@ -212,6 +212,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -362,29 +363,30 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public UsersInventoryApi()
         {
-            mAddItemToUserInventoryCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mCheckUserEntitlementItemCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mCreateEntitlementItemCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mCreateEntitlementTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteEntitlementItemCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteEntitlementTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetEntitlementItemCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetEntitlementItemsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetEntitlementTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetEntitlementTemplatesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetUserInventoriesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetUserInventoryCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetUserInventoryLogCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetUsersInventoryCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGrantUserEntitlementCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateEntitlementItemCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateEntitlementTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateUserInventoryBehaviorDataCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateUserInventoryExpiresCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateUserInventoryStatusCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUseUserEntitlementItemCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mAddItemToUserInventoryCoroutine = new KnetikCoroutine();
+            mCheckUserEntitlementItemCoroutine = new KnetikCoroutine();
+            mCreateEntitlementItemCoroutine = new KnetikCoroutine();
+            mCreateEntitlementTemplateCoroutine = new KnetikCoroutine();
+            mDeleteEntitlementItemCoroutine = new KnetikCoroutine();
+            mDeleteEntitlementTemplateCoroutine = new KnetikCoroutine();
+            mGetEntitlementItemCoroutine = new KnetikCoroutine();
+            mGetEntitlementItemsCoroutine = new KnetikCoroutine();
+            mGetEntitlementTemplateCoroutine = new KnetikCoroutine();
+            mGetEntitlementTemplatesCoroutine = new KnetikCoroutine();
+            mGetUserInventoriesCoroutine = new KnetikCoroutine();
+            mGetUserInventoryCoroutine = new KnetikCoroutine();
+            mGetUserInventoryLogCoroutine = new KnetikCoroutine();
+            mGetUsersInventoryCoroutine = new KnetikCoroutine();
+            mGrantUserEntitlementCoroutine = new KnetikCoroutine();
+            mUpdateEntitlementItemCoroutine = new KnetikCoroutine();
+            mUpdateEntitlementTemplateCoroutine = new KnetikCoroutine();
+            mUpdateUserInventoryBehaviorDataCoroutine = new KnetikCoroutine();
+            mUpdateUserInventoryExpiresCoroutine = new KnetikCoroutine();
+            mUpdateUserInventoryStatusCoroutine = new KnetikCoroutine();
+            mUseUserEntitlementItemCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Adds an item to the user inventory The inventory is fulfilled asynchronously UNLESS the invoice is explicitely skipped. Depending on the use case, it might require the client to verify that the entitlement was added after the fact or configure a BRE rule to get a notification in real time
         /// </summary>
@@ -443,6 +445,7 @@ namespace com.knetikcloud.Api
                 AddItemToUserInventoryComplete(AddItemToUserInventoryData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Check for access to an item without consuming Useful for pre-check and accounts for all various buisness rules
         /// </summary>
@@ -509,6 +512,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 CheckUserEntitlementItemComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Create an entitlement item 
         /// </summary>
@@ -566,6 +570,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 CreateEntitlementItemComplete(CreateEntitlementItemData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Create an entitlement template Entitlement templates define a type of entitlement and the properties they have
         /// </summary>
@@ -617,6 +622,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 CreateEntitlementTemplateComplete(CreateEntitlementTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete an entitlement item 
         /// </summary>
@@ -670,6 +676,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 DeleteEntitlementItemComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete an entitlement template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
         /// </summary>
@@ -729,6 +736,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 DeleteEntitlementTemplateComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single entitlement item 
         /// </summary>
@@ -784,6 +792,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 GetEntitlementItemComplete(GetEntitlementItemData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search entitlement items 
         /// </summary>
@@ -856,6 +865,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 GetEntitlementItemsComplete(GetEntitlementItemsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single entitlement template 
         /// </summary>
@@ -911,6 +921,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 GetEntitlementTemplateComplete(GetEntitlementTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search entitlement templates 
         /// </summary>
@@ -977,6 +988,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 GetEntitlementTemplatesComplete(GetEntitlementTemplatesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List the user inventory entries for a given user 
         /// </summary>
@@ -1080,6 +1092,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 GetUserInventoriesComplete(GetUserInventoriesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get an inventory entry 
         /// </summary>
@@ -1142,6 +1155,7 @@ mGetUserInventoryPath = mGetUserInventoryPath.Replace("{" + "id" + "}", KnetikCl
                 GetUserInventoryComplete(GetUserInventoryData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List the log entries for this inventory entry 
         /// </summary>
@@ -1216,6 +1230,7 @@ mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "id" + "}", Kn
                 GetUserInventoryLogComplete(GetUserInventoryLogData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List the user inventory entries for all users 
         /// </summary>
@@ -1312,6 +1327,7 @@ mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "id" + "}", Kn
                 GetUsersInventoryComplete(GetUsersInventoryData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Grant an entitlement 
         /// </summary>
@@ -1373,6 +1389,7 @@ mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "id" + "}", Kn
                 GrantUserEntitlementComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update an entitlement item 
         /// </summary>
@@ -1435,6 +1452,7 @@ mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "id" + "}", Kn
                 UpdateEntitlementItemComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update an entitlement template 
         /// </summary>
@@ -1493,6 +1511,7 @@ mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "id" + "}", Kn
                 UpdateEntitlementTemplateComplete(UpdateEntitlementTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Set the behavior data for an inventory entry 
         /// </summary>
@@ -1556,6 +1575,7 @@ mUpdateUserInventoryBehaviorDataPath = mUpdateUserInventoryBehaviorDataPath.Repl
                 UpdateUserInventoryBehaviorDataComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Set the expiration date Will change the current grace period for a subscription but not the bill date (possibly even ending before having the chance to re-bill)
         /// </summary>
@@ -1619,6 +1639,7 @@ mUpdateUserInventoryExpiresPath = mUpdateUserInventoryExpiresPath.Replace("{" + 
                 UpdateUserInventoryExpiresComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Set the status for an inventory entry 
         /// </summary>
@@ -1682,6 +1703,7 @@ mUpdateUserInventoryStatusPath = mUpdateUserInventoryStatusPath.Replace("{" + "i
                 UpdateUserInventoryStatusComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Use an item 
         /// </summary>

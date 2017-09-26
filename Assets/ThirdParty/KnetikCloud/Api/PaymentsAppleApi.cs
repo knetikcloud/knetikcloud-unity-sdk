@@ -28,6 +28,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -47,9 +48,10 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public PaymentsAppleApi()
         {
-            mVerifyAppleReceiptCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mVerifyAppleReceiptCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Pay invoice with Apple receipt Mark an invoice paid using Apple payment receipt. A receipt will only be accepted once and the details of the transaction must match the invoice, including the product_id matching the sku text of the item in the invoice. Returns the transaction ID if successful.
         /// </summary>

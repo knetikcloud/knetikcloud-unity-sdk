@@ -61,6 +61,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -107,13 +108,14 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public UsersRelationshipsApi()
         {
-            mCreateUserRelationshipCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteUserRelationshipCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetUserRelationshipCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetUserRelationshipsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateUserRelationshipCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateUserRelationshipCoroutine = new KnetikCoroutine();
+            mDeleteUserRelationshipCoroutine = new KnetikCoroutine();
+            mGetUserRelationshipCoroutine = new KnetikCoroutine();
+            mGetUserRelationshipsCoroutine = new KnetikCoroutine();
+            mUpdateUserRelationshipCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Create a user relationship 
         /// </summary>
@@ -165,6 +167,7 @@ namespace com.knetikcloud.Api
                 CreateUserRelationshipComplete(CreateUserRelationshipData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete a user relationship 
         /// </summary>
@@ -218,6 +221,7 @@ namespace com.knetikcloud.Api
                 DeleteUserRelationshipComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a user relationship 
         /// </summary>
@@ -273,6 +277,7 @@ namespace com.knetikcloud.Api
                 GetUserRelationshipComplete(GetUserRelationshipData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a list of user relationships 
         /// </summary>
@@ -339,6 +344,7 @@ namespace com.knetikcloud.Api
                 GetUserRelationshipsComplete(GetUserRelationshipsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update a user relationship 
         /// </summary>

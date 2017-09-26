@@ -12,6 +12,4 @@ MonoBehaviour:
   m_Name: KnetikProjectSettings
   m_EditorClassIdentifier: 
   BaseUrl: https://unitysdk-unitysdktestapp.devsandbox.knetikcloud.com
-  GrantType: password
-  ClientId: knetik
-  ClientSecret: 
+  ClientId: unity_client

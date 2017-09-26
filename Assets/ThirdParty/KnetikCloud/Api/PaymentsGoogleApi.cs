@@ -28,6 +28,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -47,9 +48,10 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public PaymentsGoogleApi()
         {
-            mHandleGooglePaymentCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mHandleGooglePaymentCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Mark an invoice paid with Google Mark an invoice paid with Google. Verifies signature from Google and treats the developerPayload field inside the json payload as the id of the invoice to pay. Returns the transaction ID if successful.
         /// </summary>

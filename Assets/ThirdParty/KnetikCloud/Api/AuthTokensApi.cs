@@ -48,6 +48,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -80,11 +81,12 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public AuthTokensApi()
         {
-            mDeleteTokensCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetTokenCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetTokensCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mDeleteTokensCoroutine = new KnetikCoroutine();
+            mGetTokenCoroutine = new KnetikCoroutine();
+            mGetTokensCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Delete tokens by username, client id, or both 
         /// </summary>
@@ -143,6 +145,7 @@ namespace com.knetikcloud.Api
                 DeleteTokensComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single token by username and client id 
         /// </summary>
@@ -205,6 +208,7 @@ mGetTokenPath = mGetTokenPath.Replace("{" + "client_id" + "}", KnetikClient.Defa
                 GetTokenComplete(GetTokenData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List usernames and client ids Token value not shown
         /// </summary>

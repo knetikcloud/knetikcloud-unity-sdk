@@ -38,6 +38,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -64,10 +65,11 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public BRERuleEngineVariablesApi()
         {
-            mGetBREVariableTypesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetBREVariableValuesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetBREVariableTypesCoroutine = new KnetikCoroutine();
+            mGetBREVariableValuesCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Get a list of variable types available Types include integer, string, user and invoice. These are used to qualify trigger parameters and action variables with strong typing.
         /// </summary>
@@ -116,6 +118,7 @@ namespace com.knetikcloud.Api
                 GetBREVariableTypesComplete(GetBREVariableTypesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List valid values for a type Used to lookup users to fill in a user constant for example. Only types marked as enumerable are suppoorted here.
         /// </summary>

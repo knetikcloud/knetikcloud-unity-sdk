@@ -49,6 +49,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -89,12 +90,13 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public LocationsApi()
         {
-            mGetCountriesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetCountryByGeoLocationCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetCountryStatesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetCurrencyByGeoLocationCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetCountriesCoroutine = new KnetikCoroutine();
+            mGetCountryByGeoLocationCoroutine = new KnetikCoroutine();
+            mGetCountryStatesCoroutine = new KnetikCoroutine();
+            mGetCurrencyByGeoLocationCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Get a list of countries 
         /// </summary>
@@ -143,6 +145,7 @@ namespace com.knetikcloud.Api
                 GetCountriesComplete(GetCountriesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get the iso3 code of your country Determined by geo ip location
         /// </summary>
@@ -191,6 +194,7 @@ namespace com.knetikcloud.Api
                 GetCountryByGeoLocationComplete(GetCountryByGeoLocationData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a list of a country&#39;s states 
         /// </summary>
@@ -246,6 +250,7 @@ namespace com.knetikcloud.Api
                 GetCountryStatesComplete(GetCountryStatesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get the currency information of your country Determined by geo ip location, currency to country mapping and a fallback setting
         /// </summary>

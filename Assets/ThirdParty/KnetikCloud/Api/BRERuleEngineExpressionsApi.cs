@@ -27,6 +27,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -46,9 +47,10 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public BRERuleEngineExpressionsApi()
         {
-            mGetBREExpressionsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetBREExpressionsCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Get a list of &#39;lookup&#39; type expressions These are expression types that take a second expression as input and produce a value. These can be used in addition to the standard types, like parameter, global and constant (see BRE documentation for details).
         /// </summary>

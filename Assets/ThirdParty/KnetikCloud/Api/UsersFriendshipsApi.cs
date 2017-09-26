@@ -69,6 +69,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -120,14 +121,15 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public UsersFriendshipsApi()
         {
-            mAddFriendCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetFriendsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetInviteTokenCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetInvitesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mRedeemFriendshipTokenCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mRemoveOrDeclineFriendCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mAddFriendCoroutine = new KnetikCoroutine();
+            mGetFriendsCoroutine = new KnetikCoroutine();
+            mGetInviteTokenCoroutine = new KnetikCoroutine();
+            mGetInvitesCoroutine = new KnetikCoroutine();
+            mRedeemFriendshipTokenCoroutine = new KnetikCoroutine();
+            mRemoveOrDeclineFriendCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Add a friend As a user, either creates or confirm a pending request. As an admin, call this endpoint twice while inverting the IDs to create a confirmed friendship.
         /// </summary>
@@ -188,6 +190,7 @@ mAddFriendPath = mAddFriendPath.Replace("{" + "id" + "}", KnetikClient.DefaultCl
                 AddFriendComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get friends list 
         /// </summary>
@@ -255,6 +258,7 @@ mAddFriendPath = mAddFriendPath.Replace("{" + "id" + "}", KnetikClient.DefaultCl
                 GetFriendsComplete(GetFriendsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Returns the invite token This is a unique invite token that allows direct connection to the request user.  Exposing that token presents privacy issues if the token is leaked. Use friend request flow instead if confirmation is required
         /// </summary>
@@ -310,6 +314,7 @@ mAddFriendPath = mAddFriendPath.Replace("{" + "id" + "}", KnetikClient.DefaultCl
                 GetInviteTokenComplete(GetInviteTokenData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get pending invites Invites that the specified user received
         /// </summary>
@@ -377,6 +382,7 @@ mAddFriendPath = mAddFriendPath.Replace("{" + "id" + "}", KnetikClient.DefaultCl
                 GetInvitesComplete(GetInvitesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Redeem friendship token Immediately connects the requested user with the user mapped by the provided invite token
         /// </summary>
@@ -433,6 +439,7 @@ mAddFriendPath = mAddFriendPath.Replace("{" + "id" + "}", KnetikClient.DefaultCl
                 RedeemFriendshipTokenComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Remove or decline a friend 
         /// </summary>

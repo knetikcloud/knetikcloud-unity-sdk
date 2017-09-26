@@ -44,6 +44,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -80,12 +81,13 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public MessagingApi()
         {
-            mSendRawEmailCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mSendRawSMSCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mSendTemplatedEmailCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mSendTemplatedSMSCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mSendRawEmailCoroutine = new KnetikCoroutine();
+            mSendRawSMSCoroutine = new KnetikCoroutine();
+            mSendTemplatedEmailCoroutine = new KnetikCoroutine();
+            mSendTemplatedSMSCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Send a raw email to one or more users 
         /// </summary>
@@ -135,6 +137,7 @@ namespace com.knetikcloud.Api
                 SendRawEmailComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Send a raw SMS Sends a raw SMS text message to one or more users. User&#39;s without registered mobile numbers will be skipped.
         /// </summary>
@@ -184,6 +187,7 @@ namespace com.knetikcloud.Api
                 SendRawSMSComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Send a templated email to one or more users 
         /// </summary>
@@ -233,6 +237,7 @@ namespace com.knetikcloud.Api
                 SendTemplatedEmailComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Send a new templated SMS Sends a templated SMS text message to one or more users. User&#39;s without registered mobile numbers will be skipped.
         /// </summary>

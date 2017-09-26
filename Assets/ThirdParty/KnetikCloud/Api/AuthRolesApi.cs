@@ -107,6 +107,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -188,18 +189,19 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public AuthRolesApi()
         {
-            mCreateRoleCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteRoleCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetClientRolesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetRoleCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetRolesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetUserRolesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mSetClientRolesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mSetPermissionsForRoleCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mSetUserRolesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateRoleCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateRoleCoroutine = new KnetikCoroutine();
+            mDeleteRoleCoroutine = new KnetikCoroutine();
+            mGetClientRolesCoroutine = new KnetikCoroutine();
+            mGetRoleCoroutine = new KnetikCoroutine();
+            mGetRolesCoroutine = new KnetikCoroutine();
+            mGetUserRolesCoroutine = new KnetikCoroutine();
+            mSetClientRolesCoroutine = new KnetikCoroutine();
+            mSetPermissionsForRoleCoroutine = new KnetikCoroutine();
+            mSetUserRolesCoroutine = new KnetikCoroutine();
+            mUpdateRoleCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Create a new role 
         /// </summary>
@@ -251,6 +253,7 @@ namespace com.knetikcloud.Api
                 CreateRoleComplete(CreateRoleData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete a role 
         /// </summary>
@@ -310,6 +313,7 @@ namespace com.knetikcloud.Api
                 DeleteRoleComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get roles for a client 
         /// </summary>
@@ -365,6 +369,7 @@ namespace com.knetikcloud.Api
                 GetClientRolesComplete(GetClientRolesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single role 
         /// </summary>
@@ -420,6 +425,7 @@ namespace com.knetikcloud.Api
                 GetRoleComplete(GetRoleData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search roles 
         /// </summary>
@@ -498,6 +504,7 @@ namespace com.knetikcloud.Api
                 GetRolesComplete(GetRolesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get roles for a user 
         /// </summary>
@@ -553,6 +560,7 @@ namespace com.knetikcloud.Api
                 GetUserRolesComplete(GetUserRolesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Set roles for a client 
         /// </summary>
@@ -611,6 +619,7 @@ namespace com.knetikcloud.Api
                 SetClientRolesComplete(SetClientRolesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Set permissions for a role 
         /// </summary>
@@ -669,6 +678,7 @@ namespace com.knetikcloud.Api
                 SetPermissionsForRoleComplete(SetPermissionsForRoleData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Set roles for a user 
         /// </summary>
@@ -727,6 +737,7 @@ namespace com.knetikcloud.Api
                 SetUserRolesComplete(SetUserRolesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update a role 
         /// </summary>

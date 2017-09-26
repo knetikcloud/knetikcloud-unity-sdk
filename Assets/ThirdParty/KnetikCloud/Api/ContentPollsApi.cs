@@ -123,6 +123,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -217,20 +218,21 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public ContentPollsApi()
         {
-            mAnswerPollCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mCreatePollCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mCreatePollTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeletePollCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeletePollTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetPollCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetPollAnswerCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetPollTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetPollTemplatesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetPollsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdatePollCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdatePollTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mAnswerPollCoroutine = new KnetikCoroutine();
+            mCreatePollCoroutine = new KnetikCoroutine();
+            mCreatePollTemplateCoroutine = new KnetikCoroutine();
+            mDeletePollCoroutine = new KnetikCoroutine();
+            mDeletePollTemplateCoroutine = new KnetikCoroutine();
+            mGetPollCoroutine = new KnetikCoroutine();
+            mGetPollAnswerCoroutine = new KnetikCoroutine();
+            mGetPollTemplateCoroutine = new KnetikCoroutine();
+            mGetPollTemplatesCoroutine = new KnetikCoroutine();
+            mGetPollsCoroutine = new KnetikCoroutine();
+            mUpdatePollCoroutine = new KnetikCoroutine();
+            mUpdatePollTemplateCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Add your vote to a poll 
         /// </summary>
@@ -289,6 +291,7 @@ namespace com.knetikcloud.Api
                 AnswerPollComplete(AnswerPollData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Create a new poll Polls are blobs of text with titles, a category and assets. Formatting and display of the text is in the hands of the front end.
         /// </summary>
@@ -340,6 +343,7 @@ namespace com.knetikcloud.Api
                 CreatePollComplete(CreatePollData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Create a poll template Poll templates define a type of poll and the properties they have
         /// </summary>
@@ -391,6 +395,7 @@ namespace com.knetikcloud.Api
                 CreatePollTemplateComplete(CreatePollTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete an existing poll 
         /// </summary>
@@ -444,6 +449,7 @@ namespace com.knetikcloud.Api
                 DeletePollComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete a poll template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
         /// </summary>
@@ -503,6 +509,7 @@ namespace com.knetikcloud.Api
                 DeletePollTemplateComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single poll 
         /// </summary>
@@ -558,6 +565,7 @@ namespace com.knetikcloud.Api
                 GetPollComplete(GetPollData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get poll answer 
         /// </summary>
@@ -613,6 +621,7 @@ namespace com.knetikcloud.Api
                 GetPollAnswerComplete(GetPollAnswerData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single poll template 
         /// </summary>
@@ -668,6 +677,7 @@ namespace com.knetikcloud.Api
                 GetPollTemplateComplete(GetPollTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search poll templates 
         /// </summary>
@@ -734,6 +744,7 @@ namespace com.knetikcloud.Api
                 GetPollTemplatesComplete(GetPollTemplatesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search polls Get a list of polls with optional filtering. Assets will not be filled in on the resources returned. Use &#39;Get a single poll&#39; to retrieve the full resource with assets for a given item as needed.
         /// </summary>
@@ -818,6 +829,7 @@ namespace com.knetikcloud.Api
                 GetPollsComplete(GetPollsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update an existing poll 
         /// </summary>
@@ -876,6 +888,7 @@ namespace com.knetikcloud.Api
                 UpdatePollComplete(UpdatePollData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update a poll template 
         /// </summary>

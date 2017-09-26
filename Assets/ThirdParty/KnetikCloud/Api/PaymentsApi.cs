@@ -103,6 +103,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -176,17 +177,18 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public PaymentsApi()
         {
-            mCreatePaymentMethodCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeletePaymentMethodCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetPaymentMethodCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetPaymentMethodTypeCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetPaymentMethodTypesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetPaymentMethodsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mPaymentAuthorizationCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mPaymentCaptureCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdatePaymentMethodCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreatePaymentMethodCoroutine = new KnetikCoroutine();
+            mDeletePaymentMethodCoroutine = new KnetikCoroutine();
+            mGetPaymentMethodCoroutine = new KnetikCoroutine();
+            mGetPaymentMethodTypeCoroutine = new KnetikCoroutine();
+            mGetPaymentMethodTypesCoroutine = new KnetikCoroutine();
+            mGetPaymentMethodsCoroutine = new KnetikCoroutine();
+            mPaymentAuthorizationCoroutine = new KnetikCoroutine();
+            mPaymentCaptureCoroutine = new KnetikCoroutine();
+            mUpdatePaymentMethodCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Create a new payment method for a user 
         /// </summary>
@@ -245,6 +247,7 @@ namespace com.knetikcloud.Api
                 CreatePaymentMethodComplete(CreatePaymentMethodData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete an existing payment method for a user 
         /// </summary>
@@ -305,6 +308,7 @@ mDeletePaymentMethodPath = mDeletePaymentMethodPath.Replace("{" + "id" + "}", Kn
                 DeletePaymentMethodComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single payment method for a user 
         /// </summary>
@@ -367,6 +371,7 @@ mGetPaymentMethodPath = mGetPaymentMethodPath.Replace("{" + "id" + "}", KnetikCl
                 GetPaymentMethodComplete(GetPaymentMethodData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single payment method type 
         /// </summary>
@@ -422,6 +427,7 @@ mGetPaymentMethodPath = mGetPaymentMethodPath.Replace("{" + "id" + "}", KnetikCl
                 GetPaymentMethodTypeComplete(GetPaymentMethodTypeData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get all payment method types 
         /// </summary>
@@ -494,6 +500,7 @@ mGetPaymentMethodPath = mGetPaymentMethodPath.Replace("{" + "id" + "}", KnetikCl
                 GetPaymentMethodTypesComplete(GetPaymentMethodTypesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get all payment methods for a user 
         /// </summary>
@@ -591,6 +598,7 @@ mGetPaymentMethodPath = mGetPaymentMethodPath.Replace("{" + "id" + "}", KnetikCl
                 GetPaymentMethodsComplete(GetPaymentMethodsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Authorize payment of an invoice for later capture 
         /// </summary>
@@ -642,6 +650,7 @@ mGetPaymentMethodPath = mGetPaymentMethodPath.Replace("{" + "id" + "}", KnetikCl
                 PaymentAuthorizationComplete(PaymentAuthorizationData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Capture an existing invoice payment authorization 
         /// </summary>
@@ -695,6 +704,7 @@ mGetPaymentMethodPath = mGetPaymentMethodPath.Replace("{" + "id" + "}", KnetikCl
                 PaymentCaptureComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update an existing payment method for a user 
         /// </summary>

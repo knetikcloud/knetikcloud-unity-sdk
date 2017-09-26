@@ -103,6 +103,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -182,18 +183,19 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public MediaArtistsApi()
         {
-            mAddArtistCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mCreateArtistTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteArtistCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteArtistTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetArtistCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetArtistTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetArtistTemplatesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetArtistsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateArtistCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateArtistTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mAddArtistCoroutine = new KnetikCoroutine();
+            mCreateArtistTemplateCoroutine = new KnetikCoroutine();
+            mDeleteArtistCoroutine = new KnetikCoroutine();
+            mDeleteArtistTemplateCoroutine = new KnetikCoroutine();
+            mGetArtistCoroutine = new KnetikCoroutine();
+            mGetArtistTemplateCoroutine = new KnetikCoroutine();
+            mGetArtistTemplatesCoroutine = new KnetikCoroutine();
+            mGetArtistsCoroutine = new KnetikCoroutine();
+            mUpdateArtistCoroutine = new KnetikCoroutine();
+            mUpdateArtistTemplateCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Adds a new artist in the system Adds a new artist in the system. Use specific media contributions endpoint to add contributions
         /// </summary>
@@ -245,6 +247,7 @@ namespace com.knetikcloud.Api
                 AddArtistComplete(AddArtistData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Create an artist template Artist Templates define a type of artist and the properties they have
         /// </summary>
@@ -296,6 +299,7 @@ namespace com.knetikcloud.Api
                 CreateArtistTemplateComplete(CreateArtistTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Removes an artist from the system IF no resources are attached to it 
         /// </summary>
@@ -349,6 +353,7 @@ namespace com.knetikcloud.Api
                 DeleteArtistComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete an artist template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
         /// </summary>
@@ -408,6 +413,7 @@ namespace com.knetikcloud.Api
                 DeleteArtistTemplateComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Loads a specific artist details 
         /// </summary>
@@ -469,6 +475,7 @@ namespace com.knetikcloud.Api
                 GetArtistComplete(GetArtistData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single artist template 
         /// </summary>
@@ -524,6 +531,7 @@ namespace com.knetikcloud.Api
                 GetArtistTemplateComplete(GetArtistTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search artist templates 
         /// </summary>
@@ -590,6 +598,7 @@ namespace com.knetikcloud.Api
                 GetArtistTemplatesComplete(GetArtistTemplatesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Search for artists 
         /// </summary>
@@ -662,6 +671,7 @@ namespace com.knetikcloud.Api
                 GetArtistsComplete(GetArtistsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Modifies an artist details 
         /// </summary>
@@ -718,6 +728,7 @@ namespace com.knetikcloud.Api
                 UpdateArtistComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update an artist template 
         /// </summary>

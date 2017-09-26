@@ -35,6 +35,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -54,9 +55,10 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public ReportingOrdersApi()
         {
-            mGetInvoiceReportsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetInvoiceReportsCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Retrieve invoice counts aggregated by time ranges 
         /// </summary>

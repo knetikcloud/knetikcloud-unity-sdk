@@ -108,6 +108,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -187,18 +188,19 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public ObjectsApi()
         {
-            mCreateObjectItemCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mCreateObjectTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteObjectItemCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteObjectTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetObjectItemCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetObjectItemsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetObjectTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetObjectTemplatesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateObjectItemCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateObjectTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateObjectItemCoroutine = new KnetikCoroutine();
+            mCreateObjectTemplateCoroutine = new KnetikCoroutine();
+            mDeleteObjectItemCoroutine = new KnetikCoroutine();
+            mDeleteObjectTemplateCoroutine = new KnetikCoroutine();
+            mGetObjectItemCoroutine = new KnetikCoroutine();
+            mGetObjectItemsCoroutine = new KnetikCoroutine();
+            mGetObjectTemplateCoroutine = new KnetikCoroutine();
+            mGetObjectTemplatesCoroutine = new KnetikCoroutine();
+            mUpdateObjectItemCoroutine = new KnetikCoroutine();
+            mUpdateObjectTemplateCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Create an object 
         /// </summary>
@@ -263,6 +265,7 @@ namespace com.knetikcloud.Api
                 CreateObjectItemComplete(CreateObjectItemData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Create an object template Object templates define a type of entitlement and the properties they have
         /// </summary>
@@ -314,6 +317,7 @@ namespace com.knetikcloud.Api
                 CreateObjectTemplateComplete(CreateObjectTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete an object 
         /// </summary>
@@ -374,6 +378,7 @@ mDeleteObjectItemPath = mDeleteObjectItemPath.Replace("{" + "object_id" + "}", K
                 DeleteObjectItemComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete an entitlement template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
         /// </summary>
@@ -433,6 +438,7 @@ mDeleteObjectItemPath = mDeleteObjectItemPath.Replace("{" + "object_id" + "}", K
                 DeleteObjectTemplateComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single object 
         /// </summary>
@@ -495,6 +501,7 @@ mGetObjectItemPath = mGetObjectItemPath.Replace("{" + "object_id" + "}", KnetikC
                 GetObjectItemComplete(GetObjectItemData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search objects 
         /// </summary>
@@ -568,6 +575,7 @@ mGetObjectItemPath = mGetObjectItemPath.Replace("{" + "object_id" + "}", KnetikC
                 GetObjectItemsComplete(GetObjectItemsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single entitlement template 
         /// </summary>
@@ -623,6 +631,7 @@ mGetObjectItemPath = mGetObjectItemPath.Replace("{" + "object_id" + "}", KnetikC
                 GetObjectTemplateComplete(GetObjectTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search entitlement templates 
         /// </summary>
@@ -689,6 +698,7 @@ mGetObjectItemPath = mGetObjectItemPath.Replace("{" + "object_id" + "}", KnetikC
                 GetObjectTemplatesComplete(GetObjectTemplatesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update an object 
         /// </summary>
@@ -758,6 +768,7 @@ mUpdateObjectItemPath = mUpdateObjectItemPath.Replace("{" + "entitlement_id" + "
                 UpdateObjectItemComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update an entitlement template 
         /// </summary>

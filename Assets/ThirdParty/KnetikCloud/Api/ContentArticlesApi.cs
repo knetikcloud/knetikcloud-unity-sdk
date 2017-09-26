@@ -109,6 +109,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -189,18 +190,19 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public ContentArticlesApi()
         {
-            mCreateArticleCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mCreateArticleTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteArticleCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteArticleTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetArticleCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetArticleTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetArticleTemplatesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetArticlesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateArticleCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateArticleTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateArticleCoroutine = new KnetikCoroutine();
+            mCreateArticleTemplateCoroutine = new KnetikCoroutine();
+            mDeleteArticleCoroutine = new KnetikCoroutine();
+            mDeleteArticleTemplateCoroutine = new KnetikCoroutine();
+            mGetArticleCoroutine = new KnetikCoroutine();
+            mGetArticleTemplateCoroutine = new KnetikCoroutine();
+            mGetArticleTemplatesCoroutine = new KnetikCoroutine();
+            mGetArticlesCoroutine = new KnetikCoroutine();
+            mUpdateArticleCoroutine = new KnetikCoroutine();
+            mUpdateArticleTemplateCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Create a new article Articles are blobs of text with titles, a category and assets. Formatting and display of the text is in the hands of the front end.
         /// </summary>
@@ -252,6 +254,7 @@ namespace com.knetikcloud.Api
                 CreateArticleComplete(CreateArticleData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Create an article template Article Templates define a type of article and the properties they have
         /// </summary>
@@ -303,6 +306,7 @@ namespace com.knetikcloud.Api
                 CreateArticleTemplateComplete(CreateArticleTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete an existing article 
         /// </summary>
@@ -356,6 +360,7 @@ namespace com.knetikcloud.Api
                 DeleteArticleComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete an article template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
         /// </summary>
@@ -415,6 +420,7 @@ namespace com.knetikcloud.Api
                 DeleteArticleTemplateComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single article 
         /// </summary>
@@ -470,6 +476,7 @@ namespace com.knetikcloud.Api
                 GetArticleComplete(GetArticleData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single article template 
         /// </summary>
@@ -525,6 +532,7 @@ namespace com.knetikcloud.Api
                 GetArticleTemplateComplete(GetArticleTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search article templates 
         /// </summary>
@@ -591,6 +599,7 @@ namespace com.knetikcloud.Api
                 GetArticleTemplatesComplete(GetArticleTemplatesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search articles Get a list of articles with optional filtering. Assets will not be filled in on the resources returned. Use &#39;Get a single article&#39; to retrieve the full resource with assets for a given item as needed.
         /// </summary>
@@ -693,6 +702,7 @@ namespace com.knetikcloud.Api
                 GetArticlesComplete(GetArticlesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update an existing article 
         /// </summary>
@@ -751,6 +761,7 @@ namespace com.knetikcloud.Api
                 UpdateArticleComplete(UpdateArticleData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update an article template 
         /// </summary>

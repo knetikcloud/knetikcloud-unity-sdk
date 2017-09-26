@@ -117,6 +117,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -204,19 +205,20 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public TaxesApi()
         {
-            mCreateCountryTaxCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mCreateStateTaxCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteCountryTaxCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteStateTaxCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetCountryTaxCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetCountryTaxesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetStateTaxCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetStateTaxesForCountriesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetStateTaxesForCountryCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateCountryTaxCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateStateTaxCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateCountryTaxCoroutine = new KnetikCoroutine();
+            mCreateStateTaxCoroutine = new KnetikCoroutine();
+            mDeleteCountryTaxCoroutine = new KnetikCoroutine();
+            mDeleteStateTaxCoroutine = new KnetikCoroutine();
+            mGetCountryTaxCoroutine = new KnetikCoroutine();
+            mGetCountryTaxesCoroutine = new KnetikCoroutine();
+            mGetStateTaxCoroutine = new KnetikCoroutine();
+            mGetStateTaxesForCountriesCoroutine = new KnetikCoroutine();
+            mGetStateTaxesForCountryCoroutine = new KnetikCoroutine();
+            mUpdateCountryTaxCoroutine = new KnetikCoroutine();
+            mUpdateStateTaxCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Create a country tax 
         /// </summary>
@@ -268,6 +270,7 @@ namespace com.knetikcloud.Api
                 CreateCountryTaxComplete(CreateCountryTaxData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Create a state tax 
         /// </summary>
@@ -326,6 +329,7 @@ namespace com.knetikcloud.Api
                 CreateStateTaxComplete(CreateStateTaxData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete an existing tax 
         /// </summary>
@@ -379,6 +383,7 @@ namespace com.knetikcloud.Api
                 DeleteCountryTaxComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete an existing state tax 
         /// </summary>
@@ -439,6 +444,7 @@ mDeleteStateTaxPath = mDeleteStateTaxPath.Replace("{" + "state_code" + "}", Knet
                 DeleteStateTaxComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single tax 
         /// </summary>
@@ -494,6 +500,7 @@ mDeleteStateTaxPath = mDeleteStateTaxPath.Replace("{" + "state_code" + "}", Knet
                 GetCountryTaxComplete(GetCountryTaxData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search taxes Get a list of taxes
         /// </summary>
@@ -560,6 +567,7 @@ mDeleteStateTaxPath = mDeleteStateTaxPath.Replace("{" + "state_code" + "}", Knet
                 GetCountryTaxesComplete(GetCountryTaxesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single state tax 
         /// </summary>
@@ -622,6 +630,7 @@ mGetStateTaxPath = mGetStateTaxPath.Replace("{" + "state_code" + "}", KnetikClie
                 GetStateTaxComplete(GetStateTaxData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search taxes across all countries Get a list of taxes
         /// </summary>
@@ -688,6 +697,7 @@ mGetStateTaxPath = mGetStateTaxPath.Replace("{" + "state_code" + "}", KnetikClie
                 GetStateTaxesForCountriesComplete(GetStateTaxesForCountriesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search taxes within a country Get a list of taxes
         /// </summary>
@@ -761,6 +771,7 @@ mGetStateTaxPath = mGetStateTaxPath.Replace("{" + "state_code" + "}", KnetikClie
                 GetStateTaxesForCountryComplete(GetStateTaxesForCountryData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Create or update a tax 
         /// </summary>
@@ -819,6 +830,7 @@ mGetStateTaxPath = mGetStateTaxPath.Replace("{" + "state_code" + "}", KnetikClie
                 UpdateCountryTaxComplete(UpdateCountryTaxData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Create or update a state tax 
         /// </summary>

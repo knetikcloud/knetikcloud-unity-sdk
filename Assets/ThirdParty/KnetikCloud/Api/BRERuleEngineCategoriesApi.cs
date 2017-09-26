@@ -88,6 +88,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -155,16 +156,17 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public BRERuleEngineCategoriesApi()
         {
-            mCreateBRECategoryTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteBRECategoryTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetBRECategoriesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetBRECategoryCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetBRECategoryTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetBRECategoryTemplatesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateBRECategoryCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateBRECategoryTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateBRECategoryTemplateCoroutine = new KnetikCoroutine();
+            mDeleteBRECategoryTemplateCoroutine = new KnetikCoroutine();
+            mGetBRECategoriesCoroutine = new KnetikCoroutine();
+            mGetBRECategoryCoroutine = new KnetikCoroutine();
+            mGetBRECategoryTemplateCoroutine = new KnetikCoroutine();
+            mGetBRECategoryTemplatesCoroutine = new KnetikCoroutine();
+            mUpdateBRECategoryCoroutine = new KnetikCoroutine();
+            mUpdateBRECategoryTemplateCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Create a BRE category template Templates define a type of BRE category and the properties they have
         /// </summary>
@@ -216,6 +218,7 @@ namespace com.knetikcloud.Api
                 CreateBRECategoryTemplateComplete(CreateBRECategoryTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete a BRE category template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
         /// </summary>
@@ -275,6 +278,7 @@ namespace com.knetikcloud.Api
                 DeleteBRECategoryTemplateComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List categories 
         /// </summary>
@@ -335,6 +339,7 @@ namespace com.knetikcloud.Api
                 GetBRECategoriesComplete(GetBRECategoriesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single category 
         /// </summary>
@@ -390,6 +395,7 @@ namespace com.knetikcloud.Api
                 GetBRECategoryComplete(GetBRECategoryData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single BRE category template 
         /// </summary>
@@ -445,6 +451,7 @@ namespace com.knetikcloud.Api
                 GetBRECategoryTemplateComplete(GetBRECategoryTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search BRE category templates 
         /// </summary>
@@ -511,6 +518,7 @@ namespace com.knetikcloud.Api
                 GetBRECategoryTemplatesComplete(GetBRECategoryTemplatesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update a category 
         /// </summary>
@@ -569,6 +577,7 @@ namespace com.knetikcloud.Api
                 UpdateBRECategoryComplete(UpdateBRECategoryData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update a BRE category template 
         /// </summary>

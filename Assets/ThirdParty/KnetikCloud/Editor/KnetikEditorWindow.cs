@@ -1,4 +1,5 @@
 ﻿using com.knetikcloud.Client;
+using com.knetikcloud.Credentials;
 using UnityEditor;
 using UnityEngine;
 
@@ -11,13 +12,14 @@ namespace com.knetikcloud.UnityEditor
 
         private GUIContent mProjectSettingsHeaderLabel;
         private GUIContent mBaseUrl;
-        private GUIContent mGrantType;
         private GUIContent mClientId;
+
+        private GUIContent mClientCredentialsHeaderLabel;
         private GUIContent mClientSecret;
 
-        private GUIContent mUserSettingsHeaderLabel;
-        private GUIContent mUserId;
-        private GUIContent mPassword;
+        private GUIContent mUserCredentialsHeaderLabel;
+        private GUIContent mUserCredentialsId;
+        private GUIContent mUserCredentialsPassword;
 
         private GUIContent mSaveButton;
 
@@ -31,19 +33,18 @@ namespace com.knetikcloud.UnityEditor
         {
             // Ensure the settings are loaded (if available)
             KnetikEditorConfigurationManager.Initialize();
-
             mUserCredentials = KnetikUserCredentials.Load();
 
             mProjectSettingsHeaderLabel = new GUIContent("Project KnetikConfiguration", "Project wide settings that should be checked into source control (if used).");
-
             mBaseUrl = new GUIContent("Base URL", "The base URL for your project.  E.g. https://<my_project_name>.devsandbox.knetikcloud.com");
-            mGrantType = new GUIContent("Grant Type", "The type of credentials you will use to authenticate.  E.g. 'password', 'client_credentials', 'facebook', or 'google'.");
             mClientId = new GUIContent("Client ID", "The client ID as configured in the administrative panel.");
-            mClientSecret = new GUIContent("Client Secret", "Optional: Only used with a grant type of 'client_credentials'.  Configured in the administrative panel.");
 
-            mUserSettingsHeaderLabel = new GUIContent("Per User Settings", "Optional: Per developer settings that are only used if the grant type is set to 'password'.");
-            mUserId = new GUIContent("User Id", "Optional: User account to use for development if the grant type is set to 'client_credentials'.");
-            mPassword = new GUIContent("Password", "Optional: User password to use for development if the grant type is set to 'client_credentials'.");
+            mClientCredentialsHeaderLabel = new GUIContent("Client Credentials", "Optional: Settings that apply if the grant type is 'client_credentials'.\nShould be checked into source control (if used).");
+            mClientSecret = new GUIContent("Client Secret", "Optional: Must match the secret configured in the server administration panel.");
+
+            mUserCredentialsHeaderLabel = new GUIContent("User Credentials", "Optional: Per developer settings that apply if the grant type is 'password'.");
+            mUserCredentialsId = new GUIContent("User Id", "Optional: Per developer user account to use.");
+            mUserCredentialsPassword = new GUIContent("Password", "Optional: Per developer account password to use.");
 
             mSaveButton = new GUIContent("Save");
         }
@@ -51,7 +52,8 @@ namespace com.knetikcloud.UnityEditor
         private void OnGUI()
         {
             DrawProjectSettingsGUI();
-            DrawUserSettingsGUI();
+            DrawClientCredentialsGUI();
+            DrawUserCredentialsGUI();
 
             if (GUI.changed)
             {
@@ -71,17 +73,22 @@ namespace com.knetikcloud.UnityEditor
             EditorGUILayout.LabelField(mProjectSettingsHeaderLabel, EditorStyles.boldLabel);
 
             KnetikEditorConfigurationManager.BaseUrl = EditorGUILayout.TextField(mBaseUrl, KnetikEditorConfigurationManager.BaseUrl);
-            KnetikEditorConfigurationManager.GrantType = EditorGUILayout.TextField(mGrantType, KnetikEditorConfigurationManager.GrantType);
             KnetikEditorConfigurationManager.ClientId = EditorGUILayout.TextField(mClientId, KnetikEditorConfigurationManager.ClientId);
+            EditorGUILayout.Space();
+        }
+
+        private void DrawClientCredentialsGUI()
+        {
+            EditorGUILayout.LabelField(mClientCredentialsHeaderLabel, EditorStyles.boldLabel);
             KnetikEditorConfigurationManager.ClientSecret = EditorGUILayout.TextField(mClientSecret, KnetikEditorConfigurationManager.ClientSecret);
             EditorGUILayout.Space();
         }
 
-        private void DrawUserSettingsGUI()
+        private void DrawUserCredentialsGUI()
         {
-            EditorGUILayout.LabelField(mUserSettingsHeaderLabel, EditorStyles.boldLabel);
-            mUserCredentials.UserId = EditorGUILayout.TextField(mUserId, mUserCredentials.UserId);
-            mUserCredentials.Password = EditorGUILayout.TextField(mPassword, mUserCredentials.Password);
+            EditorGUILayout.LabelField(mUserCredentialsHeaderLabel, EditorStyles.boldLabel);
+            mUserCredentials.UserId = EditorGUILayout.TextField(mUserCredentialsId, mUserCredentials.UserId);
+            mUserCredentials.Password = EditorGUILayout.PasswordField(mUserCredentialsPassword, mUserCredentials.Password);
             EditorGUILayout.Space();
         }
 

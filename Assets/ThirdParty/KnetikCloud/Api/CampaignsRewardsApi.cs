@@ -61,6 +61,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -107,13 +108,14 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public CampaignsRewardsApi()
         {
-            mCreateRewardSetCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteRewardSetCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetRewardSetCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetRewardSetsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateRewardSetCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateRewardSetCoroutine = new KnetikCoroutine();
+            mDeleteRewardSetCoroutine = new KnetikCoroutine();
+            mGetRewardSetCoroutine = new KnetikCoroutine();
+            mGetRewardSetsCoroutine = new KnetikCoroutine();
+            mUpdateRewardSetCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Create a reward set 
         /// </summary>
@@ -165,6 +167,7 @@ namespace com.knetikcloud.Api
                 CreateRewardSetComplete(CreateRewardSetData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete a reward set 
         /// </summary>
@@ -218,6 +221,7 @@ namespace com.knetikcloud.Api
                 DeleteRewardSetComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single reward set 
         /// </summary>
@@ -273,6 +277,7 @@ namespace com.knetikcloud.Api
                 GetRewardSetComplete(GetRewardSetData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search reward sets 
         /// </summary>
@@ -339,6 +344,7 @@ namespace com.knetikcloud.Api
                 GetRewardSetsComplete(GetRewardSetsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update a reward set 
         /// </summary>

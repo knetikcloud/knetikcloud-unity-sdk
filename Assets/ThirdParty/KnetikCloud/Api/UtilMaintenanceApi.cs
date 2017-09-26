@@ -44,6 +44,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -81,12 +82,13 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public UtilMaintenanceApi()
         {
-            mDeleteMaintenanceCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetMaintenanceCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mSetMaintenanceCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateMaintenanceCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mDeleteMaintenanceCoroutine = new KnetikCoroutine();
+            mGetMaintenanceCoroutine = new KnetikCoroutine();
+            mSetMaintenanceCoroutine = new KnetikCoroutine();
+            mUpdateMaintenanceCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Delete maintenance info 
         /// </summary>
@@ -133,6 +135,7 @@ namespace com.knetikcloud.Api
                 DeleteMaintenanceComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get current maintenance info Get current maintenance info. 404 if no maintenance.
         /// </summary>
@@ -181,6 +184,7 @@ namespace com.knetikcloud.Api
                 GetMaintenanceComplete(GetMaintenanceData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Set current maintenance info 
         /// </summary>
@@ -230,6 +234,7 @@ namespace com.knetikcloud.Api
                 SetMaintenanceComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update current maintenance info 
         /// </summary>

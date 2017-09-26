@@ -31,6 +31,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -50,9 +51,10 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public BRERuleEngineActionsApi()
         {
-            mGetBREActionsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetBREActionsCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Get a list of available actions 
         /// </summary>

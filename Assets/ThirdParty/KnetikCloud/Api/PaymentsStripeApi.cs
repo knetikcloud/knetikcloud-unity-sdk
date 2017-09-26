@@ -34,6 +34,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -59,10 +60,11 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public PaymentsStripeApi()
         {
-            mCreateStripePaymentMethodCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mPayStripeInvoiceCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateStripePaymentMethodCoroutine = new KnetikCoroutine();
+            mPayStripeInvoiceCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Create a Stripe payment method for a user Obtain a token from Stripe, following their examples and documentation. Stores customer information and creates a payment method that can be used to pay invoices through the payments endpoints. Ensure that Stripe itself has been configured with the webhook so that invoices are marked paid.
         /// </summary>
@@ -114,6 +116,7 @@ namespace com.knetikcloud.Api
                 CreateStripePaymentMethodComplete(CreateStripePaymentMethodData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Pay with a single use token Obtain a token from Stripe, following their examples and documentation. Pays an invoice without creating a payment method. Ensure that Stripe itself has been configured with the webhook so that invoices are marked paid.
         /// </summary>

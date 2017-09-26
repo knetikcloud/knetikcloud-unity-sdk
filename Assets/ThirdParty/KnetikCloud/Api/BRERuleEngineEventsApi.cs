@@ -28,6 +28,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -47,9 +48,10 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public BRERuleEngineEventsApi()
         {
-            mSendBREEventCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mSendBREEventCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Fire a new event, based on an existing trigger Parameters within the event must match names and types from the trigger. Actual rule execution is asynchornous.  Returns request id, which will be used as the event id
         /// </summary>

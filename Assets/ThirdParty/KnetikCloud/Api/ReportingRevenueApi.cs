@@ -74,6 +74,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -121,13 +122,14 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public ReportingRevenueApi()
         {
-            mGetItemRevenueCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetRefundRevenueCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetRevenueByCountryCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetRevenueByItemCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetSubscriptionRevenueCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetItemRevenueCoroutine = new KnetikCoroutine();
+            mGetRefundRevenueCoroutine = new KnetikCoroutine();
+            mGetRevenueByCountryCoroutine = new KnetikCoroutine();
+            mGetRevenueByItemCoroutine = new KnetikCoroutine();
+            mGetSubscriptionRevenueCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Get item revenue info Get basic info about revenue from sales of items and bundles (not subscriptions, shipping, etc), summed up within a time range
         /// </summary>
@@ -195,6 +197,7 @@ namespace com.knetikcloud.Api
                 GetItemRevenueComplete(GetItemRevenueData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get refund revenue info Get basic info about revenue loss from refunds (for all item types), summed up within a time range.
         /// </summary>
@@ -262,6 +265,7 @@ namespace com.knetikcloud.Api
                 GetRefundRevenueComplete(GetRefundRevenueData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get revenue info by country Get basic info about revenue from sales of all types, summed up within a time range and split out by country. Sorted for largest revenue at the top
         /// </summary>
@@ -341,6 +345,7 @@ namespace com.knetikcloud.Api
                 GetRevenueByCountryComplete(GetRevenueByCountryData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get revenue info by item Get basic info about revenue from sales of all types, summed up within a time range and split out by specific item. Sorted for largest revenue at the top
         /// </summary>
@@ -420,6 +425,7 @@ namespace com.knetikcloud.Api
                 GetRevenueByItemComplete(GetRevenueByItemData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get subscription revenue info Get basic info about revenue from sales of new subscriptions as well as recurring payemnts, summed up within a time range
         /// </summary>

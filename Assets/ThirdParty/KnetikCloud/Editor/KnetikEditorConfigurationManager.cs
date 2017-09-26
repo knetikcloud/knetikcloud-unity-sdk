@@ -1,4 +1,5 @@
 ﻿using com.knetikcloud.Client;
+using com.knetikcloud.Credentials;
 using UnityEditor;
 using UnityEngine;
 
@@ -9,6 +10,9 @@ namespace com.knetikcloud.UnityEditor
     {
         [SerializeField]
         private static KnetikProjectSettings sProjectSettings;
+
+        [SerializeField]
+        private static KnetikClientCredentials sClientCredentials;
 
         public static bool IsBaseUrlSet
         {
@@ -33,21 +37,6 @@ namespace com.knetikcloud.UnityEditor
             }
         }
 
-        public static string GrantType
-        {
-            get
-            {
-                return (sProjectSettings != null) ? sProjectSettings.GrantType : null;
-            }
-            set
-            {
-                if (sProjectSettings != null)
-                {
-                    sProjectSettings.GrantType = value;
-                }
-            }
-        }
-
         public static string ClientId
         {
             get
@@ -67,13 +56,13 @@ namespace com.knetikcloud.UnityEditor
         {
             get
             {
-                return (sProjectSettings != null) ? sProjectSettings.ClientSecret : null;
+                return (sClientCredentials != null) ? sClientCredentials.ClientSecret : null;
             }
             set
             {
-                if (sProjectSettings != null)
+                if (sClientCredentials != null)
                 {
-                    sProjectSettings.ClientSecret = value;
+                    sClientCredentials.ClientSecret = value;
                 }
             }
         }
@@ -90,6 +79,16 @@ namespace com.knetikcloud.UnityEditor
                     KnetikEditorAssetDatabaseUtils.CreateAssetAndDirectories(sProjectSettings, KnetikProjectSettings.SaveDataPath);
                 }
             }
+
+            if (sClientCredentials == null)
+            {
+                sClientCredentials = KnetikEditorScriptableObjectUtis.LoadPersistentData<KnetikClientCredentials>(KnetikClientCredentials.SaveDataPath);
+                if (sClientCredentials == null)
+                {
+                    sClientCredentials = ScriptableObject.CreateInstance<KnetikClientCredentials>();
+                    KnetikEditorAssetDatabaseUtils.CreateAssetAndDirectories(sClientCredentials, KnetikClientCredentials.SaveDataPath);
+                }
+            }
         }
 
         public static void SetDirty()
@@ -97,6 +96,11 @@ namespace com.knetikcloud.UnityEditor
             if (sProjectSettings != null)
             {
                 EditorUtility.SetDirty(sProjectSettings);
+            }
+
+            if (sClientCredentials != null)
+            {
+                EditorUtility.SetDirty(sClientCredentials);
             }
         }
     }

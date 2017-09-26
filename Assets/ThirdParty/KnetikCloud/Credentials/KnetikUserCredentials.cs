@@ -1,12 +1,16 @@
 ﻿using UnityEngine;
 
 
-namespace com.knetikcloud.Client
+namespace com.knetikcloud.Credentials
 {
-    public class KnetikUserCredentials
+    public class KnetikUserCredentials : IKnetikCredentials
     {
         private const string UserIdKey = "UserId";
         private const string PasswordIdKey = "Password";
+
+        public string GrantType { get { return "password"; } }
+
+        public bool IsConfigured { get { return (!string.IsNullOrEmpty(UserId) && !string.IsNullOrEmpty(Password)); } }
 
         public string UserId;
         public string Password;

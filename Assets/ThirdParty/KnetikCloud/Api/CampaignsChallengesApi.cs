@@ -224,6 +224,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -392,31 +393,32 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public CampaignsChallengesApi()
         {
-            mCreateChallengeCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mCreateChallengeActivityCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mCreateChallengeActivityTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mCreateChallengeTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteChallengeCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteChallengeActivityCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteChallengeActivityTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteChallengeEventCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteChallengeTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetChallengeCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetChallengeActivitiesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetChallengeActivityCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetChallengeActivityTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetChallengeActivityTemplatesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetChallengeEventCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetChallengeEventsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetChallengeTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetChallengeTemplatesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetChallengesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateChallengeCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateChallengeActivityCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateChallengeActivityTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateChallengeTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateChallengeCoroutine = new KnetikCoroutine();
+            mCreateChallengeActivityCoroutine = new KnetikCoroutine();
+            mCreateChallengeActivityTemplateCoroutine = new KnetikCoroutine();
+            mCreateChallengeTemplateCoroutine = new KnetikCoroutine();
+            mDeleteChallengeCoroutine = new KnetikCoroutine();
+            mDeleteChallengeActivityCoroutine = new KnetikCoroutine();
+            mDeleteChallengeActivityTemplateCoroutine = new KnetikCoroutine();
+            mDeleteChallengeEventCoroutine = new KnetikCoroutine();
+            mDeleteChallengeTemplateCoroutine = new KnetikCoroutine();
+            mGetChallengeCoroutine = new KnetikCoroutine();
+            mGetChallengeActivitiesCoroutine = new KnetikCoroutine();
+            mGetChallengeActivityCoroutine = new KnetikCoroutine();
+            mGetChallengeActivityTemplateCoroutine = new KnetikCoroutine();
+            mGetChallengeActivityTemplatesCoroutine = new KnetikCoroutine();
+            mGetChallengeEventCoroutine = new KnetikCoroutine();
+            mGetChallengeEventsCoroutine = new KnetikCoroutine();
+            mGetChallengeTemplateCoroutine = new KnetikCoroutine();
+            mGetChallengeTemplatesCoroutine = new KnetikCoroutine();
+            mGetChallengesCoroutine = new KnetikCoroutine();
+            mUpdateChallengeCoroutine = new KnetikCoroutine();
+            mUpdateChallengeActivityCoroutine = new KnetikCoroutine();
+            mUpdateChallengeActivityTemplateCoroutine = new KnetikCoroutine();
+            mUpdateChallengeTemplateCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Create a challenge Challenges do not run on their own.  They must be added to a campaign before events will spawn.
         /// </summary>
@@ -468,6 +470,7 @@ namespace com.knetikcloud.Api
                 CreateChallengeComplete(CreateChallengeData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Create a challenge activity 
         /// </summary>
@@ -532,6 +535,7 @@ namespace com.knetikcloud.Api
                 CreateChallengeActivityComplete(CreateChallengeActivityData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Create a challenge activity template Challenge Activity Templates define a type of challenge activity and the properties they have
         /// </summary>
@@ -583,6 +587,7 @@ namespace com.knetikcloud.Api
                 CreateChallengeActivityTemplateComplete(CreateChallengeActivityTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Create a challenge template Challenge Templates define a type of challenge and the properties they have
         /// </summary>
@@ -634,6 +639,7 @@ namespace com.knetikcloud.Api
                 CreateChallengeTemplateComplete(CreateChallengeTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete a challenge 
         /// </summary>
@@ -687,6 +693,7 @@ namespace com.knetikcloud.Api
                 DeleteChallengeComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete a challenge activity A challenge can have multiple instances of the same activity and thus the id used is of the specific entry within the challenge
         /// </summary>
@@ -747,6 +754,7 @@ mDeleteChallengeActivityPath = mDeleteChallengeActivityPath.Replace("{" + "chall
                 DeleteChallengeActivityComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete a challenge activity template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
         /// </summary>
@@ -806,6 +814,7 @@ mDeleteChallengeActivityPath = mDeleteChallengeActivityPath.Replace("{" + "chall
                 DeleteChallengeActivityTemplateComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete a challenge event 
         /// </summary>
@@ -859,6 +868,7 @@ mDeleteChallengeActivityPath = mDeleteChallengeActivityPath.Replace("{" + "chall
                 DeleteChallengeEventComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete a challenge template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
         /// </summary>
@@ -918,6 +928,7 @@ mDeleteChallengeActivityPath = mDeleteChallengeActivityPath.Replace("{" + "chall
                 DeleteChallengeTemplateComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Retrieve a challenge 
         /// </summary>
@@ -973,6 +984,7 @@ mDeleteChallengeActivityPath = mDeleteChallengeActivityPath.Replace("{" + "chall
                 GetChallengeComplete(GetChallengeData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search challenge activities 
         /// </summary>
@@ -1046,6 +1058,7 @@ mDeleteChallengeActivityPath = mDeleteChallengeActivityPath.Replace("{" + "chall
                 GetChallengeActivitiesComplete(GetChallengeActivitiesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single challenge activity A challenge can have multiple instances of the same activity and thus the id used is of the specific entry within the challenge
         /// </summary>
@@ -1108,6 +1121,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
                 GetChallengeActivityComplete(GetChallengeActivityData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single challenge activity template 
         /// </summary>
@@ -1163,6 +1177,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
                 GetChallengeActivityTemplateComplete(GetChallengeActivityTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search challenge activity templates 
         /// </summary>
@@ -1229,6 +1244,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
                 GetChallengeActivityTemplatesComplete(GetChallengeActivityTemplatesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Retrieve a single challenge event details 
         /// </summary>
@@ -1284,6 +1300,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
                 GetChallengeEventComplete(GetChallengeEventData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Retrieve a list of challenge events 
         /// </summary>
@@ -1374,6 +1391,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
                 GetChallengeEventsComplete(GetChallengeEventsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single challenge template 
         /// </summary>
@@ -1429,6 +1447,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
                 GetChallengeTemplateComplete(GetChallengeTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search challenge templates 
         /// </summary>
@@ -1495,6 +1514,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
                 GetChallengeTemplatesComplete(GetChallengeTemplatesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Retrieve a list of challenges 
         /// </summary>
@@ -1585,6 +1605,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
                 GetChallengesComplete(GetChallengesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update a challenge If the challenge is a copy, changes will propagate to all the related challenges
         /// </summary>
@@ -1643,6 +1664,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
                 UpdateChallengeComplete(UpdateChallengeData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update a challenge activity A challenge can have multiple instances of the same activity and thus the id used is of the specific entry within the challenge
         /// </summary>
@@ -1708,6 +1730,7 @@ mUpdateChallengeActivityPath = mUpdateChallengeActivityPath.Replace("{" + "chall
                 UpdateChallengeActivityComplete(UpdateChallengeActivityData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update an challenge activity template 
         /// </summary>
@@ -1766,6 +1789,7 @@ mUpdateChallengeActivityPath = mUpdateChallengeActivityPath.Replace("{" + "chall
                 UpdateChallengeActivityTemplateComplete(UpdateChallengeActivityTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update a challenge template 
         /// </summary>

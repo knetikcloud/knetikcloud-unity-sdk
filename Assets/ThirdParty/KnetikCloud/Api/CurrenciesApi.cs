@@ -61,6 +61,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -106,13 +107,14 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public CurrenciesApi()
         {
-            mCreateCurrencyCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteCurrencyCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetCurrenciesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetCurrencyCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateCurrencyCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateCurrencyCoroutine = new KnetikCoroutine();
+            mDeleteCurrencyCoroutine = new KnetikCoroutine();
+            mGetCurrenciesCoroutine = new KnetikCoroutine();
+            mGetCurrencyCoroutine = new KnetikCoroutine();
+            mUpdateCurrencyCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Create a currency 
         /// </summary>
@@ -164,6 +166,7 @@ namespace com.knetikcloud.Api
                 CreateCurrencyComplete(CreateCurrencyData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete a currency 
         /// </summary>
@@ -217,6 +220,7 @@ namespace com.knetikcloud.Api
                 DeleteCurrencyComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search currencies 
         /// </summary>
@@ -295,6 +299,7 @@ namespace com.knetikcloud.Api
                 GetCurrenciesComplete(GetCurrenciesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single currency 
         /// </summary>
@@ -350,6 +355,7 @@ namespace com.knetikcloud.Api
                 GetCurrencyComplete(GetCurrencyData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update a currency 
         /// </summary>

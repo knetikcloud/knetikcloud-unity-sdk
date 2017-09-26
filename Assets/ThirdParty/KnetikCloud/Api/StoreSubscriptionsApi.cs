@@ -107,6 +107,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -192,19 +193,20 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public StoreSubscriptionsApi()
         {
-            mCreateSubscriptionCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mCreateSubscriptionTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteSubscriptionCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteSubscriptionTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetSubscriptionCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetSubscriptionTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetSubscriptionTemplatesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetSubscriptionsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mProcessSubscriptionsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateSubscriptionCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateSubscriptionTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateSubscriptionCoroutine = new KnetikCoroutine();
+            mCreateSubscriptionTemplateCoroutine = new KnetikCoroutine();
+            mDeleteSubscriptionCoroutine = new KnetikCoroutine();
+            mDeleteSubscriptionTemplateCoroutine = new KnetikCoroutine();
+            mGetSubscriptionCoroutine = new KnetikCoroutine();
+            mGetSubscriptionTemplateCoroutine = new KnetikCoroutine();
+            mGetSubscriptionTemplatesCoroutine = new KnetikCoroutine();
+            mGetSubscriptionsCoroutine = new KnetikCoroutine();
+            mProcessSubscriptionsCoroutine = new KnetikCoroutine();
+            mUpdateSubscriptionCoroutine = new KnetikCoroutine();
+            mUpdateSubscriptionTemplateCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Creates a subscription item and associated plans 
         /// </summary>
@@ -256,6 +258,7 @@ namespace com.knetikcloud.Api
                 CreateSubscriptionComplete(CreateSubscriptionData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Create a subscription template Subscription Templates define a type of subscription and the properties they have.
         /// </summary>
@@ -307,6 +310,7 @@ namespace com.knetikcloud.Api
                 CreateSubscriptionTemplateComplete(CreateSubscriptionTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete a subscription plan Must not be locked or a migration target
         /// </summary>
@@ -367,6 +371,7 @@ mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}",
                 DeleteSubscriptionComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete a subscription template 
         /// </summary>
@@ -426,6 +431,7 @@ mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}",
                 DeleteSubscriptionTemplateComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Retrieve a single subscription item and associated plans 
         /// </summary>
@@ -481,6 +487,7 @@ mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}",
                 GetSubscriptionComplete(GetSubscriptionData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single subscription template Subscription Templates define a type of subscription and the properties they have.
         /// </summary>
@@ -536,6 +543,7 @@ mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}",
                 GetSubscriptionTemplateComplete(GetSubscriptionTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search subscription templates 
         /// </summary>
@@ -602,6 +610,7 @@ mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}",
                 GetSubscriptionTemplatesComplete(GetSubscriptionTemplatesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List available subscription items and associated plans 
         /// </summary>
@@ -668,6 +677,7 @@ mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}",
                 GetSubscriptionsComplete(GetSubscriptionsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Processes subscriptions and charge dues 
         /// </summary>
@@ -714,6 +724,7 @@ mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}",
                 ProcessSubscriptionsComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Updates a subscription item and associated plans Will not remove plans left out
         /// </summary>
@@ -770,6 +781,7 @@ mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}",
                 UpdateSubscriptionComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update a subscription template 
         /// </summary>

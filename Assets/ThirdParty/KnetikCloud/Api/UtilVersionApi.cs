@@ -27,6 +27,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -46,9 +47,10 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public UtilVersionApi()
         {
-            mGetVersionCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetVersionCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Get current version info 
         /// </summary>

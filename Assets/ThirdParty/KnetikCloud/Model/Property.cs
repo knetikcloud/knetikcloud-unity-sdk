@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>

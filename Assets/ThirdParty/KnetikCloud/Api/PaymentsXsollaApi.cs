@@ -28,6 +28,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -47,9 +48,10 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public PaymentsXsollaApi()
         {
-            mCreateXsollaTokenUrlCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateXsollaTokenUrlCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Create a payment token that should be used to forward the user to Xsolla so they can complete payment 
         /// </summary>

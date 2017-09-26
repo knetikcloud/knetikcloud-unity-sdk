@@ -39,6 +39,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -65,10 +66,11 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public AmazonWebServicesS3Api()
         {
-            mGetDownloadURLCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetSignedS3URLCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetDownloadURLCoroutine = new KnetikCoroutine();
+            mGetSignedS3URLCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Get a temporary signed S3 URL for download To give access to files in your own S3 account, you will need to grant KnetikcCloud access to the file by adjusting your bucket policy accordingly. See S3 documentation for details.
         /// </summary>
@@ -135,6 +137,7 @@ namespace com.knetikcloud.Api
                 GetDownloadURLComplete(GetDownloadURLData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a signed S3 URL for upload Requires the file name and file content type (i.e., &#39;video/mpeg&#39;). Make a PUT to the resulting url to upload the file and use the cdn_url to retrieve it after.
         /// </summary>

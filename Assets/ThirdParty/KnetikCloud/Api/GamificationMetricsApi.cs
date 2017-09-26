@@ -26,6 +26,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -44,9 +45,10 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public GamificationMetricsApi()
         {
-            mAddMetricCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mAddMetricCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Add a metric Post a new score/stat for an activity occurrence without ending the occurrence itself
         /// </summary>

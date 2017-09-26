@@ -2,7 +2,6 @@
 using RestSharp;
 using System.Collections;
 using System.Collections.Generic;
-using com.knetikcloud.Utils;
 using UnityEngine;
 
 
@@ -13,8 +12,6 @@ namespace com.knetikcloud.Client
     /// </summary>
     public class KnetikCoroutine : IDisposable
     {
-        private readonly KnetikClient mKnetikClient;
-
         public delegate void ResponseReceivedCallback(IRestResponse response);
 
         /// <summary>
@@ -31,11 +28,6 @@ namespace com.knetikcloud.Client
         /// Callers can poll this field until the API call returns
         /// </summary>
         public bool HasFinished { get { return (Response != null); } }
-
-        public KnetikCoroutine(KnetikClient knetikClient)
-        {
-            mKnetikClient = knetikClient;
-        }
 
         ~KnetikCoroutine()
         {
@@ -64,14 +56,14 @@ namespace com.knetikcloud.Client
 
         public void Start(string url, Method method, Dictionary<string, string> queryParams, string postBody, Dictionary<string, string> headerParams, Dictionary<string, string> formParams, Dictionary<string, FileParameter> fileParams, string[] authSettings)
         {
-            mKnetikClient.StartCoroutine(HandleCoroutine(url, method, queryParams, postBody, headerParams, formParams, fileParams, authSettings));
+            KnetikClient.DefaultClient.StartCoroutine(HandleCoroutine(url, method, queryParams, postBody, headerParams, formParams, fileParams, authSettings));
         }
 
         private IEnumerator HandleCoroutine(string url, Method method, Dictionary<string, string> queryParams, string postBody, Dictionary<string, string> headerParams, Dictionary<string, string> formParams, Dictionary<string, FileParameter> fileParams, string[] authSettings)
         {
             yield return new WaitForEndOfFrame();
 
-            Response = (IRestResponse)mKnetikClient.CallApi(url, method, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            Response = (IRestResponse)KnetikClient.DefaultClient.CallApi(url, method, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
             if (ResponseReceived != null)
             {
                 ResponseReceived(Response);

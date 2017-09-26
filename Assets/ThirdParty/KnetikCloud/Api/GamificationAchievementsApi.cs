@@ -189,6 +189,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -325,26 +326,27 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public GamificationAchievementsApi()
         {
-            mCreateAchievementCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mCreateAchievementTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteAchievementCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteAchievementTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetAchievementCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetAchievementTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetAchievementTemplatesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetAchievementTriggersCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetAchievementsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetDerivedAchievementsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetUserAchievementProgressCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetUserAchievementsProgressCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetUsersAchievementProgressCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetUsersAchievementsProgressCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mIncrementAchievementProgressCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mSetAchievementProgressCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateAchievementCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateAchievementTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateAchievementCoroutine = new KnetikCoroutine();
+            mCreateAchievementTemplateCoroutine = new KnetikCoroutine();
+            mDeleteAchievementCoroutine = new KnetikCoroutine();
+            mDeleteAchievementTemplateCoroutine = new KnetikCoroutine();
+            mGetAchievementCoroutine = new KnetikCoroutine();
+            mGetAchievementTemplateCoroutine = new KnetikCoroutine();
+            mGetAchievementTemplatesCoroutine = new KnetikCoroutine();
+            mGetAchievementTriggersCoroutine = new KnetikCoroutine();
+            mGetAchievementsCoroutine = new KnetikCoroutine();
+            mGetDerivedAchievementsCoroutine = new KnetikCoroutine();
+            mGetUserAchievementProgressCoroutine = new KnetikCoroutine();
+            mGetUserAchievementsProgressCoroutine = new KnetikCoroutine();
+            mGetUsersAchievementProgressCoroutine = new KnetikCoroutine();
+            mGetUsersAchievementsProgressCoroutine = new KnetikCoroutine();
+            mIncrementAchievementProgressCoroutine = new KnetikCoroutine();
+            mSetAchievementProgressCoroutine = new KnetikCoroutine();
+            mUpdateAchievementCoroutine = new KnetikCoroutine();
+            mUpdateAchievementTemplateCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Create a new achievement definition If the definition contains a trigger event name, a BRE rule is created, so that tracking logic is executed when the triggering event occurs. If no trigger event name is specified, the user&#39;s achievement status must manually be updated via the API.
         /// </summary>
@@ -396,6 +398,7 @@ namespace com.knetikcloud.Api
                 CreateAchievementComplete(CreateAchievementData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Create an achievement template Achievement templates define a type of achievement and the properties they have
         /// </summary>
@@ -447,6 +450,7 @@ namespace com.knetikcloud.Api
                 CreateAchievementTemplateComplete(CreateAchievementTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete an achievement definition Will also disable the associated generated rule, if any.
         /// </summary>
@@ -500,6 +504,7 @@ namespace com.knetikcloud.Api
                 DeleteAchievementComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete an achievement template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
         /// </summary>
@@ -559,6 +564,7 @@ namespace com.knetikcloud.Api
                 DeleteAchievementTemplateComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single achievement definition 
         /// </summary>
@@ -614,6 +620,7 @@ namespace com.knetikcloud.Api
                 GetAchievementComplete(GetAchievementData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single achievement template 
         /// </summary>
@@ -669,6 +676,7 @@ namespace com.knetikcloud.Api
                 GetAchievementTemplateComplete(GetAchievementTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search achievement templates 
         /// </summary>
@@ -735,6 +743,7 @@ namespace com.knetikcloud.Api
                 GetAchievementTemplatesComplete(GetAchievementTemplatesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get the list of triggers that can be used to trigger an achievement progress update 
         /// </summary>
@@ -783,6 +792,7 @@ namespace com.knetikcloud.Api
                 GetAchievementTriggersComplete(GetAchievementTriggersData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get all achievement definitions in the system 
         /// </summary>
@@ -873,6 +883,7 @@ namespace com.knetikcloud.Api
                 GetAchievementsComplete(GetAchievementsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a list of derived achievements Used by other services that depend on achievements
         /// </summary>
@@ -928,6 +939,7 @@ namespace com.knetikcloud.Api
                 GetDerivedAchievementsComplete(GetDerivedAchievementsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Retrieve progress on a given achievement for a given user Assets will not be filled in on the resources returned. Use &#39;Get a single poll&#39; to retrieve the full resource with assets for a given item as needed.
         /// </summary>
@@ -990,6 +1002,7 @@ mGetUserAchievementProgressPath = mGetUserAchievementProgressPath.Replace("{" + 
                 GetUserAchievementProgressComplete(GetUserAchievementProgressData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Retrieve progress on achievements for a given user Assets will not be filled in on the resources returned. Use &#39;Get a single poll&#39; to retrieve the full resource with assets for a given item as needed.
         /// </summary>
@@ -1075,6 +1088,7 @@ mGetUserAchievementProgressPath = mGetUserAchievementProgressPath.Replace("{" + 
                 GetUserAchievementsProgressComplete(GetUserAchievementsProgressData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Retrieve progress on a given achievement for all users Assets will not be filled in on the resources returned. Use &#39;Get single achievement progress for user&#39; to retrieve the full resource with assets for a given user as needed.
         /// </summary>
@@ -1160,6 +1174,7 @@ mGetUserAchievementProgressPath = mGetUserAchievementProgressPath.Replace("{" + 
                 GetUsersAchievementProgressComplete(GetUsersAchievementProgressData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Retrieve progress on achievements for all users Assets will not be filled in on the resources returned. Use &#39;Get single achievement progress for user&#39; to retrieve the full resource with assets for a given user as needed.
         /// </summary>
@@ -1238,6 +1253,7 @@ mGetUserAchievementProgressPath = mGetUserAchievementProgressPath.Replace("{" + 
                 GetUsersAchievementsProgressComplete(GetUsersAchievementsProgressData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Increment an achievement progress record for a user If no progress record yet exists for the user, it will be created. Otherwise it will be updated and the provided value added to the existing progress. May be negative. If progress meets or exceeds the achievement&#39;s max_value it will be marked as earned and a BRE event will be triggered for the &lt;code&gt;BreAchievementEarnedTrigger&lt;/code&gt;.
         /// </summary>
@@ -1303,6 +1319,7 @@ mIncrementAchievementProgressPath = mIncrementAchievementProgressPath.Replace("{
                 IncrementAchievementProgressComplete(IncrementAchievementProgressData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Set an achievement progress record for a user If no progress record yet exists for the user, it will be created. Otherwise it will be updated and progress set to the provided value. If progress meets or exceeds the achievement&#39;s max_value it will be marked as earned and a BRE event will be triggered for the &lt;code&gt;BreAchievementEarnedTrigger&lt;/code&gt;.
         /// </summary>
@@ -1368,6 +1385,7 @@ mSetAchievementProgressPath = mSetAchievementProgressPath.Replace("{" + "achieve
                 SetAchievementProgressComplete(SetAchievementProgressData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update an achievement definition The existing generated rule, if any, will be deleted. A new rule will be created if a trigger event name is specified in the new version.
         /// </summary>
@@ -1426,6 +1444,7 @@ mSetAchievementProgressPath = mSetAchievementProgressPath.Replace("{" + "achieve
                 UpdateAchievementComplete(UpdateAchievementData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update an achievement template 
         /// </summary>

@@ -88,6 +88,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -148,15 +149,16 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public LogsApi()
         {
-            mAddUserLogCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetBREEventLogCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetBREEventLogsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetBREForwardLogCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetBREForwardLogsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetUserLogCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetUserLogsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mAddUserLogCoroutine = new KnetikCoroutine();
+            mGetBREEventLogCoroutine = new KnetikCoroutine();
+            mGetBREEventLogsCoroutine = new KnetikCoroutine();
+            mGetBREForwardLogCoroutine = new KnetikCoroutine();
+            mGetBREForwardLogsCoroutine = new KnetikCoroutine();
+            mGetUserLogCoroutine = new KnetikCoroutine();
+            mGetUserLogsCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Add a user log entry 
         /// </summary>
@@ -206,6 +208,7 @@ namespace com.knetikcloud.Api
                 AddUserLogComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get an existing BRE event log entry by id 
         /// </summary>
@@ -261,6 +264,7 @@ namespace com.knetikcloud.Api
                 GetBREEventLogComplete(GetBREEventLogData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Returns a list of BRE event log entries 
         /// </summary>
@@ -345,6 +349,7 @@ namespace com.knetikcloud.Api
                 GetBREEventLogsComplete(GetBREEventLogsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get an existing forward log entry by id 
         /// </summary>
@@ -400,6 +405,7 @@ namespace com.knetikcloud.Api
                 GetBREForwardLogComplete(GetBREForwardLogData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Returns a list of forward log entries 
         /// </summary>
@@ -484,6 +490,7 @@ namespace com.knetikcloud.Api
                 GetBREForwardLogsComplete(GetBREForwardLogsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Returns a user log entry by id 
         /// </summary>
@@ -539,6 +546,7 @@ namespace com.knetikcloud.Api
                 GetUserLogComplete(GetUserLogData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Returns a page of user logs entries 
         /// </summary>

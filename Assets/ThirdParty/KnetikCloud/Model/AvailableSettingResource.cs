@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// The definition of an activity parameters: ex: difficulty level
     /// </summary>

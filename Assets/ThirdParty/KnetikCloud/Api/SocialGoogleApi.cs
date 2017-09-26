@@ -26,6 +26,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -44,9 +45,10 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public SocialGoogleApi()
         {
-            mLinkAccounts1Coroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mLinkAccounts1Coroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Link google account Links the current user account to a google account, using the acccess token from google. Can also be used to update the access token after it has expired.
         /// </summary>

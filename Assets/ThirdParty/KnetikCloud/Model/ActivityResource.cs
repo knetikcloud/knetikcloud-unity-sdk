@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// Represents an activity that can be parameterized and tracked through metrics (scores, etc)
     /// </summary>

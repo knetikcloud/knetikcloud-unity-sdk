@@ -136,6 +136,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -232,21 +233,22 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public InvoicesApi()
         {
-            mCreateInvoiceCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetFulFillmentStatusesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetInvoiceCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetInvoiceLogsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetInvoicesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetPaymentStatusesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mPayInvoiceCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mSetBundledInvoiceItemFulfillmentStatusCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mSetExternalRefCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mSetInvoiceItemFulfillmentStatusCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mSetOrderNotesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mSetPaymentStatusCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateBillingInfoCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateInvoiceCoroutine = new KnetikCoroutine();
+            mGetFulFillmentStatusesCoroutine = new KnetikCoroutine();
+            mGetInvoiceCoroutine = new KnetikCoroutine();
+            mGetInvoiceLogsCoroutine = new KnetikCoroutine();
+            mGetInvoicesCoroutine = new KnetikCoroutine();
+            mGetPaymentStatusesCoroutine = new KnetikCoroutine();
+            mPayInvoiceCoroutine = new KnetikCoroutine();
+            mSetBundledInvoiceItemFulfillmentStatusCoroutine = new KnetikCoroutine();
+            mSetExternalRefCoroutine = new KnetikCoroutine();
+            mSetInvoiceItemFulfillmentStatusCoroutine = new KnetikCoroutine();
+            mSetOrderNotesCoroutine = new KnetikCoroutine();
+            mSetPaymentStatusCoroutine = new KnetikCoroutine();
+            mUpdateBillingInfoCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Create an invoice Create an invoice(s) by providing a cart GUID. Note that there may be multiple invoices created, one per vendor.
         /// </summary>
@@ -298,6 +300,7 @@ namespace com.knetikcloud.Api
                 CreateInvoiceComplete(CreateInvoiceData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Lists available fulfillment statuses 
         /// </summary>
@@ -346,6 +349,7 @@ namespace com.knetikcloud.Api
                 GetFulFillmentStatusesComplete(GetFulFillmentStatusesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Retrieve an invoice 
         /// </summary>
@@ -401,6 +405,7 @@ namespace com.knetikcloud.Api
                 GetInvoiceComplete(GetInvoiceData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List invoice logs 
         /// </summary>
@@ -468,6 +473,7 @@ namespace com.knetikcloud.Api
                 GetInvoiceLogsComplete(GetInvoiceLogsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Retrieve invoices Without INVOICES_ADMIN permission the results are automatically filtered for only the logged in user&#39;s invoices. It is recomended however that filter_user be added to avoid issues for admin users accidentally getting additional invoices.
         /// </summary>
@@ -618,6 +624,7 @@ namespace com.knetikcloud.Api
                 GetInvoicesComplete(GetInvoicesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Lists available payment statuses 
         /// </summary>
@@ -666,6 +673,7 @@ namespace com.knetikcloud.Api
                 GetPaymentStatusesComplete(GetPaymentStatusesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Pay an invoice using a saved payment method 
         /// </summary>
@@ -722,6 +730,7 @@ namespace com.knetikcloud.Api
                 PayInvoiceComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Set the fulfillment status of a bundled invoice item This allows external fulfillment systems to report success or failure. Fulfillment status changes are restricted by a specific flow determining which status can lead to which.
         /// </summary>
@@ -797,6 +806,7 @@ mSetBundledInvoiceItemFulfillmentStatusPath = mSetBundledInvoiceItemFulfillmentS
                 SetBundledInvoiceItemFulfillmentStatusComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Set the external reference of an invoice 
         /// </summary>
@@ -853,6 +863,7 @@ mSetBundledInvoiceItemFulfillmentStatusPath = mSetBundledInvoiceItemFulfillmentS
                 SetExternalRefComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Set the fulfillment status of an invoice item This allows external fulfillment systems to report success or failure. Fulfillment status changes are restricted by a specific flow determining which status can lead to which.
         /// </summary>
@@ -921,6 +932,7 @@ mSetInvoiceItemFulfillmentStatusPath = mSetInvoiceItemFulfillmentStatusPath.Repl
                 SetInvoiceItemFulfillmentStatusComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Set the order notes of an invoice 
         /// </summary>
@@ -977,6 +989,7 @@ mSetInvoiceItemFulfillmentStatusPath = mSetInvoiceItemFulfillmentStatusPath.Repl
                 SetOrderNotesComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Set the payment status of an invoice This may trigger fulfillment if setting the status to &#39;paid&#39;. This is mainly intended to support external payment systems that cannot be incorporated into the payment method system. Payment status changes are restricted by a specific flow determining which status can lead to which.
         /// </summary>
@@ -1033,6 +1046,7 @@ mSetInvoiceItemFulfillmentStatusPath = mSetInvoiceItemFulfillmentStatusPath.Repl
                 SetPaymentStatusComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Set or update billing info 
         /// </summary>

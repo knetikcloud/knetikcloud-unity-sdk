@@ -82,6 +82,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -147,16 +148,17 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public AuthClientsApi()
         {
-            mCreateClientCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteClientCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetClientCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetClientGrantTypesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetClientsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mSetClientGrantTypesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mSetClientRedirectUrisCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateClientCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateClientCoroutine = new KnetikCoroutine();
+            mDeleteClientCoroutine = new KnetikCoroutine();
+            mGetClientCoroutine = new KnetikCoroutine();
+            mGetClientGrantTypesCoroutine = new KnetikCoroutine();
+            mGetClientsCoroutine = new KnetikCoroutine();
+            mSetClientGrantTypesCoroutine = new KnetikCoroutine();
+            mSetClientRedirectUrisCoroutine = new KnetikCoroutine();
+            mUpdateClientCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Create a new client 
         /// </summary>
@@ -208,6 +210,7 @@ namespace com.knetikcloud.Api
                 CreateClientComplete(CreateClientData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete a client 
         /// </summary>
@@ -261,6 +264,7 @@ namespace com.knetikcloud.Api
                 DeleteClientComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single client 
         /// </summary>
@@ -316,6 +320,7 @@ namespace com.knetikcloud.Api
                 GetClientComplete(GetClientData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List available client grant types 
         /// </summary>
@@ -364,6 +369,7 @@ namespace com.knetikcloud.Api
                 GetClientGrantTypesComplete(GetClientGrantTypesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search clients 
         /// </summary>
@@ -430,6 +436,7 @@ namespace com.knetikcloud.Api
                 GetClientsComplete(GetClientsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Set grant types for a client 
         /// </summary>
@@ -486,6 +493,7 @@ namespace com.knetikcloud.Api
                 SetClientGrantTypesComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Set redirect uris for a client 
         /// </summary>
@@ -542,6 +550,7 @@ namespace com.knetikcloud.Api
                 SetClientRedirectUrisComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update a client 
         /// </summary>

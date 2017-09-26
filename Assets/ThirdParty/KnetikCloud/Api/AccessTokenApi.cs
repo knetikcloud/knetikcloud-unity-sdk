@@ -54,7 +54,7 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public AccessTokenApi()
         {
-            mGetOAuthTokenCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetOAuthTokenCoroutine = new KnetikCoroutine();
         }
     
         /// <inheritdoc />

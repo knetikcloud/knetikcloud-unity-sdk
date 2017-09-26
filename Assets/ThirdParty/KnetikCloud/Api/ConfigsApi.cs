@@ -60,6 +60,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -105,13 +106,14 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public ConfigsApi()
         {
-            mCreateConfigCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteConfigCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetConfigCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetConfigsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateConfigCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateConfigCoroutine = new KnetikCoroutine();
+            mDeleteConfigCoroutine = new KnetikCoroutine();
+            mGetConfigCoroutine = new KnetikCoroutine();
+            mGetConfigsCoroutine = new KnetikCoroutine();
+            mUpdateConfigCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Create a new config 
         /// </summary>
@@ -163,6 +165,7 @@ namespace com.knetikcloud.Api
                 CreateConfigComplete(CreateConfigData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete an existing config 
         /// </summary>
@@ -216,6 +219,7 @@ namespace com.knetikcloud.Api
                 DeleteConfigComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single config Only configs that are public readable will be shown without admin access
         /// </summary>
@@ -271,6 +275,7 @@ namespace com.knetikcloud.Api
                 GetConfigComplete(GetConfigData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search configs 
         /// </summary>
@@ -343,6 +348,7 @@ namespace com.knetikcloud.Api
                 GetConfigsComplete(GetConfigsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update an existing config 
         /// </summary>

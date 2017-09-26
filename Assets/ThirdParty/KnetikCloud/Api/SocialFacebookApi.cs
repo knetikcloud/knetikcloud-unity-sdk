@@ -26,6 +26,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -44,9 +45,10 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public SocialFacebookApi()
         {
-            mLinkAccountsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mLinkAccountsCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Link facebook account Links the current user account to a facebook account, using the acccess token from facebook. Can also be used to update the access token after it has expired.
         /// </summary>

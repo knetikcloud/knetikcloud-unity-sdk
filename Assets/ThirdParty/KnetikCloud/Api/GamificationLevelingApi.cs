@@ -67,19 +67,19 @@ namespace com.knetikcloud.Api
         /// <summary>
         /// Get a user&#39;s progress for a given level schema 
         /// </summary>
-        /// <param name="userId">The id of the user</param>
+        /// <param name="userId">The id of the user or &#39;me&#39;</param>
         /// <param name="name">The level schema name</param>
-        void GetUserLevel(int? userId, string name);
+        void GetUserLevel(string userId, string name);
 
         /// <summary>
         /// Get a user&#39;s progress for all level schemas Filtering and sorting is based on the LevelingResource object, not the UserLevelingResource that is returned here.
         /// </summary>
-        /// <param name="userId">The id of the user</param>
+        /// <param name="userId">The id of the user or &#39;me&#39;</param>
         /// <param name="filterName">Filter for level schemas whose name contains a given string</param>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
-        void GetUserLevels(int? userId, string filterName, int? size, int? page, string order);
+        void GetUserLevels(string userId, string filterName, int? size, int? page, string order);
 
         /// <summary>
         /// Update or create a leveling progress record for a user If no progress record yet exists for the user, it will be created. Otherwise the provided value will be added to it. May be negative. If progress meets or exceeds the level&#39;s max_value it will be marked as earned and a BRE event will be triggered for the &lt;code&gt;BreAchievementEarnedTrigger&lt;/code&gt;.
@@ -106,6 +106,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -185,18 +186,19 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public GamificationLevelingApi()
         {
-            mCreateLevelCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteLevelCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetLevelCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetLevelTriggersCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetLevelsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetUserLevelCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetUserLevelsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mIncrementProgressCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mSetProgressCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateLevelCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateLevelCoroutine = new KnetikCoroutine();
+            mDeleteLevelCoroutine = new KnetikCoroutine();
+            mGetLevelCoroutine = new KnetikCoroutine();
+            mGetLevelTriggersCoroutine = new KnetikCoroutine();
+            mGetLevelsCoroutine = new KnetikCoroutine();
+            mGetUserLevelCoroutine = new KnetikCoroutine();
+            mGetUserLevelsCoroutine = new KnetikCoroutine();
+            mIncrementProgressCoroutine = new KnetikCoroutine();
+            mSetProgressCoroutine = new KnetikCoroutine();
+            mUpdateLevelCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Create a level schema 
         /// </summary>
@@ -248,6 +250,7 @@ namespace com.knetikcloud.Api
                 CreateLevelComplete(CreateLevelData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete a level 
         /// </summary>
@@ -301,6 +304,7 @@ namespace com.knetikcloud.Api
                 DeleteLevelComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Retrieve a level 
         /// </summary>
@@ -356,6 +360,7 @@ namespace com.knetikcloud.Api
                 GetLevelComplete(GetLevelData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get the list of triggers that can be used to trigger a leveling progress update 
         /// </summary>
@@ -404,6 +409,7 @@ namespace com.knetikcloud.Api
                 GetLevelTriggersComplete(GetLevelTriggersData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search levels Get a list of levels schemas with optional filtering
         /// </summary>
@@ -476,12 +482,13 @@ namespace com.knetikcloud.Api
                 GetLevelsComplete(GetLevelsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a user&#39;s progress for a given level schema 
         /// </summary>
-        /// <param name="userId">The id of the user</param>
+        /// <param name="userId">The id of the user or &#39;me&#39;</param>
         /// <param name="name">The level schema name</param>
-        public void GetUserLevel(int? userId, string name)
+        public void GetUserLevel(string userId, string name)
         {
             // verify the required parameter 'userId' is set
             if (userId == null)
@@ -538,15 +545,16 @@ mGetUserLevelPath = mGetUserLevelPath.Replace("{" + "name" + "}", KnetikClient.D
                 GetUserLevelComplete(GetUserLevelData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a user&#39;s progress for all level schemas Filtering and sorting is based on the LevelingResource object, not the UserLevelingResource that is returned here.
         /// </summary>
-        /// <param name="userId">The id of the user</param>
+        /// <param name="userId">The id of the user or &#39;me&#39;</param>
         /// <param name="filterName">Filter for level schemas whose name contains a given string</param>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
-        public void GetUserLevels(int? userId, string filterName, int? size, int? page, string order)
+        public void GetUserLevels(string userId, string filterName, int? size, int? page, string order)
         {
             // verify the required parameter 'userId' is set
             if (userId == null)
@@ -617,6 +625,7 @@ mGetUserLevelPath = mGetUserLevelPath.Replace("{" + "name" + "}", KnetikClient.D
                 GetUserLevelsComplete(GetUserLevelsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update or create a leveling progress record for a user If no progress record yet exists for the user, it will be created. Otherwise the provided value will be added to it. May be negative. If progress meets or exceeds the level&#39;s max_value it will be marked as earned and a BRE event will be triggered for the &lt;code&gt;BreAchievementEarnedTrigger&lt;/code&gt;.
         /// </summary>
@@ -680,6 +689,7 @@ mIncrementProgressPath = mIncrementProgressPath.Replace("{" + "name" + "}", Knet
                 IncrementProgressComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Set leveling progress for a user If no progress record yet exists for the user, it will be created. Otherwise it will be updated to the provided value. If progress meets or exceeds the level&#39;s max_value it will be marked as earned and a BRE event will be triggered for the &lt;code&gt;BreAchievementEarnedTrigger&lt;/code&gt;.
         /// </summary>
@@ -743,6 +753,7 @@ mSetProgressPath = mSetProgressPath.Replace("{" + "name" + "}", KnetikClient.Def
                 SetProgressComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update a level 
         /// </summary>

@@ -65,6 +65,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -111,13 +112,14 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public BRERuleEngineTriggersApi()
         {
-            mCreateBRETriggerCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteBRETriggerCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetBRETriggerCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetBRETriggersCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateBRETriggerCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateBRETriggerCoroutine = new KnetikCoroutine();
+            mDeleteBRETriggerCoroutine = new KnetikCoroutine();
+            mGetBRETriggerCoroutine = new KnetikCoroutine();
+            mGetBRETriggersCoroutine = new KnetikCoroutine();
+            mUpdateBRETriggerCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Create a trigger Customer added triggers will not be fired automatically or have rules associated with them by default. Custom rules must be added to get use from the trigger and it must then be fired from the outside. See the Bre Event services
         /// </summary>
@@ -169,6 +171,7 @@ namespace com.knetikcloud.Api
                 CreateBRETriggerComplete(CreateBRETriggerData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete a trigger May fail if there are existing rules against it. Cannot delete core triggers
         /// </summary>
@@ -222,6 +225,7 @@ namespace com.knetikcloud.Api
                 DeleteBRETriggerComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single trigger 
         /// </summary>
@@ -277,6 +281,7 @@ namespace com.knetikcloud.Api
                 GetBRETriggerComplete(GetBRETriggerData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List triggers 
         /// </summary>
@@ -367,6 +372,7 @@ namespace com.knetikcloud.Api
                 GetBRETriggersComplete(GetBRETriggersData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update a trigger May fail if new parameters mismatch requirements of existing rules. Cannot update core triggers
         /// </summary>

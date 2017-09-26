@@ -38,6 +38,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -64,10 +65,11 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public UtilSecurityApi()
         {
-            mGetUserLocationLogCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetUserTokenDetailsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetUserLocationLogCoroutine = new KnetikCoroutine();
+            mGetUserTokenDetailsCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Returns the authentication log for a user A log entry is recorded everytime a user requests a new token. Standard pagination available
         /// </summary>
@@ -140,6 +142,7 @@ namespace com.knetikcloud.Api
                 GetUserLocationLogComplete(GetUserLocationLogData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Returns the authentication token details. Use /users endpoint for detailed user&#39;s info 
         /// </summary>

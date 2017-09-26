@@ -49,6 +49,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -82,11 +83,12 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public GamificationLeaderboardsApi()
         {
-            mGetLeaderboardCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetLeaderboardRankCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetLeaderboardStrategiesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetLeaderboardCoroutine = new KnetikCoroutine();
+            mGetLeaderboardRankCoroutine = new KnetikCoroutine();
+            mGetLeaderboardStrategiesCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Retrieves leaderboard details and paginated entries The context type identifies the type of entity (i.e., &#39;activity&#39;) being tracked on the leaderboard. The context ID is the unique ID of the actual entity tracked by the leaderboard. Sorting is based on the fields of LeaderboardEntryResource rather than the returned LeaderboardResource.
         /// </summary>
@@ -167,6 +169,7 @@ mGetLeaderboardPath = mGetLeaderboardPath.Replace("{" + "context_id" + "}", Knet
                 GetLeaderboardComplete(GetLeaderboardData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Retrieves a specific user entry with rank The context type identifies the type of entity (i.e., &#39;activity&#39;) being tracked on the leaderboard. The context ID is the unique ID of the actual entity tracked by the leaderboard
         /// </summary>
@@ -236,6 +239,7 @@ mGetLeaderboardRankPath = mGetLeaderboardRankPath.Replace("{" + "id" + "}", Knet
                 GetLeaderboardRankComplete(GetLeaderboardRankData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a list of available leaderboard strategy names 
         /// </summary>

@@ -50,6 +50,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -89,12 +90,13 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public PaymentsPayPalClassicApi()
         {
-            mCreatePayPalBillingAgreementUrlCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mCreatePayPalExpressCheckoutCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mFinalizePayPalBillingAgreementCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mFinalizePayPalCheckoutCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreatePayPalBillingAgreementUrlCoroutine = new KnetikCoroutine();
+            mCreatePayPalExpressCheckoutCoroutine = new KnetikCoroutine();
+            mFinalizePayPalBillingAgreementCoroutine = new KnetikCoroutine();
+            mFinalizePayPalCheckoutCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Create a PayPal Classic billing agreement for the user Returns the token that should be used to forward the user to PayPal so they can accept the agreement.
         /// </summary>
@@ -146,6 +148,7 @@ namespace com.knetikcloud.Api
                 CreatePayPalBillingAgreementUrlComplete(CreatePayPalBillingAgreementUrlData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Create a payment token for PayPal express checkout Returns the token that should be used to forward the user to PayPal so they can complete the checkout.
         /// </summary>
@@ -197,6 +200,7 @@ namespace com.knetikcloud.Api
                 CreatePayPalExpressCheckoutComplete(CreatePayPalExpressCheckoutData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Finalizes a billing agreement after the user has accepted through PayPal Returns the ID of the new payment method created for the user for the billing agreement.
         /// </summary>
@@ -248,6 +252,7 @@ namespace com.knetikcloud.Api
                 FinalizePayPalBillingAgreementComplete(FinalizePayPalBillingAgreementData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Finalizes a payment after the user has completed checkout with PayPal The invoice will be marked paid/failed by asynchronous IPN callback.
         /// </summary>

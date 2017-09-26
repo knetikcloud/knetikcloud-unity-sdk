@@ -99,6 +99,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -153,14 +154,15 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public ReportingUsageApi()
         {
-            mGetUsageByDayCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetUsageByHourCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetUsageByMinuteCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetUsageByMonthCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetUsageByYearCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetUsageEndpointsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetUsageByDayCoroutine = new KnetikCoroutine();
+            mGetUsageByHourCoroutine = new KnetikCoroutine();
+            mGetUsageByMinuteCoroutine = new KnetikCoroutine();
+            mGetUsageByMonthCoroutine = new KnetikCoroutine();
+            mGetUsageByYearCoroutine = new KnetikCoroutine();
+            mGetUsageEndpointsCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Returns aggregated endpoint usage information by day 
         /// </summary>
@@ -261,6 +263,7 @@ namespace com.knetikcloud.Api
                 GetUsageByDayComplete(GetUsageByDayData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Returns aggregated endpoint usage information by hour 
         /// </summary>
@@ -361,6 +364,7 @@ namespace com.knetikcloud.Api
                 GetUsageByHourComplete(GetUsageByHourData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Returns aggregated endpoint usage information by minute 
         /// </summary>
@@ -461,6 +465,7 @@ namespace com.knetikcloud.Api
                 GetUsageByMinuteComplete(GetUsageByMinuteData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Returns aggregated endpoint usage information by month 
         /// </summary>
@@ -561,6 +566,7 @@ namespace com.knetikcloud.Api
                 GetUsageByMonthComplete(GetUsageByMonthData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Returns aggregated endpoint usage information by year 
         /// </summary>
@@ -661,6 +667,7 @@ namespace com.knetikcloud.Api
                 GetUsageByYearComplete(GetUsageByYearData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Returns list of endpoints called (method and url) 
         /// </summary>

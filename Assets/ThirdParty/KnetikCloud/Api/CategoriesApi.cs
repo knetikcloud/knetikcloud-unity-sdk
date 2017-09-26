@@ -114,6 +114,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -201,19 +202,20 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public CategoriesApi()
         {
-            mCreateCategoryCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mCreateCategoryTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteCategoryCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteCategoryTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetCategoriesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetCategoryCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetCategoryTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetCategoryTemplatesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetTagsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateCategoryCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateCategoryTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateCategoryCoroutine = new KnetikCoroutine();
+            mCreateCategoryTemplateCoroutine = new KnetikCoroutine();
+            mDeleteCategoryCoroutine = new KnetikCoroutine();
+            mDeleteCategoryTemplateCoroutine = new KnetikCoroutine();
+            mGetCategoriesCoroutine = new KnetikCoroutine();
+            mGetCategoryCoroutine = new KnetikCoroutine();
+            mGetCategoryTemplateCoroutine = new KnetikCoroutine();
+            mGetCategoryTemplatesCoroutine = new KnetikCoroutine();
+            mGetTagsCoroutine = new KnetikCoroutine();
+            mUpdateCategoryCoroutine = new KnetikCoroutine();
+            mUpdateCategoryTemplateCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Create a new category 
         /// </summary>
@@ -265,6 +267,7 @@ namespace com.knetikcloud.Api
                 CreateCategoryComplete(CreateCategoryData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Create a category template Templates define a type of category and the properties they have
         /// </summary>
@@ -316,6 +319,7 @@ namespace com.knetikcloud.Api
                 CreateCategoryTemplateComplete(CreateCategoryTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete an existing category 
         /// </summary>
@@ -369,6 +373,7 @@ namespace com.knetikcloud.Api
                 DeleteCategoryComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete a category template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
         /// </summary>
@@ -428,6 +433,7 @@ namespace com.knetikcloud.Api
                 DeleteCategoryTemplateComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search categories with optional filters 
         /// </summary>
@@ -506,6 +512,7 @@ namespace com.knetikcloud.Api
                 GetCategoriesComplete(GetCategoriesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single category 
         /// </summary>
@@ -561,6 +568,7 @@ namespace com.knetikcloud.Api
                 GetCategoryComplete(GetCategoryData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single category template 
         /// </summary>
@@ -616,6 +624,7 @@ namespace com.knetikcloud.Api
                 GetCategoryTemplateComplete(GetCategoryTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search category templates 
         /// </summary>
@@ -682,6 +691,7 @@ namespace com.knetikcloud.Api
                 GetCategoryTemplatesComplete(GetCategoryTemplatesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List all trivia tags in the system 
         /// </summary>
@@ -742,6 +752,7 @@ namespace com.knetikcloud.Api
                 GetTagsComplete(GetTagsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update an existing category 
         /// </summary>
@@ -800,6 +811,7 @@ namespace com.knetikcloud.Api
                 UpdateCategoryComplete(UpdateCategoryData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update a category template 
         /// </summary>

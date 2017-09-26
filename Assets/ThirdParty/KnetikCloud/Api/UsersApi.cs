@@ -92,11 +92,13 @@ namespace com.knetikcloud.Api
         /// <param name="filterTag">Filter for users who have a given tag</param>
         /// <param name="filterGroup">Filter for users in a given group, by unique name</param>
         /// <param name="filterRole">Filter for users with a given role</param>
+        /// <param name="filterLastActivity">A comma separated string without spaces.  First value is the operator to search on, second value is the date, a unix timestamp in seconds.  Allowed operators: (GT, LT, EQ, GOE, LOE).</param>
+        /// <param name="filterIdList">A comma separated list of ids.</param>
         /// <param name="filterSearch">Filter for users whose display_name starts with the provided string, or username if display_name is null</param>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
-        void GetUsers(string filterDisplayname, string filterEmail, string filterFirstname, string filterFullname, string filterLastname, string filterUsername, string filterTag, string filterGroup, string filterRole, string filterSearch, int? size, int? page, string order);
+        void GetUsers(string filterDisplayname, string filterEmail, string filterFirstname, string filterFullname, string filterLastname, string filterUsername, string filterTag, string filterGroup, string filterRole, string filterLastActivity, string filterIdList, string filterSearch, int? size, int? page, string order);
 
         /// <summary>
         /// Choose a new password after a reset Finish resetting a user&#39;s password using the secret provided from the password-reset endpoint.  Password should be in plain text and will be encrypted on receipt. Use SSL for security.
@@ -153,6 +155,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -269,24 +272,25 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public UsersApi()
         {
-            mAddUserTagCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mCreateUserTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteUserTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetUserCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetUserTagsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetUserTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetUserTemplatesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetUsersCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mPasswordResetCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mRegisterUserCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mRemoveUserTagCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mSetPasswordCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mStartPasswordResetCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mSubmitPasswordResetCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateUserCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateUserTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mAddUserTagCoroutine = new KnetikCoroutine();
+            mCreateUserTemplateCoroutine = new KnetikCoroutine();
+            mDeleteUserTemplateCoroutine = new KnetikCoroutine();
+            mGetUserCoroutine = new KnetikCoroutine();
+            mGetUserTagsCoroutine = new KnetikCoroutine();
+            mGetUserTemplateCoroutine = new KnetikCoroutine();
+            mGetUserTemplatesCoroutine = new KnetikCoroutine();
+            mGetUsersCoroutine = new KnetikCoroutine();
+            mPasswordResetCoroutine = new KnetikCoroutine();
+            mRegisterUserCoroutine = new KnetikCoroutine();
+            mRemoveUserTagCoroutine = new KnetikCoroutine();
+            mSetPasswordCoroutine = new KnetikCoroutine();
+            mStartPasswordResetCoroutine = new KnetikCoroutine();
+            mSubmitPasswordResetCoroutine = new KnetikCoroutine();
+            mUpdateUserCoroutine = new KnetikCoroutine();
+            mUpdateUserTemplateCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Add a tag to a user 
         /// </summary>
@@ -348,6 +352,7 @@ namespace com.knetikcloud.Api
                 AddUserTagComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Create a user template User Templates define a type of user and the properties they have
         /// </summary>
@@ -399,6 +404,7 @@ namespace com.knetikcloud.Api
                 CreateUserTemplateComplete(CreateUserTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete a user template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
         /// </summary>
@@ -458,6 +464,7 @@ namespace com.knetikcloud.Api
                 DeleteUserTemplateComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single user Additional private info is included as USERS_ADMIN
         /// </summary>
@@ -513,6 +520,7 @@ namespace com.knetikcloud.Api
                 GetUserComplete(GetUserData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List tags for a user 
         /// </summary>
@@ -568,6 +576,7 @@ namespace com.knetikcloud.Api
                 GetUserTagsComplete(GetUserTagsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single user template 
         /// </summary>
@@ -623,6 +632,7 @@ namespace com.knetikcloud.Api
                 GetUserTemplateComplete(GetUserTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search user templates 
         /// </summary>
@@ -689,6 +699,7 @@ namespace com.knetikcloud.Api
                 GetUserTemplatesComplete(GetUserTemplatesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search users Additional private info is included as USERS_ADMIN
         /// </summary>
@@ -701,11 +712,13 @@ namespace com.knetikcloud.Api
         /// <param name="filterTag">Filter for users who have a given tag</param>
         /// <param name="filterGroup">Filter for users in a given group, by unique name</param>
         /// <param name="filterRole">Filter for users with a given role</param>
+        /// <param name="filterLastActivity">A comma separated string without spaces.  First value is the operator to search on, second value is the date, a unix timestamp in seconds.  Allowed operators: (GT, LT, EQ, GOE, LOE).</param>
+        /// <param name="filterIdList">A comma separated list of ids.</param>
         /// <param name="filterSearch">Filter for users whose display_name starts with the provided string, or username if display_name is null</param>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
-        public void GetUsers(string filterDisplayname, string filterEmail, string filterFirstname, string filterFullname, string filterLastname, string filterUsername, string filterTag, string filterGroup, string filterRole, string filterSearch, int? size, int? page, string order)
+        public void GetUsers(string filterDisplayname, string filterEmail, string filterFirstname, string filterFullname, string filterLastname, string filterUsername, string filterTag, string filterGroup, string filterRole, string filterLastActivity, string filterIdList, string filterSearch, int? size, int? page, string order)
         {
             
             mGetUsersPath = "/users";
@@ -765,6 +778,16 @@ namespace com.knetikcloud.Api
                 queryParams.Add("filter_role", KnetikClient.DefaultClient.ParameterToString(filterRole));
             }
 
+            if (filterLastActivity != null)
+            {
+                queryParams.Add("filter_last_activity", KnetikClient.DefaultClient.ParameterToString(filterLastActivity));
+            }
+
+            if (filterIdList != null)
+            {
+                queryParams.Add("filter_id_list", KnetikClient.DefaultClient.ParameterToString(filterIdList));
+            }
+
             if (filterSearch != null)
             {
                 queryParams.Add("filter_search", KnetikClient.DefaultClient.ParameterToString(filterSearch));
@@ -815,6 +838,7 @@ namespace com.knetikcloud.Api
                 GetUsersComplete(GetUsersData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Choose a new password after a reset Finish resetting a user&#39;s password using the secret provided from the password-reset endpoint.  Password should be in plain text and will be encrypted on receipt. Use SSL for security.
         /// </summary>
@@ -871,6 +895,7 @@ namespace com.knetikcloud.Api
                 PasswordResetComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Register a new user Password should be in plain text and will be encrypted on receipt. Use SSL for security
         /// </summary>
@@ -922,6 +947,7 @@ namespace com.knetikcloud.Api
                 RegisterUserComplete(RegisterUserData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Remove a tag from a user 
         /// </summary>
@@ -982,6 +1008,7 @@ mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.
                 RemoveUserTagComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Set a user&#39;s password Password should be in plain text and will be encrypted on receipt. Use SSL for security.
         /// </summary>
@@ -1038,6 +1065,7 @@ mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.
                 SetPasswordComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Reset a user&#39;s password A reset code will be generated and a &#39;forgot_password&#39; BRE event will be fired with that code.  The default system rule will send an email to the selected user if an email service has been setup. You can modify that rule in BRE to send an SMS instead or any other type of notification as you see fit
         /// </summary>
@@ -1091,6 +1119,7 @@ mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.
                 StartPasswordResetComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Reset a user&#39;s password without user id A reset code will be generated and a &#39;forgot_password&#39; BRE event will be fired with that code.  The default system rule will send an email to the selected user if an email service has been setup. You can modify that rule in BRE to send an SMS instead or any other type of notification as you see fit.  Must submit their email, username, or mobile phone number
         /// </summary>
@@ -1140,6 +1169,7 @@ mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.
                 SubmitPasswordResetComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update a user Password will not be edited on this endpoint, use password specific endpoints.
         /// </summary>
@@ -1196,6 +1226,7 @@ mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.
                 UpdateUserComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update a user template 
         /// </summary>

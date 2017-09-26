@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// A request to reset a user&#39;s password by using a known user property
     /// </summary>

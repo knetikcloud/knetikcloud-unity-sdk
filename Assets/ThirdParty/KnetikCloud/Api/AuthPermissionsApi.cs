@@ -62,6 +62,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -108,13 +109,14 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public AuthPermissionsApi()
         {
-            mCreatePermissionCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeletePermissionCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetPermissionCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetPermissionsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdatePermissionCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreatePermissionCoroutine = new KnetikCoroutine();
+            mDeletePermissionCoroutine = new KnetikCoroutine();
+            mGetPermissionCoroutine = new KnetikCoroutine();
+            mGetPermissionsCoroutine = new KnetikCoroutine();
+            mUpdatePermissionCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Create a new permission 
         /// </summary>
@@ -166,6 +168,7 @@ namespace com.knetikcloud.Api
                 CreatePermissionComplete(CreatePermissionData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete a permission 
         /// </summary>
@@ -225,6 +228,7 @@ namespace com.knetikcloud.Api
                 DeletePermissionComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single permission 
         /// </summary>
@@ -280,6 +284,7 @@ namespace com.knetikcloud.Api
                 GetPermissionComplete(GetPermissionData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search permissions 
         /// </summary>
@@ -346,6 +351,7 @@ namespace com.knetikcloud.Api
                 GetPermissionsComplete(GetPermissionsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update a permission 
         /// </summary>

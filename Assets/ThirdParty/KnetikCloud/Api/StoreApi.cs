@@ -146,6 +146,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -247,21 +248,22 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public StoreApi()
         {
-            mCreateItemTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mCreateStoreItemCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteItemTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteStoreItemCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetBehaviorsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetItemTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetItemTemplatesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetStoreCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetStoreItemCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetStoreItemsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mQuickBuyCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateItemTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateStoreItemCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateItemTemplateCoroutine = new KnetikCoroutine();
+            mCreateStoreItemCoroutine = new KnetikCoroutine();
+            mDeleteItemTemplateCoroutine = new KnetikCoroutine();
+            mDeleteStoreItemCoroutine = new KnetikCoroutine();
+            mGetBehaviorsCoroutine = new KnetikCoroutine();
+            mGetItemTemplateCoroutine = new KnetikCoroutine();
+            mGetItemTemplatesCoroutine = new KnetikCoroutine();
+            mGetStoreCoroutine = new KnetikCoroutine();
+            mGetStoreItemCoroutine = new KnetikCoroutine();
+            mGetStoreItemsCoroutine = new KnetikCoroutine();
+            mQuickBuyCoroutine = new KnetikCoroutine();
+            mUpdateItemTemplateCoroutine = new KnetikCoroutine();
+            mUpdateStoreItemCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Create an item template Item Templates define a type of item and the properties they have.
         /// </summary>
@@ -313,6 +315,7 @@ namespace com.knetikcloud.Api
                 CreateItemTemplateComplete(CreateItemTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Create a store item SKUs have to be unique in the entire store. If a duplicate SKU is found, a 400 error is generated and the response will have a \&quot;parameters\&quot; field that is a list of duplicates. A duplicate is an object like {item_id, offending_sku_list}. Ex:&lt;br /&gt; {..., parameters: [[{item: 1, skus: [\&quot;SKU-1\&quot;]}]]}&lt;br /&gt; If an item is brand new and has duplicate SKUs within itself, the item ID will be 0.  Item subclasses are not allowed here, you will have to use their respective endpoints.
         /// </summary>
@@ -370,6 +373,7 @@ namespace com.knetikcloud.Api
                 CreateStoreItemComplete(CreateStoreItemData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete an item template 
         /// </summary>
@@ -429,6 +433,7 @@ namespace com.knetikcloud.Api
                 DeleteItemTemplateComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete a store item 
         /// </summary>
@@ -482,6 +487,7 @@ namespace com.knetikcloud.Api
                 DeleteStoreItemComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List available item behaviors 
         /// </summary>
@@ -530,6 +536,7 @@ namespace com.knetikcloud.Api
                 GetBehaviorsComplete(GetBehaviorsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single item template Item Templates define a type of item and the properties they have.
         /// </summary>
@@ -585,6 +592,7 @@ namespace com.knetikcloud.Api
                 GetItemTemplateComplete(GetItemTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search item templates 
         /// </summary>
@@ -651,6 +659,7 @@ namespace com.knetikcloud.Api
                 GetItemTemplatesComplete(GetItemTemplatesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a listing of store items The exact structure of each items may differ to include fields specific to the type. The same is true for behaviors.
         /// </summary>
@@ -729,6 +738,7 @@ namespace com.knetikcloud.Api
                 GetStoreComplete(GetStoreData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single store item 
         /// </summary>
@@ -784,6 +794,7 @@ namespace com.knetikcloud.Api
                 GetStoreItemComplete(GetStoreItemData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search store items 
         /// </summary>
@@ -934,6 +945,7 @@ namespace com.knetikcloud.Api
                 GetStoreItemsComplete(GetStoreItemsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// One-step purchase and pay for a single SKU item from a user&#39;s wallet Used to create and automatically pay an invoice for a single unit of a single SKU from a user&#39;s wallet. SKU must be priced in virtual currency and must not be an item that requires shipping. PAYMENTS_ADMIN permission is required if user ID is specified and is not the ID of the currently logged in user. If invoice price does not match expected price, purchase is aborted
         /// </summary>
@@ -985,6 +997,7 @@ namespace com.knetikcloud.Api
                 QuickBuyComplete(QuickBuyData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update an item template 
         /// </summary>
@@ -1043,6 +1056,7 @@ namespace com.knetikcloud.Api
                 UpdateItemTemplateComplete(UpdateItemTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update a store item 
         /// </summary>

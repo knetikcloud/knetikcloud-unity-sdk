@@ -153,6 +153,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -267,23 +268,24 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public ActivitiesApi()
         {
-            mCreateActivityCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mCreateActivityOccurrenceCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mCreateActivityTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteActivityCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteActivityTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetActivitiesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetActivityCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetActivityOccurrenceDetailsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetActivityTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetActivityTemplatesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mListActivityOccurrencesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mSetActivityOccurrenceResultsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateActivityCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateActivityOccurrenceCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateActivityTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateActivityCoroutine = new KnetikCoroutine();
+            mCreateActivityOccurrenceCoroutine = new KnetikCoroutine();
+            mCreateActivityTemplateCoroutine = new KnetikCoroutine();
+            mDeleteActivityCoroutine = new KnetikCoroutine();
+            mDeleteActivityTemplateCoroutine = new KnetikCoroutine();
+            mGetActivitiesCoroutine = new KnetikCoroutine();
+            mGetActivityCoroutine = new KnetikCoroutine();
+            mGetActivityOccurrenceDetailsCoroutine = new KnetikCoroutine();
+            mGetActivityTemplateCoroutine = new KnetikCoroutine();
+            mGetActivityTemplatesCoroutine = new KnetikCoroutine();
+            mListActivityOccurrencesCoroutine = new KnetikCoroutine();
+            mSetActivityOccurrenceResultsCoroutine = new KnetikCoroutine();
+            mUpdateActivityCoroutine = new KnetikCoroutine();
+            mUpdateActivityOccurrenceCoroutine = new KnetikCoroutine();
+            mUpdateActivityTemplateCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Create an activity 
         /// </summary>
@@ -335,6 +337,7 @@ namespace com.knetikcloud.Api
                 CreateActivityComplete(CreateActivityData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Create a new activity occurrence. Ex: start a game Has to enforce extra rules if not used as an admin
         /// </summary>
@@ -392,6 +395,7 @@ namespace com.knetikcloud.Api
                 CreateActivityOccurrenceComplete(CreateActivityOccurrenceData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Create a activity template Activity Templates define a type of activity and the properties they have
         /// </summary>
@@ -443,6 +447,7 @@ namespace com.knetikcloud.Api
                 CreateActivityTemplateComplete(CreateActivityTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete an activity 
         /// </summary>
@@ -496,6 +501,7 @@ namespace com.knetikcloud.Api
                 DeleteActivityComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete a activity template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
         /// </summary>
@@ -555,6 +561,7 @@ namespace com.knetikcloud.Api
                 DeleteActivityTemplateComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List activity definitions 
         /// </summary>
@@ -639,6 +646,7 @@ namespace com.knetikcloud.Api
                 GetActivitiesComplete(GetActivitiesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single activity 
         /// </summary>
@@ -694,6 +702,7 @@ namespace com.knetikcloud.Api
                 GetActivityComplete(GetActivityData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Load a single activity occurrence details 
         /// </summary>
@@ -749,6 +758,7 @@ namespace com.knetikcloud.Api
                 GetActivityOccurrenceDetailsComplete(GetActivityOccurrenceDetailsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single activity template 
         /// </summary>
@@ -804,6 +814,7 @@ namespace com.knetikcloud.Api
                 GetActivityTemplateComplete(GetActivityTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search activity templates 
         /// </summary>
@@ -870,6 +881,7 @@ namespace com.knetikcloud.Api
                 GetActivityTemplatesComplete(GetActivityTemplatesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List activity occurrences 
         /// </summary>
@@ -960,6 +972,7 @@ namespace com.knetikcloud.Api
                 ListActivityOccurrencesComplete(ListActivityOccurrencesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Sets the status of an activity occurrence to FINISHED and logs metrics 
         /// </summary>
@@ -1018,6 +1031,7 @@ namespace com.knetikcloud.Api
                 SetActivityOccurrenceResultsComplete(SetActivityOccurrenceResultsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update an activity 
         /// </summary>
@@ -1076,6 +1090,7 @@ namespace com.knetikcloud.Api
                 UpdateActivityComplete(UpdateActivityData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Updated the status of an activity occurrence If setting to &#39;FINISHED&#39; you must POST to /results instead to record the metrics and get synchronous reward results
         /// </summary>
@@ -1132,6 +1147,7 @@ namespace com.knetikcloud.Api
                 UpdateActivityOccurrenceComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update an activity template 
         /// </summary>

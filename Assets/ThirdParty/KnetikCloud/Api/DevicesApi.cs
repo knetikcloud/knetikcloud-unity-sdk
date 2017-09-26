@@ -132,6 +132,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -231,21 +232,22 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public DevicesApi()
         {
-            mAddDeviceUsersCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mCreateDeviceCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mCreateDeviceTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteDeviceCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteDeviceTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteDeviceUserCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteDeviceUsersCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetDeviceCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetDeviceTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetDeviceTemplatesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetDevicesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateDeviceCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateDeviceTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mAddDeviceUsersCoroutine = new KnetikCoroutine();
+            mCreateDeviceCoroutine = new KnetikCoroutine();
+            mCreateDeviceTemplateCoroutine = new KnetikCoroutine();
+            mDeleteDeviceCoroutine = new KnetikCoroutine();
+            mDeleteDeviceTemplateCoroutine = new KnetikCoroutine();
+            mDeleteDeviceUserCoroutine = new KnetikCoroutine();
+            mDeleteDeviceUsersCoroutine = new KnetikCoroutine();
+            mGetDeviceCoroutine = new KnetikCoroutine();
+            mGetDeviceTemplateCoroutine = new KnetikCoroutine();
+            mGetDeviceTemplatesCoroutine = new KnetikCoroutine();
+            mGetDevicesCoroutine = new KnetikCoroutine();
+            mUpdateDeviceCoroutine = new KnetikCoroutine();
+            mUpdateDeviceTemplateCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Add device users 
         /// </summary>
@@ -309,6 +311,7 @@ namespace com.knetikcloud.Api
                 AddDeviceUsersComplete(AddDeviceUsersData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Create a device 
         /// </summary>
@@ -365,6 +368,7 @@ namespace com.knetikcloud.Api
                 CreateDeviceComplete(CreateDeviceData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Create a device template Device Templates define a type of device and the properties they have
         /// </summary>
@@ -416,6 +420,7 @@ namespace com.knetikcloud.Api
                 CreateDeviceTemplateComplete(CreateDeviceTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete a device 
         /// </summary>
@@ -469,6 +474,7 @@ namespace com.knetikcloud.Api
                 DeleteDeviceComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete an device template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
         /// </summary>
@@ -528,6 +534,7 @@ namespace com.knetikcloud.Api
                 DeleteDeviceTemplateComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete a device user 
         /// </summary>
@@ -588,6 +595,7 @@ mDeleteDeviceUserPath = mDeleteDeviceUserPath.Replace("{" + "user_id" + "}", Kne
                 DeleteDeviceUserComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete all device users 
         /// </summary>
@@ -647,6 +655,7 @@ mDeleteDeviceUserPath = mDeleteDeviceUserPath.Replace("{" + "user_id" + "}", Kne
                 DeleteDeviceUsersComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single device 
         /// </summary>
@@ -702,6 +711,7 @@ mDeleteDeviceUserPath = mDeleteDeviceUserPath.Replace("{" + "user_id" + "}", Kne
                 GetDeviceComplete(GetDeviceData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single device template 
         /// </summary>
@@ -757,6 +767,7 @@ mDeleteDeviceUserPath = mDeleteDeviceUserPath.Replace("{" + "user_id" + "}", Kne
                 GetDeviceTemplateComplete(GetDeviceTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search device templates 
         /// </summary>
@@ -823,6 +834,7 @@ mDeleteDeviceUserPath = mDeleteDeviceUserPath.Replace("{" + "user_id" + "}", Kne
                 GetDeviceTemplatesComplete(GetDeviceTemplatesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search devices Get a list of devices with optional filtering
         /// </summary>
@@ -925,6 +937,7 @@ mDeleteDeviceUserPath = mDeleteDeviceUserPath.Replace("{" + "user_id" + "}", Kne
                 GetDevicesComplete(GetDevicesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update a device 
         /// </summary>
@@ -988,6 +1001,7 @@ mDeleteDeviceUserPath = mDeleteDeviceUserPath.Replace("{" + "user_id" + "}", Kne
                 UpdateDeviceComplete(UpdateDeviceData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update an device template 
         /// </summary>

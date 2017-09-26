@@ -95,6 +95,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -168,17 +169,18 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public StoreShippingApi()
         {
-            mCreateShippingItemCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mCreateShippingTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteShippingItemCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteShippingTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetShippingItemCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetShippingTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetShippingTemplatesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateShippingItemCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateShippingTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateShippingItemCoroutine = new KnetikCoroutine();
+            mCreateShippingTemplateCoroutine = new KnetikCoroutine();
+            mDeleteShippingItemCoroutine = new KnetikCoroutine();
+            mDeleteShippingTemplateCoroutine = new KnetikCoroutine();
+            mGetShippingItemCoroutine = new KnetikCoroutine();
+            mGetShippingTemplateCoroutine = new KnetikCoroutine();
+            mGetShippingTemplatesCoroutine = new KnetikCoroutine();
+            mUpdateShippingItemCoroutine = new KnetikCoroutine();
+            mUpdateShippingTemplateCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Create a shipping item A shipping item represents a shipping option and cost. SKUs have to be unique in the entire store.
         /// </summary>
@@ -236,6 +238,7 @@ namespace com.knetikcloud.Api
                 CreateShippingItemComplete(CreateShippingItemData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Create a shipping template Shipping Templates define a type of shipping and the properties they have.
         /// </summary>
@@ -287,6 +290,7 @@ namespace com.knetikcloud.Api
                 CreateShippingTemplateComplete(CreateShippingTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete a shipping item 
         /// </summary>
@@ -340,6 +344,7 @@ namespace com.knetikcloud.Api
                 DeleteShippingItemComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete a shipping template 
         /// </summary>
@@ -399,6 +404,7 @@ namespace com.knetikcloud.Api
                 DeleteShippingTemplateComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single shipping item 
         /// </summary>
@@ -454,6 +460,7 @@ namespace com.knetikcloud.Api
                 GetShippingItemComplete(GetShippingItemData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single shipping template Shipping Templates define a type of shipping and the properties they have.
         /// </summary>
@@ -509,6 +516,7 @@ namespace com.knetikcloud.Api
                 GetShippingTemplateComplete(GetShippingTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search shipping templates 
         /// </summary>
@@ -575,6 +583,7 @@ namespace com.knetikcloud.Api
                 GetShippingTemplatesComplete(GetShippingTemplatesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update a shipping item 
         /// </summary>
@@ -639,6 +648,7 @@ namespace com.knetikcloud.Api
                 UpdateShippingItemComplete(UpdateShippingItemData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update a shipping template 
         /// </summary>

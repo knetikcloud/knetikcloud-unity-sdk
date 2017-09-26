@@ -28,6 +28,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -47,9 +48,10 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public PaymentsOptimalApi()
         {
-            mSilentPostOptimalCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mSilentPostOptimalCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Initiate silent post with Optimal Will return the url for a hosted payment endpoint to post to. See Optimal documentation for details.
         /// </summary>

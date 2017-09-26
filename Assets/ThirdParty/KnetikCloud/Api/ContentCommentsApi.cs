@@ -23,7 +23,7 @@ namespace com.knetikcloud.Api
 
         PageResourceCommentResource GetCommentsData { get; }
 
-        CommentSearch SearchCommentsData { get; }
+        PageResourceCommentResource SearchCommentsData { get; }
 
         
         /// <summary>
@@ -70,6 +70,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -109,8 +110,8 @@ namespace com.knetikcloud.Api
         public delegate void GetCommentsCompleteDelegate(PageResourceCommentResource response);
         public GetCommentsCompleteDelegate GetCommentsComplete;
 
-        public CommentSearch SearchCommentsData { get; private set; }
-        public delegate void SearchCommentsCompleteDelegate(CommentSearch response);
+        public PageResourceCommentResource SearchCommentsData { get; private set; }
+        public delegate void SearchCommentsCompleteDelegate(PageResourceCommentResource response);
         public SearchCommentsCompleteDelegate SearchCommentsComplete;
 
         public delegate void UpdateCommentCompleteDelegate();
@@ -122,14 +123,15 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public ContentCommentsApi()
         {
-            mAddCommentCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteCommentCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetCommentCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetCommentsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mSearchCommentsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateCommentCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mAddCommentCoroutine = new KnetikCoroutine();
+            mDeleteCommentCoroutine = new KnetikCoroutine();
+            mGetCommentCoroutine = new KnetikCoroutine();
+            mGetCommentsCoroutine = new KnetikCoroutine();
+            mSearchCommentsCoroutine = new KnetikCoroutine();
+            mUpdateCommentCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Add a new comment 
         /// </summary>
@@ -181,6 +183,7 @@ namespace com.knetikcloud.Api
                 AddCommentComplete(AddCommentData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete a comment 
         /// </summary>
@@ -234,6 +237,7 @@ namespace com.knetikcloud.Api
                 DeleteCommentComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Return a comment 
         /// </summary>
@@ -289,6 +293,7 @@ namespace com.knetikcloud.Api
                 GetCommentComplete(GetCommentData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Returns a page of comments 
         /// </summary>
@@ -371,6 +376,7 @@ namespace com.knetikcloud.Api
                 GetCommentsComplete(GetCommentsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Search the comment index The body is an ElasticSearch query json. Please see their &lt;a href&#x3D;&#39;https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html&#39;&gt;documentation&lt;/a&gt; for details on the format and search options
         /// </summary>
@@ -426,7 +432,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling SearchComments: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            SearchCommentsData = (CommentSearch) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CommentSearch), response.Headers);
+            SearchCommentsData = (PageResourceCommentResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceCommentResource), response.Headers);
             KnetikLogger.LogResponse(mSearchCommentsStartTime, mSearchCommentsPath, string.Format("Response received successfully:\n{0}", SearchCommentsData.ToString()));
 
             if (SearchCommentsComplete != null)
@@ -434,6 +440,7 @@ namespace com.knetikcloud.Api
                 SearchCommentsComplete(SearchCommentsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update a comment 
         /// </summary>

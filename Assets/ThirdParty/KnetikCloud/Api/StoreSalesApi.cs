@@ -61,6 +61,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -107,13 +108,14 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public StoreSalesApi()
         {
-            mCreateCatalogSaleCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteCatalogSaleCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetCatalogSaleCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetCatalogSalesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateCatalogSaleCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateCatalogSaleCoroutine = new KnetikCoroutine();
+            mDeleteCatalogSaleCoroutine = new KnetikCoroutine();
+            mGetCatalogSaleCoroutine = new KnetikCoroutine();
+            mGetCatalogSalesCoroutine = new KnetikCoroutine();
+            mUpdateCatalogSaleCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Create a sale 
         /// </summary>
@@ -165,6 +167,7 @@ namespace com.knetikcloud.Api
                 CreateCatalogSaleComplete(CreateCatalogSaleData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete a sale 
         /// </summary>
@@ -218,6 +221,7 @@ namespace com.knetikcloud.Api
                 DeleteCatalogSaleComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single sale 
         /// </summary>
@@ -273,6 +277,7 @@ namespace com.knetikcloud.Api
                 GetCatalogSaleComplete(GetCatalogSaleData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search sales 
         /// </summary>
@@ -339,6 +344,7 @@ namespace com.knetikcloud.Api
                 GetCatalogSalesComplete(GetCatalogSalesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update a sale 
         /// </summary>

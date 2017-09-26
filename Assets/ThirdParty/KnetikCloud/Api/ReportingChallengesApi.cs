@@ -42,6 +42,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -68,10 +69,11 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public ReportingChallengesApi()
         {
-            mGetChallengeEventLeaderboardCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetChallengeEventParticipantsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetChallengeEventLeaderboardCoroutine = new KnetikCoroutine();
+            mGetChallengeEventParticipantsCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Retrieve a challenge event leaderboard details Lists all leaderboard entries with additional user details
         /// </summary>
@@ -144,6 +146,7 @@ namespace com.knetikcloud.Api
                 GetChallengeEventLeaderboardComplete(GetChallengeEventLeaderboardData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Retrieve a challenge event participant details Lists all user submitted scores sorted by value, including those that do not apear in the leaderboard due to value or aggregation
         /// </summary>

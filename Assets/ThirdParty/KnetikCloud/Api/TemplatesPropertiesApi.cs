@@ -35,6 +35,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -61,10 +62,11 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public TemplatesPropertiesApi()
         {
-            mGetTemplatePropertyTypeCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetTemplatePropertyTypesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetTemplatePropertyTypeCoroutine = new KnetikCoroutine();
+            mGetTemplatePropertyTypesCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Get details for a template property type 
         /// </summary>
@@ -120,6 +122,7 @@ namespace com.knetikcloud.Api
                 GetTemplatePropertyTypeComplete(GetTemplatePropertyTypeData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List template property types 
         /// </summary>

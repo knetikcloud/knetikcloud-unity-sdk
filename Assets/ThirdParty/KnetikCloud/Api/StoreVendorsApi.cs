@@ -104,6 +104,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -184,18 +185,19 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public StoreVendorsApi()
         {
-            mCreateVendorCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mCreateVendorTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteVendorCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteVendorTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetVendorCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetVendorTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetVendorTemplatesCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetVendorsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateVendorCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateVendorTemplateCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateVendorCoroutine = new KnetikCoroutine();
+            mCreateVendorTemplateCoroutine = new KnetikCoroutine();
+            mDeleteVendorCoroutine = new KnetikCoroutine();
+            mDeleteVendorTemplateCoroutine = new KnetikCoroutine();
+            mGetVendorCoroutine = new KnetikCoroutine();
+            mGetVendorTemplateCoroutine = new KnetikCoroutine();
+            mGetVendorTemplatesCoroutine = new KnetikCoroutine();
+            mGetVendorsCoroutine = new KnetikCoroutine();
+            mUpdateVendorCoroutine = new KnetikCoroutine();
+            mUpdateVendorTemplateCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Create a vendor 
         /// </summary>
@@ -247,6 +249,7 @@ namespace com.knetikcloud.Api
                 CreateVendorComplete(CreateVendorData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Create a vendor template Vendor Templates define a type of vendor and the properties they have.
         /// </summary>
@@ -298,6 +301,7 @@ namespace com.knetikcloud.Api
                 CreateVendorTemplateComplete(CreateVendorTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete a vendor 
         /// </summary>
@@ -351,6 +355,7 @@ namespace com.knetikcloud.Api
                 DeleteVendorComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete a vendor template 
         /// </summary>
@@ -410,6 +415,7 @@ namespace com.knetikcloud.Api
                 DeleteVendorTemplateComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single vendor 
         /// </summary>
@@ -465,6 +471,7 @@ namespace com.knetikcloud.Api
                 GetVendorComplete(GetVendorData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single vendor template Vendor Templates define a type of vendor and the properties they have.
         /// </summary>
@@ -520,6 +527,7 @@ namespace com.knetikcloud.Api
                 GetVendorTemplateComplete(GetVendorTemplateData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search vendor templates 
         /// </summary>
@@ -586,6 +594,7 @@ namespace com.knetikcloud.Api
                 GetVendorTemplatesComplete(GetVendorTemplatesData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List and search vendors 
         /// </summary>
@@ -658,6 +667,7 @@ namespace com.knetikcloud.Api
                 GetVendorsComplete(GetVendorsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update a vendor 
         /// </summary>
@@ -716,6 +726,7 @@ namespace com.knetikcloud.Api
                 UpdateVendorComplete(UpdateVendorData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update a vendor template 
         /// </summary>

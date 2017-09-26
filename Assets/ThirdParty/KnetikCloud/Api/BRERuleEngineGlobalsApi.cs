@@ -61,6 +61,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -107,13 +108,14 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public BRERuleEngineGlobalsApi()
         {
-            mCreateBREGlobalCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mDeleteBREGlobalCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetBREGlobalCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mGetBREGlobalsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mUpdateBREGlobalCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateBREGlobalCoroutine = new KnetikCoroutine();
+            mDeleteBREGlobalCoroutine = new KnetikCoroutine();
+            mGetBREGlobalCoroutine = new KnetikCoroutine();
+            mGetBREGlobalsCoroutine = new KnetikCoroutine();
+            mUpdateBREGlobalCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Create a global definition Once created you can then use in a custom rule. Note that global definitions cannot be modified or deleted if in use.
         /// </summary>
@@ -165,6 +167,7 @@ namespace com.knetikcloud.Api
                 CreateBREGlobalComplete(CreateBREGlobalData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Delete a global May fail if there are existing rules against it. Cannot delete core globals
         /// </summary>
@@ -218,6 +221,7 @@ namespace com.knetikcloud.Api
                 DeleteBREGlobalComplete();
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Get a single global definition 
         /// </summary>
@@ -273,6 +277,7 @@ namespace com.knetikcloud.Api
                 GetBREGlobalComplete(GetBREGlobalData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// List global definitions 
         /// </summary>
@@ -339,6 +344,7 @@ namespace com.knetikcloud.Api
                 GetBREGlobalsComplete(GetBREGlobalsData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Update a global definition May fail if new parameters mismatch requirements of existing rules. Cannot update core globals
         /// </summary>

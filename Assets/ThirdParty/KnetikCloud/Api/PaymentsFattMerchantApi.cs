@@ -28,6 +28,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -47,9 +48,10 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public PaymentsFattMerchantApi()
         {
-            mCreateOrUpdateFattMerchantPaymentMethodCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mCreateOrUpdateFattMerchantPaymentMethodCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Create or update a FattMerchant payment method for a user Stores customer information and creates a payment method that can be used to pay invoices through the payments endpoints.
         /// </summary>

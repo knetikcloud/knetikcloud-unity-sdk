@@ -29,6 +29,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -48,9 +49,10 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public ReportingSubscriptionsApi()
         {
-            mGetSubscriptionReportsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetSubscriptionReportsCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Get a list of available subscription reports in most recent first order 
         /// </summary>

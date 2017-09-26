@@ -6,11 +6,26 @@ using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
     public class AudioGroupProperty : FileGroupProperty
     {
+        /// <summary>
+        /// The type of the property. Used for polymorphic type recognition and thus must match an expected type with additional properties.
+        /// </summary>
+        /// <value>The type of the property. Used for polymorphic type recognition and thus must match an expected type with additional properties.</value>
+        [JsonProperty(PropertyName = "type")]
+        public string Type { get; set; }
+
+        /// <summary>
+        /// The list of files
+        /// </summary>
+        /// <value>The list of files</value>
+        [JsonProperty(PropertyName = "files")]
+        public List<FileProperty> Files { get; set; }
+
         /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object

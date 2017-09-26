@@ -32,6 +32,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -51,9 +52,10 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public ReportingUsersApi()
         {
-            mGetUserRegistrationsCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetUserRegistrationsCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Get user registration info Get user registration counts grouped by time range
         /// </summary>

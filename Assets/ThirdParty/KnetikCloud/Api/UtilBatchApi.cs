@@ -36,6 +36,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -62,10 +63,11 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public UtilBatchApi()
         {
-            mGetBatchCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
-            mSendBatchCoroutine = new KnetikCoroutine(KnetikClient.DefaultClient);
+            mGetBatchCoroutine = new KnetikCoroutine();
+            mSendBatchCoroutine = new KnetikCoroutine();
         }
     
+        /// <inheritdoc />
         /// <summary>
         /// Get batch result with token Tokens expire in 24 hours
         /// </summary>
@@ -121,6 +123,7 @@ namespace com.knetikcloud.Api
                 GetBatchComplete(GetBatchData);
             }
         }
+        /// <inheritdoc />
         /// <summary>
         /// Request to run API call given the method, content type, path url, and body of request Should the request take longer than one of the alloted timeout parameters, a token will be returned instead, which can be used on the token endpoint in this service
         /// </summary>
