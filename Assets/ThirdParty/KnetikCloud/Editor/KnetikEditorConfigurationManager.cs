@@ -14,26 +14,34 @@ namespace com.knetikcloud.UnityEditor
         [SerializeField]
         private static KnetikClientCredentials sClientCredentials;
 
-        public static bool IsBaseUrlSet
+        public static bool IsAppNameSet
         {
             get
             {
-                return ((sProjectSettings != null) && !string.IsNullOrEmpty(sProjectSettings.BaseUrl));
+                return ((sProjectSettings != null) && !string.IsNullOrEmpty(sProjectSettings.AppName));
             }
         }
 
-        public static string BaseUrl
+        public static string AppName
         {
             get
             {
-                return (sProjectSettings != null) ? sProjectSettings.BaseUrl : null;
+                return (sProjectSettings != null) ? sProjectSettings.AppName : null;
             }
             set
             {
                 if (sProjectSettings != null)
                 {
-                    sProjectSettings.BaseUrl = value;
+                    sProjectSettings.AppName = value;
                 }
+            }
+        }
+
+        public static string BaseStagingUrl
+        {
+            get
+            {
+                return (sProjectSettings != null) ? sProjectSettings.StagingUrl : null;
             }
         }
 

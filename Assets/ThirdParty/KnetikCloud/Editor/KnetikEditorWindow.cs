@@ -11,7 +11,7 @@ namespace com.knetikcloud.UnityEditor
         private KnetikUserCredentials mUserCredentials;
 
         private GUIContent mProjectSettingsHeaderLabel;
-        private GUIContent mBaseUrl;
+        private GUIContent mAppName;
         private GUIContent mClientId;
 
         private GUIContent mClientCredentialsHeaderLabel;
@@ -36,11 +36,11 @@ namespace com.knetikcloud.UnityEditor
             mUserCredentials = KnetikUserCredentials.Load();
 
             mProjectSettingsHeaderLabel = new GUIContent("Project KnetikConfiguration", "Project wide settings that should be checked into source control (if used).");
-            mBaseUrl = new GUIContent("Base URL", "The base URL for your project.  E.g. https://<my_project_name>.devsandbox.knetikcloud.com");
-            mClientId = new GUIContent("Client ID", "The client ID as configured in the administrative panel.");
+            mAppName = new GUIContent("App Name", "The App Name for your project as configured in the KnetikCloud Web interface.  E.g. 'my-first-game' (without quotes).");
+            mClientId = new GUIContent("Client ID", "The client ID as configured in the KnetikCloud Web interface.");
 
             mClientCredentialsHeaderLabel = new GUIContent("Client Credentials", "Optional: Settings that apply if the grant type is 'client_credentials'.\nShould be checked into source control (if used).");
-            mClientSecret = new GUIContent("Client Secret", "Optional: Must match the secret configured in the server administration panel.");
+            mClientSecret = new GUIContent("Client Secret", "Optional: Must match the secret configured in the KnetikCloud Web interface.");
 
             mUserCredentialsHeaderLabel = new GUIContent("User Credentials", "Optional: Per developer settings that apply if the grant type is 'password'.");
             mUserCredentialsId = new GUIContent("User Id", "Optional: Per developer user account to use.");
@@ -72,7 +72,7 @@ namespace com.knetikcloud.UnityEditor
         {
             EditorGUILayout.LabelField(mProjectSettingsHeaderLabel, EditorStyles.boldLabel);
 
-            KnetikEditorConfigurationManager.BaseUrl = EditorGUILayout.TextField(mBaseUrl, KnetikEditorConfigurationManager.BaseUrl);
+            KnetikEditorConfigurationManager.AppName = EditorGUILayout.TextField(mAppName, KnetikEditorConfigurationManager.AppName);
             KnetikEditorConfigurationManager.ClientId = EditorGUILayout.TextField(mClientId, KnetikEditorConfigurationManager.ClientId);
             EditorGUILayout.Space();
         }

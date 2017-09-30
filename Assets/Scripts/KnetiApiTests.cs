@@ -35,8 +35,8 @@ namespace KnetikTests
         {
             if (e.ShouldProcess(this))
             {
-//                KnetikClient.DefaultClient.AuthenticateWithUserCredentials(KnetikUserCredentials.Load());
-                KnetikClient.DefaultClient.AuthenticateWithClientCredentials(KnetikClientCredentials.Load());
+//                KnetikClient.DefaultClient.AuthenticateWithUserCredentials(KnetikClient.ServerEnvironment.Staging, KnetikUserCredentials.Load());
+                KnetikClient.DefaultClient.AuthenticateWithClientCredentials(KnetikClient.ServerEnvironment.Staging, KnetikClientCredentials.Load());
             }
         }
 

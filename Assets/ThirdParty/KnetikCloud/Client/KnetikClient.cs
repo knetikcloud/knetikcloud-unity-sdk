@@ -23,7 +23,7 @@ namespace com.knetikcloud.Client
     /// <summary>
     /// The Unity client that is responsible for making HTTP calls to the backend.
     /// </summary>
-    public class KnetikClient  : MonoBehaviour
+    public class KnetikClient : MonoBehaviour
     {
         private KnetikProjectSettings mProjectSettings;
         private readonly Dictionary<string, string> mDefaultHeaderMap = new Dictionary<string, string>();
@@ -34,11 +34,11 @@ namespace com.knetikcloud.Client
 
         private const string IsoDatetimeFormat = "o";
 
-        public const string GrantTypeClientCredentials = "client_credentials";
-        public const string GrantTypeUserPassword = "password";
-        public const string GrantTypeFacebook = "facebook";
-        public const string GrantTypeGoogle = "google";
-        public const string GrantTypeRefreshToken = "refresh_token";
+        public enum ServerEnvironment
+        {
+            Staging,
+            Production,
+        }
 
         /// <summary>
         /// The default API client for making HTTP calls.
@@ -77,14 +77,19 @@ namespace com.knetikcloud.Client
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="KnetikClient" /> class.
+        /// Instantiate a Knetik Client.
         /// </summary>
-        public KnetikClient()
+        /// <remarks>
+        /// Since this is a Mono Behaviour add this component to an object in your Unity scene.
+        /// </remarks>>
+        protected KnetikClient()
         {
-            ServicePointManager.ServerCertificateValidationCallback = RemoteCertificateValidationCallback;
         }
 
-        public void AuthenticateWithUserCredentials(KnetikUserCredentials userCredentials)
+        /// <summary>
+        /// Authenticate with the server using user credentials
+        /// </summary>
+        public void AuthenticateWithUserCredentials(ServerEnvironment serverEnvironment, KnetikUserCredentials userCredentials)
         {
             if (userCredentials == null)
             {
@@ -98,6 +103,8 @@ namespace com.knetikcloud.Client
                 return;
             }
 
+            InitializeRestClient(serverEnvironment);
+
             try
             {
                 // Get access token
@@ -109,7 +116,10 @@ namespace com.knetikcloud.Client
             }
         }
 
-        public void AuthenticateWithClientCredentials(KnetikClientCredentials clientCredentials)
+        /// <summary>
+        /// Authenticate with the server using secret client credentials
+        /// </summary>
+        public void AuthenticateWithClientCredentials(ServerEnvironment serverEnvironment, KnetikClientCredentials clientCredentials)
         {
             if (clientCredentials == null)
             {
@@ -123,6 +133,8 @@ namespace com.knetikcloud.Client
                 return;
             }
 
+            InitializeRestClient(serverEnvironment);
+
             try
             {
                 // Get access token
@@ -134,7 +146,10 @@ namespace com.knetikcloud.Client
             }
         }
 
-        public void AuthenticateWithToken(KnetikTokenCredentials tokenCredentials)
+        /// <summary>
+        /// Authenticate with the server using either a Google or Facebook open auth token.
+        /// </summary>
+        public void AuthenticateWithToken(ServerEnvironment serverEnvironment, KnetikTokenCredentials tokenCredentials)
         {
             if (tokenCredentials == null)
             {
@@ -147,6 +162,8 @@ namespace com.knetikcloud.Client
                 KnetikLogger.LogError("The token credentials are not configured properly.  Please set the token from the auth provider correctly.");
                 return;
             }
+
+            InitializeRestClient(serverEnvironment);
 
             try
             {
@@ -361,6 +378,8 @@ namespace com.knetikcloud.Client
 
         private void Awake()
         {
+            ServicePointManager.ServerCertificateValidationCallback = RemoteCertificateValidationCallback;
+
             // Load project settings
             mProjectSettings = KnetikProjectSettings.Load();
             if (mProjectSettings == null)
@@ -369,18 +388,13 @@ namespace com.knetikcloud.Client
                 return;
             }
 
-            if (string.IsNullOrEmpty(mProjectSettings.BaseUrl))
+            if (!mProjectSettings.IsConfiguredProperly)
             {
-                KnetikLogger.LogError("You must set up the base URL in the editor window!");
+                KnetikLogger.LogError("The project settings are not setup correctly - please set them in the editor window!");
                 return;
             }
 
-            mRestClient = new RestClient(mProjectSettings.BaseUrl);
-
-            mAccessTokenApi = new AccessTokenApi();
-            mAccessTokenApi.GetOAuthTokenComplete += GetOAuthTokenComplete;
             DefaultClient = this;
-
             KnetikGlobalEventSystem.Subscribe<KnetikClientReadyRequestEvent>(OnClientReadyRequest);
 
             KnetikGlobalEventSystem.Publish(KnetikClientReadyResponseEvent.GetInstance(null, true));
@@ -388,6 +402,7 @@ namespace com.knetikcloud.Client
 
         private void OnDestroy()
         {
+            ServicePointManager.ServerCertificateValidationCallback = null;
             KnetikGlobalEventSystem.Unsubscribe<KnetikClientReadyRequestEvent>(OnClientReadyRequest);
 
             mAccessTokenApi = null;
@@ -403,6 +418,27 @@ namespace com.knetikcloud.Client
         private static void OnClientReadyRequest(KnetikClientReadyRequestEvent e)
         {
             KnetikGlobalEventSystem.Publish(KnetikClientReadyResponseEvent.GetInstance(e.Requester, (DefaultClient != null)));
+        }
+
+        private void InitializeRestClient(ServerEnvironment serverEnvironment)
+        {
+            switch (serverEnvironment)
+            {
+                case ServerEnvironment.Staging:
+                    mRestClient = new RestClient(mProjectSettings.StagingUrl);
+                    break;
+
+                case ServerEnvironment.Production:
+                    mRestClient = new RestClient(mProjectSettings.ProductionUrl);
+                    break;
+
+                default:
+                    UnityEngine.Debug.Assert(false, "Add support for the new server environment type!");
+                    break;
+            }
+
+            mAccessTokenApi = new AccessTokenApi();
+            mAccessTokenApi.GetOAuthTokenComplete += GetOAuthTokenComplete;
         }
 
         /// <summary>

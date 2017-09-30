@@ -11,5 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2d02c43ad9080047a6665cec2afab6f, type: 3}
   m_Name: KnetikProjectSettings
   m_EditorClassIdentifier: 
-  BaseUrl: https://unitysdk-unitysdktestapp.devsandbox.knetikcloud.com
+  mAppName: unitysdk-unitysdktestapp
+  mStagingURL: https://unitysdk-unitysdktestapp.devsandbox.knetikcloud.com
+  mProductionURL: https://unitysdk-unitysdktestapp.knetikcloud.com
   ClientId: unity_client

@@ -24,30 +24,30 @@ namespace com.knetikcloud.UnityEditor
         [MenuItem(GettingStartedMenuItem, true)]
         private static bool CheckGettingStarted()
         {
-            return KnetikEditorConfigurationManager.IsBaseUrlSet;
+            return KnetikEditorConfigurationManager.IsAppNameSet;
         }
 
         [MenuItem(GettingStartedMenuItem)]
         private static void GettingStarted()
         {
-            if (KnetikEditorConfigurationManager.IsBaseUrlSet)
+            if (KnetikEditorConfigurationManager.IsAppNameSet)
             {
-                Application.OpenURL(KnetikEditorConfigurationManager.BaseUrl);
+                Application.OpenURL(KnetikEditorConfigurationManager.BaseStagingUrl);
             }
         }
 
         [MenuItem(ApiDocsMenuItem, true)]
         private static bool CheckApiDocs()
         {
-            return KnetikEditorConfigurationManager.IsBaseUrlSet;
+            return KnetikEditorConfigurationManager.IsAppNameSet;
         }
 
         [MenuItem(ApiDocsMenuItem)]
         private static void ApiDocs()
         {
-            if (KnetikEditorConfigurationManager.IsBaseUrlSet)
+            if (KnetikEditorConfigurationManager.IsAppNameSet)
             {
-                Application.OpenURL(KnetikEditorConfigurationManager.IsBaseUrlSet + "/api.html");
+                Application.OpenURL(KnetikEditorConfigurationManager.BaseStagingUrl + "/api.html");
             }
         }
     }
