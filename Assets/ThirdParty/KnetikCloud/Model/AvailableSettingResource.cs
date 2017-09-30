@@ -54,6 +54,13 @@ namespace com.knetikcloud.Model
         [JsonProperty(PropertyName = "options")]
         public List<SettingOption> Options { get; set; }
 
+        /// <summary>
+        /// The type of the option: Ex: TEXT
+        /// </summary>
+        /// <value>The type of the option: Ex: TEXT</value>
+        [JsonProperty(PropertyName = "type")]
+        public string Type { get; set; }
+
         /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
@@ -69,6 +76,7 @@ namespace com.knetikcloud.Model
             sb.Append("  Key: ").Append(Key).Append("\n");
             sb.Append("  Name: ").Append(Name).Append("\n");
             sb.Append("  Options: ").Append(Options).Append("\n");
+            sb.Append("  Type: ").Append(Type).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }

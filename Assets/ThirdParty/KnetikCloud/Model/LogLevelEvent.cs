@@ -13,61 +13,6 @@ namespace com.knetikcloud.Model
     public class LogLevelEvent : BroadcastableEvent
     {
         /// <summary>
-        /// Gets or Sets _Client
-        /// </summary>
-        [JsonProperty(PropertyName = "client")]
-        public string _Client { get; set; }
-
-        /// <summary>
-        /// Gets or Sets Customer
-        /// </summary>
-        [JsonProperty(PropertyName = "customer")]
-        public string Customer { get; set; }
-
-        /// <summary>
-        /// Gets or Sets DoNotBroadcast
-        /// </summary>
-        [JsonProperty(PropertyName = "do_not_broadcast")]
-        public bool? DoNotBroadcast { get; set; }
-
-        /// <summary>
-        /// Gets or Sets Section
-        /// </summary>
-        [JsonProperty(PropertyName = "section")]
-        public string Section { get; set; }
-
-        /// <summary>
-        /// Gets or Sets Source
-        /// </summary>
-        [JsonProperty(PropertyName = "source")]
-        public Object Source { get; set; }
-
-        /// <summary>
-        /// Gets or Sets Specifics
-        /// </summary>
-        [JsonProperty(PropertyName = "specifics")]
-        public string Specifics { get; set; }
-
-        /// <summary>
-        /// Gets or Sets Synchronous
-        /// </summary>
-        [JsonProperty(PropertyName = "synchronous")]
-        public bool? Synchronous { get; set; }
-
-        /// <summary>
-        /// Gets or Sets Timestamp
-        /// </summary>
-        [JsonProperty(PropertyName = "timestamp")]
-        public long? Timestamp { get; set; }
-
-        /// <summary>
-        /// The type of the event. Used for polymorphic type recognition and thus must match an expected type
-        /// </summary>
-        /// <value>The type of the event. Used for polymorphic type recognition and thus must match an expected type</value>
-        [JsonProperty(PropertyName = "type")]
-        public string Type { get; set; }
-
-        /// <summary>
         /// Gets or Sets Level
         /// </summary>
         [JsonProperty(PropertyName = "level")]

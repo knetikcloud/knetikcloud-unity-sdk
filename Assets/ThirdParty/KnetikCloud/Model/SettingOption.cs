@@ -20,9 +20,9 @@ namespace com.knetikcloud.Model
         public string Name { get; set; }
 
         /// <summary>
-        /// The unique ID for the option. Ex: 10
+        /// The value of the option. Ex: 10
         /// </summary>
-        /// <value>The unique ID for the option. Ex: 10</value>
+        /// <value>The value of the option. Ex: 10</value>
         [JsonProperty(PropertyName = "value")]
         public string Value { get; set; }
 

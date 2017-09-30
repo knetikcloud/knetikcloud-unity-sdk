@@ -13,62 +13,6 @@ namespace com.knetikcloud.Model
     public class AudioGroupPropertyDefinitionResource : FileGroupPropertyDefinitionResource
     {
         /// <summary>
-        /// A list of the fields on both the property definition and property of this type
-        /// </summary>
-        /// <value>A list of the fields on both the property definition and property of this type</value>
-        [JsonProperty(PropertyName = "field_list")]
-        public PropertyFieldListResource FieldList { get; set; }
-
-        /// <summary>
-        /// The name of the property
-        /// </summary>
-        /// <value>The name of the property</value>
-        [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
-
-        /// <summary>
-        /// Whether the property is required
-        /// </summary>
-        /// <value>Whether the property is required</value>
-        [JsonProperty(PropertyName = "required")]
-        public bool? Required { get; set; }
-
-        /// <summary>
-        /// The type of the property. Used for polymorphic type recognition and thus must match an expected type with additional properties.
-        /// </summary>
-        /// <value>The type of the property. Used for polymorphic type recognition and thus must match an expected type with additional properties.</value>
-        [JsonProperty(PropertyName = "type")]
-        public string Type { get; set; }
-
-        /// <summary>
-        /// If provided, a file type that the property must match
-        /// </summary>
-        /// <value>If provided, a file type that the property must match</value>
-        [JsonProperty(PropertyName = "file_type")]
-        public string FileType { get; set; }
-
-        /// <summary>
-        /// If provided, the maximum number of files in the group
-        /// </summary>
-        /// <value>If provided, the maximum number of files in the group</value>
-        [JsonProperty(PropertyName = "max_count")]
-        public int? MaxCount { get; set; }
-
-        /// <summary>
-        /// If provided, the maximum allowed size per file in bytes
-        /// </summary>
-        /// <value>If provided, the maximum allowed size per file in bytes</value>
-        [JsonProperty(PropertyName = "max_file_size")]
-        public long? MaxFileSize { get; set; }
-
-        /// <summary>
-        /// If provided, the minimum number of files in the group
-        /// </summary>
-        /// <value>If provided, the minimum number of files in the group</value>
-        [JsonProperty(PropertyName = "min_count")]
-        public int? MinCount { get; set; }
-
-        /// <summary>
         /// If provided, the maximum length of the audio
         /// </summary>
         /// <value>If provided, the maximum length of the audio</value>

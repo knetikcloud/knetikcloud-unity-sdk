@@ -12,41 +12,6 @@ namespace com.knetikcloud.Model
     /// </summary>
     public class VideoProperty : FileProperty
     {
-        /// <summary>
-        /// The type of the property. Used for polymorphic type recognition and thus must match an expected type with additional properties.
-        /// </summary>
-        /// <value>The type of the property. Used for polymorphic type recognition and thus must match an expected type with additional properties.</value>
-        [JsonProperty(PropertyName = "type")]
-        public string Type { get; set; }
-
-        /// <summary>
-        /// A crc value for file integrity verification
-        /// </summary>
-        /// <value>A crc value for file integrity verification</value>
-        [JsonProperty(PropertyName = "crc")]
-        public string Crc { get; set; }
-
-        /// <summary>
-        /// A description of the file
-        /// </summary>
-        /// <value>A description of the file</value>
-        [JsonProperty(PropertyName = "description")]
-        public string Description { get; set; }
-
-        /// <summary>
-        /// The type of file such as txt, mp3, mov or csv
-        /// </summary>
-        /// <value>The type of file such as txt, mp3, mov or csv</value>
-        [JsonProperty(PropertyName = "file_type")]
-        public string FileType { get; set; }
-
-        /// <summary>
-        /// The url of the file
-        /// </summary>
-        /// <value>The url of the file</value>
-        [JsonProperty(PropertyName = "url")]
-        public string Url { get; set; }
-
         /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object

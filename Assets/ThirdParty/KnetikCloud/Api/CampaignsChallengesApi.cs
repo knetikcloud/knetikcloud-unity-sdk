@@ -184,14 +184,13 @@ namespace com.knetikcloud.Api
         /// <summary>
         /// Retrieve a list of challenges 
         /// </summary>
-        /// <param name="filterTemplate">Filter for challenges that are not tied to campaigns (templates)</param>
         /// <param name="filterActiveCampaign">Filter for challenges that are tied to active campaigns</param>
         /// <param name="filterStartDate">A comma separated string without spaces.  First value is the operator to search on, second value is the challenge start date, a unix timestamp in seconds.  Allowed operators: (GT, LT, EQ, GOE, LOE).</param>
         /// <param name="filterEndDate">A comma separated string without spaces.  First value is the operator to search on, second value is the challenge end date, a unix timestamp in seconds.  Allowed operators: (GT, LT, EQ, GOE, LOE).</param>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
-        void GetChallenges(bool? filterTemplate, bool? filterActiveCampaign, string filterStartDate, string filterEndDate, int? size, int? page, string order);
+        void GetChallenges(bool? filterActiveCampaign, string filterStartDate, string filterEndDate, int? size, int? page, string order);
 
         /// <summary>
         /// Update a challenge If the challenge is a copy, changes will propagate to all the related challenges
@@ -1518,14 +1517,13 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
         /// <summary>
         /// Retrieve a list of challenges 
         /// </summary>
-        /// <param name="filterTemplate">Filter for challenges that are not tied to campaigns (templates)</param>
         /// <param name="filterActiveCampaign">Filter for challenges that are tied to active campaigns</param>
         /// <param name="filterStartDate">A comma separated string without spaces.  First value is the operator to search on, second value is the challenge start date, a unix timestamp in seconds.  Allowed operators: (GT, LT, EQ, GOE, LOE).</param>
         /// <param name="filterEndDate">A comma separated string without spaces.  First value is the operator to search on, second value is the challenge end date, a unix timestamp in seconds.  Allowed operators: (GT, LT, EQ, GOE, LOE).</param>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
-        public void GetChallenges(bool? filterTemplate, bool? filterActiveCampaign, string filterStartDate, string filterEndDate, int? size, int? page, string order)
+        public void GetChallenges(bool? filterActiveCampaign, string filterStartDate, string filterEndDate, int? size, int? page, string order)
         {
             
             mGetChallengesPath = "/challenges";
@@ -1539,11 +1537,6 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
-
-            if (filterTemplate != null)
-            {
-                queryParams.Add("filter_template", KnetikClient.DefaultClient.ParameterToString(filterTemplate));
-            }
 
             if (filterActiveCampaign != null)
             {

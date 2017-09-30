@@ -156,7 +156,8 @@ namespace com.knetikcloud.Api
         /// List groups a user is in 
         /// </summary>
         /// <param name="userId">The id of the user</param>
-        void GetGroupsForUser(int? userId);
+        /// <param name="filterChildren">Whether to limit group list to children of groups only. If true, shows only groups with parents. If false, shows only groups with no parent.</param>
+        void GetGroupsForUser(int? userId, bool? filterChildren);
 
         /// <summary>
         /// List and search groups 
@@ -1327,7 +1328,8 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
         /// List groups a user is in 
         /// </summary>
         /// <param name="userId">The id of the user</param>
-        public void GetGroupsForUser(int? userId)
+        /// <param name="filterChildren">Whether to limit group list to children of groups only. If true, shows only groups with parents. If false, shows only groups with no parent.</param>
+        public void GetGroupsForUser(int? userId, bool? filterChildren)
         {
             // verify the required parameter 'userId' is set
             if (userId == null)
@@ -1347,6 +1349,11 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
+
+            if (filterChildren != null)
+            {
+                queryParams.Add("filter_children", KnetikClient.DefaultClient.ParameterToString(filterChildren));
+            }
 
             // authentication setting, if any
             string[] authSettings = new string[] {  };

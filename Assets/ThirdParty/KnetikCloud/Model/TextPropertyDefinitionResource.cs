@@ -13,34 +13,6 @@ namespace com.knetikcloud.Model
     public class TextPropertyDefinitionResource : PropertyDefinitionResource
     {
         /// <summary>
-        /// A list of the fields on both the property definition and property of this type
-        /// </summary>
-        /// <value>A list of the fields on both the property definition and property of this type</value>
-        [JsonProperty(PropertyName = "field_list")]
-        public PropertyFieldListResource FieldList { get; set; }
-
-        /// <summary>
-        /// The name of the property
-        /// </summary>
-        /// <value>The name of the property</value>
-        [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
-
-        /// <summary>
-        /// Whether the property is required
-        /// </summary>
-        /// <value>Whether the property is required</value>
-        [JsonProperty(PropertyName = "required")]
-        public bool? Required { get; set; }
-
-        /// <summary>
-        /// The type of the property. Used for polymorphic type recognition and thus must match an expected type with additional properties.
-        /// </summary>
-        /// <value>The type of the property. Used for polymorphic type recognition and thus must match an expected type with additional properties.</value>
-        [JsonProperty(PropertyName = "type")]
-        public string Type { get; set; }
-
-        /// <summary>
         /// If provided, the maximum length of the text
         /// </summary>
         /// <value>If provided, the maximum length of the text</value>

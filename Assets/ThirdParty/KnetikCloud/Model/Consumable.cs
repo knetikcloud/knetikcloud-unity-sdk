@@ -13,19 +13,6 @@ namespace com.knetikcloud.Model
     public class Consumable : Behavior
     {
         /// <summary>
-        /// Gets or Sets Description
-        /// </summary>
-        [JsonProperty(PropertyName = "description")]
-        public string Description { get; set; }
-
-        /// <summary>
-        /// Used for polymorphic type recognition and thus must match an expected type with additional properties
-        /// </summary>
-        /// <value>Used for polymorphic type recognition and thus must match an expected type with additional properties</value>
-        [JsonProperty(PropertyName = "type_hint")]
-        public string TypeHint { get; set; }
-
-        /// <summary>
         /// The maximum number of times an item can be used
         /// </summary>
         /// <value>The maximum number of times an item can be used</value>
