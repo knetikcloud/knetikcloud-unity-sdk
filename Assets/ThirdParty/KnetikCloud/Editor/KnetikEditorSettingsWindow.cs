@@ -1,13 +1,17 @@
-﻿using com.knetikcloud.Client;
-using com.knetikcloud.Credentials;
+﻿using com.knetikcloud.Credentials;
 using UnityEditor;
 using UnityEngine;
 
 
 namespace com.knetikcloud.UnityEditor
 {
-    public class KnetikEditorWindow : EditorWindow
+    public class KnetikEditorSettingsWindow : EditorWindow
     {
+        #region Layout Constants
+        private const int ControlButtonLayoutInset = 5;
+        private const int ControlButtonLayoutHeight = 45;
+        #endregion
+
         private KnetikUserCredentials mUserCredentials;
 
         private GUIContent mProjectSettingsHeaderLabel;
@@ -26,7 +30,12 @@ namespace com.knetikcloud.UnityEditor
         [MenuItem("Knetik Cloud/Project Settings...")]
         private static void KnetikCloudProjectSettings()
         {
-            GetWindow<KnetikEditorWindow>("Knetik Editor Window");
+            OpenProjectSettingsWindow();
+        }
+
+        public static void OpenProjectSettingsWindow()
+        {
+            GetWindow<KnetikEditorSettingsWindow>("Knetik Settings");
         }
 
         private void OnEnable()
@@ -35,7 +44,7 @@ namespace com.knetikcloud.UnityEditor
             KnetikEditorConfigurationManager.Initialize();
             mUserCredentials = KnetikUserCredentials.Load();
 
-            mProjectSettingsHeaderLabel = new GUIContent("Project KnetikConfiguration", "Project wide settings that should be checked into source control (if used).");
+            mProjectSettingsHeaderLabel = new GUIContent("Project Configuration", "Project wide settings that should be checked into source control (if used).");
             mAppName = new GUIContent("App Name", "The App Name for your project as configured in the KnetikCloud Web interface.  E.g. 'my-first-game' (without quotes).");
             mClientId = new GUIContent("Client ID", "The client ID as configured in the KnetikCloud Web interface.");
 
@@ -51,24 +60,26 @@ namespace com.knetikcloud.UnityEditor
 
         private void OnGUI()
         {
-            DrawProjectSettingsGUI();
-            DrawClientCredentialsGUI();
-            DrawUserCredentialsGUI();
+            Rect displayRect = new Rect(0, 0, Screen.width, Screen.height - ControlButtonLayoutHeight);
+            GUILayout.BeginArea(displayRect);
+
+            DisplayProjectSettingsGUI();
+            DisplayClientCredentialsGUI();
+            DisplayUserCredentialsGUI();
+
+            GUILayout.EndArea();
 
             if (GUI.changed)
             {
                 KnetikEditorConfigurationManager.SetDirty();
             }
 
-            if (GUILayout.Button(mSaveButton))
-            {
-                SaveSettings();
-            }
+            DisplayControlButtons();
 
             Repaint();
         }
 
-        private void DrawProjectSettingsGUI()
+        private void DisplayProjectSettingsGUI()
         {
             EditorGUILayout.LabelField(mProjectSettingsHeaderLabel, EditorStyles.boldLabel);
 
@@ -77,19 +88,32 @@ namespace com.knetikcloud.UnityEditor
             EditorGUILayout.Space();
         }
 
-        private void DrawClientCredentialsGUI()
+        private void DisplayClientCredentialsGUI()
         {
             EditorGUILayout.LabelField(mClientCredentialsHeaderLabel, EditorStyles.boldLabel);
             KnetikEditorConfigurationManager.ClientSecret = EditorGUILayout.TextField(mClientSecret, KnetikEditorConfigurationManager.ClientSecret);
             EditorGUILayout.Space();
         }
 
-        private void DrawUserCredentialsGUI()
+        private void DisplayUserCredentialsGUI()
         {
             EditorGUILayout.LabelField(mUserCredentialsHeaderLabel, EditorStyles.boldLabel);
             mUserCredentials.UserId = EditorGUILayout.TextField(mUserCredentialsId, mUserCredentials.UserId);
             mUserCredentials.Password = EditorGUILayout.PasswordField(mUserCredentialsPassword, mUserCredentials.Password);
             EditorGUILayout.Space();
+        }
+
+        private void DisplayControlButtons()
+        {
+            Rect controlButtonRect = new Rect(ControlButtonLayoutInset, Screen.height - ControlButtonLayoutHeight, Screen.width - (ControlButtonLayoutInset * 2), ControlButtonLayoutHeight);
+            GUILayout.BeginArea(controlButtonRect);
+
+            if (GUILayout.Button(mSaveButton))
+            {
+                SaveSettings();
+            }
+
+            GUILayout.EndArea();
         }
 
         private void SaveSettings()

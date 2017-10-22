@@ -4,12 +4,12 @@ using UnityEditor;
 
 namespace com.knetikcloud.UnityEditor
 {
-    public static class KnetikEditorExtensions
+    public static class KnetikEditorMenu
     {
         public const string GettingStartedMenuItem = "Knetik Cloud/Getting Started...";
         public const string ApiDocsMenuItem = "Knetik Cloud/API Docs...";
 
-        static KnetikEditorExtensions()
+        static KnetikEditorMenu()
         {
             KnetikEditorConfigurationManager.Initialize();
         }
@@ -17,7 +17,7 @@ namespace com.knetikcloud.UnityEditor
         [MenuItem("Knetik Cloud/Sign up...")]
         private static void SignUp()
         {
-            Application.OpenURL("http://knetikcloud.com/");
+            Application.OpenURL(KnetikEditorConstants.KnetikCloudWebsiteUrl);
         }
 
 
