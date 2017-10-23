@@ -253,6 +253,7 @@ namespace com.knetikcloud.Api
                 CreateRoleComplete(CreateRoleData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a role 
@@ -313,6 +314,7 @@ namespace com.knetikcloud.Api
                 DeleteRoleComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get roles for a client 
@@ -369,6 +371,7 @@ namespace com.knetikcloud.Api
                 GetClientRolesComplete(GetClientRolesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single role 
@@ -425,6 +428,7 @@ namespace com.knetikcloud.Api
                 GetRoleComplete(GetRoleData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search roles 
@@ -504,6 +508,7 @@ namespace com.knetikcloud.Api
                 GetRolesComplete(GetRolesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get roles for a user 
@@ -560,6 +565,7 @@ namespace com.knetikcloud.Api
                 GetUserRolesComplete(GetUserRolesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Set roles for a client 
@@ -619,6 +625,7 @@ namespace com.knetikcloud.Api
                 SetClientRolesComplete(SetClientRolesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Set permissions for a role 
@@ -678,6 +685,7 @@ namespace com.knetikcloud.Api
                 SetPermissionsForRoleComplete(SetPermissionsForRoleData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Set roles for a user 
@@ -737,6 +745,7 @@ namespace com.knetikcloud.Api
                 SetUserRolesComplete(SetUserRolesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a role 
@@ -796,5 +805,6 @@ namespace com.knetikcloud.Api
                 UpdateRoleComplete(UpdateRoleData);
             }
         }
+
     }
 }

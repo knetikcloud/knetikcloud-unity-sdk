@@ -10,8 +10,20 @@ namespace com.knetikcloud.Model
     /// <summary>
     /// 
     /// </summary>
-    public class AudioProperty : FileProperty
+    public class ArgumentResource
     {
+        /// <summary>
+        /// Gets or Sets Name
+        /// </summary>
+        [JsonProperty(PropertyName = "name")]
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Type
+        /// </summary>
+        [JsonProperty(PropertyName = "type")]
+        public string Type { get; set; }
+
         /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
@@ -20,12 +32,9 @@ namespace com.knetikcloud.Model
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("class AudioProperty {\n");
+            sb.Append("class ArgumentResource {\n");
+            sb.Append("  Name: ").Append(Name).Append("\n");
             sb.Append("  Type: ").Append(Type).Append("\n");
-            sb.Append("  Crc: ").Append(Crc).Append("\n");
-            sb.Append("  Description: ").Append(Description).Append("\n");
-            sb.Append("  FileType: ").Append(FileType).Append("\n");
-            sb.Append("  Url: ").Append(Url).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -34,7 +43,7 @@ namespace com.knetikcloud.Model
         /// Get the JSON string presentation of the object
         /// </summary>
         /// <returns>JSON string presentation of the object</returns>
-        public new string ToJson()
+        public string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }

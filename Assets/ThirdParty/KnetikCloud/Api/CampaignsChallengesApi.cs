@@ -469,6 +469,7 @@ namespace com.knetikcloud.Api
                 CreateChallengeComplete(CreateChallengeData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Create a challenge activity 
@@ -534,6 +535,7 @@ namespace com.knetikcloud.Api
                 CreateChallengeActivityComplete(CreateChallengeActivityData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Create a challenge activity template Challenge Activity Templates define a type of challenge activity and the properties they have
@@ -586,6 +588,7 @@ namespace com.knetikcloud.Api
                 CreateChallengeActivityTemplateComplete(CreateChallengeActivityTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Create a challenge template Challenge Templates define a type of challenge and the properties they have
@@ -638,6 +641,7 @@ namespace com.knetikcloud.Api
                 CreateChallengeTemplateComplete(CreateChallengeTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a challenge 
@@ -692,6 +696,7 @@ namespace com.knetikcloud.Api
                 DeleteChallengeComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a challenge activity A challenge can have multiple instances of the same activity and thus the id used is of the specific entry within the challenge
@@ -753,6 +758,7 @@ mDeleteChallengeActivityPath = mDeleteChallengeActivityPath.Replace("{" + "chall
                 DeleteChallengeActivityComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a challenge activity template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
@@ -813,6 +819,7 @@ mDeleteChallengeActivityPath = mDeleteChallengeActivityPath.Replace("{" + "chall
                 DeleteChallengeActivityTemplateComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a challenge event 
@@ -867,6 +874,7 @@ mDeleteChallengeActivityPath = mDeleteChallengeActivityPath.Replace("{" + "chall
                 DeleteChallengeEventComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a challenge template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
@@ -927,6 +935,7 @@ mDeleteChallengeActivityPath = mDeleteChallengeActivityPath.Replace("{" + "chall
                 DeleteChallengeTemplateComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Retrieve a challenge 
@@ -983,6 +992,7 @@ mDeleteChallengeActivityPath = mDeleteChallengeActivityPath.Replace("{" + "chall
                 GetChallengeComplete(GetChallengeData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search challenge activities 
@@ -1057,6 +1067,7 @@ mDeleteChallengeActivityPath = mDeleteChallengeActivityPath.Replace("{" + "chall
                 GetChallengeActivitiesComplete(GetChallengeActivitiesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single challenge activity A challenge can have multiple instances of the same activity and thus the id used is of the specific entry within the challenge
@@ -1120,6 +1131,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
                 GetChallengeActivityComplete(GetChallengeActivityData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single challenge activity template 
@@ -1176,6 +1188,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
                 GetChallengeActivityTemplateComplete(GetChallengeActivityTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search challenge activity templates 
@@ -1243,6 +1256,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
                 GetChallengeActivityTemplatesComplete(GetChallengeActivityTemplatesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Retrieve a single challenge event details 
@@ -1299,6 +1313,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
                 GetChallengeEventComplete(GetChallengeEventData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Retrieve a list of challenge events 
@@ -1390,6 +1405,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
                 GetChallengeEventsComplete(GetChallengeEventsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single challenge template 
@@ -1446,6 +1462,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
                 GetChallengeTemplateComplete(GetChallengeTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search challenge templates 
@@ -1513,6 +1530,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
                 GetChallengeTemplatesComplete(GetChallengeTemplatesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Retrieve a list of challenges 
@@ -1598,6 +1616,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
                 GetChallengesComplete(GetChallengesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a challenge If the challenge is a copy, changes will propagate to all the related challenges
@@ -1657,6 +1676,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
                 UpdateChallengeComplete(UpdateChallengeData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a challenge activity A challenge can have multiple instances of the same activity and thus the id used is of the specific entry within the challenge
@@ -1723,6 +1743,7 @@ mUpdateChallengeActivityPath = mUpdateChallengeActivityPath.Replace("{" + "chall
                 UpdateChallengeActivityComplete(UpdateChallengeActivityData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update an challenge activity template 
@@ -1782,6 +1803,7 @@ mUpdateChallengeActivityPath = mUpdateChallengeActivityPath.Replace("{" + "chall
                 UpdateChallengeActivityTemplateComplete(UpdateChallengeActivityTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a challenge template 
@@ -1841,5 +1863,6 @@ mUpdateChallengeActivityPath = mUpdateChallengeActivityPath.Replace("{" + "chall
                 UpdateChallengeTemplateComplete(UpdateChallengeTemplateData);
             }
         }
+
     }
 }

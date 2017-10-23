@@ -238,6 +238,7 @@ namespace com.knetikcloud.Api
                 CreateBundleItemComplete(CreateBundleItemData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Create a bundle template Bundle Templates define a type of bundle and the properties they have.
@@ -290,6 +291,7 @@ namespace com.knetikcloud.Api
                 CreateBundleTemplateComplete(CreateBundleTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a bundle item 
@@ -344,6 +346,7 @@ namespace com.knetikcloud.Api
                 DeleteBundleItemComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a bundle template 
@@ -404,6 +407,7 @@ namespace com.knetikcloud.Api
                 DeleteBundleTemplateComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single bundle item 
@@ -460,6 +464,7 @@ namespace com.knetikcloud.Api
                 GetBundleItemComplete(GetBundleItemData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single bundle template Bundle Templates define a type of bundle and the properties they have.
@@ -516,6 +521,7 @@ namespace com.knetikcloud.Api
                 GetBundleTemplateComplete(GetBundleTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search bundle templates 
@@ -583,6 +589,7 @@ namespace com.knetikcloud.Api
                 GetBundleTemplatesComplete(GetBundleTemplatesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a bundle item 
@@ -648,6 +655,7 @@ namespace com.knetikcloud.Api
                 UpdateBundleItemComplete(UpdateBundleItemData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a bundle template 
@@ -707,5 +715,6 @@ namespace com.knetikcloud.Api
                 UpdateBundleTemplateComplete(UpdateBundleTemplateData);
             }
         }
+
     }
 }

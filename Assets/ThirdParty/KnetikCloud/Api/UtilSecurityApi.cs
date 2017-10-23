@@ -142,6 +142,7 @@ namespace com.knetikcloud.Api
                 GetUserLocationLogComplete(GetUserLocationLogData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Returns the authentication token details. Use /users endpoint for detailed user&#39;s info 
@@ -191,5 +192,6 @@ namespace com.knetikcloud.Api
                 GetUserTokenDetailsComplete(GetUserTokenDetailsData);
             }
         }
+
     }
 }

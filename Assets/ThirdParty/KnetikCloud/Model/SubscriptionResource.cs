@@ -55,6 +55,13 @@ namespace com.knetikcloud.Model
         public long? CreatedDate { get; set; }
 
         /// <summary>
+        /// Whether or not the item is currently visible to users. Does not block purchase; Use store_start or store_end to block purchase.  Default = true
+        /// </summary>
+        /// <value>Whether or not the item is currently visible to users. Does not block purchase; Use store_start or store_end to block purchase.  Default = true</value>
+        [JsonProperty(PropertyName = "displayable")]
+        public bool? Displayable { get; set; }
+
+        /// <summary>
         /// The geo country list for the subscription
         /// </summary>
         /// <value>The geo country list for the subscription</value>
@@ -174,6 +181,7 @@ namespace com.knetikcloud.Model
             sb.Append("  Category: ").Append(Category).Append("\n");
             sb.Append("  ConsolidationDayOfMonth: ").Append(ConsolidationDayOfMonth).Append("\n");
             sb.Append("  CreatedDate: ").Append(CreatedDate).Append("\n");
+            sb.Append("  Displayable: ").Append(Displayable).Append("\n");
             sb.Append("  GeoCountryList: ").Append(GeoCountryList).Append("\n");
             sb.Append("  GeoPolicyType: ").Append(GeoPolicyType).Append("\n");
             sb.Append("  Id: ").Append(Id).Append("\n");

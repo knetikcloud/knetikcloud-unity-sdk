@@ -490,6 +490,7 @@ namespace com.knetikcloud.Api
                 AddMemberToGroupComplete(AddMemberToGroupData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Adds multiple members to the group 
@@ -554,6 +555,7 @@ namespace com.knetikcloud.Api
                 AddMembersToGroupComplete(AddMembersToGroupData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Create a group 
@@ -606,6 +608,7 @@ namespace com.knetikcloud.Api
                 CreateGroupComplete(CreateGroupData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Create an group member template GroupMember Templates define a type of group member and the properties they have
@@ -658,6 +661,7 @@ namespace com.knetikcloud.Api
                 CreateGroupMemberTemplateComplete(CreateGroupMemberTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Create a group template Group Templates define a type of group and the properties they have
@@ -710,6 +714,7 @@ namespace com.knetikcloud.Api
                 CreateGroupTemplateComplete(CreateGroupTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Removes a group from the system IF no resources are attached to it 
@@ -764,6 +769,7 @@ namespace com.knetikcloud.Api
                 DeleteGroupComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete an group member template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
@@ -824,6 +830,7 @@ namespace com.knetikcloud.Api
                 DeleteGroupMemberTemplateComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a group template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
@@ -884,6 +891,7 @@ namespace com.knetikcloud.Api
                 DeleteGroupTemplateComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Loads a specific group&#39;s details 
@@ -940,6 +948,7 @@ namespace com.knetikcloud.Api
                 GetGroupComplete(GetGroupData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a user from a group 
@@ -1003,6 +1012,7 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
                 GetGroupMemberComplete(GetGroupMemberData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single group member template 
@@ -1059,6 +1069,7 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
                 GetGroupMemberTemplateComplete(GetGroupMemberTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search group member templates 
@@ -1126,6 +1137,7 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
                 GetGroupMemberTemplatesComplete(GetGroupMemberTemplatesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Lists members of the group 
@@ -1200,6 +1212,7 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
                 GetGroupMembersComplete(GetGroupMembersData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single group template 
@@ -1256,6 +1269,7 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
                 GetGroupTemplateComplete(GetGroupTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search group templates 
@@ -1323,6 +1337,7 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
                 GetGroupTemplatesComplete(GetGroupTemplatesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List groups a user is in 
@@ -1385,6 +1400,7 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
                 GetGroupsForUserComplete(GetGroupsForUserData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search groups 
@@ -1488,6 +1504,7 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
                 ListGroupsComplete(ListGroupsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Removes a user from a group 
@@ -1549,6 +1566,7 @@ mRemoveGroupMemberPath = mRemoveGroupMemberPath.Replace("{" + "user_id" + "}", K
                 RemoveGroupMemberComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a group 
@@ -1606,6 +1624,7 @@ mRemoveGroupMemberPath = mRemoveGroupMemberPath.Replace("{" + "user_id" + "}", K
                 UpdateGroupComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Change a user&#39;s order 
@@ -1675,6 +1694,7 @@ mUpdateGroupMemberPropertiesPath = mUpdateGroupMemberPropertiesPath.Replace("{" 
                 UpdateGroupMemberPropertiesComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Change a user&#39;s membership properties 
@@ -1744,6 +1764,7 @@ mUpdateGroupMemberProperties1Path = mUpdateGroupMemberProperties1Path.Replace("{
                 UpdateGroupMemberProperties1Complete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Change a user&#39;s status 
@@ -1813,6 +1834,7 @@ mUpdateGroupMemberStatusPath = mUpdateGroupMemberStatusPath.Replace("{" + "user_
                 UpdateGroupMemberStatusComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update an group member template 
@@ -1872,6 +1894,7 @@ mUpdateGroupMemberStatusPath = mUpdateGroupMemberStatusPath.Replace("{" + "user_
                 UpdateGroupMemberTemplateComplete(UpdateGroupMemberTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a group template 
@@ -1931,5 +1954,6 @@ mUpdateGroupMemberStatusPath = mUpdateGroupMemberStatusPath.Replace("{" + "user_
                 UpdateGroupTemplateComplete(UpdateGroupTemplateData);
             }
         }
+
     }
 }

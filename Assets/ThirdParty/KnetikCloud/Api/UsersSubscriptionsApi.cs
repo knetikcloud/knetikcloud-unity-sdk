@@ -224,6 +224,7 @@ mGetUserSubscriptionDetailsPath = mGetUserSubscriptionDetailsPath.Replace("{" + 
                 GetUserSubscriptionDetailsComplete(GetUserSubscriptionDetailsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get details about a user&#39;s subscriptions 
@@ -280,6 +281,7 @@ mGetUserSubscriptionDetailsPath = mGetUserSubscriptionDetailsPath.Replace("{" + 
                 GetUsersSubscriptionDetailsComplete(GetUsersSubscriptionDetailsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Reactivate a subscription and charge fee 
@@ -346,6 +348,7 @@ mReactivateUserSubscriptionPath = mReactivateUserSubscriptionPath.Replace("{" + 
                 ReactivateUserSubscriptionComplete(ReactivateUserSubscriptionData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Set a new date to bill a subscription on 
@@ -415,6 +418,7 @@ mSetSubscriptionBillDatePath = mSetSubscriptionBillDatePath.Replace("{" + "inven
                 SetSubscriptionBillDateComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Set the payment method to use for a subscription May send null to use floating default
@@ -479,6 +483,7 @@ mSetSubscriptionPaymentMethodPath = mSetSubscriptionPaymentMethodPath.Replace("{
                 SetSubscriptionPaymentMethodComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Set the status of a subscription Note that the new status may be blocked if the system is not configured to allow the current status to be changed to the new, to enforce proper flow. The default options for statuses are shown below but may be altered for special use cases
@@ -548,6 +553,7 @@ mSetSubscriptionStatusPath = mSetSubscriptionStatusPath.Replace("{" + "inventory
                 SetSubscriptionStatusComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Set a new subscription plan for a user 
@@ -612,6 +618,7 @@ mSetUserSubscriptionPlanPath = mSetUserSubscriptionPlanPath.Replace("{" + "inven
                 SetUserSubscriptionPlanComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Set a new subscription price for a user This new price will be what the user is charged at the begining of each new period. This override is specific to the current subscription and will not carry over if they end and later re-subscribe. It will persist if the plan is changed using the setUserSubscriptionPlan endpoint.
@@ -676,5 +683,6 @@ mSetUserSubscriptionPricePath = mSetUserSubscriptionPricePath.Replace("{" + "inv
                 SetUserSubscriptionPriceComplete();
             }
         }
+
     }
 }

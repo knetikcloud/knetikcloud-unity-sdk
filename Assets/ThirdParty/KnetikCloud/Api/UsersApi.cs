@@ -352,6 +352,7 @@ namespace com.knetikcloud.Api
                 AddUserTagComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Create a user template User Templates define a type of user and the properties they have
@@ -404,6 +405,7 @@ namespace com.knetikcloud.Api
                 CreateUserTemplateComplete(CreateUserTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a user template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
@@ -464,6 +466,7 @@ namespace com.knetikcloud.Api
                 DeleteUserTemplateComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single user Additional private info is included as USERS_ADMIN
@@ -520,6 +523,7 @@ namespace com.knetikcloud.Api
                 GetUserComplete(GetUserData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List tags for a user 
@@ -576,6 +580,7 @@ namespace com.knetikcloud.Api
                 GetUserTagsComplete(GetUserTagsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single user template 
@@ -632,6 +637,7 @@ namespace com.knetikcloud.Api
                 GetUserTemplateComplete(GetUserTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search user templates 
@@ -699,6 +705,7 @@ namespace com.knetikcloud.Api
                 GetUserTemplatesComplete(GetUserTemplatesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search users Additional private info is included as USERS_ADMIN
@@ -838,6 +845,7 @@ namespace com.knetikcloud.Api
                 GetUsersComplete(GetUsersData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Choose a new password after a reset Finish resetting a user&#39;s password using the secret provided from the password-reset endpoint.  Password should be in plain text and will be encrypted on receipt. Use SSL for security.
@@ -895,6 +903,7 @@ namespace com.knetikcloud.Api
                 PasswordResetComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Register a new user Password should be in plain text and will be encrypted on receipt. Use SSL for security
@@ -947,6 +956,7 @@ namespace com.knetikcloud.Api
                 RegisterUserComplete(RegisterUserData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Remove a tag from a user 
@@ -1008,6 +1018,7 @@ mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.
                 RemoveUserTagComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Set a user&#39;s password Password should be in plain text and will be encrypted on receipt. Use SSL for security.
@@ -1065,6 +1076,7 @@ mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.
                 SetPasswordComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Reset a user&#39;s password A reset code will be generated and a &#39;forgot_password&#39; BRE event will be fired with that code.  The default system rule will send an email to the selected user if an email service has been setup. You can modify that rule in BRE to send an SMS instead or any other type of notification as you see fit
@@ -1119,6 +1131,7 @@ mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.
                 StartPasswordResetComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Reset a user&#39;s password without user id A reset code will be generated and a &#39;forgot_password&#39; BRE event will be fired with that code.  The default system rule will send an email to the selected user if an email service has been setup. You can modify that rule in BRE to send an SMS instead or any other type of notification as you see fit.  Must submit their email, username, or mobile phone number
@@ -1169,6 +1182,7 @@ mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.
                 SubmitPasswordResetComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a user Password will not be edited on this endpoint, use password specific endpoints.
@@ -1226,6 +1240,7 @@ mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.
                 UpdateUserComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a user template 
@@ -1285,5 +1300,6 @@ mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.
                 UpdateUserTemplateComplete(UpdateUserTemplateData);
             }
         }
+
     }
 }

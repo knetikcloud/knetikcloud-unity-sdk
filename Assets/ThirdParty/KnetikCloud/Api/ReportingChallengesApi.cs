@@ -146,6 +146,7 @@ namespace com.knetikcloud.Api
                 GetChallengeEventLeaderboardComplete(GetChallengeEventLeaderboardData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Retrieve a challenge event participant details Lists all user submitted scores sorted by value, including those that do not apear in the leaderboard due to value or aggregation
@@ -219,5 +220,6 @@ namespace com.knetikcloud.Api
                 GetChallengeEventParticipantsComplete(GetChallengeEventParticipantsData);
             }
         }
+
     }
 }

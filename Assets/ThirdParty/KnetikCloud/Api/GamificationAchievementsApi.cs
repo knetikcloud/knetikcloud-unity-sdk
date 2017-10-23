@@ -398,6 +398,7 @@ namespace com.knetikcloud.Api
                 CreateAchievementComplete(CreateAchievementData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Create an achievement template Achievement templates define a type of achievement and the properties they have
@@ -450,6 +451,7 @@ namespace com.knetikcloud.Api
                 CreateAchievementTemplateComplete(CreateAchievementTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete an achievement definition Will also disable the associated generated rule, if any.
@@ -504,6 +506,7 @@ namespace com.knetikcloud.Api
                 DeleteAchievementComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete an achievement template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
@@ -564,6 +567,7 @@ namespace com.knetikcloud.Api
                 DeleteAchievementTemplateComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single achievement definition 
@@ -620,6 +624,7 @@ namespace com.knetikcloud.Api
                 GetAchievementComplete(GetAchievementData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single achievement template 
@@ -676,6 +681,7 @@ namespace com.knetikcloud.Api
                 GetAchievementTemplateComplete(GetAchievementTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search achievement templates 
@@ -743,6 +749,7 @@ namespace com.knetikcloud.Api
                 GetAchievementTemplatesComplete(GetAchievementTemplatesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get the list of triggers that can be used to trigger an achievement progress update 
@@ -792,6 +799,7 @@ namespace com.knetikcloud.Api
                 GetAchievementTriggersComplete(GetAchievementTriggersData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get all achievement definitions in the system 
@@ -883,6 +891,7 @@ namespace com.knetikcloud.Api
                 GetAchievementsComplete(GetAchievementsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a list of derived achievements Used by other services that depend on achievements
@@ -939,6 +948,7 @@ namespace com.knetikcloud.Api
                 GetDerivedAchievementsComplete(GetDerivedAchievementsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Retrieve progress on a given achievement for a given user Assets will not be filled in on the resources returned. Use &#39;Get a single poll&#39; to retrieve the full resource with assets for a given item as needed.
@@ -1002,6 +1012,7 @@ mGetUserAchievementProgressPath = mGetUserAchievementProgressPath.Replace("{" + 
                 GetUserAchievementProgressComplete(GetUserAchievementProgressData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Retrieve progress on achievements for a given user Assets will not be filled in on the resources returned. Use &#39;Get a single poll&#39; to retrieve the full resource with assets for a given item as needed.
@@ -1088,6 +1099,7 @@ mGetUserAchievementProgressPath = mGetUserAchievementProgressPath.Replace("{" + 
                 GetUserAchievementsProgressComplete(GetUserAchievementsProgressData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Retrieve progress on a given achievement for all users Assets will not be filled in on the resources returned. Use &#39;Get single achievement progress for user&#39; to retrieve the full resource with assets for a given user as needed.
@@ -1174,6 +1186,7 @@ mGetUserAchievementProgressPath = mGetUserAchievementProgressPath.Replace("{" + 
                 GetUsersAchievementProgressComplete(GetUsersAchievementProgressData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Retrieve progress on achievements for all users Assets will not be filled in on the resources returned. Use &#39;Get single achievement progress for user&#39; to retrieve the full resource with assets for a given user as needed.
@@ -1253,6 +1266,7 @@ mGetUserAchievementProgressPath = mGetUserAchievementProgressPath.Replace("{" + 
                 GetUsersAchievementsProgressComplete(GetUsersAchievementsProgressData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Increment an achievement progress record for a user If no progress record yet exists for the user, it will be created. Otherwise it will be updated and the provided value added to the existing progress. May be negative. If progress meets or exceeds the achievement&#39;s max_value it will be marked as earned and a BRE event will be triggered for the &lt;code&gt;BreAchievementEarnedTrigger&lt;/code&gt;.
@@ -1319,6 +1333,7 @@ mIncrementAchievementProgressPath = mIncrementAchievementProgressPath.Replace("{
                 IncrementAchievementProgressComplete(IncrementAchievementProgressData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Set an achievement progress record for a user If no progress record yet exists for the user, it will be created. Otherwise it will be updated and progress set to the provided value. If progress meets or exceeds the achievement&#39;s max_value it will be marked as earned and a BRE event will be triggered for the &lt;code&gt;BreAchievementEarnedTrigger&lt;/code&gt;.
@@ -1385,6 +1400,7 @@ mSetAchievementProgressPath = mSetAchievementProgressPath.Replace("{" + "achieve
                 SetAchievementProgressComplete(SetAchievementProgressData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update an achievement definition The existing generated rule, if any, will be deleted. A new rule will be created if a trigger event name is specified in the new version.
@@ -1444,6 +1460,7 @@ mSetAchievementProgressPath = mSetAchievementProgressPath.Replace("{" + "achieve
                 UpdateAchievementComplete(UpdateAchievementData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update an achievement template 
@@ -1503,5 +1520,6 @@ mSetAchievementProgressPath = mSetAchievementProgressPath.Replace("{" + "achieve
                 UpdateAchievementTemplateComplete(UpdateAchievementTemplateData);
             }
         }
+
     }
 }

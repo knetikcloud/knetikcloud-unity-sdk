@@ -167,6 +167,7 @@ namespace com.knetikcloud.Api
                 CreateBREGlobalComplete(CreateBREGlobalData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a global May fail if there are existing rules against it. Cannot delete core globals
@@ -221,6 +222,7 @@ namespace com.knetikcloud.Api
                 DeleteBREGlobalComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single global definition 
@@ -277,6 +279,7 @@ namespace com.knetikcloud.Api
                 GetBREGlobalComplete(GetBREGlobalData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List global definitions 
@@ -344,6 +347,7 @@ namespace com.knetikcloud.Api
                 GetBREGlobalsComplete(GetBREGlobalsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a global definition May fail if new parameters mismatch requirements of existing rules. Cannot update core globals
@@ -403,5 +407,6 @@ namespace com.knetikcloud.Api
                 UpdateBREGlobalComplete(UpdateBREGlobalData);
             }
         }
+
     }
 }

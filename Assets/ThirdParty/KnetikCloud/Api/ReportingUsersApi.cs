@@ -134,5 +134,6 @@ namespace com.knetikcloud.Api
                 GetUserRegistrationsComplete(GetUserRegistrationsData);
             }
         }
+
     }
 }

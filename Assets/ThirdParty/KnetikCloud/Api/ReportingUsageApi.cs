@@ -263,6 +263,7 @@ namespace com.knetikcloud.Api
                 GetUsageByDayComplete(GetUsageByDayData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Returns aggregated endpoint usage information by hour 
@@ -364,6 +365,7 @@ namespace com.knetikcloud.Api
                 GetUsageByHourComplete(GetUsageByHourData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Returns aggregated endpoint usage information by minute 
@@ -465,6 +467,7 @@ namespace com.knetikcloud.Api
                 GetUsageByMinuteComplete(GetUsageByMinuteData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Returns aggregated endpoint usage information by month 
@@ -566,6 +569,7 @@ namespace com.knetikcloud.Api
                 GetUsageByMonthComplete(GetUsageByMonthData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Returns aggregated endpoint usage information by year 
@@ -667,6 +671,7 @@ namespace com.knetikcloud.Api
                 GetUsageByYearComplete(GetUsageByYearData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Returns list of endpoints called (method and url) 
@@ -738,5 +743,6 @@ namespace com.knetikcloud.Api
                 GetUsageEndpointsComplete(GetUsageEndpointsData);
             }
         }
+
     }
 }

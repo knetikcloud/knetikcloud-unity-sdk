@@ -135,6 +135,7 @@ namespace com.knetikcloud.Api
                 DeleteMaintenanceComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get current maintenance info Get current maintenance info. 404 if no maintenance.
@@ -184,6 +185,7 @@ namespace com.knetikcloud.Api
                 GetMaintenanceComplete(GetMaintenanceData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Set current maintenance info 
@@ -234,6 +236,7 @@ namespace com.knetikcloud.Api
                 SetMaintenanceComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update current maintenance info 
@@ -284,5 +287,6 @@ namespace com.knetikcloud.Api
                 UpdateMaintenanceComplete();
             }
         }
+
     }
 }

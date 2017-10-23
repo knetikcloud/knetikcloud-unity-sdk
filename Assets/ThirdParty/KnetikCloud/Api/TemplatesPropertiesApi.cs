@@ -122,6 +122,7 @@ namespace com.knetikcloud.Api
                 GetTemplatePropertyTypeComplete(GetTemplatePropertyTypeData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List template property types 
@@ -171,5 +172,6 @@ namespace com.knetikcloud.Api
                 GetTemplatePropertyTypesComplete(GetTemplatePropertyTypesData);
             }
         }
+
     }
 }

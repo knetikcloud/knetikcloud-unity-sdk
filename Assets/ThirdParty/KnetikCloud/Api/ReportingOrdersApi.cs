@@ -156,5 +156,6 @@ namespace com.knetikcloud.Api
                 GetInvoiceReportsComplete(GetInvoiceReportsData);
             }
         }
+
     }
 }

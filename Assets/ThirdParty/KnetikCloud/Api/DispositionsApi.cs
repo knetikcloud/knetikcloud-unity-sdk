@@ -169,6 +169,7 @@ namespace com.knetikcloud.Api
                 AddDispositionComplete(AddDispositionData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a disposition 
@@ -223,6 +224,7 @@ namespace com.knetikcloud.Api
                 DeleteDispositionComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Returns a disposition 
@@ -279,6 +281,7 @@ namespace com.knetikcloud.Api
                 GetDispositionComplete(GetDispositionData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Returns a list of disposition counts 
@@ -311,7 +314,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetDispositionCountsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetDispositionCountsStartTime, mGetDispositionCountsPath, "Sending server request...");
@@ -340,6 +343,7 @@ namespace com.knetikcloud.Api
                 GetDispositionCountsComplete(GetDispositionCountsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Returns a page of dispositions 
@@ -390,7 +394,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetDispositionsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetDispositionsStartTime, mGetDispositionsPath, "Sending server request...");
@@ -419,5 +423,6 @@ namespace com.knetikcloud.Api
                 GetDispositionsComplete(GetDispositionsData);
             }
         }
+
     }
 }

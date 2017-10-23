@@ -197,6 +197,7 @@ namespace com.knetikcloud.Api
                 GetItemRevenueComplete(GetItemRevenueData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get refund revenue info Get basic info about revenue loss from refunds (for all item types), summed up within a time range.
@@ -265,6 +266,7 @@ namespace com.knetikcloud.Api
                 GetRefundRevenueComplete(GetRefundRevenueData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get revenue info by country Get basic info about revenue from sales of all types, summed up within a time range and split out by country. Sorted for largest revenue at the top
@@ -345,6 +347,7 @@ namespace com.knetikcloud.Api
                 GetRevenueByCountryComplete(GetRevenueByCountryData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get revenue info by item Get basic info about revenue from sales of all types, summed up within a time range and split out by specific item. Sorted for largest revenue at the top
@@ -425,6 +428,7 @@ namespace com.knetikcloud.Api
                 GetRevenueByItemComplete(GetRevenueByItemData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get subscription revenue info Get basic info about revenue from sales of new subscriptions as well as recurring payemnts, summed up within a time range
@@ -493,5 +497,6 @@ namespace com.knetikcloud.Api
                 GetSubscriptionRevenueComplete(GetSubscriptionRevenueData);
             }
         }
+
     }
 }

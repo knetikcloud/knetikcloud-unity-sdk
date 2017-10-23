@@ -445,6 +445,7 @@ namespace com.knetikcloud.Api
                 AddItemToUserInventoryComplete(AddItemToUserInventoryData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Check for access to an item without consuming Useful for pre-check and accounts for all various buisness rules
@@ -512,6 +513,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 CheckUserEntitlementItemComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Create an entitlement item 
@@ -570,6 +572,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 CreateEntitlementItemComplete(CreateEntitlementItemData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Create an entitlement template Entitlement templates define a type of entitlement and the properties they have
@@ -622,6 +625,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 CreateEntitlementTemplateComplete(CreateEntitlementTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete an entitlement item 
@@ -676,6 +680,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 DeleteEntitlementItemComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete an entitlement template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
@@ -736,6 +741,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 DeleteEntitlementTemplateComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single entitlement item 
@@ -792,6 +798,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 GetEntitlementItemComplete(GetEntitlementItemData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search entitlement items 
@@ -865,6 +872,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 GetEntitlementItemsComplete(GetEntitlementItemsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single entitlement template 
@@ -921,6 +929,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 GetEntitlementTemplateComplete(GetEntitlementTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search entitlement templates 
@@ -988,6 +997,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 GetEntitlementTemplatesComplete(GetEntitlementTemplatesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List the user inventory entries for a given user 
@@ -1092,6 +1102,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 GetUserInventoriesComplete(GetUserInventoriesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get an inventory entry 
@@ -1155,6 +1166,7 @@ mGetUserInventoryPath = mGetUserInventoryPath.Replace("{" + "id" + "}", KnetikCl
                 GetUserInventoryComplete(GetUserInventoryData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List the log entries for this inventory entry 
@@ -1230,6 +1242,7 @@ mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "id" + "}", Kn
                 GetUserInventoryLogComplete(GetUserInventoryLogData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List the user inventory entries for all users 
@@ -1327,6 +1340,7 @@ mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "id" + "}", Kn
                 GetUsersInventoryComplete(GetUsersInventoryData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Grant an entitlement 
@@ -1389,6 +1403,7 @@ mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "id" + "}", Kn
                 GrantUserEntitlementComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update an entitlement item 
@@ -1452,6 +1467,7 @@ mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "id" + "}", Kn
                 UpdateEntitlementItemComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update an entitlement template 
@@ -1511,6 +1527,7 @@ mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "id" + "}", Kn
                 UpdateEntitlementTemplateComplete(UpdateEntitlementTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Set the behavior data for an inventory entry 
@@ -1575,6 +1592,7 @@ mUpdateUserInventoryBehaviorDataPath = mUpdateUserInventoryBehaviorDataPath.Repl
                 UpdateUserInventoryBehaviorDataComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Set the expiration date Will change the current grace period for a subscription but not the bill date (possibly even ending before having the chance to re-bill)
@@ -1639,6 +1657,7 @@ mUpdateUserInventoryExpiresPath = mUpdateUserInventoryExpiresPath.Replace("{" + 
                 UpdateUserInventoryExpiresComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Set the status for an inventory entry 
@@ -1703,6 +1722,7 @@ mUpdateUserInventoryStatusPath = mUpdateUserInventoryStatusPath.Replace("{" + "i
                 UpdateUserInventoryStatusComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Use an item 
@@ -1776,5 +1796,6 @@ mUseUserEntitlementItemPath = mUseUserEntitlementItemPath.Replace("{" + "item_id
                 UseUserEntitlementItemComplete();
             }
         }
+
     }
 }

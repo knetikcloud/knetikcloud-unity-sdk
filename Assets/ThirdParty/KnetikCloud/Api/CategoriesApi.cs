@@ -267,6 +267,7 @@ namespace com.knetikcloud.Api
                 CreateCategoryComplete(CreateCategoryData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Create a category template Templates define a type of category and the properties they have
@@ -319,6 +320,7 @@ namespace com.knetikcloud.Api
                 CreateCategoryTemplateComplete(CreateCategoryTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete an existing category 
@@ -373,6 +375,7 @@ namespace com.knetikcloud.Api
                 DeleteCategoryComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a category template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
@@ -433,6 +436,7 @@ namespace com.knetikcloud.Api
                 DeleteCategoryTemplateComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search categories with optional filters 
@@ -512,6 +516,7 @@ namespace com.knetikcloud.Api
                 GetCategoriesComplete(GetCategoriesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single category 
@@ -568,6 +573,7 @@ namespace com.knetikcloud.Api
                 GetCategoryComplete(GetCategoryData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single category template 
@@ -624,6 +630,7 @@ namespace com.knetikcloud.Api
                 GetCategoryTemplateComplete(GetCategoryTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search category templates 
@@ -691,6 +698,7 @@ namespace com.knetikcloud.Api
                 GetCategoryTemplatesComplete(GetCategoryTemplatesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List all trivia tags in the system 
@@ -752,6 +760,7 @@ namespace com.knetikcloud.Api
                 GetTagsComplete(GetTagsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update an existing category 
@@ -811,6 +820,7 @@ namespace com.knetikcloud.Api
                 UpdateCategoryComplete(UpdateCategoryData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a category template 
@@ -870,5 +880,6 @@ namespace com.knetikcloud.Api
                 UpdateCategoryTemplateComplete(UpdateCategoryTemplateData);
             }
         }
+
     }
 }

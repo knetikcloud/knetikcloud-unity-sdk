@@ -35,9 +35,11 @@ namespace com.knetikcloud.Api
         /// Get friends list 
         /// </summary>
         /// <param name="userId">The id of the user or &#39;me&#39;</param>
+        /// <param name="filterUsername">Filter for friends with the given username</param>
+        /// <param name="filterUserId">Filter for friends by user id</param>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
-        void GetFriends(string userId, int? size, int? page);
+        void GetFriends(string userId, string filterUsername, int? filterUserId, int? size, int? page);
 
         /// <summary>
         /// Returns the invite token This is a unique invite token that allows direct connection to the request user.  Exposing that token presents privacy issues if the token is leaked. Use friend request flow instead if confirmation is required
@@ -190,14 +192,17 @@ mAddFriendPath = mAddFriendPath.Replace("{" + "id" + "}", KnetikClient.DefaultCl
                 AddFriendComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get friends list 
         /// </summary>
         /// <param name="userId">The id of the user or &#39;me&#39;</param>
+        /// <param name="filterUsername">Filter for friends with the given username</param>
+        /// <param name="filterUserId">Filter for friends by user id</param>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
-        public void GetFriends(string userId, int? size, int? page)
+        public void GetFriends(string userId, string filterUsername, int? filterUserId, int? size, int? page)
         {
             // verify the required parameter 'userId' is set
             if (userId == null)
@@ -217,6 +222,16 @@ mAddFriendPath = mAddFriendPath.Replace("{" + "id" + "}", KnetikClient.DefaultCl
             Dictionary<string, string> formParams = new Dictionary<string, string>();
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
+
+            if (filterUsername != null)
+            {
+                queryParams.Add("filter_username", KnetikClient.DefaultClient.ParameterToString(filterUsername));
+            }
+
+            if (filterUserId != null)
+            {
+                queryParams.Add("filter_user_id", KnetikClient.DefaultClient.ParameterToString(filterUserId));
+            }
 
             if (size != null)
             {
@@ -258,6 +273,7 @@ mAddFriendPath = mAddFriendPath.Replace("{" + "id" + "}", KnetikClient.DefaultCl
                 GetFriendsComplete(GetFriendsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Returns the invite token This is a unique invite token that allows direct connection to the request user.  Exposing that token presents privacy issues if the token is leaked. Use friend request flow instead if confirmation is required
@@ -314,6 +330,7 @@ mAddFriendPath = mAddFriendPath.Replace("{" + "id" + "}", KnetikClient.DefaultCl
                 GetInviteTokenComplete(GetInviteTokenData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get pending invites Invites that the specified user received
@@ -382,6 +399,7 @@ mAddFriendPath = mAddFriendPath.Replace("{" + "id" + "}", KnetikClient.DefaultCl
                 GetInvitesComplete(GetInvitesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Redeem friendship token Immediately connects the requested user with the user mapped by the provided invite token
@@ -439,6 +457,7 @@ mAddFriendPath = mAddFriendPath.Replace("{" + "id" + "}", KnetikClient.DefaultCl
                 RedeemFriendshipTokenComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Remove or decline a friend 
@@ -500,5 +519,6 @@ mRemoveOrDeclineFriendPath = mRemoveOrDeclineFriendPath.Replace("{" + "id" + "}"
                 RemoveOrDeclineFriendComplete();
             }
         }
+
     }
 }

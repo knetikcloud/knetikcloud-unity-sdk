@@ -10,8 +10,22 @@ namespace com.knetikcloud.Model
     /// <summary>
     /// 
     /// </summary>
-    public class Localizer
+    public class RawPushResource
     {
+        /// <summary>
+        /// A list of user ids to send the message to.
+        /// </summary>
+        /// <value>A list of user ids to send the message to.</value>
+        [JsonProperty(PropertyName = "recipients")]
+        public List<int?> Recipients { get; set; }
+
+        /// <summary>
+        /// The body of the outgoing message.
+        /// </summary>
+        /// <value>The body of the outgoing message.</value>
+        [JsonProperty(PropertyName = "text")]
+        public string Text { get; set; }
+
         /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
@@ -20,7 +34,9 @@ namespace com.knetikcloud.Model
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("class Localizer {\n");
+            sb.Append("class RawPushResource {\n");
+            sb.Append("  Recipients: ").Append(Recipients).Append("\n");
+            sb.Append("  Text: ").Append(Text).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }

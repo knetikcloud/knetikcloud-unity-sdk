@@ -475,6 +475,7 @@ namespace com.knetikcloud.Api
                 AddUserToVideoWhitelistComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Adds a new video in the system 
@@ -527,6 +528,7 @@ namespace com.knetikcloud.Api
                 AddVideoComplete(AddVideoData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Add a new video comment 
@@ -586,6 +588,7 @@ namespace com.knetikcloud.Api
                 AddVideoCommentComplete(AddVideoCommentData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Adds a contributor to a video 
@@ -643,6 +646,7 @@ namespace com.knetikcloud.Api
                 AddVideoContributorComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Add a new flag 
@@ -702,6 +706,7 @@ namespace com.knetikcloud.Api
                 AddVideoFlagComplete(AddVideoFlagData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Adds one or more existing videos as related to this one 
@@ -761,6 +766,7 @@ namespace com.knetikcloud.Api
                 AddVideoRelationshipsComplete(AddVideoRelationshipsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Create a video disposition 
@@ -820,6 +826,7 @@ namespace com.knetikcloud.Api
                 CreateVideoDispositionComplete(CreateVideoDispositionData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Deletes a video from the system if no resources are attached to it 
@@ -874,6 +881,7 @@ namespace com.knetikcloud.Api
                 DeleteVideoComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a video comment 
@@ -935,6 +943,7 @@ mDeleteVideoCommentPath = mDeleteVideoCommentPath.Replace("{" + "id" + "}", Knet
                 DeleteVideoCommentComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a video disposition 
@@ -989,6 +998,7 @@ mDeleteVideoCommentPath = mDeleteVideoCommentPath.Replace("{" + "id" + "}", Knet
                 DeleteVideoDispositionComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a flag 
@@ -1043,6 +1053,7 @@ mDeleteVideoCommentPath = mDeleteVideoCommentPath.Replace("{" + "id" + "}", Knet
                 DeleteVideoFlagComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a video&#39;s relationship 
@@ -1104,6 +1115,7 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
                 DeleteVideoRelationshipComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get user videos 
@@ -1178,6 +1190,7 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
                 GetUserVideosComplete(GetUserVideosData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Loads a specific video details 
@@ -1234,6 +1247,7 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
                 GetVideoComplete(GetVideoData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Returns a page of comments for a video 
@@ -1302,6 +1316,7 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
                 GetVideoCommentsComplete(GetVideoCommentsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Returns a page of dispositions for a video 
@@ -1370,6 +1385,7 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
                 GetVideoDispositionsComplete(GetVideoDispositionsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Returns a page of video relationships 
@@ -1438,6 +1454,7 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
                 GetVideoRelationshipsComplete(GetVideoRelationshipsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Search videos using the documented filters 
@@ -1577,6 +1594,7 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
                 GetVideosComplete(GetVideosData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Removes a user from a video&#39;s whitelist Remove the user with the id given in the path from the whitelist of users that can view this video regardless of privacy setting.
@@ -1638,6 +1656,7 @@ mRemoveUserFromVideoWhitelistPath = mRemoveUserFromVideoWhitelistPath.Replace("{
                 RemoveUserFromVideoWhitelistComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Removes a contributor from a video 
@@ -1699,6 +1718,7 @@ mRemoveVideoContributorPath = mRemoveVideoContributorPath.Replace("{" + "id" + "
                 RemoveVideoContributorComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Modifies a video&#39;s details 
@@ -1756,6 +1776,7 @@ mRemoveVideoContributorPath = mRemoveVideoContributorPath.Replace("{" + "id" + "
                 UpdateVideoComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a video comment 
@@ -1820,6 +1841,7 @@ mUpdateVideoCommentPath = mUpdateVideoCommentPath.Replace("{" + "id" + "}", Knet
                 UpdateVideoCommentComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a video&#39;s relationship details 
@@ -1884,6 +1906,7 @@ mUpdateVideoRelationshipPath = mUpdateVideoRelationshipPath.Replace("{" + "relat
                 UpdateVideoRelationshipComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Increment a video&#39;s view count 
@@ -1911,7 +1934,7 @@ mUpdateVideoRelationshipPath = mUpdateVideoRelationshipPath.Replace("{" + "relat
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mViewVideoStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mViewVideoStartTime, mViewVideoPath, "Sending server request...");
@@ -1938,5 +1961,6 @@ mUpdateVideoRelationshipPath = mUpdateVideoRelationshipPath.Replace("{" + "relat
                 ViewVideoComplete();
             }
         }
+
     }
 }

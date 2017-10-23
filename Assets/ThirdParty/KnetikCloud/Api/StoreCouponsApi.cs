@@ -23,6 +23,8 @@ namespace com.knetikcloud.Api
 
         CouponItem GetCouponItemData { get; }
 
+        CouponItem GetCouponItemBySkuData { get; }
+
         ItemTemplateResource GetCouponTemplateData { get; }
 
         PageResourceItemTemplateResource GetCouponTemplatesData { get; }
@@ -63,6 +65,12 @@ namespace com.knetikcloud.Api
         /// </summary>
         /// <param name="id">The id of the coupon</param>
         void GetCouponItem(int? id);
+
+        /// <summary>
+        /// Get a coupon by sku 
+        /// </summary>
+        /// <param name="sku">A sku of the coupon</param>
+        void GetCouponItemBySku(string sku);
 
         /// <summary>
         /// Get a single coupon template Coupon Templates define a type of coupon and the properties they have.
@@ -116,6 +124,9 @@ namespace com.knetikcloud.Api
         private readonly KnetikCoroutine mGetCouponItemCoroutine;
         private DateTime mGetCouponItemStartTime;
         private string mGetCouponItemPath;
+        private readonly KnetikCoroutine mGetCouponItemBySkuCoroutine;
+        private DateTime mGetCouponItemBySkuStartTime;
+        private string mGetCouponItemBySkuPath;
         private readonly KnetikCoroutine mGetCouponTemplateCoroutine;
         private DateTime mGetCouponTemplateStartTime;
         private string mGetCouponTemplatePath;
@@ -147,6 +158,10 @@ namespace com.knetikcloud.Api
         public delegate void GetCouponItemCompleteDelegate(CouponItem response);
         public GetCouponItemCompleteDelegate GetCouponItemComplete;
 
+        public CouponItem GetCouponItemBySkuData { get; private set; }
+        public delegate void GetCouponItemBySkuCompleteDelegate(CouponItem response);
+        public GetCouponItemBySkuCompleteDelegate GetCouponItemBySkuComplete;
+
         public ItemTemplateResource GetCouponTemplateData { get; private set; }
         public delegate void GetCouponTemplateCompleteDelegate(ItemTemplateResource response);
         public GetCouponTemplateCompleteDelegate GetCouponTemplateComplete;
@@ -174,6 +189,7 @@ namespace com.knetikcloud.Api
             mDeleteCouponItemCoroutine = new KnetikCoroutine();
             mDeleteCouponTemplateCoroutine = new KnetikCoroutine();
             mGetCouponItemCoroutine = new KnetikCoroutine();
+            mGetCouponItemBySkuCoroutine = new KnetikCoroutine();
             mGetCouponTemplateCoroutine = new KnetikCoroutine();
             mGetCouponTemplatesCoroutine = new KnetikCoroutine();
             mUpdateCouponItemCoroutine = new KnetikCoroutine();
@@ -238,6 +254,7 @@ namespace com.knetikcloud.Api
                 CreateCouponItemComplete(CreateCouponItemData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Create a coupon template Coupon Templates define a type of coupon and the properties they have.
@@ -290,6 +307,7 @@ namespace com.knetikcloud.Api
                 CreateCouponTemplateComplete(CreateCouponTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a coupon item 
@@ -344,6 +362,7 @@ namespace com.knetikcloud.Api
                 DeleteCouponItemComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a coupon template 
@@ -404,6 +423,7 @@ namespace com.knetikcloud.Api
                 DeleteCouponTemplateComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single coupon item 
@@ -460,6 +480,64 @@ namespace com.knetikcloud.Api
                 GetCouponItemComplete(GetCouponItemData);
             }
         }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Get a coupon by sku 
+        /// </summary>
+        /// <param name="sku">A sku of the coupon</param>
+        public void GetCouponItemBySku(string sku)
+        {
+            // verify the required parameter 'sku' is set
+            if (sku == null)
+            {
+                throw new KnetikException(400, "Missing required parameter 'sku' when calling GetCouponItemBySku");
+            }
+            
+            mGetCouponItemBySkuPath = "/store/coupons/skus/{sku}";
+            if (!string.IsNullOrEmpty(mGetCouponItemBySkuPath))
+            {
+                mGetCouponItemBySkuPath = mGetCouponItemBySkuPath.Replace("{format}", "json");
+            }
+            mGetCouponItemBySkuPath = mGetCouponItemBySkuPath.Replace("{" + "sku" + "}", KnetikClient.DefaultClient.ParameterToString(sku));
+
+            Dictionary<string, string> queryParams = new Dictionary<string, string>();
+            Dictionary<string, string> headerParams = new Dictionary<string, string>();
+            Dictionary<string, string> formParams = new Dictionary<string, string>();
+            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
+            string postBody = null;
+
+            // authentication setting, if any
+            string[] authSettings = new string[] {  };
+
+            mGetCouponItemBySkuStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mGetCouponItemBySkuStartTime, mGetCouponItemBySkuPath, "Sending server request...");
+
+            // make the HTTP request
+            mGetCouponItemBySkuCoroutine.ResponseReceived += GetCouponItemBySkuCallback;
+            mGetCouponItemBySkuCoroutine.Start(mGetCouponItemBySkuPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void GetCouponItemBySkuCallback(IRestResponse response)
+        {
+            if (((int)response.StatusCode) >= 400)
+            {
+                throw new KnetikException((int)response.StatusCode, "Error calling GetCouponItemBySku: " + response.Content, response.Content);
+            }
+            else if (((int)response.StatusCode) == 0)
+            {
+                throw new KnetikException((int)response.StatusCode, "Error calling GetCouponItemBySku: " + response.ErrorMessage, response.ErrorMessage);
+            }
+
+            GetCouponItemBySkuData = (CouponItem) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CouponItem), response.Headers);
+            KnetikLogger.LogResponse(mGetCouponItemBySkuStartTime, mGetCouponItemBySkuPath, string.Format("Response received successfully:\n{0}", GetCouponItemBySkuData.ToString()));
+
+            if (GetCouponItemBySkuComplete != null)
+            {
+                GetCouponItemBySkuComplete(GetCouponItemBySkuData);
+            }
+        }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single coupon template Coupon Templates define a type of coupon and the properties they have.
@@ -516,6 +594,7 @@ namespace com.knetikcloud.Api
                 GetCouponTemplateComplete(GetCouponTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search coupon templates 
@@ -583,6 +662,7 @@ namespace com.knetikcloud.Api
                 GetCouponTemplatesComplete(GetCouponTemplatesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a coupon item 
@@ -648,6 +728,7 @@ namespace com.knetikcloud.Api
                 UpdateCouponItemComplete(UpdateCouponItemData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a coupon template 
@@ -707,5 +788,6 @@ namespace com.knetikcloud.Api
                 UpdateCouponTemplateComplete(UpdateCouponTemplateData);
             }
         }
+
     }
 }

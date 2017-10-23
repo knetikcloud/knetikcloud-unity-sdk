@@ -238,6 +238,7 @@ namespace com.knetikcloud.Api
                 CreateShippingItemComplete(CreateShippingItemData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Create a shipping template Shipping Templates define a type of shipping and the properties they have.
@@ -290,6 +291,7 @@ namespace com.knetikcloud.Api
                 CreateShippingTemplateComplete(CreateShippingTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a shipping item 
@@ -344,6 +346,7 @@ namespace com.knetikcloud.Api
                 DeleteShippingItemComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a shipping template 
@@ -404,6 +407,7 @@ namespace com.knetikcloud.Api
                 DeleteShippingTemplateComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single shipping item 
@@ -460,6 +464,7 @@ namespace com.knetikcloud.Api
                 GetShippingItemComplete(GetShippingItemData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single shipping template Shipping Templates define a type of shipping and the properties they have.
@@ -516,6 +521,7 @@ namespace com.knetikcloud.Api
                 GetShippingTemplateComplete(GetShippingTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search shipping templates 
@@ -583,6 +589,7 @@ namespace com.knetikcloud.Api
                 GetShippingTemplatesComplete(GetShippingTemplatesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a shipping item 
@@ -648,6 +655,7 @@ namespace com.knetikcloud.Api
                 UpdateShippingItemComplete(UpdateShippingItemData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a shipping template 
@@ -707,5 +715,6 @@ namespace com.knetikcloud.Api
                 UpdateShippingTemplateComplete(UpdateShippingTemplateData);
             }
         }
+
     }
 }

@@ -27,8 +27,6 @@ namespace com.knetikcloud.Api
 
         PageResourceStoreItemTemplateResource GetItemTemplatesData { get; }
 
-        PageResourceStoreItem GetStoreData { get; }
-
         StoreItem GetStoreItemData { get; }
 
         PageResourceStoreItem GetStoreItemsData { get; }
@@ -86,23 +84,13 @@ namespace com.knetikcloud.Api
         void GetItemTemplates(int? size, int? page, string order);
 
         /// <summary>
-        /// Get a listing of store items The exact structure of each items may differ to include fields specific to the type. The same is true for behaviors.
-        /// </summary>
-        /// <param name="limit">The amount of items returned</param>
-        /// <param name="page">The page of the request</param>
-        /// <param name="useCatalog">Whether to remove items that are not intended for display or not in date</param>
-        /// <param name="ignoreLocation">Whether to ignore country restrictions based on the caller&#39;s location</param>
-        /// <param name="inStockOnly">Whether only in-stock items should be returned.  Default value is false</param>
-        void GetStore(int? limit, int? page, bool? useCatalog, bool? ignoreLocation, bool? inStockOnly);
-
-        /// <summary>
         /// Get a single store item 
         /// </summary>
         /// <param name="id">The id of the item</param>
         void GetStoreItem(int? id);
 
         /// <summary>
-        /// List and search store items 
+        /// List and search store items If called without permission STORE_ADMIN the only items marked displayable, whose start and end date are null or appropriate to the current date, and whose geo policy allows the caller&#39;s country will be returned. Similarly skus will be filtered, possibly resulting in an item returned with no skus the user can purchase.
         /// </summary>
         /// <param name="filterNameSearch">Filter for items whose name starts with a given string.</param>
         /// <param name="filterUniqueKey">Filter for items whose unique_key is a given string.</param>
@@ -173,9 +161,6 @@ namespace com.knetikcloud.Api
         private readonly KnetikCoroutine mGetItemTemplatesCoroutine;
         private DateTime mGetItemTemplatesStartTime;
         private string mGetItemTemplatesPath;
-        private readonly KnetikCoroutine mGetStoreCoroutine;
-        private DateTime mGetStoreStartTime;
-        private string mGetStorePath;
         private readonly KnetikCoroutine mGetStoreItemCoroutine;
         private DateTime mGetStoreItemStartTime;
         private string mGetStoreItemPath;
@@ -218,10 +203,6 @@ namespace com.knetikcloud.Api
         public delegate void GetItemTemplatesCompleteDelegate(PageResourceStoreItemTemplateResource response);
         public GetItemTemplatesCompleteDelegate GetItemTemplatesComplete;
 
-        public PageResourceStoreItem GetStoreData { get; private set; }
-        public delegate void GetStoreCompleteDelegate(PageResourceStoreItem response);
-        public GetStoreCompleteDelegate GetStoreComplete;
-
         public StoreItem GetStoreItemData { get; private set; }
         public delegate void GetStoreItemCompleteDelegate(StoreItem response);
         public GetStoreItemCompleteDelegate GetStoreItemComplete;
@@ -255,7 +236,6 @@ namespace com.knetikcloud.Api
             mGetBehaviorsCoroutine = new KnetikCoroutine();
             mGetItemTemplateCoroutine = new KnetikCoroutine();
             mGetItemTemplatesCoroutine = new KnetikCoroutine();
-            mGetStoreCoroutine = new KnetikCoroutine();
             mGetStoreItemCoroutine = new KnetikCoroutine();
             mGetStoreItemsCoroutine = new KnetikCoroutine();
             mQuickBuyCoroutine = new KnetikCoroutine();
@@ -315,6 +295,7 @@ namespace com.knetikcloud.Api
                 CreateItemTemplateComplete(CreateItemTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Create a store item SKUs have to be unique in the entire store. If a duplicate SKU is found, a 400 error is generated and the response will have a \&quot;parameters\&quot; field that is a list of duplicates. A duplicate is an object like {item_id, offending_sku_list}. Ex:&lt;br /&gt; {..., parameters: [[{item: 1, skus: [\&quot;SKU-1\&quot;]}]]}&lt;br /&gt; If an item is brand new and has duplicate SKUs within itself, the item ID will be 0.  Item subclasses are not allowed here, you will have to use their respective endpoints.
@@ -373,6 +354,7 @@ namespace com.knetikcloud.Api
                 CreateStoreItemComplete(CreateStoreItemData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete an item template 
@@ -433,6 +415,7 @@ namespace com.knetikcloud.Api
                 DeleteItemTemplateComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a store item 
@@ -487,6 +470,7 @@ namespace com.knetikcloud.Api
                 DeleteStoreItemComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List available item behaviors 
@@ -536,6 +520,7 @@ namespace com.knetikcloud.Api
                 GetBehaviorsComplete(GetBehaviorsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single item template Item Templates define a type of item and the properties they have.
@@ -592,6 +577,7 @@ namespace com.knetikcloud.Api
                 GetItemTemplateComplete(GetItemTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search item templates 
@@ -659,85 +645,7 @@ namespace com.knetikcloud.Api
                 GetItemTemplatesComplete(GetItemTemplatesData);
             }
         }
-        /// <inheritdoc />
-        /// <summary>
-        /// Get a listing of store items The exact structure of each items may differ to include fields specific to the type. The same is true for behaviors.
-        /// </summary>
-        /// <param name="limit">The amount of items returned</param>
-        /// <param name="page">The page of the request</param>
-        /// <param name="useCatalog">Whether to remove items that are not intended for display or not in date</param>
-        /// <param name="ignoreLocation">Whether to ignore country restrictions based on the caller&#39;s location</param>
-        /// <param name="inStockOnly">Whether only in-stock items should be returned.  Default value is false</param>
-        public void GetStore(int? limit, int? page, bool? useCatalog, bool? ignoreLocation, bool? inStockOnly)
-        {
-            
-            mGetStorePath = "/store";
-            if (!string.IsNullOrEmpty(mGetStorePath))
-            {
-                mGetStorePath = mGetStorePath.Replace("{format}", "json");
-            }
-            
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
 
-            if (limit != null)
-            {
-                queryParams.Add("limit", KnetikClient.DefaultClient.ParameterToString(limit));
-            }
-
-            if (page != null)
-            {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
-            }
-
-            if (useCatalog != null)
-            {
-                queryParams.Add("use_catalog", KnetikClient.DefaultClient.ParameterToString(useCatalog));
-            }
-
-            if (ignoreLocation != null)
-            {
-                queryParams.Add("ignore_location", KnetikClient.DefaultClient.ParameterToString(ignoreLocation));
-            }
-
-            if (inStockOnly != null)
-            {
-                queryParams.Add("in_stock_only", KnetikClient.DefaultClient.ParameterToString(inStockOnly));
-            }
-
-            // authentication setting, if any
-            string[] authSettings = new string[] {  };
-
-            mGetStoreStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetStoreStartTime, mGetStorePath, "Sending server request...");
-
-            // make the HTTP request
-            mGetStoreCoroutine.ResponseReceived += GetStoreCallback;
-            mGetStoreCoroutine.Start(mGetStorePath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-        }
-
-        private void GetStoreCallback(IRestResponse response)
-        {
-            if (((int)response.StatusCode) >= 400)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetStore: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetStore: " + response.ErrorMessage, response.ErrorMessage);
-            }
-
-            GetStoreData = (PageResourceStoreItem) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceStoreItem), response.Headers);
-            KnetikLogger.LogResponse(mGetStoreStartTime, mGetStorePath, string.Format("Response received successfully:\n{0}", GetStoreData.ToString()));
-
-            if (GetStoreComplete != null)
-            {
-                GetStoreComplete(GetStoreData);
-            }
-        }
         /// <inheritdoc />
         /// <summary>
         /// Get a single store item 
@@ -794,9 +702,10 @@ namespace com.knetikcloud.Api
                 GetStoreItemComplete(GetStoreItemData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
-        /// List and search store items 
+        /// List and search store items If called without permission STORE_ADMIN the only items marked displayable, whose start and end date are null or appropriate to the current date, and whose geo policy allows the caller&#39;s country will be returned. Similarly skus will be filtered, possibly resulting in an item returned with no skus the user can purchase.
         /// </summary>
         /// <param name="filterNameSearch">Filter for items whose name starts with a given string.</param>
         /// <param name="filterUniqueKey">Filter for items whose unique_key is a given string.</param>
@@ -945,6 +854,7 @@ namespace com.knetikcloud.Api
                 GetStoreItemsComplete(GetStoreItemsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// One-step purchase and pay for a single SKU item from a user&#39;s wallet Used to create and automatically pay an invoice for a single unit of a single SKU from a user&#39;s wallet. SKU must be priced in virtual currency and must not be an item that requires shipping. PAYMENTS_ADMIN permission is required if user ID is specified and is not the ID of the currently logged in user. If invoice price does not match expected price, purchase is aborted
@@ -997,6 +907,7 @@ namespace com.knetikcloud.Api
                 QuickBuyComplete(QuickBuyData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update an item template 
@@ -1056,6 +967,7 @@ namespace com.knetikcloud.Api
                 UpdateItemTemplateComplete(UpdateItemTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a store item 
@@ -1121,5 +1033,6 @@ namespace com.knetikcloud.Api
                 UpdateStoreItemComplete(UpdateStoreItemData);
             }
         }
+
     }
 }

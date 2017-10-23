@@ -311,6 +311,7 @@ namespace com.knetikcloud.Api
                 AddDeviceUsersComplete(AddDeviceUsersData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Create a device 
@@ -368,6 +369,7 @@ namespace com.knetikcloud.Api
                 CreateDeviceComplete(CreateDeviceData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Create a device template Device Templates define a type of device and the properties they have
@@ -420,6 +422,7 @@ namespace com.knetikcloud.Api
                 CreateDeviceTemplateComplete(CreateDeviceTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a device 
@@ -474,6 +477,7 @@ namespace com.knetikcloud.Api
                 DeleteDeviceComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete an device template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
@@ -534,6 +538,7 @@ namespace com.knetikcloud.Api
                 DeleteDeviceTemplateComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a device user 
@@ -595,6 +600,7 @@ mDeleteDeviceUserPath = mDeleteDeviceUserPath.Replace("{" + "user_id" + "}", Kne
                 DeleteDeviceUserComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete all device users 
@@ -655,6 +661,7 @@ mDeleteDeviceUserPath = mDeleteDeviceUserPath.Replace("{" + "user_id" + "}", Kne
                 DeleteDeviceUsersComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single device 
@@ -711,6 +718,7 @@ mDeleteDeviceUserPath = mDeleteDeviceUserPath.Replace("{" + "user_id" + "}", Kne
                 GetDeviceComplete(GetDeviceData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single device template 
@@ -767,6 +775,7 @@ mDeleteDeviceUserPath = mDeleteDeviceUserPath.Replace("{" + "user_id" + "}", Kne
                 GetDeviceTemplateComplete(GetDeviceTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search device templates 
@@ -834,6 +843,7 @@ mDeleteDeviceUserPath = mDeleteDeviceUserPath.Replace("{" + "user_id" + "}", Kne
                 GetDeviceTemplatesComplete(GetDeviceTemplatesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search devices Get a list of devices with optional filtering
@@ -937,6 +947,7 @@ mDeleteDeviceUserPath = mDeleteDeviceUserPath.Replace("{" + "user_id" + "}", Kne
                 GetDevicesComplete(GetDevicesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a device 
@@ -1001,6 +1012,7 @@ mDeleteDeviceUserPath = mDeleteDeviceUserPath.Replace("{" + "user_id" + "}", Kne
                 UpdateDeviceComplete(UpdateDeviceData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update an device template 
@@ -1060,5 +1072,6 @@ mDeleteDeviceUserPath = mDeleteDeviceUserPath.Replace("{" + "user_id" + "}", Kne
                 UpdateDeviceTemplateComplete(UpdateDeviceTemplateData);
             }
         }
+
     }
 }

@@ -171,6 +171,7 @@ namespace com.knetikcloud.Api
                 CreateBRETriggerComplete(CreateBRETriggerData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a trigger May fail if there are existing rules against it. Cannot delete core triggers
@@ -225,6 +226,7 @@ namespace com.knetikcloud.Api
                 DeleteBRETriggerComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single trigger 
@@ -281,6 +283,7 @@ namespace com.knetikcloud.Api
                 GetBRETriggerComplete(GetBRETriggerData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List triggers 
@@ -372,6 +375,7 @@ namespace com.knetikcloud.Api
                 GetBRETriggersComplete(GetBRETriggersData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a trigger May fail if new parameters mismatch requirements of existing rules. Cannot update core triggers
@@ -431,5 +435,6 @@ namespace com.knetikcloud.Api
                 UpdateBRETriggerComplete(UpdateBRETriggerData);
             }
         }
+
     }
 }

@@ -8,27 +8,30 @@ namespace com.knetikcloud.Model
 {
     /// <inheritdoc />
     /// <summary>
-    /// Expressions are instructions for the rule engine to resolve certain values. For example instead of &#x60;user 1&#x60; it&#39;d state &#x60;user provided by the event&#x60;. Full list and definitions available at GET /bre/expressions.
+    /// 
     /// </summary>
-    public class MapResource
+    public class TemplatePushResource
     {
         /// <summary>
-        /// Gets or Sets Definition
+        /// A list of user ids to send the message to.
         /// </summary>
-        [JsonProperty(PropertyName = "definition")]
-        public string Definition { get; set; }
+        /// <value>A list of user ids to send the message to.</value>
+        [JsonProperty(PropertyName = "recipients")]
+        public List<int?> Recipients { get; set; }
 
         /// <summary>
-        /// Gets or Sets Map
+        /// A mustache template
         /// </summary>
-        [JsonProperty(PropertyName = "map")]
-        public Dictionary<string, ExpressionResource> Map { get; set; }
+        /// <value>A mustache template</value>
+        [JsonProperty(PropertyName = "template")]
+        public string Template { get; set; }
 
         /// <summary>
-        /// Gets or Sets Type
+        /// A map of values to fill in the template
         /// </summary>
-        [JsonProperty(PropertyName = "type")]
-        public string Type { get; set; }
+        /// <value>A map of values to fill in the template</value>
+        [JsonProperty(PropertyName = "template_vars")]
+        public Object TemplateVars { get; set; }
 
         /// <inheritdoc />
         /// <summary>
@@ -38,10 +41,10 @@ namespace com.knetikcloud.Model
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("class MapResource {\n");
-            sb.Append("  Definition: ").Append(Definition).Append("\n");
-            sb.Append("  Map: ").Append(Map).Append("\n");
-            sb.Append("  Type: ").Append(Type).Append("\n");
+            sb.Append("class TemplatePushResource {\n");
+            sb.Append("  Recipients: ").Append(Recipients).Append("\n");
+            sb.Append("  Template: ").Append(Template).Append("\n");
+            sb.Append("  TemplateVars: ").Append(TemplateVars).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }

@@ -183,6 +183,7 @@ namespace com.knetikcloud.Api
                 AddCommentComplete(AddCommentData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a comment 
@@ -237,6 +238,7 @@ namespace com.knetikcloud.Api
                 DeleteCommentComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Return a comment 
@@ -293,6 +295,7 @@ namespace com.knetikcloud.Api
                 GetCommentComplete(GetCommentData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Returns a page of comments 
@@ -376,6 +379,7 @@ namespace com.knetikcloud.Api
                 GetCommentsComplete(GetCommentsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Search the comment index The body is an ElasticSearch query json. Please see their &lt;a href&#x3D;&#39;https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html&#39;&gt;documentation&lt;/a&gt; for details on the format and search options
@@ -411,7 +415,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(query); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSearchCommentsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSearchCommentsStartTime, mSearchCommentsPath, "Sending server request...");
@@ -440,6 +444,7 @@ namespace com.knetikcloud.Api
                 SearchCommentsComplete(SearchCommentsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a comment 
@@ -497,5 +502,6 @@ namespace com.knetikcloud.Api
                 UpdateCommentComplete();
             }
         }
+
     }
 }

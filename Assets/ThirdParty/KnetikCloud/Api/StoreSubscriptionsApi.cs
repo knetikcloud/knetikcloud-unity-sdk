@@ -258,6 +258,7 @@ namespace com.knetikcloud.Api
                 CreateSubscriptionComplete(CreateSubscriptionData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Create a subscription template Subscription Templates define a type of subscription and the properties they have.
@@ -310,6 +311,7 @@ namespace com.knetikcloud.Api
                 CreateSubscriptionTemplateComplete(CreateSubscriptionTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a subscription plan Must not be locked or a migration target
@@ -371,6 +373,7 @@ mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}",
                 DeleteSubscriptionComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a subscription template 
@@ -431,6 +434,7 @@ mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}",
                 DeleteSubscriptionTemplateComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Retrieve a single subscription item and associated plans 
@@ -487,6 +491,7 @@ mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}",
                 GetSubscriptionComplete(GetSubscriptionData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single subscription template Subscription Templates define a type of subscription and the properties they have.
@@ -543,6 +548,7 @@ mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}",
                 GetSubscriptionTemplateComplete(GetSubscriptionTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search subscription templates 
@@ -610,6 +616,7 @@ mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}",
                 GetSubscriptionTemplatesComplete(GetSubscriptionTemplatesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List available subscription items and associated plans 
@@ -677,6 +684,7 @@ mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}",
                 GetSubscriptionsComplete(GetSubscriptionsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Processes subscriptions and charge dues 
@@ -724,6 +732,7 @@ mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}",
                 ProcessSubscriptionsComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Updates a subscription item and associated plans Will not remove plans left out
@@ -781,6 +790,7 @@ mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}",
                 UpdateSubscriptionComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a subscription template 
@@ -840,5 +850,6 @@ mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}",
                 UpdateSubscriptionTemplateComplete(UpdateSubscriptionTemplateData);
             }
         }
+
     }
 }

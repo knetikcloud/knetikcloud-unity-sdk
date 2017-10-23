@@ -13,9 +13,9 @@ namespace com.knetikcloud.Model
     public class StoreItem : Item
     {
         /// <summary>
-        /// Whether or not the item is currently displayable.  Default = true
+        /// Whether or not the item is currently visible to users. Does not block purchase; Use store_start or store_end to block purchase.  Default = true
         /// </summary>
-        /// <value>Whether or not the item is currently displayable.  Default = true</value>
+        /// <value>Whether or not the item is currently visible to users. Does not block purchase; Use store_start or store_end to block purchase.  Default = true</value>
         [JsonProperty(PropertyName = "displayable")]
         public bool? Displayable { get; set; }
 
@@ -48,16 +48,16 @@ namespace com.knetikcloud.Model
         public List<Sku> Skus { get; set; }
 
         /// <summary>
-        /// The date the item will leave the store, unix timestamp in seconds.  If set to null, item will never leave the store
+        /// The date the item will become hidden and unavailable for purchase, unix timestamp in seconds.  If set to null, item will never leave the store
         /// </summary>
-        /// <value>The date the item will leave the store, unix timestamp in seconds.  If set to null, item will never leave the store</value>
+        /// <value>The date the item will become hidden and unavailable for purchase, unix timestamp in seconds.  If set to null, item will never leave the store</value>
         [JsonProperty(PropertyName = "store_end")]
         public long? StoreEnd { get; set; }
 
         /// <summary>
-        /// The date the item will appear in the store, unix timestamp in seconds.  If set to null, item will appear in store immediately
+        /// The date the item will become visible (if displayable) and available for purchase, unix timestamp in seconds.  If set to null, item will appear in store immediately
         /// </summary>
-        /// <value>The date the item will appear in the store, unix timestamp in seconds.  If set to null, item will appear in store immediately</value>
+        /// <value>The date the item will become visible (if displayable) and available for purchase, unix timestamp in seconds.  If set to null, item will appear in store immediately</value>
         [JsonProperty(PropertyName = "store_start")]
         public long? StoreStart { get; set; }
 

@@ -103,5 +103,6 @@ namespace com.knetikcloud.Api
                 CreateOrUpdateFattMerchantPaymentMethodComplete(CreateOrUpdateFattMerchantPaymentMethodData);
             }
         }
+
     }
 }

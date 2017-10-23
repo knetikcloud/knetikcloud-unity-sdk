@@ -164,6 +164,7 @@ namespace com.knetikcloud.Api
                 CreateFulfillmentTypeComplete(CreateFulfillmentTypeData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a fulfillment type 
@@ -218,6 +219,7 @@ namespace com.knetikcloud.Api
                 DeleteFulfillmentTypeComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single fulfillment type 
@@ -274,6 +276,7 @@ namespace com.knetikcloud.Api
                 GetFulfillmentTypeComplete(GetFulfillmentTypeData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search fulfillment types 
@@ -341,6 +344,7 @@ namespace com.knetikcloud.Api
                 GetFulfillmentTypesComplete(GetFulfillmentTypesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a fulfillment type 
@@ -398,5 +402,6 @@ namespace com.knetikcloud.Api
                 UpdateFulfillmentTypeComplete();
             }
         }
+
     }
 }

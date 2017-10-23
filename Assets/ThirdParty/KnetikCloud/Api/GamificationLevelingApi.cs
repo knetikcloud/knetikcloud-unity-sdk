@@ -250,6 +250,7 @@ namespace com.knetikcloud.Api
                 CreateLevelComplete(CreateLevelData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a level 
@@ -304,6 +305,7 @@ namespace com.knetikcloud.Api
                 DeleteLevelComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Retrieve a level 
@@ -360,6 +362,7 @@ namespace com.knetikcloud.Api
                 GetLevelComplete(GetLevelData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get the list of triggers that can be used to trigger a leveling progress update 
@@ -409,6 +412,7 @@ namespace com.knetikcloud.Api
                 GetLevelTriggersComplete(GetLevelTriggersData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search levels Get a list of levels schemas with optional filtering
@@ -482,6 +486,7 @@ namespace com.knetikcloud.Api
                 GetLevelsComplete(GetLevelsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a user&#39;s progress for a given level schema 
@@ -545,6 +550,7 @@ mGetUserLevelPath = mGetUserLevelPath.Replace("{" + "name" + "}", KnetikClient.D
                 GetUserLevelComplete(GetUserLevelData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a user&#39;s progress for all level schemas Filtering and sorting is based on the LevelingResource object, not the UserLevelingResource that is returned here.
@@ -625,6 +631,7 @@ mGetUserLevelPath = mGetUserLevelPath.Replace("{" + "name" + "}", KnetikClient.D
                 GetUserLevelsComplete(GetUserLevelsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update or create a leveling progress record for a user If no progress record yet exists for the user, it will be created. Otherwise the provided value will be added to it. May be negative. If progress meets or exceeds the level&#39;s max_value it will be marked as earned and a BRE event will be triggered for the &lt;code&gt;BreAchievementEarnedTrigger&lt;/code&gt;.
@@ -689,6 +696,7 @@ mIncrementProgressPath = mIncrementProgressPath.Replace("{" + "name" + "}", Knet
                 IncrementProgressComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Set leveling progress for a user If no progress record yet exists for the user, it will be created. Otherwise it will be updated to the provided value. If progress meets or exceeds the level&#39;s max_value it will be marked as earned and a BRE event will be triggered for the &lt;code&gt;BreAchievementEarnedTrigger&lt;/code&gt;.
@@ -753,6 +761,7 @@ mSetProgressPath = mSetProgressPath.Replace("{" + "name" + "}", KnetikClient.Def
                 SetProgressComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a level 
@@ -812,5 +821,6 @@ mSetProgressPath = mSetProgressPath.Replace("{" + "name" + "}", KnetikClient.Def
                 UpdateLevelComplete(UpdateLevelData);
             }
         }
+
     }
 }

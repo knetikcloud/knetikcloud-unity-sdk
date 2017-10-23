@@ -27,6 +27,13 @@ namespace com.knetikcloud.Model
         public List<string> Tags { get; set; }
 
         /// <summary>
+        /// The id of the user this metric is for. Default to caller and requires METRICS_ADMIN permission to specify another
+        /// </summary>
+        /// <value>The id of the user this metric is for. Default to caller and requires METRICS_ADMIN permission to specify another</value>
+        [JsonProperty(PropertyName = "user_id")]
+        public int? UserId { get; set; }
+
+        /// <summary>
         /// The value/score of the metric
         /// </summary>
         /// <value>The value/score of the metric</value>
@@ -44,6 +51,7 @@ namespace com.knetikcloud.Model
             sb.Append("class MetricResource {\n");
             sb.Append("  ActivityOccurenceId: ").Append(ActivityOccurenceId).Append("\n");
             sb.Append("  Tags: ").Append(Tags).Append("\n");
+            sb.Append("  UserId: ").Append(UserId).Append("\n");
             sb.Append("  Value: ").Append(Value).Append("\n");
             sb.Append("}\n");
             return sb.ToString();

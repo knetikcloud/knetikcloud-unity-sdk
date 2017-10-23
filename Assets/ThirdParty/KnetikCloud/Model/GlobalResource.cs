@@ -8,10 +8,16 @@ namespace com.knetikcloud.Model
 {
     /// <inheritdoc />
     /// <summary>
-    /// 
+    /// Expressions are instructions for the rule engine to resolve certain values. For example instead of &#x60;user 1&#x60; it&#39;d state &#x60;user provided by the event&#x60;. Full list and definitions available at GET /bre/expressions.
     /// </summary>
     public class GlobalResource
     {
+        /// <summary>
+        /// Gets or Sets Definition
+        /// </summary>
+        [JsonProperty(PropertyName = "definition")]
+        public string Definition { get; set; }
+
         /// <summary>
         /// Gets or Sets GlobalDefId
         /// </summary>
@@ -39,6 +45,7 @@ namespace com.knetikcloud.Model
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("class GlobalResource {\n");
+            sb.Append("  Definition: ").Append(Definition).Append("\n");
             sb.Append("  GlobalDefId: ").Append(GlobalDefId).Append("\n");
             sb.Append("  Scopes: ").Append(Scopes).Append("\n");
             sb.Append("  Type: ").Append(Type).Append("\n");

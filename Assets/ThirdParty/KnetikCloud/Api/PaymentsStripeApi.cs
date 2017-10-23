@@ -116,6 +116,7 @@ namespace com.knetikcloud.Api
                 CreateStripePaymentMethodComplete(CreateStripePaymentMethodData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Pay with a single use token Obtain a token from Stripe, following their examples and documentation. Pays an invoice without creating a payment method. Ensure that Stripe itself has been configured with the webhook so that invoices are marked paid.
@@ -166,5 +167,6 @@ namespace com.knetikcloud.Api
                 PayStripeInvoiceComplete();
             }
         }
+
     }
 }

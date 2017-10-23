@@ -247,6 +247,7 @@ namespace com.knetikcloud.Api
                 AddArtistComplete(AddArtistData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Create an artist template Artist Templates define a type of artist and the properties they have
@@ -299,6 +300,7 @@ namespace com.knetikcloud.Api
                 CreateArtistTemplateComplete(CreateArtistTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Removes an artist from the system IF no resources are attached to it 
@@ -353,6 +355,7 @@ namespace com.knetikcloud.Api
                 DeleteArtistComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete an artist template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
@@ -413,6 +416,7 @@ namespace com.knetikcloud.Api
                 DeleteArtistTemplateComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Loads a specific artist details 
@@ -475,6 +479,7 @@ namespace com.knetikcloud.Api
                 GetArtistComplete(GetArtistData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single artist template 
@@ -531,6 +536,7 @@ namespace com.knetikcloud.Api
                 GetArtistTemplateComplete(GetArtistTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search artist templates 
@@ -598,6 +604,7 @@ namespace com.knetikcloud.Api
                 GetArtistTemplatesComplete(GetArtistTemplatesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Search for artists 
@@ -671,6 +678,7 @@ namespace com.knetikcloud.Api
                 GetArtistsComplete(GetArtistsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Modifies an artist details 
@@ -728,6 +736,7 @@ namespace com.knetikcloud.Api
                 UpdateArtistComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update an artist template 
@@ -787,5 +796,6 @@ namespace com.knetikcloud.Api
                 UpdateArtistTemplateComplete(UpdateArtistTemplateData);
             }
         }
+
     }
 }

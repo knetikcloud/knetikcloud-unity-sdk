@@ -291,6 +291,7 @@ namespace com.knetikcloud.Api
                 AnswerPollComplete(AnswerPollData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Create a new poll Polls are blobs of text with titles, a category and assets. Formatting and display of the text is in the hands of the front end.
@@ -343,6 +344,7 @@ namespace com.knetikcloud.Api
                 CreatePollComplete(CreatePollData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Create a poll template Poll templates define a type of poll and the properties they have
@@ -395,6 +397,7 @@ namespace com.knetikcloud.Api
                 CreatePollTemplateComplete(CreatePollTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete an existing poll 
@@ -449,6 +452,7 @@ namespace com.knetikcloud.Api
                 DeletePollComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a poll template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
@@ -509,6 +513,7 @@ namespace com.knetikcloud.Api
                 DeletePollTemplateComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single poll 
@@ -565,6 +570,7 @@ namespace com.knetikcloud.Api
                 GetPollComplete(GetPollData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get poll answer 
@@ -621,6 +627,7 @@ namespace com.knetikcloud.Api
                 GetPollAnswerComplete(GetPollAnswerData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single poll template 
@@ -677,6 +684,7 @@ namespace com.knetikcloud.Api
                 GetPollTemplateComplete(GetPollTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search poll templates 
@@ -744,6 +752,7 @@ namespace com.knetikcloud.Api
                 GetPollTemplatesComplete(GetPollTemplatesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search polls Get a list of polls with optional filtering. Assets will not be filled in on the resources returned. Use &#39;Get a single poll&#39; to retrieve the full resource with assets for a given item as needed.
@@ -829,6 +838,7 @@ namespace com.knetikcloud.Api
                 GetPollsComplete(GetPollsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update an existing poll 
@@ -888,6 +898,7 @@ namespace com.knetikcloud.Api
                 UpdatePollComplete(UpdatePollData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a poll template 
@@ -947,5 +958,6 @@ namespace com.knetikcloud.Api
                 UpdatePollTemplateComplete(UpdatePollTemplateData);
             }
         }
+
     }
 }

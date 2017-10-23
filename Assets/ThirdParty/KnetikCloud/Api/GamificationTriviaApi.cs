@@ -614,6 +614,7 @@ namespace com.knetikcloud.Api
                 AddQuestionAnswersComplete(AddQuestionAnswersData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Add a tag to a question 
@@ -671,6 +672,7 @@ namespace com.knetikcloud.Api
                 AddQuestionTagComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Add a tag to a batch of questions All questions that dont&#39;t have the tag and match filters will have it added. The returned number is the number of questions updated.
@@ -771,6 +773,7 @@ namespace com.knetikcloud.Api
                 AddTagToQuestionsBatchComplete(AddTagToQuestionsBatchData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Create an import job Set up a job to import a set of trivia questions from a cvs file at a remote url. the file will be validated asynchronously but will not be processed until started manually with the process endpoint.
@@ -823,6 +826,7 @@ namespace com.knetikcloud.Api
                 CreateImportJobComplete(CreateImportJobData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Create a question 
@@ -875,6 +879,7 @@ namespace com.knetikcloud.Api
                 CreateQuestionComplete(CreateQuestionData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Create a question template Question templates define a type of question and the properties they have
@@ -927,6 +932,7 @@ namespace com.knetikcloud.Api
                 CreateQuestionTemplateComplete(CreateQuestionTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete an import job Also deletes all questions that were imported by it
@@ -981,6 +987,7 @@ namespace com.knetikcloud.Api
                 DeleteImportJobComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a question 
@@ -1035,6 +1042,7 @@ namespace com.knetikcloud.Api
                 DeleteQuestionComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Remove an answer from a question 
@@ -1096,6 +1104,7 @@ mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "id" + "}"
                 DeleteQuestionAnswersComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a question template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
@@ -1156,6 +1165,7 @@ mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "id" + "}"
                 DeleteQuestionTemplateComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get an import job 
@@ -1212,6 +1222,7 @@ mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "id" + "}"
                 GetImportJobComplete(GetImportJobData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a list of import job 
@@ -1303,6 +1314,7 @@ mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "id" + "}"
                 GetImportJobsComplete(GetImportJobsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single question 
@@ -1359,6 +1371,7 @@ mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "id" + "}"
                 GetQuestionComplete(GetQuestionData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get an answer for a question 
@@ -1422,6 +1435,7 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
                 GetQuestionAnswerComplete(GetQuestionAnswerData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List the answers available for a question 
@@ -1478,6 +1492,7 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
                 GetQuestionAnswersComplete(GetQuestionAnswersData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List question deltas in ascending order of updated date The &#39;since&#39; parameter is important to avoid getting a full list of all questions. Implementors should make sure they pass the updated date of the last resource loaded, not the date of the last request, in order to avoid gaps
@@ -1533,6 +1548,7 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
                 GetQuestionDeltasComplete(GetQuestionDeltasData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List the tags for a question 
@@ -1589,6 +1605,7 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
                 GetQuestionTagsComplete(GetQuestionTagsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single question template 
@@ -1645,6 +1662,7 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
                 GetQuestionTemplateComplete(GetQuestionTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search question templates 
@@ -1712,6 +1730,7 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
                 GetQuestionTemplatesComplete(GetQuestionTemplatesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search questions 
@@ -1827,6 +1846,7 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
                 GetQuestionsComplete(GetQuestionsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Count questions based on filters This is also provided by the list endpoint so you don&#39;t need to call this for pagination purposes
@@ -1918,6 +1938,7 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
                 GetQuestionsCountComplete(GetQuestionsCountData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Start processing an import job Will process the CSV file and add new questions asynchronously. The status of the job must be &#39;VALID&#39;.
@@ -1985,6 +2006,7 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
                 ProcessImportJobComplete(ProcessImportJobData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Remove a tag from a question 
@@ -2046,6 +2068,7 @@ mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", Kneti
                 RemoveQuestionTagComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Remove a tag from a batch of questions ll questions that have the tag and match filters will have it removed. The returned number is the number of questions updated.
@@ -2150,6 +2173,7 @@ mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", Kneti
                 RemoveTagToQuestionsBatchComplete(RemoveTagToQuestionsBatchData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search tags by the beginning of the string For performance reasons, search &amp; category filters are mutually exclusive. If category is specified, search filter will be ignored in order to do fast matches for typeahead.
@@ -2217,6 +2241,7 @@ mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", Kneti
                 SearchQuestionTagsComplete(SearchQuestionTagsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update an import job Changes should be made before process is started for there to be any effect.
@@ -2276,6 +2301,7 @@ mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", Kneti
                 UpdateImportJobComplete(UpdateImportJobData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a question 
@@ -2335,6 +2361,7 @@ mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", Kneti
                 UpdateQuestionComplete(UpdateQuestionData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update an answer for a question 
@@ -2399,6 +2426,7 @@ mUpdateQuestionAnswerPath = mUpdateQuestionAnswerPath.Replace("{" + "id" + "}", 
                 UpdateQuestionAnswerComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a question template 
@@ -2458,6 +2486,7 @@ mUpdateQuestionAnswerPath = mUpdateQuestionAnswerPath.Replace("{" + "id" + "}", 
                 UpdateQuestionTemplateComplete(UpdateQuestionTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Bulk update questions Will update all questions that match filters used (or all questions in system if no filters used). Body should match a question resource with only those properties you wish to set. Null values will be ignored. Returned number is how many were updated.
@@ -2552,5 +2581,6 @@ mUpdateQuestionAnswerPath = mUpdateQuestionAnswerPath.Replace("{" + "id" + "}", 
                 UpdateQuestionsInBulkComplete(UpdateQuestionsInBulkData);
             }
         }
+
     }
 }

@@ -118,6 +118,7 @@ namespace com.knetikcloud.Api
                 GetBREVariableTypesComplete(GetBREVariableTypesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List valid values for a type Used to lookup users to fill in a user constant for example. Only types marked as enumerable are suppoorted here.
@@ -192,5 +193,6 @@ namespace com.knetikcloud.Api
                 GetBREVariableValuesComplete(GetBREVariableValuesData);
             }
         }
+
     }
 }

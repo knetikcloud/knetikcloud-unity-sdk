@@ -123,6 +123,7 @@ namespace com.knetikcloud.Api
                 GetBatchComplete(GetBatchData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Request to run API call given the method, content type, path url, and body of request Should the request take longer than one of the alloted timeout parameters, a token will be returned instead, which can be used on the token endpoint in this service
@@ -146,7 +147,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(batch); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSendBatchStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSendBatchStartTime, mSendBatchPath, "Sending server request...");
@@ -175,5 +176,6 @@ namespace com.knetikcloud.Api
                 SendBatchComplete(SendBatchData);
             }
         }
+
     }
 }

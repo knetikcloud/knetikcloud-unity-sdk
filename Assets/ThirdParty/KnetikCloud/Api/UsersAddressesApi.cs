@@ -179,6 +179,7 @@ namespace com.knetikcloud.Api
                 CreateAddressComplete(CreateAddressData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete an address 
@@ -240,6 +241,7 @@ mDeleteAddressPath = mDeleteAddressPath.Replace("{" + "id" + "}", KnetikClient.D
                 DeleteAddressComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single address 
@@ -303,6 +305,7 @@ mGetAddressPath = mGetAddressPath.Replace("{" + "id" + "}", KnetikClient.Default
                 GetAddressComplete(GetAddressData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search addresses 
@@ -377,6 +380,7 @@ mGetAddressPath = mGetAddressPath.Replace("{" + "id" + "}", KnetikClient.Default
                 GetAddressesComplete(GetAddressesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update an address 
@@ -443,5 +447,6 @@ mUpdateAddressPath = mUpdateAddressPath.Replace("{" + "id" + "}", KnetikClient.D
                 UpdateAddressComplete(UpdateAddressData);
             }
         }
+
     }
 }

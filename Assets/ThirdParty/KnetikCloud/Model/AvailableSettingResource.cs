@@ -55,9 +55,9 @@ namespace com.knetikcloud.Model
         public List<SettingOption> Options { get; set; }
 
         /// <summary>
-        /// The type of the option: Ex: TEXT
+        /// The type of the setting value: Ex: TEXT
         /// </summary>
-        /// <value>The type of the option: Ex: TEXT</value>
+        /// <value>The type of the setting value: Ex: TEXT</value>
         [JsonProperty(PropertyName = "type")]
         public string Type { get; set; }
 

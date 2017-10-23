@@ -145,6 +145,7 @@ namespace com.knetikcloud.Api
                 DeleteTokensComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single token by username and client id 
@@ -170,7 +171,7 @@ namespace com.knetikcloud.Api
                 mGetTokenPath = mGetTokenPath.Replace("{format}", "json");
             }
             mGetTokenPath = mGetTokenPath.Replace("{" + "username" + "}", KnetikClient.DefaultClient.ParameterToString(username));
-            mGetTokenPath = mGetTokenPath.Replace("{" + "client_id" + "}", KnetikClient.DefaultClient.ParameterToString(clientId));
+mGetTokenPath = mGetTokenPath.Replace("{" + "client_id" + "}", KnetikClient.DefaultClient.ParameterToString(clientId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -208,6 +209,7 @@ namespace com.knetikcloud.Api
                 GetTokenComplete(GetTokenData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List usernames and client ids Token value not shown
@@ -287,5 +289,6 @@ namespace com.knetikcloud.Api
                 GetTokensComplete(GetTokensData);
             }
         }
+
     }
 }

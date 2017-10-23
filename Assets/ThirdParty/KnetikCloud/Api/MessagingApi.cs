@@ -25,6 +25,12 @@ namespace com.knetikcloud.Api
         void SendRawEmail(RawEmailResource rawEmailResource);
 
         /// <summary>
+        /// Send a raw push notification Sends a raw push notification message to one or more users. User&#39;s without registered mobile device for the application will be skipped.
+        /// </summary>
+        /// <param name="rawPushResource">The new raw push notification to be sent</param>
+        void SendRawPush(RawPushResource rawPushResource);
+
+        /// <summary>
         /// Send a raw SMS Sends a raw SMS text message to one or more users. User&#39;s without registered mobile numbers will be skipped.
         /// </summary>
         /// <param name="rawSMSResource">The new raw SMS to be sent</param>
@@ -35,6 +41,12 @@ namespace com.knetikcloud.Api
         /// </summary>
         /// <param name="messageResource">The new template email to be sent</param>
         void SendTemplatedEmail(TemplateEmailResource messageResource);
+
+        /// <summary>
+        /// Send a templated push notification Sends a templated push notification message to one or more users. User&#39;s without registered mobile device for the application will be skipped.
+        /// </summary>
+        /// <param name="templatePushResource">The new templated push notification to be sent</param>
+        void SendTemplatedPush(TemplatePushResource templatePushResource);
 
         /// <summary>
         /// Send a new templated SMS Sends a templated SMS text message to one or more users. User&#39;s without registered mobile numbers will be skipped.
@@ -53,12 +65,18 @@ namespace com.knetikcloud.Api
         private readonly KnetikCoroutine mSendRawEmailCoroutine;
         private DateTime mSendRawEmailStartTime;
         private string mSendRawEmailPath;
+        private readonly KnetikCoroutine mSendRawPushCoroutine;
+        private DateTime mSendRawPushStartTime;
+        private string mSendRawPushPath;
         private readonly KnetikCoroutine mSendRawSMSCoroutine;
         private DateTime mSendRawSMSStartTime;
         private string mSendRawSMSPath;
         private readonly KnetikCoroutine mSendTemplatedEmailCoroutine;
         private DateTime mSendTemplatedEmailStartTime;
         private string mSendTemplatedEmailPath;
+        private readonly KnetikCoroutine mSendTemplatedPushCoroutine;
+        private DateTime mSendTemplatedPushStartTime;
+        private string mSendTemplatedPushPath;
         private readonly KnetikCoroutine mSendTemplatedSMSCoroutine;
         private DateTime mSendTemplatedSMSStartTime;
         private string mSendTemplatedSMSPath;
@@ -66,11 +84,17 @@ namespace com.knetikcloud.Api
         public delegate void SendRawEmailCompleteDelegate();
         public SendRawEmailCompleteDelegate SendRawEmailComplete;
 
+        public delegate void SendRawPushCompleteDelegate();
+        public SendRawPushCompleteDelegate SendRawPushComplete;
+
         public delegate void SendRawSMSCompleteDelegate();
         public SendRawSMSCompleteDelegate SendRawSMSComplete;
 
         public delegate void SendTemplatedEmailCompleteDelegate();
         public SendTemplatedEmailCompleteDelegate SendTemplatedEmailComplete;
+
+        public delegate void SendTemplatedPushCompleteDelegate();
+        public SendTemplatedPushCompleteDelegate SendTemplatedPushComplete;
 
         public delegate void SendTemplatedSMSCompleteDelegate();
         public SendTemplatedSMSCompleteDelegate SendTemplatedSMSComplete;
@@ -82,8 +106,10 @@ namespace com.knetikcloud.Api
         public MessagingApi()
         {
             mSendRawEmailCoroutine = new KnetikCoroutine();
+            mSendRawPushCoroutine = new KnetikCoroutine();
             mSendRawSMSCoroutine = new KnetikCoroutine();
             mSendTemplatedEmailCoroutine = new KnetikCoroutine();
+            mSendTemplatedPushCoroutine = new KnetikCoroutine();
             mSendTemplatedSMSCoroutine = new KnetikCoroutine();
         }
     
@@ -137,6 +163,58 @@ namespace com.knetikcloud.Api
                 SendRawEmailComplete();
             }
         }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Send a raw push notification Sends a raw push notification message to one or more users. User&#39;s without registered mobile device for the application will be skipped.
+        /// </summary>
+        /// <param name="rawPushResource">The new raw push notification to be sent</param>
+        public void SendRawPush(RawPushResource rawPushResource)
+        {
+            
+            mSendRawPushPath = "/messaging/raw-push";
+            if (!string.IsNullOrEmpty(mSendRawPushPath))
+            {
+                mSendRawPushPath = mSendRawPushPath.Replace("{format}", "json");
+            }
+            
+            Dictionary<string, string> queryParams = new Dictionary<string, string>();
+            Dictionary<string, string> headerParams = new Dictionary<string, string>();
+            Dictionary<string, string> formParams = new Dictionary<string, string>();
+            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
+            string postBody = null;
+
+            postBody = KnetikClient.DefaultClient.Serialize(rawPushResource); // http body (model) parameter
+ 
+            // authentication setting, if any
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+
+            mSendRawPushStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mSendRawPushStartTime, mSendRawPushPath, "Sending server request...");
+
+            // make the HTTP request
+            mSendRawPushCoroutine.ResponseReceived += SendRawPushCallback;
+            mSendRawPushCoroutine.Start(mSendRawPushPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void SendRawPushCallback(IRestResponse response)
+        {
+            if (((int)response.StatusCode) >= 400)
+            {
+                throw new KnetikException((int)response.StatusCode, "Error calling SendRawPush: " + response.Content, response.Content);
+            }
+            else if (((int)response.StatusCode) == 0)
+            {
+                throw new KnetikException((int)response.StatusCode, "Error calling SendRawPush: " + response.ErrorMessage, response.ErrorMessage);
+            }
+
+            KnetikLogger.LogResponse(mSendRawPushStartTime, mSendRawPushPath, "Response received successfully.");
+            if (SendRawPushComplete != null)
+            {
+                SendRawPushComplete();
+            }
+        }
+
         /// <inheritdoc />
         /// <summary>
         /// Send a raw SMS Sends a raw SMS text message to one or more users. User&#39;s without registered mobile numbers will be skipped.
@@ -187,6 +265,7 @@ namespace com.knetikcloud.Api
                 SendRawSMSComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Send a templated email to one or more users 
@@ -237,6 +316,58 @@ namespace com.knetikcloud.Api
                 SendTemplatedEmailComplete();
             }
         }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Send a templated push notification Sends a templated push notification message to one or more users. User&#39;s without registered mobile device for the application will be skipped.
+        /// </summary>
+        /// <param name="templatePushResource">The new templated push notification to be sent</param>
+        public void SendTemplatedPush(TemplatePushResource templatePushResource)
+        {
+            
+            mSendTemplatedPushPath = "/messaging/templated-push";
+            if (!string.IsNullOrEmpty(mSendTemplatedPushPath))
+            {
+                mSendTemplatedPushPath = mSendTemplatedPushPath.Replace("{format}", "json");
+            }
+            
+            Dictionary<string, string> queryParams = new Dictionary<string, string>();
+            Dictionary<string, string> headerParams = new Dictionary<string, string>();
+            Dictionary<string, string> formParams = new Dictionary<string, string>();
+            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
+            string postBody = null;
+
+            postBody = KnetikClient.DefaultClient.Serialize(templatePushResource); // http body (model) parameter
+ 
+            // authentication setting, if any
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+
+            mSendTemplatedPushStartTime = DateTime.Now;
+            KnetikLogger.LogRequest(mSendTemplatedPushStartTime, mSendTemplatedPushPath, "Sending server request...");
+
+            // make the HTTP request
+            mSendTemplatedPushCoroutine.ResponseReceived += SendTemplatedPushCallback;
+            mSendTemplatedPushCoroutine.Start(mSendTemplatedPushPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+        }
+
+        private void SendTemplatedPushCallback(IRestResponse response)
+        {
+            if (((int)response.StatusCode) >= 400)
+            {
+                throw new KnetikException((int)response.StatusCode, "Error calling SendTemplatedPush: " + response.Content, response.Content);
+            }
+            else if (((int)response.StatusCode) == 0)
+            {
+                throw new KnetikException((int)response.StatusCode, "Error calling SendTemplatedPush: " + response.ErrorMessage, response.ErrorMessage);
+            }
+
+            KnetikLogger.LogResponse(mSendTemplatedPushStartTime, mSendTemplatedPushPath, "Response received successfully.");
+            if (SendTemplatedPushComplete != null)
+            {
+                SendTemplatedPushComplete();
+            }
+        }
+
         /// <inheritdoc />
         /// <summary>
         /// Send a new templated SMS Sends a templated SMS text message to one or more users. User&#39;s without registered mobile numbers will be skipped.
@@ -287,5 +418,6 @@ namespace com.knetikcloud.Api
                 SendTemplatedSMSComplete();
             }
         }
+
     }
 }

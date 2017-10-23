@@ -166,6 +166,7 @@ namespace com.knetikcloud.Api
                 CreateCurrencyComplete(CreateCurrencyData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a currency 
@@ -220,6 +221,7 @@ namespace com.knetikcloud.Api
                 DeleteCurrencyComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search currencies 
@@ -299,6 +301,7 @@ namespace com.knetikcloud.Api
                 GetCurrenciesComplete(GetCurrenciesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single currency 
@@ -355,6 +358,7 @@ namespace com.knetikcloud.Api
                 GetCurrencyComplete(GetCurrencyData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a currency 
@@ -412,5 +416,6 @@ namespace com.knetikcloud.Api
                 UpdateCurrencyComplete();
             }
         }
+
     }
 }

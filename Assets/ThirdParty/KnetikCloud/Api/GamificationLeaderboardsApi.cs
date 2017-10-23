@@ -169,6 +169,7 @@ mGetLeaderboardPath = mGetLeaderboardPath.Replace("{" + "context_id" + "}", Knet
                 GetLeaderboardComplete(GetLeaderboardData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Retrieves a specific user entry with rank The context type identifies the type of entity (i.e., &#39;activity&#39;) being tracked on the leaderboard. The context ID is the unique ID of the actual entity tracked by the leaderboard
@@ -239,6 +240,7 @@ mGetLeaderboardRankPath = mGetLeaderboardRankPath.Replace("{" + "id" + "}", Knet
                 GetLeaderboardRankComplete(GetLeaderboardRankData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a list of available leaderboard strategy names 
@@ -288,5 +290,6 @@ mGetLeaderboardRankPath = mGetLeaderboardRankPath.Replace("{" + "id" + "}", Knet
                 GetLeaderboardStrategiesComplete(GetLeaderboardStrategiesData);
             }
         }
+
     }
 }

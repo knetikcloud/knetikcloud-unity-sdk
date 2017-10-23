@@ -265,6 +265,7 @@ namespace com.knetikcloud.Api
                 CreateObjectItemComplete(CreateObjectItemData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Create an object template Object templates define a type of entitlement and the properties they have
@@ -288,7 +289,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(template); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateObjectTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateObjectTemplateStartTime, mCreateObjectTemplatePath, "Sending server request...");
@@ -317,6 +318,7 @@ namespace com.knetikcloud.Api
                 CreateObjectTemplateComplete(CreateObjectTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete an object 
@@ -378,6 +380,7 @@ mDeleteObjectItemPath = mDeleteObjectItemPath.Replace("{" + "object_id" + "}", K
                 DeleteObjectItemComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete an entitlement template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
@@ -411,7 +414,7 @@ mDeleteObjectItemPath = mDeleteObjectItemPath.Replace("{" + "object_id" + "}", K
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteObjectTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteObjectTemplateStartTime, mDeleteObjectTemplatePath, "Sending server request...");
@@ -438,6 +441,7 @@ mDeleteObjectItemPath = mDeleteObjectItemPath.Replace("{" + "object_id" + "}", K
                 DeleteObjectTemplateComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single object 
@@ -501,6 +505,7 @@ mGetObjectItemPath = mGetObjectItemPath.Replace("{" + "object_id" + "}", KnetikC
                 GetObjectItemComplete(GetObjectItemData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search objects 
@@ -575,6 +580,7 @@ mGetObjectItemPath = mGetObjectItemPath.Replace("{" + "object_id" + "}", KnetikC
                 GetObjectItemsComplete(GetObjectItemsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single entitlement template 
@@ -602,7 +608,7 @@ mGetObjectItemPath = mGetObjectItemPath.Replace("{" + "object_id" + "}", KnetikC
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetObjectTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetObjectTemplateStartTime, mGetObjectTemplatePath, "Sending server request...");
@@ -631,6 +637,7 @@ mGetObjectItemPath = mGetObjectItemPath.Replace("{" + "object_id" + "}", KnetikC
                 GetObjectTemplateComplete(GetObjectTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search entitlement templates 
@@ -669,7 +676,7 @@ mGetObjectItemPath = mGetObjectItemPath.Replace("{" + "object_id" + "}", KnetikC
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetObjectTemplatesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetObjectTemplatesStartTime, mGetObjectTemplatesPath, "Sending server request...");
@@ -698,6 +705,7 @@ mGetObjectItemPath = mGetObjectItemPath.Replace("{" + "object_id" + "}", KnetikC
                 GetObjectTemplatesComplete(GetObjectTemplatesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update an object 
@@ -768,6 +776,7 @@ mUpdateObjectItemPath = mUpdateObjectItemPath.Replace("{" + "entitlement_id" + "
                 UpdateObjectItemComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update an entitlement template 
@@ -798,7 +807,7 @@ mUpdateObjectItemPath = mUpdateObjectItemPath.Replace("{" + "entitlement_id" + "
             postBody = KnetikClient.DefaultClient.Serialize(template); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateObjectTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateObjectTemplateStartTime, mUpdateObjectTemplatePath, "Sending server request...");
@@ -827,5 +836,6 @@ mUpdateObjectItemPath = mUpdateObjectItemPath.Replace("{" + "entitlement_id" + "
                 UpdateObjectTemplateComplete(UpdateObjectTemplateData);
             }
         }
+
     }
 }

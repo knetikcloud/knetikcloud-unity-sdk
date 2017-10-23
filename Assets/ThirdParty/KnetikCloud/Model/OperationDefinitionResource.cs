@@ -10,19 +10,37 @@ namespace com.knetikcloud.Model
     /// <summary>
     /// 
     /// </summary>
-    public class PredicateOperation
+    public class OperationDefinitionResource
     {
         /// <summary>
-        /// Gets or Sets Args
+        /// Gets or Sets Arguments
         /// </summary>
-        [JsonProperty(PropertyName = "args")]
-        public List<Expressionobject> Args { get; set; }
+        [JsonProperty(PropertyName = "arguments")]
+        public List<ArgumentResource> Arguments { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Description
+        /// </summary>
+        [JsonProperty(PropertyName = "description")]
+        public string Description { get; set; }
 
         /// <summary>
         /// Gets or Sets _Operator
         /// </summary>
         [JsonProperty(PropertyName = "operator")]
         public ModelOperator _Operator { get; set; }
+
+        /// <summary>
+        /// Gets or Sets ReturnType
+        /// </summary>
+        [JsonProperty(PropertyName = "return_type")]
+        public string ReturnType { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Template
+        /// </summary>
+        [JsonProperty(PropertyName = "template")]
+        public string Template { get; set; }
 
         /// <inheritdoc />
         /// <summary>
@@ -32,9 +50,12 @@ namespace com.knetikcloud.Model
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("class PredicateOperation {\n");
-            sb.Append("  Args: ").Append(Args).Append("\n");
+            sb.Append("class OperationDefinitionResource {\n");
+            sb.Append("  Arguments: ").Append(Arguments).Append("\n");
+            sb.Append("  Description: ").Append(Description).Append("\n");
             sb.Append("  _Operator: ").Append(_Operator).Append("\n");
+            sb.Append("  ReturnType: ").Append(ReturnType).Append("\n");
+            sb.Append("  Template: ").Append(Template).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }

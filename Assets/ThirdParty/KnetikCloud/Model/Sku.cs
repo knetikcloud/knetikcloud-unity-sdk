@@ -48,6 +48,18 @@ namespace com.knetikcloud.Model
         public int? MinInventoryThreshold { get; set; }
 
         /// <summary>
+        /// Gets or Sets NotAvailable
+        /// </summary>
+        [JsonProperty(PropertyName = "not_available")]
+        public bool? NotAvailable { get; set; }
+
+        /// <summary>
+        /// Gets or Sets NotDisplayable
+        /// </summary>
+        [JsonProperty(PropertyName = "not_displayable")]
+        public bool? NotDisplayable { get; set; }
+
+        /// <summary>
         /// The base price before any sale
         /// </summary>
         /// <value>The base price before any sale</value>
@@ -62,9 +74,9 @@ namespace com.knetikcloud.Model
         public decimal? Price { get; set; }
 
         /// <summary>
-        /// Whether or not the SKU is currently published
+        /// Whether or not the SKU is currently visible to users. This will not block users from purchase. Use start_date or stop_date to prevent purchase. Default: true
         /// </summary>
-        /// <value>Whether or not the SKU is currently published</value>
+        /// <value>Whether or not the SKU is currently visible to users. This will not block users from purchase. Use start_date or stop_date to prevent purchase. Default: true</value>
         [JsonProperty(PropertyName = "published")]
         public bool? Published { get; set; }
 
@@ -90,16 +102,16 @@ namespace com.knetikcloud.Model
         public string _Sku { get; set; }
 
         /// <summary>
-        /// The date the sku becomes available, unix timestamp in seconds.  If set to null, sku will become available immediately
+        /// The date the sku becomes visible (if published) and available for purchase, unix timestamp in seconds.  If set to null, sku will become available immediately
         /// </summary>
-        /// <value>The date the sku becomes available, unix timestamp in seconds.  If set to null, sku will become available immediately</value>
+        /// <value>The date the sku becomes visible (if published) and available for purchase, unix timestamp in seconds.  If set to null, sku will become available immediately</value>
         [JsonProperty(PropertyName = "start_date")]
         public long? StartDate { get; set; }
 
         /// <summary>
-        /// The date the sku becomes unavailable, unix timestamp in seconds.  If set to null, sku is always available
+        /// The date the sku becomes hidden and unavailable for purchase, unix timestamp in seconds.  If set to null, sku is always available
         /// </summary>
-        /// <value>The date the sku becomes unavailable, unix timestamp in seconds.  If set to null, sku is always available</value>
+        /// <value>The date the sku becomes hidden and unavailable for purchase, unix timestamp in seconds.  If set to null, sku is always available</value>
         [JsonProperty(PropertyName = "stop_date")]
         public long? StopDate { get; set; }
 
@@ -117,6 +129,8 @@ namespace com.knetikcloud.Model
             sb.Append("  Description: ").Append(Description).Append("\n");
             sb.Append("  Inventory: ").Append(Inventory).Append("\n");
             sb.Append("  MinInventoryThreshold: ").Append(MinInventoryThreshold).Append("\n");
+            sb.Append("  NotAvailable: ").Append(NotAvailable).Append("\n");
+            sb.Append("  NotDisplayable: ").Append(NotDisplayable).Append("\n");
             sb.Append("  OriginalPrice: ").Append(OriginalPrice).Append("\n");
             sb.Append("  Price: ").Append(Price).Append("\n");
             sb.Append("  Published: ").Append(Published).Append("\n");

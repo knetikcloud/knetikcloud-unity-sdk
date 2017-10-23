@@ -167,6 +167,7 @@ namespace com.knetikcloud.Api
                 CreateCatalogSaleComplete(CreateCatalogSaleData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a sale 
@@ -221,6 +222,7 @@ namespace com.knetikcloud.Api
                 DeleteCatalogSaleComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single sale 
@@ -277,6 +279,7 @@ namespace com.knetikcloud.Api
                 GetCatalogSaleComplete(GetCatalogSaleData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search sales 
@@ -344,6 +347,7 @@ namespace com.knetikcloud.Api
                 GetCatalogSalesComplete(GetCatalogSalesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a sale 
@@ -403,5 +407,6 @@ namespace com.knetikcloud.Api
                 UpdateCatalogSaleComplete(UpdateCatalogSaleData);
             }
         }
+
     }
 }

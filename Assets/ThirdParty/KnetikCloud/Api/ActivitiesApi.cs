@@ -138,7 +138,7 @@ namespace com.knetikcloud.Api
         void UpdateActivity(long? id, ActivityResource activityResource);
 
         /// <summary>
-        /// Updated the status of an activity occurrence If setting to &#39;FINISHED&#39; you must POST to /results instead to record the metrics and get synchronous reward results
+        /// Updated the status of an activity occurrence If setting to &#39;FINISHED&#39; reward will be run based on current metrics that have been recorded already. Aternatively, see results endpoint to finish and record all metrics at once.
         /// </summary>
         /// <param name="activityOccurrenceId">The id of the activity occurrence</param>
         /// <param name="activityOccurrenceStatus">The activity occurrence status object</param>
@@ -337,6 +337,7 @@ namespace com.knetikcloud.Api
                 CreateActivityComplete(CreateActivityData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Create a new activity occurrence. Ex: start a game Has to enforce extra rules if not used as an admin
@@ -395,6 +396,7 @@ namespace com.knetikcloud.Api
                 CreateActivityOccurrenceComplete(CreateActivityOccurrenceData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Create a activity template Activity Templates define a type of activity and the properties they have
@@ -447,6 +449,7 @@ namespace com.knetikcloud.Api
                 CreateActivityTemplateComplete(CreateActivityTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete an activity 
@@ -501,6 +504,7 @@ namespace com.knetikcloud.Api
                 DeleteActivityComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a activity template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
@@ -561,6 +565,7 @@ namespace com.knetikcloud.Api
                 DeleteActivityTemplateComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List activity definitions 
@@ -646,6 +651,7 @@ namespace com.knetikcloud.Api
                 GetActivitiesComplete(GetActivitiesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single activity 
@@ -702,6 +708,7 @@ namespace com.knetikcloud.Api
                 GetActivityComplete(GetActivityData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Load a single activity occurrence details 
@@ -758,6 +765,7 @@ namespace com.knetikcloud.Api
                 GetActivityOccurrenceDetailsComplete(GetActivityOccurrenceDetailsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single activity template 
@@ -814,6 +822,7 @@ namespace com.knetikcloud.Api
                 GetActivityTemplateComplete(GetActivityTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search activity templates 
@@ -881,6 +890,7 @@ namespace com.knetikcloud.Api
                 GetActivityTemplatesComplete(GetActivityTemplatesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List activity occurrences 
@@ -972,6 +982,7 @@ namespace com.knetikcloud.Api
                 ListActivityOccurrencesComplete(ListActivityOccurrencesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Sets the status of an activity occurrence to FINISHED and logs metrics 
@@ -1031,6 +1042,7 @@ namespace com.knetikcloud.Api
                 SetActivityOccurrenceResultsComplete(SetActivityOccurrenceResultsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update an activity 
@@ -1090,9 +1102,10 @@ namespace com.knetikcloud.Api
                 UpdateActivityComplete(UpdateActivityData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
-        /// Updated the status of an activity occurrence If setting to &#39;FINISHED&#39; you must POST to /results instead to record the metrics and get synchronous reward results
+        /// Updated the status of an activity occurrence If setting to &#39;FINISHED&#39; reward will be run based on current metrics that have been recorded already. Aternatively, see results endpoint to finish and record all metrics at once.
         /// </summary>
         /// <param name="activityOccurrenceId">The id of the activity occurrence</param>
         /// <param name="activityOccurrenceStatus">The activity occurrence status object</param>
@@ -1147,6 +1160,7 @@ namespace com.knetikcloud.Api
                 UpdateActivityOccurrenceComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update an activity template 
@@ -1206,5 +1220,6 @@ namespace com.knetikcloud.Api
                 UpdateActivityTemplateComplete(UpdateActivityTemplateData);
             }
         }
+
     }
 }

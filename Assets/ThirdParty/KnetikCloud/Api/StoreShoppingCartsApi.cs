@@ -288,6 +288,7 @@ namespace com.knetikcloud.Api
                 AddCustomDiscountComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Adds a discount coupon to the cart 
@@ -345,6 +346,7 @@ namespace com.knetikcloud.Api
                 AddDiscountToCartComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Add an item to the cart Currently, carts cannot contain virtual and real currency items at the same time. Furthermore, the API only support a single virtual item at the moment
@@ -402,6 +404,7 @@ namespace com.knetikcloud.Api
                 AddItemToCartComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Create a cart You don&#39;t have to have a user to create a cart but the API requires authentication to checkout
@@ -463,6 +466,7 @@ namespace com.knetikcloud.Api
                 CreateCartComplete(CreateCartData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Returns the cart with the given GUID 
@@ -519,6 +523,7 @@ namespace com.knetikcloud.Api
                 GetCartComplete(GetCartData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a list of carts 
@@ -592,6 +597,7 @@ namespace com.knetikcloud.Api
                 GetCartsComplete(GetCartsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Returns whether a cart requires shipping 
@@ -648,6 +654,7 @@ namespace com.knetikcloud.Api
                 GetShippableComplete(GetShippableData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get the list of available shipping countries per vendor Since a cart can have multiple vendors with different shipping options, the countries are broken down by vendors. Please see notes about the response object as the fields are variable.
@@ -704,6 +711,7 @@ namespace com.knetikcloud.Api
                 GetShippingCountriesComplete(GetShippingCountriesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Removes a discount coupon from the cart 
@@ -765,6 +773,7 @@ mRemoveDiscountFromCartPath = mRemoveDiscountFromCartPath.Replace("{" + "code" +
                 RemoveDiscountFromCartComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Sets the currency to use for the cart May be disallowed by site settings.
@@ -822,6 +831,7 @@ mRemoveDiscountFromCartPath = mRemoveDiscountFromCartPath.Replace("{" + "code" +
                 SetCartCurrencyComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Sets the owner of a cart if none is set already 
@@ -879,6 +889,7 @@ mRemoveDiscountFromCartPath = mRemoveDiscountFromCartPath.Replace("{" + "code" +
                 SetCartOwnerComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Changes the quantity of an item already in the cart A quantity of zero will remove the item from the cart altogether.
@@ -936,6 +947,7 @@ mRemoveDiscountFromCartPath = mRemoveDiscountFromCartPath.Replace("{" + "code" +
                 UpdateItemInCartComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Modifies or sets the order shipping address 
@@ -993,5 +1005,6 @@ mRemoveDiscountFromCartPath = mRemoveDiscountFromCartPath.Replace("{" + "code" +
                 UpdateShippingAddressComplete();
             }
         }
+
     }
 }

@@ -13,6 +13,13 @@ namespace com.knetikcloud.Model
     public class BreTriggerParameterDefinition
     {
         /// <summary>
+        /// Whether this parameter is implicitely derived from another. Internal use only.
+        /// </summary>
+        /// <value>Whether this parameter is implicitely derived from another. Internal use only.</value>
+        [JsonProperty(PropertyName = "implicit")]
+        public bool? _Implicit { get; set; }
+
+        /// <summary>
         /// The name of the parameter. This is used as the unique identifier of this parameter
         /// </summary>
         /// <value>The name of the parameter. This is used as the unique identifier of this parameter</value>
@@ -42,6 +49,7 @@ namespace com.knetikcloud.Model
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("class BreTriggerParameterDefinition {\n");
+            sb.Append("  _Implicit: ").Append(_Implicit).Append("\n");
             sb.Append("  Name: ").Append(Name).Append("\n");
             sb.Append("  Optional: ").Append(Optional).Append("\n");
             sb.Append("  Type: ").Append(Type).Append("\n");

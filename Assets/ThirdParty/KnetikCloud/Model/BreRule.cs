@@ -20,11 +20,11 @@ namespace com.knetikcloud.Model
         public List<ActionContextobject> Actions { get; set; }
 
         /// <summary>
-        /// A condition expression that must be met in a given event for the rule to run. Empty to always run
+        /// A condition expression that must be met in a given event for the rule to run. Null to always run.
         /// </summary>
-        /// <value>A condition expression that must be met in a given event for the rule to run. Empty to always run</value>
+        /// <value>A condition expression that must be met in a given event for the rule to run. Null to always run.</value>
         [JsonProperty(PropertyName = "condition")]
-        public PredicateOperation Condition { get; set; }
+        public PredicateResource Condition { get; set; }
 
         /// <summary>
         /// The condition as a readable string. Filled in by the system from the condition

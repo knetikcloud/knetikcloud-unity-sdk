@@ -143,6 +143,7 @@ namespace com.knetikcloud.Api
                 GetTransactionComplete(GetTransactionData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search transactions 
@@ -216,6 +217,7 @@ namespace com.knetikcloud.Api
                 GetTransactionsComplete(GetTransactionsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Refund a payment transaction, in full or in part Will not allow for refunding more than the full amount even with multiple partial refunds. Money is refunded to the payment method used to make the original payment. Payment method must support refunds.
@@ -275,5 +277,6 @@ namespace com.knetikcloud.Api
                 RefundTransactionComplete(RefundTransactionData);
             }
         }
+
     }
 }

@@ -137,6 +137,7 @@ namespace com.knetikcloud.Api
                 GetDownloadURLComplete(GetDownloadURLData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a signed S3 URL for upload Requires the file name and file content type (i.e., &#39;video/mpeg&#39;). Make a PUT to the resulting url to upload the file and use the cdn_url to retrieve it after.
@@ -198,5 +199,6 @@ namespace com.knetikcloud.Api
                 GetSignedS3URLComplete(GetSignedS3URLData);
             }
         }
+
     }
 }

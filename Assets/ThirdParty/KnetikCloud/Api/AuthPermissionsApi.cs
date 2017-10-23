@@ -168,6 +168,7 @@ namespace com.knetikcloud.Api
                 CreatePermissionComplete(CreatePermissionData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a permission 
@@ -228,6 +229,7 @@ namespace com.knetikcloud.Api
                 DeletePermissionComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single permission 
@@ -284,6 +286,7 @@ namespace com.knetikcloud.Api
                 GetPermissionComplete(GetPermissionData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search permissions 
@@ -351,6 +354,7 @@ namespace com.knetikcloud.Api
                 GetPermissionsComplete(GetPermissionsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a permission 
@@ -410,5 +414,6 @@ namespace com.knetikcloud.Api
                 UpdatePermissionComplete(UpdatePermissionData);
             }
         }
+
     }
 }

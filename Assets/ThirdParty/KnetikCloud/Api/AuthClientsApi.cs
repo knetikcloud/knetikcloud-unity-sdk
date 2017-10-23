@@ -210,6 +210,7 @@ namespace com.knetikcloud.Api
                 CreateClientComplete(CreateClientData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a client 
@@ -264,6 +265,7 @@ namespace com.knetikcloud.Api
                 DeleteClientComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single client 
@@ -320,6 +322,7 @@ namespace com.knetikcloud.Api
                 GetClientComplete(GetClientData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List available client grant types 
@@ -369,6 +372,7 @@ namespace com.knetikcloud.Api
                 GetClientGrantTypesComplete(GetClientGrantTypesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search clients 
@@ -436,6 +440,7 @@ namespace com.knetikcloud.Api
                 GetClientsComplete(GetClientsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Set grant types for a client 
@@ -493,6 +498,7 @@ namespace com.knetikcloud.Api
                 SetClientGrantTypesComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Set redirect uris for a client 
@@ -550,6 +556,7 @@ namespace com.knetikcloud.Api
                 SetClientRedirectUrisComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a client 
@@ -609,5 +616,6 @@ namespace com.knetikcloud.Api
                 UpdateClientComplete(UpdateClientData);
             }
         }
+
     }
 }

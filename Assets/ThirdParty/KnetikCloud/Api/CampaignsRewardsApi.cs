@@ -167,6 +167,7 @@ namespace com.knetikcloud.Api
                 CreateRewardSetComplete(CreateRewardSetData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a reward set 
@@ -221,6 +222,7 @@ namespace com.knetikcloud.Api
                 DeleteRewardSetComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single reward set 
@@ -277,6 +279,7 @@ namespace com.knetikcloud.Api
                 GetRewardSetComplete(GetRewardSetData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search reward sets 
@@ -344,6 +347,7 @@ namespace com.knetikcloud.Api
                 GetRewardSetsComplete(GetRewardSetsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a reward set 
@@ -403,5 +407,6 @@ namespace com.knetikcloud.Api
                 UpdateRewardSetComplete(UpdateRewardSetData);
             }
         }
+
     }
 }

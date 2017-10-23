@@ -165,6 +165,7 @@ namespace com.knetikcloud.Api
                 CreateConfigComplete(CreateConfigData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete an existing config 
@@ -219,6 +220,7 @@ namespace com.knetikcloud.Api
                 DeleteConfigComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single config Only configs that are public readable will be shown without admin access
@@ -275,6 +277,7 @@ namespace com.knetikcloud.Api
                 GetConfigComplete(GetConfigData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search configs 
@@ -348,6 +351,7 @@ namespace com.knetikcloud.Api
                 GetConfigsComplete(GetConfigsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update an existing config 
@@ -405,5 +409,6 @@ namespace com.knetikcloud.Api
                 UpdateConfigComplete();
             }
         }
+
     }
 }

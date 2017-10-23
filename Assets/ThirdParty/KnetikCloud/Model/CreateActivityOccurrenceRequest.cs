@@ -13,16 +13,16 @@ namespace com.knetikcloud.Model
     public class CreateActivityOccurrenceRequest
     {
         /// <summary>
-        /// The id of the activity
+        /// The id of the activity, only needed when outside of challenge/event
         /// </summary>
-        /// <value>The id of the activity</value>
+        /// <value>The id of the activity, only needed when outside of challenge/event</value>
         [JsonProperty(PropertyName = "activity_id")]
         public long? ActivityId { get; set; }
 
         /// <summary>
-        /// The id of the challenge activity (as part of the event, required if eventId set). Note that this is the challenge_activity_id in case the same activity apears twice in the challenge.
+        /// The id of the challenge activity (required if playing in a challenge/event). Note that this is the challenge_activity_id in case the same activity apears twice in the challenge.
         /// </summary>
-        /// <value>The id of the challenge activity (as part of the event, required if eventId set). Note that this is the challenge_activity_id in case the same activity apears twice in the challenge.</value>
+        /// <value>The id of the challenge activity (required if playing in a challenge/event). Note that this is the challenge_activity_id in case the same activity apears twice in the challenge.</value>
         [JsonProperty(PropertyName = "challenge_activity_id")]
         public long? ChallengeActivityId { get; set; }
 

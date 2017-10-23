@@ -232,6 +232,7 @@ mGetUserWalletPath = mGetUserWalletPath.Replace("{" + "currency_code" + "}", Kne
                 GetUserWalletComplete(GetUserWalletData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Retrieve a user&#39;s wallet transactions 
@@ -337,6 +338,7 @@ mGetUserWalletTransactionsPath = mGetUserWalletTransactionsPath.Replace("{" + "c
                 GetUserWalletTransactionsComplete(GetUserWalletTransactionsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List all of a user&#39;s wallets 
@@ -393,6 +395,7 @@ mGetUserWalletTransactionsPath = mGetUserWalletTransactionsPath.Replace("{" + "c
                 GetUserWalletsComplete(GetUserWalletsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Retrieves a summation of wallet balances by currency code 
@@ -442,6 +445,7 @@ mGetUserWalletTransactionsPath = mGetUserWalletTransactionsPath.Replace("{" + "c
                 GetWalletBalancesComplete(GetWalletBalancesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Retrieve wallet transactions across the system 
@@ -557,6 +561,7 @@ mGetUserWalletTransactionsPath = mGetUserWalletTransactionsPath.Replace("{" + "c
                 GetWalletTransactionsComplete(GetWalletTransactionsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Retrieve a list of wallets across the system 
@@ -624,6 +629,7 @@ mGetUserWalletTransactionsPath = mGetUserWalletTransactionsPath.Replace("{" + "c
                 GetWalletsComplete(GetWalletsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Updates the balance for a user&#39;s wallet 
@@ -690,5 +696,6 @@ mUpdateWalletBalancePath = mUpdateWalletBalancePath.Replace("{" + "currency_code
                 UpdateWalletBalanceComplete(UpdateWalletBalanceData);
             }
         }
+
     }
 }

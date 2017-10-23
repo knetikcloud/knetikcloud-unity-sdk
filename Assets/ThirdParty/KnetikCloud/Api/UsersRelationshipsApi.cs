@@ -167,6 +167,7 @@ namespace com.knetikcloud.Api
                 CreateUserRelationshipComplete(CreateUserRelationshipData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a user relationship 
@@ -221,6 +222,7 @@ namespace com.knetikcloud.Api
                 DeleteUserRelationshipComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a user relationship 
@@ -277,6 +279,7 @@ namespace com.knetikcloud.Api
                 GetUserRelationshipComplete(GetUserRelationshipData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a list of user relationships 
@@ -344,6 +347,7 @@ namespace com.knetikcloud.Api
                 GetUserRelationshipsComplete(GetUserRelationshipsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a user relationship 
@@ -403,5 +407,6 @@ namespace com.knetikcloud.Api
                 UpdateUserRelationshipComplete(UpdateUserRelationshipData);
             }
         }
+
     }
 }

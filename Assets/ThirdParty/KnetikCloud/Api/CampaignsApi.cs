@@ -303,6 +303,7 @@ namespace com.knetikcloud.Api
                 AddChallengeToCampaignComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Create a campaign 
@@ -355,6 +356,7 @@ namespace com.knetikcloud.Api
                 CreateCampaignComplete(CreateCampaignData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Create a campaign template Campaign Templates define a type of campaign and the properties they have
@@ -407,6 +409,7 @@ namespace com.knetikcloud.Api
                 CreateCampaignTemplateComplete(CreateCampaignTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a campaign 
@@ -461,6 +464,7 @@ namespace com.knetikcloud.Api
                 DeleteCampaignComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a campaign template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
@@ -521,6 +525,7 @@ namespace com.knetikcloud.Api
                 DeleteCampaignTemplateComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Returns a single campaign 
@@ -577,6 +582,7 @@ namespace com.knetikcloud.Api
                 GetCampaignComplete(GetCampaignData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List the challenges associated with a campaign 
@@ -663,6 +669,7 @@ namespace com.knetikcloud.Api
                 GetCampaignChallengesComplete(GetCampaignChallengesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single campaign template 
@@ -719,6 +726,7 @@ namespace com.knetikcloud.Api
                 GetCampaignTemplateComplete(GetCampaignTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search campaign templates 
@@ -786,6 +794,7 @@ namespace com.knetikcloud.Api
                 GetCampaignTemplatesComplete(GetCampaignTemplatesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search campaigns 
@@ -859,6 +868,7 @@ namespace com.knetikcloud.Api
                 GetCampaignsComplete(GetCampaignsData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Remove a challenge from a campaign 
@@ -920,6 +930,7 @@ mRemoveChallengeFromCampaignPath = mRemoveChallengeFromCampaignPath.Replace("{" 
                 RemoveChallengeFromCampaignComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a campaign 
@@ -979,6 +990,7 @@ mRemoveChallengeFromCampaignPath = mRemoveChallengeFromCampaignPath.Replace("{" 
                 UpdateCampaignComplete(UpdateCampaignData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update an campaign template 
@@ -1038,5 +1050,6 @@ mRemoveChallengeFromCampaignPath = mRemoveChallengeFromCampaignPath.Replace("{" 
                 UpdateCampaignTemplateComplete(UpdateCampaignTemplateData);
             }
         }
+
     }
 }

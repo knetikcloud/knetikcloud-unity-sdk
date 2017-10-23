@@ -148,6 +148,7 @@ namespace com.knetikcloud.Api
                 CreatePayPalBillingAgreementUrlComplete(CreatePayPalBillingAgreementUrlData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Create a payment token for PayPal express checkout Returns the token that should be used to forward the user to PayPal so they can complete the checkout.
@@ -200,6 +201,7 @@ namespace com.knetikcloud.Api
                 CreatePayPalExpressCheckoutComplete(CreatePayPalExpressCheckoutData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Finalizes a billing agreement after the user has accepted through PayPal Returns the ID of the new payment method created for the user for the billing agreement.
@@ -252,6 +254,7 @@ namespace com.knetikcloud.Api
                 FinalizePayPalBillingAgreementComplete(FinalizePayPalBillingAgreementData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Finalizes a payment after the user has completed checkout with PayPal The invoice will be marked paid/failed by asynchronous IPN callback.
@@ -302,5 +305,6 @@ namespace com.knetikcloud.Api
                 FinalizePayPalCheckoutComplete();
             }
         }
+
     }
 }

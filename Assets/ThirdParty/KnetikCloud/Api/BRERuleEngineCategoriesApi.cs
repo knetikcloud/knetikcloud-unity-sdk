@@ -218,6 +218,7 @@ namespace com.knetikcloud.Api
                 CreateBRECategoryTemplateComplete(CreateBRECategoryTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete a BRE category template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
@@ -278,6 +279,7 @@ namespace com.knetikcloud.Api
                 DeleteBRECategoryTemplateComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List categories 
@@ -339,6 +341,7 @@ namespace com.knetikcloud.Api
                 GetBRECategoriesComplete(GetBRECategoriesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single category 
@@ -395,6 +398,7 @@ namespace com.knetikcloud.Api
                 GetBRECategoryComplete(GetBRECategoryData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single BRE category template 
@@ -451,6 +455,7 @@ namespace com.knetikcloud.Api
                 GetBRECategoryTemplateComplete(GetBRECategoryTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search BRE category templates 
@@ -518,6 +523,7 @@ namespace com.knetikcloud.Api
                 GetBRECategoryTemplatesComplete(GetBRECategoryTemplatesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a category 
@@ -577,6 +583,7 @@ namespace com.knetikcloud.Api
                 UpdateBRECategoryComplete(UpdateBRECategoryData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update a BRE category template 
@@ -636,5 +643,6 @@ namespace com.knetikcloud.Api
                 UpdateBRECategoryTemplateComplete(UpdateBRECategoryTemplateData);
             }
         }
+
     }
 }

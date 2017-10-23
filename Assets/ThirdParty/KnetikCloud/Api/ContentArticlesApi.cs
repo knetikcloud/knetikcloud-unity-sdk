@@ -254,6 +254,7 @@ namespace com.knetikcloud.Api
                 CreateArticleComplete(CreateArticleData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Create an article template Article Templates define a type of article and the properties they have
@@ -306,6 +307,7 @@ namespace com.knetikcloud.Api
                 CreateArticleTemplateComplete(CreateArticleTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete an existing article 
@@ -360,6 +362,7 @@ namespace com.knetikcloud.Api
                 DeleteArticleComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Delete an article template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
@@ -420,6 +423,7 @@ namespace com.knetikcloud.Api
                 DeleteArticleTemplateComplete();
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single article 
@@ -476,6 +480,7 @@ namespace com.knetikcloud.Api
                 GetArticleComplete(GetArticleData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Get a single article template 
@@ -532,6 +537,7 @@ namespace com.knetikcloud.Api
                 GetArticleTemplateComplete(GetArticleTemplateData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search article templates 
@@ -599,6 +605,7 @@ namespace com.knetikcloud.Api
                 GetArticleTemplatesComplete(GetArticleTemplatesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// List and search articles Get a list of articles with optional filtering. Assets will not be filled in on the resources returned. Use &#39;Get a single article&#39; to retrieve the full resource with assets for a given item as needed.
@@ -702,6 +709,7 @@ namespace com.knetikcloud.Api
                 GetArticlesComplete(GetArticlesData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update an existing article 
@@ -761,6 +769,7 @@ namespace com.knetikcloud.Api
                 UpdateArticleComplete(UpdateArticleData);
             }
         }
+
         /// <inheritdoc />
         /// <summary>
         /// Update an article template 
@@ -820,5 +829,6 @@ namespace com.knetikcloud.Api
                 UpdateArticleTemplateComplete(UpdateArticleTemplateData);
             }
         }
+
     }
 }
