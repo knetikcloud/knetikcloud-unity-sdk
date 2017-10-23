@@ -1,6 +1,8 @@
-﻿using com.knetikcloud.Client;
+﻿using com.knetikcloud.Api;
+using com.knetikcloud.Client;
 using com.knetikcloud.Credentials;
 using com.knetikcloud.Events;
+using com.knetikcloud.Model;
 using com.knetikcloud.Utils;
 using UnityEngine;
 
@@ -35,14 +37,28 @@ namespace KnetikTests
         {
             if (e.ShouldProcess(this))
             {
-//                KnetikClient.DefaultClient.AuthenticateWithUserCredentials(KnetikClient.ServerEnvironment.Staging, KnetikUserCredentials.Load());
-                KnetikClient.DefaultClient.AuthenticateWithClientCredentials(KnetikClient.ServerEnvironment.Staging, KnetikClientCredentials.Load());
+                KnetikClient.DefaultClient.AuthenticateWithUserCredentials(KnetikClient.ServerEnvironment.Staging, KnetikUserCredentials.Load());
+//                KnetikClient.DefaultClient.AuthenticateWithClientCredentials(KnetikClient.ServerEnvironment.Staging, KnetikClientCredentials.Load());
             }
         }
 
         private void OnClientAuthenticated(KnetikClientAuthenticatedEvent e)
         {
             KnetikLogger.Log("*** TEST SUCCESSFUL***");
+            GetUserId();
+        }
+
+        private void GetUserId()
+        {
+            UsersApi userApi = new UsersApi();
+            userApi.GetUserComplete += GetUserComplete;
+
+            userApi.GetUser("me");
+        }
+
+        private void GetUserComplete(UserResource response)
+        {
+            KnetikLogger.Log(response.ToString());
         }
     }
 }

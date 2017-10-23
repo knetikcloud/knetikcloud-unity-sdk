@@ -167,7 +167,7 @@ namespace com.knetikcloud.UnityEditor
                 "Once you have created an application enter the name in the 'App Name' project setting field.\n\n";
 
             mStateHelpTexts[WizardState.ClientId] =
-                "The next step is to enter the client ID in the 'Client ID' project setting field.\n\n";
+                "The next step is to create a client ID and enter it in the 'Client ID' project setting field.\n\n";
 
             mStateHelpTexts[WizardState.ClientCredentials] =
                 "Optional: If the application is setup to use a client secret then enter it in the 'Client Secret' project setting field.\n\n";
