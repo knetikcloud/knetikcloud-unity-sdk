@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -16,25 +18,25 @@ namespace com.knetikcloud.Model
         /// Gets or Sets Created
         /// </summary>
         [JsonProperty(PropertyName = "created")]
-        public long? Created { get; set; }
+        public long? Created;
 
         /// <summary>
         /// Gets or Sets Id
         /// </summary>
         [JsonProperty(PropertyName = "id")]
-        public string Id { get; set; }
+        public string Id;
 
         /// <summary>
         /// Gets or Sets LastKnownFailures
         /// </summary>
         [JsonProperty(PropertyName = "last_known_failures")]
-        public List<string> LastKnownFailures { get; set; }
+        public List<string> LastKnownFailures;
 
         /// <summary>
         /// Gets or Sets Statistics
         /// </summary>
         [JsonProperty(PropertyName = "statistics")]
-        public Dictionary<string, int?> Statistics { get; set; }
+        public Dictionary<string, int?> Statistics;
 
         /// <inheritdoc />
         /// <summary>

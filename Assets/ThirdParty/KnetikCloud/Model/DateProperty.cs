@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -10,6 +12,7 @@ namespace com.knetikcloud.Model
     /// <summary>
     /// 
     /// </summary>
+    [KnetikFactory ("date")]
     public class DateProperty : Property
     {
         /// <summary>
@@ -17,7 +20,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The value</value>
         [JsonProperty(PropertyName = "value")]
-        public long? Value { get; set; }
+        public long? Value;
 
         /// <inheritdoc />
         /// <summary>
@@ -38,7 +41,7 @@ namespace com.knetikcloud.Model
         /// Get the JSON string presentation of the object
         /// </summary>
         /// <returns>JSON string presentation of the object</returns>
-        public  new string ToJson()
+        public new string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }

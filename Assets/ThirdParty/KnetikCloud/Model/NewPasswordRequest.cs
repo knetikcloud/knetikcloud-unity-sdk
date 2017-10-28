@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,14 +19,14 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The new password in plain text</value>
         [JsonProperty(PropertyName = "password")]
-        public string Password { get; set; }
+        public string Password;
 
         /// <summary>
         /// The secret provided after the password reset
         /// </summary>
         /// <value>The secret provided after the password reset</value>
         [JsonProperty(PropertyName = "secret")]
-        public string Secret { get; set; }
+        public string Secret;
 
         /// <inheritdoc />
         /// <summary>

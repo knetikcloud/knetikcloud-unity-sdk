@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -10,6 +12,7 @@ namespace com.knetikcloud.Model
     /// <summary>
     /// 
     /// </summary>
+    [KnetikFactory ("map")]
     public class MapPropertyDefinitionResource : PropertyDefinitionResource
     {
         /// <summary>
@@ -17,14 +20,14 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>Whether to allow additional properties beyond those specified or not</value>
         [JsonProperty(PropertyName = "allow_additional")]
-        public bool? AllowAdditional { get; set; }
+        public bool? AllowAdditional;
 
         /// <summary>
         /// If provided, a list of property definitions for each map entry
         /// </summary>
         /// <value>If provided, a list of property definitions for each map entry</value>
         [JsonProperty(PropertyName = "properties")]
-        public List<PropertyDefinitionResource> Properties { get; set; }
+        public List<PropertyDefinitionResource> Properties;
 
         /// <inheritdoc />
         /// <summary>
@@ -49,7 +52,7 @@ namespace com.knetikcloud.Model
         /// Get the JSON string presentation of the object
         /// </summary>
         /// <returns>JSON string presentation of the object</returns>
-        public  new string ToJson()
+        public new string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }

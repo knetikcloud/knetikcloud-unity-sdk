@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,49 +19,49 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The customer of the BRE event log</value>
         [JsonProperty(PropertyName = "customer")]
-        public string Customer { get; set; }
+        public string Customer;
 
         /// <summary>
         /// The event id of the BRE event log
         /// </summary>
         /// <value>The event id of the BRE event log</value>
         [JsonProperty(PropertyName = "event_id")]
-        public string EventId { get; set; }
+        public string EventId;
 
         /// <summary>
         /// The event name of the BRE event log
         /// </summary>
         /// <value>The event name of the BRE event log</value>
         [JsonProperty(PropertyName = "event_name")]
-        public string EventName { get; set; }
+        public string EventName;
 
         /// <summary>
         /// The event start date of the BRE event log
         /// </summary>
         /// <value>The event start date of the BRE event log</value>
         [JsonProperty(PropertyName = "event_start_date")]
-        public long? EventStartDate { get; set; }
+        public long? EventStartDate;
 
         /// <summary>
         /// The id of the BRE event log
         /// </summary>
         /// <value>The id of the BRE event log</value>
         [JsonProperty(PropertyName = "id")]
-        public string Id { get; set; }
+        public string Id;
 
         /// <summary>
         /// The event paramters of the BRE event log
         /// </summary>
         /// <value>The event paramters of the BRE event log</value>
         [JsonProperty(PropertyName = "parameters")]
-        public Object Parameters { get; set; }
+        public Object Parameters;
 
         /// <summary>
         /// The rules of the BRE event log
         /// </summary>
         /// <value>The rules of the BRE event log</value>
         [JsonProperty(PropertyName = "rules")]
-        public List<BreRuleLog> Rules { get; set; }
+        public List<BreRuleLog> Rules;
 
         /// <inheritdoc />
         /// <summary>

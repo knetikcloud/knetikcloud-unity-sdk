@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -10,6 +12,7 @@ namespace com.knetikcloud.Model
     /// <summary>
     /// 
     /// </summary>
+    [KnetikFactory ("shipping_item")]
     public class ShippingItem : StoreItem
     {
         /// <summary>
@@ -17,21 +20,21 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>A unique list of country iso3 codes that allow the shipping option</value>
         [JsonProperty(PropertyName = "countries")]
-        public List<string> Countries { get; set; }
+        public List<string> Countries;
 
         /// <summary>
         /// An abstract max value that the values of item's shipping_tier work against to decide whether an order can be fulfilled
         /// </summary>
         /// <value>An abstract max value that the values of item's shipping_tier work against to decide whether an order can be fulfilled</value>
         [JsonProperty(PropertyName = "max_tier_total")]
-        public int? MaxTierTotal { get; set; }
+        public int? MaxTierTotal;
 
         /// <summary>
         /// Whether tax should be applied to the shipping price.  Default = false
         /// </summary>
         /// <value>Whether tax should be applied to the shipping price.  Default = false</value>
         [JsonProperty(PropertyName = "taxable")]
-        public bool? Taxable { get; set; }
+        public bool? Taxable;
 
         /// <inheritdoc />
         /// <summary>
@@ -75,7 +78,7 @@ namespace com.knetikcloud.Model
         /// Get the JSON string presentation of the object
         /// </summary>
         /// <returns>JSON string presentation of the object</returns>
-        public  new string ToJson()
+        public new string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }

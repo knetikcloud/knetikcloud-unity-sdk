@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -10,62 +12,63 @@ namespace com.knetikcloud.Model
     /// <summary>
     /// 
     /// </summary>
+    [JsonConverter(typeof(KnetikJsonConverter<BroadcastableEvent>))]
     public class BroadcastableEvent
     {
         /// <summary>
         /// Gets or Sets _Client
         /// </summary>
         [JsonProperty(PropertyName = "client")]
-        public string _Client { get; set; }
+        public string _Client;
 
         /// <summary>
         /// Gets or Sets Customer
         /// </summary>
         [JsonProperty(PropertyName = "customer")]
-        public string Customer { get; set; }
+        public string Customer;
 
         /// <summary>
         /// Gets or Sets DoNotBroadcast
         /// </summary>
         [JsonProperty(PropertyName = "do_not_broadcast")]
-        public bool? DoNotBroadcast { get; set; }
+        public bool? DoNotBroadcast;
 
         /// <summary>
         /// Gets or Sets Section
         /// </summary>
         [JsonProperty(PropertyName = "section")]
-        public string Section { get; set; }
+        public string Section;
 
         /// <summary>
         /// Gets or Sets Source
         /// </summary>
         [JsonProperty(PropertyName = "source")]
-        public Object Source { get; set; }
+        public Object Source;
 
         /// <summary>
         /// Gets or Sets Specifics
         /// </summary>
         [JsonProperty(PropertyName = "specifics")]
-        public string Specifics { get; set; }
+        public string Specifics;
 
         /// <summary>
         /// Gets or Sets Synchronous
         /// </summary>
         [JsonProperty(PropertyName = "synchronous")]
-        public bool? Synchronous { get; set; }
+        public bool? Synchronous;
 
         /// <summary>
         /// Gets or Sets Timestamp
         /// </summary>
         [JsonProperty(PropertyName = "timestamp")]
-        public long? Timestamp { get; set; }
+        public long? Timestamp;
 
         /// <summary>
         /// The type of the event. Used for polymorphic type recognition and thus must match an expected type
         /// </summary>
         /// <value>The type of the event. Used for polymorphic type recognition and thus must match an expected type</value>
         [JsonProperty(PropertyName = "type")]
-        public string Type { get; set; }
+        public string Type;
 
         /// <inheritdoc />
         /// <summary>

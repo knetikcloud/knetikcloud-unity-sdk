@@ -203,7 +203,7 @@ mGetUserWalletPath = mGetUserWalletPath.Replace("{" + "currency_code" + "}", Kne
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUserWalletStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUserWalletStartTime, mGetUserWalletPath, "Sending server request...");
@@ -309,7 +309,7 @@ mGetUserWalletTransactionsPath = mGetUserWalletTransactionsPath.Replace("{" + "c
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUserWalletTransactionsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUserWalletTransactionsStartTime, mGetUserWalletTransactionsPath, "Sending server request...");
@@ -366,7 +366,7 @@ mGetUserWalletTransactionsPath = mGetUserWalletTransactionsPath.Replace("{" + "c
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUserWalletsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUserWalletsStartTime, mGetUserWalletsPath, "Sending server request...");
@@ -416,7 +416,7 @@ mGetUserWalletTransactionsPath = mGetUserWalletTransactionsPath.Replace("{" + "c
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetWalletBalancesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetWalletBalancesStartTime, mGetWalletBalancesPath, "Sending server request...");
@@ -532,7 +532,7 @@ mGetUserWalletTransactionsPath = mGetUserWalletTransactionsPath.Replace("{" + "c
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetWalletTransactionsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetWalletTransactionsStartTime, mGetWalletTransactionsPath, "Sending server request...");
@@ -600,7 +600,7 @@ mGetUserWalletTransactionsPath = mGetUserWalletTransactionsPath.Replace("{" + "c
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetWalletsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetWalletsStartTime, mGetWalletsPath, "Sending server request...");
@@ -667,7 +667,7 @@ mUpdateWalletBalancePath = mUpdateWalletBalancePath.Replace("{" + "currency_code
             postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateWalletBalanceStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateWalletBalanceStartTime, mUpdateWalletBalancePath, "Sending server request...");

@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,56 +19,56 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>Whether the currency is active. Default true</value>
         [JsonProperty(PropertyName = "active")]
-        public bool? Active { get; set; }
+        public bool? Active;
 
         /// <summary>
         /// The unique id code for the currency. Maximum 5 characters
         /// </summary>
         /// <value>The unique id code for the currency. Maximum 5 characters</value>
         [JsonProperty(PropertyName = "code")]
-        public string Code { get; set; }
+        public string Code;
 
         /// <summary>
         /// The unix timestamp in seconds the currency was added to the system
         /// </summary>
         /// <value>The unix timestamp in seconds the currency was added to the system</value>
         [JsonProperty(PropertyName = "created_date")]
-        public long? CreatedDate { get; set; }
+        public long? CreatedDate;
 
         /// <summary>
         /// The decimal to multiply the system base currency (from config 'currency') to localize to this one. Should be 1 for the base currency itself.
         /// </summary>
         /// <value>The decimal to multiply the system base currency (from config 'currency') to localize to this one. Should be 1 for the base currency itself.</value>
         [JsonProperty(PropertyName = "factor")]
-        public decimal? Factor { get; set; }
+        public decimal? Factor;
 
         /// <summary>
         /// The url for an icon of the currency
         /// </summary>
         /// <value>The url for an icon of the currency</value>
         [JsonProperty(PropertyName = "icon")]
-        public string Icon { get; set; }
+        public string Icon;
 
         /// <summary>
         /// The name of the currency
         /// </summary>
         /// <value>The name of the currency</value>
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name;
 
         /// <summary>
         /// The type of currency. Default 'real'
         /// </summary>
         /// <value>The type of currency. Default 'real'</value>
         [JsonProperty(PropertyName = "type")]
-        public string Type { get; set; }
+        public string Type;
 
         /// <summary>
         /// The unix timestamp in seconds the currency was last updated in the system.
         /// </summary>
         /// <value>The unix timestamp in seconds the currency was last updated in the system.</value>
         [JsonProperty(PropertyName = "updated_date")]
-        public long? UpdatedDate { get; set; }
+        public long? UpdatedDate;
 
         /// <inheritdoc />
         /// <summary>

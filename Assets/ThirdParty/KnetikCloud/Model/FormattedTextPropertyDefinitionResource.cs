@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -10,6 +12,7 @@ namespace com.knetikcloud.Model
     /// <summary>
     /// 
     /// </summary>
+    [KnetikFactory ("formatted_text")]
     public class FormattedTextPropertyDefinitionResource : PropertyDefinitionResource
     {
         /// <summary>
@@ -17,7 +20,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>If provided, the maximum length of the text</value>
         [JsonProperty(PropertyName = "max_length")]
-        public int? MaxLength { get; set; }
+        public int? MaxLength;
 
         /// <inheritdoc />
         /// <summary>
@@ -41,7 +44,7 @@ namespace com.knetikcloud.Model
         /// Get the JSON string presentation of the object
         /// </summary>
         /// <returns>JSON string presentation of the object</returns>
-        public  new string ToJson()
+        public new string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }

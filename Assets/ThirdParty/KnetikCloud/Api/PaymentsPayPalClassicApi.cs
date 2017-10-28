@@ -119,7 +119,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreatePayPalBillingAgreementUrlStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreatePayPalBillingAgreementUrlStartTime, mCreatePayPalBillingAgreementUrlPath, "Sending server request...");
@@ -172,7 +172,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreatePayPalExpressCheckoutStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreatePayPalExpressCheckoutStartTime, mCreatePayPalExpressCheckoutPath, "Sending server request...");
@@ -225,7 +225,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mFinalizePayPalBillingAgreementStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mFinalizePayPalBillingAgreementStartTime, mFinalizePayPalBillingAgreementPath, "Sending server request...");
@@ -278,7 +278,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mFinalizePayPalCheckoutStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mFinalizePayPalCheckoutStartTime, mFinalizePayPalCheckoutPath, "Sending server request...");

@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,49 +19,49 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>Whether this user is the 'host' of the occurrence and has increased access to settings/etc (default: false)</value>
         [JsonProperty(PropertyName = "host")]
-        public bool? Host { get; set; }
+        public bool? Host;
 
         /// <summary>
         /// The id of the activity user entry
         /// </summary>
         /// <value>The id of the activity user entry</value>
         [JsonProperty(PropertyName = "id")]
-        public long? Id { get; set; }
+        public long? Id;
 
         /// <summary>
         /// The date this user last joined the occurrence, unix timestamp in seconds
         /// </summary>
         /// <value>The date this user last joined the occurrence, unix timestamp in seconds</value>
         [JsonProperty(PropertyName = "joined_date")]
-        public long? JoinedDate { get; set; }
+        public long? JoinedDate;
 
         /// <summary>
         /// The date this user last left the occurrence, unix timestamp in seconds. Null if still present
         /// </summary>
         /// <value>The date this user last left the occurrence, unix timestamp in seconds. Null if still present</value>
         [JsonProperty(PropertyName = "left_date")]
-        public long? LeftDate { get; set; }
+        public long? LeftDate;
 
         /// <summary>
         /// The metric for the user's results, after the game is over
         /// </summary>
         /// <value>The metric for the user's results, after the game is over</value>
         [JsonProperty(PropertyName = "metric")]
-        public MetricResource Metric { get; set; }
+        public MetricResource Metric;
 
         /// <summary>
         /// The current status of the user in the occurrence (default: present)
         /// </summary>
         /// <value>The current status of the user in the occurrence (default: present)</value>
         [JsonProperty(PropertyName = "status")]
-        public string Status { get; set; }
+        public string Status;
 
         /// <summary>
         /// The user
         /// </summary>
         /// <value>The user</value>
         [JsonProperty(PropertyName = "user")]
-        public SimpleUserResource User { get; set; }
+        public SimpleUserResource User;
 
         /// <inheritdoc />
         /// <summary>

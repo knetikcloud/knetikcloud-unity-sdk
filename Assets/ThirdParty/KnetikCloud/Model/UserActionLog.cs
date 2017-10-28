@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,49 +19,49 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>A description of the action taken</value>
         [JsonProperty(PropertyName = "action_description")]
-        public string ActionDescription { get; set; }
+        public string ActionDescription;
 
         /// <summary>
         /// The name of the action taken
         /// </summary>
         /// <value>The name of the action taken</value>
         [JsonProperty(PropertyName = "action_name")]
-        public string ActionName { get; set; }
+        public string ActionName;
 
         /// <summary>
         /// The date of the action, unix timestamp in seconds
         /// </summary>
         /// <value>The date of the action, unix timestamp in seconds</value>
         [JsonProperty(PropertyName = "created_date")]
-        public long? CreatedDate { get; set; }
+        public long? CreatedDate;
 
         /// <summary>
         /// A map of additional details such as the target of the action
         /// </summary>
         /// <value>A map of additional details such as the target of the action</value>
         [JsonProperty(PropertyName = "details")]
-        public Dictionary<string, string> Details { get; set; }
+        public Dictionary<string, string> Details;
 
         /// <summary>
         /// The id of the log entry
         /// </summary>
         /// <value>The id of the log entry</value>
         [JsonProperty(PropertyName = "id")]
-        public string Id { get; set; }
+        public string Id;
 
         /// <summary>
         /// The id of the api request that spawned the action, if generated internally
         /// </summary>
         /// <value>The id of the api request that spawned the action, if generated internally</value>
         [JsonProperty(PropertyName = "request_id")]
-        public string RequestId { get; set; }
+        public string RequestId;
 
         /// <summary>
         /// The id of the user that took the action, if any. Read-only if not posting with LOGS_ADMIN
         /// </summary>
         /// <value>The id of the user that took the action, if any. Read-only if not posting with LOGS_ADMIN</value>
         [JsonProperty(PropertyName = "user_id")]
-        public int? UserId { get; set; }
+        public int? UserId;
 
         /// <inheritdoc />
         /// <summary>

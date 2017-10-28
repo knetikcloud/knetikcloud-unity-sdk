@@ -159,7 +159,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(flagResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddFlagStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddFlagStartTime, mAddFlagPath, "Sending server request...");
@@ -227,7 +227,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteFlagStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteFlagStartTime, mDeleteFlagPath, "Sending server request...");
@@ -305,7 +305,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetFlagsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetFlagsStartTime, mGetFlagsPath, "Sending server request...");
@@ -362,7 +362,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetModerationReportStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetModerationReportStartTime, mGetModerationReportPath, "Sending server request...");
@@ -442,7 +442,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetModerationReportsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetModerationReportsStartTime, mGetModerationReportsPath, "Sending server request...");
@@ -502,7 +502,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(flagReportResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateModerationReportStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateModerationReportStartTime, mUpdateModerationReportPath, "Sending server request...");

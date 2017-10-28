@@ -262,7 +262,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(answerKey); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAnswerPollStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAnswerPollStartTime, mAnswerPollPath, "Sending server request...");
@@ -315,7 +315,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(pollResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreatePollStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreatePollStartTime, mCreatePollPath, "Sending server request...");
@@ -368,7 +368,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(pollTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreatePollTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreatePollTemplateStartTime, mCreatePollTemplatePath, "Sending server request...");
@@ -425,7 +425,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeletePollStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeletePollStartTime, mDeletePollPath, "Sending server request...");
@@ -486,7 +486,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeletePollTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeletePollTemplateStartTime, mDeletePollTemplatePath, "Sending server request...");
@@ -541,7 +541,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetPollStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetPollStartTime, mGetPollPath, "Sending server request...");
@@ -598,7 +598,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetPollAnswerStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetPollAnswerStartTime, mGetPollAnswerPath, "Sending server request...");
@@ -655,7 +655,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetPollTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetPollTemplateStartTime, mGetPollTemplatePath, "Sending server request...");
@@ -723,7 +723,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetPollTemplatesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetPollTemplatesStartTime, mGetPollTemplatesPath, "Sending server request...");
@@ -809,7 +809,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetPollsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetPollsStartTime, mGetPollsPath, "Sending server request...");
@@ -869,7 +869,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(pollResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdatePollStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdatePollStartTime, mUpdatePollPath, "Sending server request...");
@@ -929,7 +929,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(pollTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdatePollTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdatePollTemplateStartTime, mUpdatePollTemplatePath, "Sending server request...");

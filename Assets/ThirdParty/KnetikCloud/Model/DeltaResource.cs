@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,42 +19,42 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The id of the category for question</value>
         [JsonProperty(PropertyName = "category_id")]
-        public string CategoryId { get; set; }
+        public string CategoryId;
 
         /// <summary>
         /// The media type of the question
         /// </summary>
         /// <value>The media type of the question</value>
         [JsonProperty(PropertyName = "media_type")]
-        public string MediaType { get; set; }
+        public string MediaType;
 
         /// <summary>
         /// The id of the question
         /// </summary>
         /// <value>The id of the question</value>
         [JsonProperty(PropertyName = "question_id")]
-        public string QuestionId { get; set; }
+        public string QuestionId;
 
         /// <summary>
         /// Whether the question was updated or removed
         /// </summary>
         /// <value>Whether the question was updated or removed</value>
         [JsonProperty(PropertyName = "state")]
-        public string State { get; set; }
+        public string State;
 
         /// <summary>
         /// The tags for the question
         /// </summary>
         /// <value>The tags for the question</value>
         [JsonProperty(PropertyName = "tags")]
-        public List<string> Tags { get; set; }
+        public List<string> Tags;
 
         /// <summary>
         /// The date this question was last updated in seconds since unix epoch
         /// </summary>
         /// <value>The date this question was last updated in seconds since unix epoch</value>
         [JsonProperty(PropertyName = "updated_date")]
-        public long? UpdatedDate { get; set; }
+        public long? UpdatedDate;
 
         /// <inheritdoc />
         /// <summary>

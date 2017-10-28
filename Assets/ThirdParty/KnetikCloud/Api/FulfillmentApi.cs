@@ -135,7 +135,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(type); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateFulfillmentTypeStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateFulfillmentTypeStartTime, mCreateFulfillmentTypePath, "Sending server request...");
@@ -192,7 +192,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteFulfillmentTypeStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteFulfillmentTypeStartTime, mDeleteFulfillmentTypePath, "Sending server request...");
@@ -247,7 +247,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetFulfillmentTypeStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetFulfillmentTypeStartTime, mGetFulfillmentTypePath, "Sending server request...");
@@ -315,7 +315,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetFulfillmentTypesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetFulfillmentTypesStartTime, mGetFulfillmentTypesPath, "Sending server request...");
@@ -375,7 +375,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(fulfillmentType); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateFulfillmentTypeStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateFulfillmentTypeStartTime, mUpdateFulfillmentTypePath, "Sending server request...");

@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -10,6 +12,7 @@ namespace com.knetikcloud.Model
     /// <summary>
     /// 
     /// </summary>
+    [JsonConverter(typeof(KnetikJsonConverter<Property>))]
     public class Property
     {
         /// <summary>
@@ -17,7 +20,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The type of the property. Used for polymorphic type recognition and thus must match an expected type with additional properties.</value>
         [JsonProperty(PropertyName = "type")]
-        public string Type { get; set; }
+        public string Type;
 
         /// <inheritdoc />
         /// <summary>

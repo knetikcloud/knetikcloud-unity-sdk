@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,14 +19,14 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The recurring price that has been set to override the base price. Null if not overriding</value>
         [JsonProperty(PropertyName = "new_price")]
-        public decimal? NewPrice { get; set; }
+        public decimal? NewPrice;
 
         /// <summary>
         /// An explanation for the reason the price is being overridden
         /// </summary>
         /// <value>An explanation for the reason the price is being overridden</value>
         [JsonProperty(PropertyName = "reason")]
-        public string Reason { get; set; }
+        public string Reason;
 
         /// <inheritdoc />
         /// <summary>

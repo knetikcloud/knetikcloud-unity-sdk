@@ -189,7 +189,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(template); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateBRECategoryTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateBRECategoryTemplateStartTime, mCreateBRECategoryTemplatePath, "Sending server request...");
@@ -252,7 +252,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteBRECategoryTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteBRECategoryTemplateStartTime, mDeleteBRECategoryTemplatePath, "Sending server request...");
@@ -312,7 +312,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetBRECategoriesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetBRECategoriesStartTime, mGetBRECategoriesPath, "Sending server request...");
@@ -369,7 +369,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetBRECategoryStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetBRECategoryStartTime, mGetBRECategoryPath, "Sending server request...");
@@ -426,7 +426,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetBRECategoryTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetBRECategoryTemplateStartTime, mGetBRECategoryTemplatePath, "Sending server request...");
@@ -494,7 +494,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetBRECategoryTemplatesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetBRECategoryTemplatesStartTime, mGetBRECategoryTemplatesPath, "Sending server request...");
@@ -554,7 +554,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(category); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateBRECategoryStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateBRECategoryStartTime, mUpdateBRECategoryPath, "Sending server request...");
@@ -614,7 +614,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(template); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateBRECategoryTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateBRECategoryTemplateStartTime, mUpdateBRECategoryTemplatePath, "Sending server request...");

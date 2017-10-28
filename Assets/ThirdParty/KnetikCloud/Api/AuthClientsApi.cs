@@ -181,7 +181,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(clientResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateClientStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateClientStartTime, mCreateClientPath, "Sending server request...");
@@ -238,7 +238,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteClientStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteClientStartTime, mDeleteClientPath, "Sending server request...");
@@ -293,7 +293,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetClientStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetClientStartTime, mGetClientPath, "Sending server request...");
@@ -343,7 +343,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetClientGrantTypesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetClientGrantTypesStartTime, mGetClientGrantTypesPath, "Sending server request...");
@@ -411,7 +411,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetClientsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetClientsStartTime, mGetClientsPath, "Sending server request...");
@@ -471,7 +471,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(grantList); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSetClientGrantTypesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSetClientGrantTypesStartTime, mSetClientGrantTypesPath, "Sending server request...");
@@ -529,7 +529,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(redirectList); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSetClientRedirectUrisStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSetClientRedirectUrisStartTime, mSetClientRedirectUrisPath, "Sending server request...");
@@ -587,7 +587,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(clientResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateClientStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateClientStartTime, mUpdateClientPath, "Sending server request...");

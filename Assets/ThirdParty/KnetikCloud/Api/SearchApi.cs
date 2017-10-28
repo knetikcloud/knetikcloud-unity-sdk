@@ -96,7 +96,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(query); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mSearchIndexStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSearchIndexStartTime, mSearchIndexPath, "Sending server request...");

@@ -54,12 +54,12 @@ namespace com.knetikcloud.Client
             ResponseReceived = null;
         }
 
-        public void Start(string url, Method method, Dictionary<string, string> queryParams, string postBody, Dictionary<string, string> headerParams, Dictionary<string, string> formParams, Dictionary<string, FileParameter> fileParams, string[] authSettings)
+        public void Start(string url, Method method, Dictionary<string, string> queryParams, string postBody, Dictionary<string, string> headerParams, Dictionary<string, string> formParams, Dictionary<string, FileParameter> fileParams, List<string> authSettings)
         {
             KnetikClient.DefaultClient.StartCoroutine(HandleCoroutine(url, method, queryParams, postBody, headerParams, formParams, fileParams, authSettings));
         }
 
-        private IEnumerator HandleCoroutine(string url, Method method, Dictionary<string, string> queryParams, string postBody, Dictionary<string, string> headerParams, Dictionary<string, string> formParams, Dictionary<string, FileParameter> fileParams, string[] authSettings)
+        private IEnumerator HandleCoroutine(string url, Method method, Dictionary<string, string> queryParams, string postBody, Dictionary<string, string> headerParams, Dictionary<string, string> formParams, Dictionary<string, FileParameter> fileParams, List<string> authSettings)
         {
             yield return new WaitForEndOfFrame();
 

@@ -138,7 +138,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(rewardSetResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateRewardSetStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateRewardSetStartTime, mCreateRewardSetPath, "Sending server request...");
@@ -195,7 +195,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteRewardSetStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteRewardSetStartTime, mDeleteRewardSetPath, "Sending server request...");
@@ -250,7 +250,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetRewardSetStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetRewardSetStartTime, mGetRewardSetPath, "Sending server request...");
@@ -318,7 +318,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetRewardSetsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetRewardSetsStartTime, mGetRewardSetsPath, "Sending server request...");
@@ -378,7 +378,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(rewardSetResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateRewardSetStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateRewardSetStartTime, mUpdateRewardSetPath, "Sending server request...");

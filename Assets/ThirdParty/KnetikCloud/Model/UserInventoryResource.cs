@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,77 +19,77 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>A map of data for behaviors</value>
         [JsonProperty(PropertyName = "behavior_data")]
-        public Object BehaviorData { get; set; }
+        public Object BehaviorData;
 
         /// <summary>
         /// The date/time this resource was created in seconds since epoch
         /// </summary>
         /// <value>The date/time this resource was created in seconds since epoch</value>
         [JsonProperty(PropertyName = "created_date")]
-        public long? CreatedDate { get; set; }
+        public long? CreatedDate;
 
         /// <summary>
         /// The date/time this resource exires in seconds since epoch. Null for no expiration. For subscriptions, this is the end of the 'grace period' if left unpaid
         /// </summary>
         /// <value>The date/time this resource exires in seconds since epoch. Null for no expiration. For subscriptions, this is the end of the 'grace period' if left unpaid</value>
         [JsonProperty(PropertyName = "expires")]
-        public long? Expires { get; set; }
+        public long? Expires;
 
         /// <summary>
         /// The id of the inventory
         /// </summary>
         /// <value>The id of the inventory</value>
         [JsonProperty(PropertyName = "id")]
-        public int? Id { get; set; }
+        public int? Id;
 
         /// <summary>
         /// The id of the invoice that resulted in this inventory, if any
         /// </summary>
         /// <value>The id of the invoice that resulted in this inventory, if any</value>
         [JsonProperty(PropertyName = "invoice_id")]
-        public int? InvoiceId { get; set; }
+        public int? InvoiceId;
 
         /// <summary>
         /// The id of the item
         /// </summary>
         /// <value>The id of the item</value>
         [JsonProperty(PropertyName = "item_id")]
-        public int? ItemId { get; set; }
+        public int? ItemId;
 
         /// <summary>
         /// The name of the item
         /// </summary>
         /// <value>The name of the item</value>
         [JsonProperty(PropertyName = "item_name")]
-        public string ItemName { get; set; }
+        public string ItemName;
 
         /// <summary>
         /// The type hint of the item
         /// </summary>
         /// <value>The type hint of the item</value>
         [JsonProperty(PropertyName = "item_type_hint")]
-        public string ItemTypeHint { get; set; }
+        public string ItemTypeHint;
 
         /// <summary>
         /// The status of the inventory. Pending inventory is not yet ready for use. Inactive inventory has expired or been used up
         /// </summary>
         /// <value>The status of the inventory. Pending inventory is not yet ready for use. Inactive inventory has expired or been used up</value>
         [JsonProperty(PropertyName = "status")]
-        public string Status { get; set; }
+        public string Status;
 
         /// <summary>
         /// The date/time this resource was last updated in seconds since epoch
         /// </summary>
         /// <value>The date/time this resource was last updated in seconds since epoch</value>
         [JsonProperty(PropertyName = "updated_date")]
-        public long? UpdatedDate { get; set; }
+        public long? UpdatedDate;
 
         /// <summary>
         /// The id of the user this inventory belongs to
         /// </summary>
         /// <value>The id of the user this inventory belongs to</value>
         [JsonProperty(PropertyName = "user")]
-        public SimpleUserResource User { get; set; }
+        public SimpleUserResource User;
 
         /// <inheritdoc />
         /// <summary>

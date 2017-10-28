@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,42 +19,42 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The code of the currency type to give</value>
         [JsonProperty(PropertyName = "currency_code")]
-        public string CurrencyCode { get; set; }
+        public string CurrencyCode;
 
         /// <summary>
         /// The name of the currency reward to give.  Set by currency_code)
         /// </summary>
         /// <value>The name of the currency reward to give.  Set by currency_code)</value>
         [JsonProperty(PropertyName = "currency_name")]
-        public string CurrencyName { get; set; }
+        public string CurrencyName;
 
         /// <summary>
         /// The highest number (worst) rank to give the reward to. Must be greater than or equal to minRank
         /// </summary>
         /// <value>The highest number (worst) rank to give the reward to. Must be greater than or equal to minRank</value>
         [JsonProperty(PropertyName = "max_rank")]
-        public int? MaxRank { get; set; }
+        public int? MaxRank;
 
         /// <summary>
         /// The lowest number (best) rank to give the reward to. Must be greater than zero
         /// </summary>
         /// <value>The lowest number (best) rank to give the reward to. Must be greater than zero</value>
         [JsonProperty(PropertyName = "min_rank")]
-        public int? MinRank { get; set; }
+        public int? MinRank;
 
         /// <summary>
         /// True if the value is actually a percentage of the intake
         /// </summary>
         /// <value>True if the value is actually a percentage of the intake</value>
         [JsonProperty(PropertyName = "percent")]
-        public bool? Percent { get; set; }
+        public bool? Percent;
 
         /// <summary>
         /// The amount of currency to give. For percentage values, 0.5 is 50%
         /// </summary>
         /// <value>The amount of currency to give. For percentage values, 0.5 is 50%</value>
         [JsonProperty(PropertyName = "value")]
-        public double? Value { get; set; }
+        public double? Value;
 
         /// <inheritdoc />
         /// <summary>

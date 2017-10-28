@@ -89,7 +89,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetBREVariableTypesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetBREVariableTypesStartTime, mGetBREVariableTypesPath, "Sending server request...");
@@ -164,7 +164,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetBREVariableValuesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetBREVariableValuesStartTime, mGetBREVariableValuesPath, "Sending server request...");

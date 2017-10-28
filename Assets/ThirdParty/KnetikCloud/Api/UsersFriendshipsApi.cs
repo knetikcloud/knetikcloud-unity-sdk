@@ -165,7 +165,7 @@ mAddFriendPath = mAddFriendPath.Replace("{" + "id" + "}", KnetikClient.DefaultCl
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddFriendStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddFriendStartTime, mAddFriendPath, "Sending server request...");
@@ -244,7 +244,7 @@ mAddFriendPath = mAddFriendPath.Replace("{" + "id" + "}", KnetikClient.DefaultCl
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetFriendsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetFriendsStartTime, mGetFriendsPath, "Sending server request...");
@@ -301,7 +301,7 @@ mAddFriendPath = mAddFriendPath.Replace("{" + "id" + "}", KnetikClient.DefaultCl
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetInviteTokenStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetInviteTokenStartTime, mGetInviteTokenPath, "Sending server request...");
@@ -370,7 +370,7 @@ mAddFriendPath = mAddFriendPath.Replace("{" + "id" + "}", KnetikClient.DefaultCl
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetInvitesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetInvitesStartTime, mGetInvitesPath, "Sending server request...");
@@ -430,7 +430,7 @@ mAddFriendPath = mAddFriendPath.Replace("{" + "id" + "}", KnetikClient.DefaultCl
             postBody = KnetikClient.DefaultClient.Serialize(token); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mRedeemFriendshipTokenStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mRedeemFriendshipTokenStartTime, mRedeemFriendshipTokenPath, "Sending server request...");
@@ -492,7 +492,7 @@ mRemoveOrDeclineFriendPath = mRemoveOrDeclineFriendPath.Replace("{" + "id" + "}"
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mRemoveOrDeclineFriendStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mRemoveOrDeclineFriendStartTime, mRemoveOrDeclineFriendPath, "Sending server request...");

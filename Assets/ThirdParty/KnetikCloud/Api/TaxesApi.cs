@@ -241,7 +241,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(taxResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateCountryTaxStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateCountryTaxStartTime, mCreateCountryTaxPath, "Sending server request...");
@@ -301,7 +301,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(taxResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateStateTaxStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateStateTaxStartTime, mCreateStateTaxPath, "Sending server request...");
@@ -358,7 +358,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteCountryTaxStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteCountryTaxStartTime, mDeleteCountryTaxPath, "Sending server request...");
@@ -420,7 +420,7 @@ mDeleteStateTaxPath = mDeleteStateTaxPath.Replace("{" + "state_code" + "}", Knet
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteStateTaxStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteStateTaxStartTime, mDeleteStateTaxPath, "Sending server request...");
@@ -475,7 +475,7 @@ mDeleteStateTaxPath = mDeleteStateTaxPath.Replace("{" + "state_code" + "}", Knet
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetCountryTaxStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCountryTaxStartTime, mGetCountryTaxPath, "Sending server request...");
@@ -543,7 +543,7 @@ mDeleteStateTaxPath = mDeleteStateTaxPath.Replace("{" + "state_code" + "}", Knet
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetCountryTaxesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCountryTaxesStartTime, mGetCountryTaxesPath, "Sending server request...");
@@ -607,7 +607,7 @@ mGetStateTaxPath = mGetStateTaxPath.Replace("{" + "state_code" + "}", KnetikClie
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetStateTaxStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetStateTaxStartTime, mGetStateTaxPath, "Sending server request...");
@@ -675,7 +675,7 @@ mGetStateTaxPath = mGetStateTaxPath.Replace("{" + "state_code" + "}", KnetikClie
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetStateTaxesForCountriesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetStateTaxesForCountriesStartTime, mGetStateTaxesForCountriesPath, "Sending server request...");
@@ -750,7 +750,7 @@ mGetStateTaxPath = mGetStateTaxPath.Replace("{" + "state_code" + "}", KnetikClie
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetStateTaxesForCountryStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetStateTaxesForCountryStartTime, mGetStateTaxesForCountryPath, "Sending server request...");
@@ -810,7 +810,7 @@ mGetStateTaxPath = mGetStateTaxPath.Replace("{" + "state_code" + "}", KnetikClie
             postBody = KnetikClient.DefaultClient.Serialize(taxResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateCountryTaxStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateCountryTaxStartTime, mUpdateCountryTaxPath, "Sending server request...");
@@ -877,7 +877,7 @@ mUpdateStateTaxPath = mUpdateStateTaxPath.Replace("{" + "state_code" + "}", Knet
             postBody = KnetikClient.DefaultClient.Serialize(taxResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateStateTaxStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateStateTaxStartTime, mUpdateStateTaxPath, "Sending server request...");

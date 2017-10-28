@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,28 +19,28 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The number of requests within the range</value>
         [JsonProperty(PropertyName = "count")]
-        public long? Count { get; set; }
+        public long? Count;
 
         /// <summary>
         /// The date at the start of the range (see granularity)
         /// </summary>
         /// <value>The date at the start of the range (see granularity)</value>
         [JsonProperty(PropertyName = "date")]
-        public long? Date { get; set; }
+        public long? Date;
 
         /// <summary>
         /// The http method
         /// </summary>
         /// <value>The http method</value>
         [JsonProperty(PropertyName = "method")]
-        public string Method { get; set; }
+        public string Method;
 
         /// <summary>
         /// The url path
         /// </summary>
         /// <value>The url path</value>
         [JsonProperty(PropertyName = "url")]
-        public string Url { get; set; }
+        public string Url;
 
         /// <inheritdoc />
         /// <summary>

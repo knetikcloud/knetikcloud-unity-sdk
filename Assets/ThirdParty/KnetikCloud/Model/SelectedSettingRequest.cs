@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,14 +19,14 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The unique ID for the setting</value>
         [JsonProperty(PropertyName = "key")]
-        public string Key { get; set; }
+        public string Key;
 
         /// <summary>
         /// The unique ID for the option. Must match one of the options from this setting in the activity, if not part of a challenge
         /// </summary>
         /// <value>The unique ID for the option. Must match one of the options from this setting in the activity, if not part of a challenge</value>
         [JsonProperty(PropertyName = "value")]
-        public string Value { get; set; }
+        public string Value;
 
         /// <inheritdoc />
         /// <summary>

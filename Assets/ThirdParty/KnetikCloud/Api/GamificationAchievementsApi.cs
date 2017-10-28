@@ -369,7 +369,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(achievement); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateAchievementStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateAchievementStartTime, mCreateAchievementPath, "Sending server request...");
@@ -422,7 +422,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(template); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateAchievementTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateAchievementTemplateStartTime, mCreateAchievementTemplatePath, "Sending server request...");
@@ -479,7 +479,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteAchievementStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteAchievementStartTime, mDeleteAchievementPath, "Sending server request...");
@@ -540,7 +540,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteAchievementTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteAchievementTemplateStartTime, mDeleteAchievementTemplatePath, "Sending server request...");
@@ -595,7 +595,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetAchievementStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetAchievementStartTime, mGetAchievementPath, "Sending server request...");
@@ -652,7 +652,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetAchievementTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetAchievementTemplateStartTime, mGetAchievementTemplatePath, "Sending server request...");
@@ -720,7 +720,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetAchievementTemplatesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetAchievementTemplatesStartTime, mGetAchievementTemplatesPath, "Sending server request...");
@@ -770,7 +770,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetAchievementTriggersStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetAchievementTriggersStartTime, mGetAchievementTriggersPath, "Sending server request...");
@@ -862,7 +862,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetAchievementsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetAchievementsStartTime, mGetAchievementsPath, "Sending server request...");
@@ -919,7 +919,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetDerivedAchievementsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetDerivedAchievementsStartTime, mGetDerivedAchievementsPath, "Sending server request...");
@@ -983,7 +983,7 @@ mGetUserAchievementProgressPath = mGetUserAchievementProgressPath.Replace("{" + 
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUserAchievementProgressStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUserAchievementProgressStartTime, mGetUserAchievementProgressPath, "Sending server request...");
@@ -1070,7 +1070,7 @@ mGetUserAchievementProgressPath = mGetUserAchievementProgressPath.Replace("{" + 
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUserAchievementsProgressStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUserAchievementsProgressStartTime, mGetUserAchievementsProgressPath, "Sending server request...");
@@ -1157,7 +1157,7 @@ mGetUserAchievementProgressPath = mGetUserAchievementProgressPath.Replace("{" + 
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUsersAchievementProgressStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUsersAchievementProgressStartTime, mGetUsersAchievementProgressPath, "Sending server request...");
@@ -1237,7 +1237,7 @@ mGetUserAchievementProgressPath = mGetUserAchievementProgressPath.Replace("{" + 
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUsersAchievementsProgressStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUsersAchievementsProgressStartTime, mGetUsersAchievementsProgressPath, "Sending server request...");
@@ -1304,7 +1304,7 @@ mIncrementAchievementProgressPath = mIncrementAchievementProgressPath.Replace("{
             postBody = KnetikClient.DefaultClient.Serialize(progress); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mIncrementAchievementProgressStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mIncrementAchievementProgressStartTime, mIncrementAchievementProgressPath, "Sending server request...");
@@ -1371,7 +1371,7 @@ mSetAchievementProgressPath = mSetAchievementProgressPath.Replace("{" + "achieve
             postBody = KnetikClient.DefaultClient.Serialize(progress); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSetAchievementProgressStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSetAchievementProgressStartTime, mSetAchievementProgressPath, "Sending server request...");
@@ -1431,7 +1431,7 @@ mSetAchievementProgressPath = mSetAchievementProgressPath.Replace("{" + "achieve
             postBody = KnetikClient.DefaultClient.Serialize(achievement); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateAchievementStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateAchievementStartTime, mUpdateAchievementPath, "Sending server request...");
@@ -1491,7 +1491,7 @@ mSetAchievementProgressPath = mSetAchievementProgressPath.Replace("{" + "achieve
             postBody = KnetikClient.DefaultClient.Serialize(template); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateAchievementTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateAchievementTemplateStartTime, mUpdateAchievementTemplatePath, "Sending server request...");

@@ -140,7 +140,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(disposition); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddDispositionStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddDispositionStartTime, mAddDispositionPath, "Sending server request...");
@@ -197,7 +197,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteDispositionStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteDispositionStartTime, mDeleteDispositionPath, "Sending server request...");
@@ -252,7 +252,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetDispositionStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetDispositionStartTime, mGetDispositionPath, "Sending server request...");
@@ -314,7 +314,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetDispositionCountsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetDispositionCountsStartTime, mGetDispositionCountsPath, "Sending server request...");
@@ -394,7 +394,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetDispositionsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetDispositionsStartTime, mGetDispositionsPath, "Sending server request...");

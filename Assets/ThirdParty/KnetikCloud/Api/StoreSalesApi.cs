@@ -138,7 +138,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(catalogSale); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateCatalogSaleStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateCatalogSaleStartTime, mCreateCatalogSalePath, "Sending server request...");
@@ -195,7 +195,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteCatalogSaleStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteCatalogSaleStartTime, mDeleteCatalogSalePath, "Sending server request...");
@@ -250,7 +250,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetCatalogSaleStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCatalogSaleStartTime, mGetCatalogSalePath, "Sending server request...");
@@ -318,7 +318,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetCatalogSalesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCatalogSalesStartTime, mGetCatalogSalesPath, "Sending server request...");
@@ -378,7 +378,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(catalogSale); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateCatalogSaleStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateCatalogSaleStartTime, mUpdateCatalogSalePath, "Sending server request...");

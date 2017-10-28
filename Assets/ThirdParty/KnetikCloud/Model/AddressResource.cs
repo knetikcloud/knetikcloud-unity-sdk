@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,42 +19,42 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The first line of the address</value>
         [JsonProperty(PropertyName = "address1")]
-        public string Address1 { get; set; }
+        public string Address1;
 
         /// <summary>
         /// A second line of the address
         /// </summary>
         /// <value>A second line of the address</value>
         [JsonProperty(PropertyName = "address2")]
-        public string Address2 { get; set; }
+        public string Address2;
 
         /// <summary>
         /// The city
         /// </summary>
         /// <value>The city</value>
         [JsonProperty(PropertyName = "city")]
-        public string City { get; set; }
+        public string City;
 
         /// <summary>
         /// The iso3 code for the country
         /// </summary>
         /// <value>The iso3 code for the country</value>
         [JsonProperty(PropertyName = "country_code")]
-        public string CountryCode { get; set; }
+        public string CountryCode;
 
         /// <summary>
         /// The postal code
         /// </summary>
         /// <value>The postal code</value>
         [JsonProperty(PropertyName = "postal_code")]
-        public string PostalCode { get; set; }
+        public string PostalCode;
 
         /// <summary>
         /// The code for the state. Required if the country has states/provinces/equivalent
         /// </summary>
         /// <value>The code for the state. Required if the country has states/provinces/equivalent</value>
         [JsonProperty(PropertyName = "state_code")]
-        public string StateCode { get; set; }
+        public string StateCode;
 
         /// <inheritdoc />
         /// <summary>

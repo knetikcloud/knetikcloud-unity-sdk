@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,21 +19,21 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>A list of fields for the property definition.</value>
         [JsonProperty(PropertyName = "property_definition_fields")]
-        public List<PropertyFieldResource> PropertyDefinitionFields { get; set; }
+        public List<PropertyFieldResource> PropertyDefinitionFields;
 
         /// <summary>
         /// A list of fields for the property.
         /// </summary>
         /// <value>A list of fields for the property.</value>
         [JsonProperty(PropertyName = "property_fields")]
-        public List<PropertyFieldResource> PropertyFields { get; set; }
+        public List<PropertyFieldResource> PropertyFields;
 
         /// <summary>
         /// The type for the property this describes.
         /// </summary>
         /// <value>The type for the property this describes.</value>
         [JsonProperty(PropertyName = "property_type")]
-        public string PropertyType { get; set; }
+        public string PropertyType;
 
         /// <inheritdoc />
         /// <summary>

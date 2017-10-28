@@ -181,7 +181,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(logEntry); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddUserLogStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddUserLogStartTime, mAddUserLogPath, "Sending server request...");
@@ -236,7 +236,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetBREEventLogStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetBREEventLogStartTime, mGetBREEventLogPath, "Sending server request...");
@@ -322,7 +322,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetBREEventLogsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetBREEventLogsStartTime, mGetBREEventLogsPath, "Sending server request...");
@@ -379,7 +379,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetBREForwardLogStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetBREForwardLogStartTime, mGetBREForwardLogPath, "Sending server request...");
@@ -465,7 +465,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetBREForwardLogsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetBREForwardLogsStartTime, mGetBREForwardLogsPath, "Sending server request...");
@@ -522,7 +522,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUserLogStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUserLogStartTime, mGetUserLogPath, "Sending server request...");
@@ -602,7 +602,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUserLogsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUserLogsStartTime, mGetUserLogsPath, "Sending server request...");

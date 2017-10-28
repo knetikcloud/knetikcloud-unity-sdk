@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -16,97 +18,97 @@ namespace com.knetikcloud.Model
         /// Gets or Sets BundleSku
         /// </summary>
         [JsonProperty(PropertyName = "bundle_sku")]
-        public string BundleSku { get; set; }
+        public string BundleSku;
 
         /// <summary>
         /// Gets or Sets CurrentFulfillmentStatus
         /// </summary>
         [JsonProperty(PropertyName = "current_fulfillment_status")]
-        public string CurrentFulfillmentStatus { get; set; }
+        public string CurrentFulfillmentStatus;
 
         /// <summary>
         /// Gets or Sets Id
         /// </summary>
         [JsonProperty(PropertyName = "id")]
-        public int? Id { get; set; }
+        public int? Id;
 
         /// <summary>
         /// Gets or Sets InvoiceId
         /// </summary>
         [JsonProperty(PropertyName = "invoice_id")]
-        public int? InvoiceId { get; set; }
+        public int? InvoiceId;
 
         /// <summary>
         /// Gets or Sets ItemId
         /// </summary>
         [JsonProperty(PropertyName = "item_id")]
-        public int? ItemId { get; set; }
+        public int? ItemId;
 
         /// <summary>
         /// Gets or Sets ItemName
         /// </summary>
         [JsonProperty(PropertyName = "item_name")]
-        public string ItemName { get; set; }
+        public string ItemName;
 
         /// <summary>
         /// Gets or Sets OriginalTotalPrice
         /// </summary>
         [JsonProperty(PropertyName = "original_total_price")]
-        public decimal? OriginalTotalPrice { get; set; }
+        public decimal? OriginalTotalPrice;
 
         /// <summary>
         /// Gets or Sets OriginalUnitPrice
         /// </summary>
         [JsonProperty(PropertyName = "original_unit_price")]
-        public decimal? OriginalUnitPrice { get; set; }
+        public decimal? OriginalUnitPrice;
 
         /// <summary>
         /// Gets or Sets Qty
         /// </summary>
         [JsonProperty(PropertyName = "qty")]
-        public int? Qty { get; set; }
+        public int? Qty;
 
         /// <summary>
         /// Gets or Sets SaleName
         /// </summary>
         [JsonProperty(PropertyName = "sale_name")]
-        public string SaleName { get; set; }
+        public string SaleName;
 
         /// <summary>
         /// Gets or Sets Sku
         /// </summary>
         [JsonProperty(PropertyName = "sku")]
-        public string Sku { get; set; }
+        public string Sku;
 
         /// <summary>
         /// Gets or Sets SkuDescription
         /// </summary>
         [JsonProperty(PropertyName = "sku_description")]
-        public string SkuDescription { get; set; }
+        public string SkuDescription;
 
         /// <summary>
         /// Gets or Sets SystemPrice
         /// </summary>
         [JsonProperty(PropertyName = "system_price")]
-        public decimal? SystemPrice { get; set; }
+        public decimal? SystemPrice;
 
         /// <summary>
         /// Gets or Sets TotalPrice
         /// </summary>
         [JsonProperty(PropertyName = "total_price")]
-        public decimal? TotalPrice { get; set; }
+        public decimal? TotalPrice;
 
         /// <summary>
         /// Gets or Sets TypeHint
         /// </summary>
         [JsonProperty(PropertyName = "type_hint")]
-        public string TypeHint { get; set; }
+        public string TypeHint;
 
         /// <summary>
         /// Gets or Sets UnitPrice
         /// </summary>
         [JsonProperty(PropertyName = "unit_price")]
-        public decimal? UnitPrice { get; set; }
+        public decimal? UnitPrice;
 
         /// <inheritdoc />
         /// <summary>

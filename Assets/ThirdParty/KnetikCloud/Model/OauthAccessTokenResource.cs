@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,21 +19,21 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The key of the client assosciated with the token</value>
         [JsonProperty(PropertyName = "client_id")]
-        public string ClientId { get; set; }
+        public string ClientId;
 
         /// <summary>
         /// The token.  Not shown in list view
         /// </summary>
         /// <value>The token.  Not shown in list view</value>
         [JsonProperty(PropertyName = "token")]
-        public string Token { get; set; }
+        public string Token;
 
         /// <summary>
         /// The username of the user associated with the token
         /// </summary>
         /// <value>The username of the user associated with the token</value>
         [JsonProperty(PropertyName = "username")]
-        public string Username { get; set; }
+        public string Username;
 
         /// <inheritdoc />
         /// <summary>

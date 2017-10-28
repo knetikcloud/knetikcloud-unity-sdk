@@ -238,7 +238,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(category); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateCategoryStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateCategoryStartTime, mCreateCategoryPath, "Sending server request...");
@@ -291,7 +291,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(template); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateCategoryTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateCategoryTemplateStartTime, mCreateCategoryTemplatePath, "Sending server request...");
@@ -348,7 +348,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteCategoryStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteCategoryStartTime, mDeleteCategoryPath, "Sending server request...");
@@ -409,7 +409,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteCategoryTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteCategoryTemplateStartTime, mDeleteCategoryTemplatePath, "Sending server request...");
@@ -487,7 +487,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetCategoriesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCategoriesStartTime, mGetCategoriesPath, "Sending server request...");
@@ -544,7 +544,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetCategoryStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCategoryStartTime, mGetCategoryPath, "Sending server request...");
@@ -601,7 +601,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetCategoryTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCategoryTemplateStartTime, mGetCategoryTemplatePath, "Sending server request...");
@@ -669,7 +669,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetCategoryTemplatesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCategoryTemplatesStartTime, mGetCategoryTemplatesPath, "Sending server request...");
@@ -731,7 +731,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetTagsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetTagsStartTime, mGetTagsPath, "Sending server request...");
@@ -791,7 +791,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(category); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateCategoryStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateCategoryStartTime, mUpdateCategoryPath, "Sending server request...");
@@ -851,7 +851,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(template); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateCategoryTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateCategoryTemplateStartTime, mUpdateCategoryTemplatePath, "Sending server request...");

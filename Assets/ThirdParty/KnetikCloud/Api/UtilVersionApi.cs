@@ -70,7 +70,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetVersionStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetVersionStartTime, mGetVersionPath, "Sending server request...");

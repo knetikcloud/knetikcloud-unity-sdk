@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,294 +19,294 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>Line one of the customer's billing address</value>
         [JsonProperty(PropertyName = "billing_address1")]
-        public string BillingAddress1 { get; set; }
+        public string BillingAddress1;
 
         /// <summary>
         /// Line two of the customer's billing address
         /// </summary>
         /// <value>Line two of the customer's billing address</value>
         [JsonProperty(PropertyName = "billing_address2")]
-        public string BillingAddress2 { get; set; }
+        public string BillingAddress2;
 
         /// <summary>
         /// The city for the customer's billing address
         /// </summary>
         /// <value>The city for the customer's billing address</value>
         [JsonProperty(PropertyName = "billing_city_name")]
-        public string BillingCityName { get; set; }
+        public string BillingCityName;
 
         /// <summary>
         /// The country for the customer's billing address
         /// </summary>
         /// <value>The country for the customer's billing address</value>
         [JsonProperty(PropertyName = "billing_country_name")]
-        public string BillingCountryName { get; set; }
+        public string BillingCountryName;
 
         /// <summary>
         /// The customer's name for the billing address
         /// </summary>
         /// <value>The customer's name for the billing address</value>
         [JsonProperty(PropertyName = "billing_full_name")]
-        public string BillingFullName { get; set; }
+        public string BillingFullName;
 
         /// <summary>
         /// The postal code for the customer's billing address
         /// </summary>
         /// <value>The postal code for the customer's billing address</value>
         [JsonProperty(PropertyName = "billing_postal_code")]
-        public string BillingPostalCode { get; set; }
+        public string BillingPostalCode;
 
         /// <summary>
         /// The state for the customer's billing address
         /// </summary>
         /// <value>The state for the customer's billing address</value>
         [JsonProperty(PropertyName = "billing_state_name")]
-        public string BillingStateName { get; set; }
+        public string BillingStateName;
 
         /// <summary>
         /// The guid of the cart this invoice came from
         /// </summary>
         /// <value>The guid of the cart this invoice came from</value>
         [JsonProperty(PropertyName = "cart_id")]
-        public string CartId { get; set; }
+        public string CartId;
 
         /// <summary>
         /// The date the invoice was created, unix timestamp in seconds
         /// </summary>
         /// <value>The date the invoice was created, unix timestamp in seconds</value>
         [JsonProperty(PropertyName = "created_date")]
-        public long? CreatedDate { get; set; }
+        public long? CreatedDate;
 
         /// <summary>
         /// The code for the currency invoice prices are in
         /// </summary>
         /// <value>The code for the currency invoice prices are in</value>
         [JsonProperty(PropertyName = "currency")]
-        public string Currency { get; set; }
+        public string Currency;
 
         /// <summary>
         /// The fulfillment status of the invoice
         /// </summary>
         /// <value>The fulfillment status of the invoice</value>
         [JsonProperty(PropertyName = "current_fulfillment_status")]
-        public string CurrentFulfillmentStatus { get; set; }
+        public string CurrentFulfillmentStatus;
 
         /// <summary>
         /// The payment status of the invoice
         /// </summary>
         /// <value>The payment status of the invoice</value>
         [JsonProperty(PropertyName = "current_payment_status")]
-        public string CurrentPaymentStatus { get; set; }
+        public string CurrentPaymentStatus;
 
         /// <summary>
         /// The amount of money saved through coupons
         /// </summary>
         /// <value>The amount of money saved through coupons</value>
         [JsonProperty(PropertyName = "discount")]
-        public decimal? Discount { get; set; }
+        public decimal? Discount;
 
         /// <summary>
         /// The customer's email address
         /// </summary>
         /// <value>The customer's email address</value>
         [JsonProperty(PropertyName = "email")]
-        public string Email { get; set; }
+        public string Email;
 
         /// <summary>
         /// An external reference to filter on
         /// </summary>
         /// <value>An external reference to filter on</value>
         [JsonProperty(PropertyName = "external_ref")]
-        public string ExternalRef { get; set; }
+        public string ExternalRef;
 
         /// <summary>
         /// The amount of federal tax added
         /// </summary>
         /// <value>The amount of federal tax added</value>
         [JsonProperty(PropertyName = "fed_tax")]
-        public decimal? FedTax { get; set; }
+        public decimal? FedTax;
 
         /// <summary>
         /// The final price of the invoice
         /// </summary>
         /// <value>The final price of the invoice</value>
         [JsonProperty(PropertyName = "grand_total")]
-        public decimal? GrandTotal { get; set; }
+        public decimal? GrandTotal;
 
         /// <summary>
         /// The id of the invoice
         /// </summary>
         /// <value>The id of the invoice</value>
         [JsonProperty(PropertyName = "id")]
-        public int? Id { get; set; }
+        public int? Id;
 
         /// <summary>
         /// A reference number for the invoice
         /// </summary>
         /// <value>A reference number for the invoice</value>
         [JsonProperty(PropertyName = "invoice_number")]
-        public string InvoiceNumber { get; set; }
+        public string InvoiceNumber;
 
         /// <summary>
         /// A list of items within the invoice
         /// </summary>
         /// <value>A list of items within the invoice</value>
         [JsonProperty(PropertyName = "items")]
-        public List<InvoiceItemResource> Items { get; set; }
+        public List<InvoiceItemResource> Items;
 
         /// <summary>
         /// The customer's name prefix
         /// </summary>
         /// <value>The customer's name prefix</value>
         [JsonProperty(PropertyName = "name_prefix")]
-        public string NamePrefix { get; set; }
+        public string NamePrefix;
 
         /// <summary>
         /// Notes about the order
         /// </summary>
         /// <value>Notes about the order</value>
         [JsonProperty(PropertyName = "order_notes")]
-        public string OrderNotes { get; set; }
+        public string OrderNotes;
 
         /// <summary>
         /// The id of an invoice this is a child of
         /// </summary>
         /// <value>The id of an invoice this is a child of</value>
         [JsonProperty(PropertyName = "parent_invoice_id")]
-        public int? ParentInvoiceId { get; set; }
+        public int? ParentInvoiceId;
 
         /// <summary>
         /// The id of a saved payment method used to pay for the invoice
         /// </summary>
         /// <value>The id of a saved payment method used to pay for the invoice</value>
         [JsonProperty(PropertyName = "payment_method_id")]
-        public int? PaymentMethodId { get; set; }
+        public int? PaymentMethodId;
 
         /// <summary>
         /// The customer's phone number
         /// </summary>
         /// <value>The customer's phone number</value>
         [JsonProperty(PropertyName = "phone")]
-        public string Phone { get; set; }
+        public string Phone;
 
         /// <summary>
         /// The customer's phone number
         /// </summary>
         /// <value>The customer's phone number</value>
         [JsonProperty(PropertyName = "phone_number")]
-        public string PhoneNumber { get; set; }
+        public string PhoneNumber;
 
         /// <summary>
         /// The remaining price of the invoice (after any payments made so far)
         /// </summary>
         /// <value>The remaining price of the invoice (after any payments made so far)</value>
         [JsonProperty(PropertyName = "remaining_balance")]
-        public decimal? RemainingBalance { get; set; }
+        public decimal? RemainingBalance;
 
         /// <summary>
         /// The shipping cost
         /// </summary>
         /// <value>The shipping cost</value>
         [JsonProperty(PropertyName = "shipping")]
-        public decimal? Shipping { get; set; }
+        public decimal? Shipping;
 
         /// <summary>
         /// Line one of the customer's shipping address
         /// </summary>
         /// <value>Line one of the customer's shipping address</value>
         [JsonProperty(PropertyName = "shipping_address1")]
-        public string ShippingAddress1 { get; set; }
+        public string ShippingAddress1;
 
         /// <summary>
         /// Line two of the customer's shipping address
         /// </summary>
         /// <value>Line two of the customer's shipping address</value>
         [JsonProperty(PropertyName = "shipping_address2")]
-        public string ShippingAddress2 { get; set; }
+        public string ShippingAddress2;
 
         /// <summary>
         /// The city for the customer's shipping address
         /// </summary>
         /// <value>The city for the customer's shipping address</value>
         [JsonProperty(PropertyName = "shipping_city_name")]
-        public string ShippingCityName { get; set; }
+        public string ShippingCityName;
 
         /// <summary>
         /// The country for the customer's shipping address
         /// </summary>
         /// <value>The country for the customer's shipping address</value>
         [JsonProperty(PropertyName = "shipping_country_name")]
-        public string ShippingCountryName { get; set; }
+        public string ShippingCountryName;
 
         /// <summary>
         /// The customer's name for the shipping address
         /// </summary>
         /// <value>The customer's name for the shipping address</value>
         [JsonProperty(PropertyName = "shipping_full_name")]
-        public string ShippingFullName { get; set; }
+        public string ShippingFullName;
 
         /// <summary>
         /// The postal code for the customer's shipping address
         /// </summary>
         /// <value>The postal code for the customer's shipping address</value>
         [JsonProperty(PropertyName = "shipping_postal_code")]
-        public string ShippingPostalCode { get; set; }
+        public string ShippingPostalCode;
 
         /// <summary>
         /// The state for the customer's shipping address
         /// </summary>
         /// <value>The state for the customer's shipping address</value>
         [JsonProperty(PropertyName = "shipping_state_name")]
-        public string ShippingStateName { get; set; }
+        public string ShippingStateName;
 
         /// <summary>
         /// A number to use in sorting items. default 500.
         /// </summary>
         /// <value>A number to use in sorting items. default 500.</value>
         [JsonProperty(PropertyName = "sort")]
-        public int? Sort { get; set; }
+        public int? Sort;
 
         /// <summary>
         /// The amount of state tax added
         /// </summary>
         /// <value>The amount of state tax added</value>
         [JsonProperty(PropertyName = "state_tax")]
-        public decimal? StateTax { get; set; }
+        public decimal? StateTax;
 
         /// <summary>
         /// The sum price of all items before shipping, coupons and tax
         /// </summary>
         /// <value>The sum price of all items before shipping, coupons and tax</value>
         [JsonProperty(PropertyName = "subtotal")]
-        public decimal? Subtotal { get; set; }
+        public decimal? Subtotal;
 
         /// <summary>
         /// The date the invoice was last updated, unix timestamp in seconds
         /// </summary>
         /// <value>The date the invoice was last updated, unix timestamp in seconds</value>
         [JsonProperty(PropertyName = "updated_date")]
-        public long? UpdatedDate { get; set; }
+        public long? UpdatedDate;
 
         /// <summary>
         /// The owner of the invoice
         /// </summary>
         /// <value>The owner of the invoice</value>
         [JsonProperty(PropertyName = "user")]
-        public SimpleUserResource User { get; set; }
+        public SimpleUserResource User;
 
         /// <summary>
         /// The id of the vendor
         /// </summary>
         /// <value>The id of the vendor</value>
         [JsonProperty(PropertyName = "vendor_id")]
-        public int? VendorId { get; set; }
+        public int? VendorId;
 
         /// <summary>
         /// The name of the invoice
         /// </summary>
         /// <value>The name of the invoice</value>
         [JsonProperty(PropertyName = "vendor_name")]
-        public string VendorName { get; set; }
+        public string VendorName;
 
         /// <inheritdoc />
         /// <summary>

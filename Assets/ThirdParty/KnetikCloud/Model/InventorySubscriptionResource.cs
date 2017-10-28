@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,105 +19,105 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The date the subscription will be billed</value>
         [JsonProperty(PropertyName = "bill_date")]
-        public long? BillDate { get; set; }
+        public long? BillDate;
 
         /// <summary>
         /// A credit of money already applied to a subscription for the next bill, or a debt if negative
         /// </summary>
         /// <value>A credit of money already applied to a subscription for the next bill, or a debt if negative</value>
         [JsonProperty(PropertyName = "credit")]
-        public decimal? Credit { get; set; }
+        public decimal? Credit;
 
         /// <summary>
         /// A record of past and present credit/debt changes
         /// </summary>
         /// <value>A record of past and present credit/debt changes</value>
         [JsonProperty(PropertyName = "credit_log")]
-        public List<SubscriptionCreditResource> CreditLog { get; set; }
+        public List<SubscriptionCreditResource> CreditLog;
 
         /// <summary>
         /// The date the grace period ends
         /// </summary>
         /// <value>The date the grace period ends</value>
         [JsonProperty(PropertyName = "grace_end")]
-        public long? GraceEnd { get; set; }
+        public long? GraceEnd;
 
         /// <summary>
         /// The id of the inventory
         /// </summary>
         /// <value>The id of the inventory</value>
         [JsonProperty(PropertyName = "inventory_id")]
-        public int? InventoryId { get; set; }
+        public int? InventoryId;
 
         /// <summary>
         /// The inventory status object
         /// </summary>
         /// <value>The inventory status object</value>
         [JsonProperty(PropertyName = "inventory_status")]
-        public string InventoryStatus { get; set; }
+        public string InventoryStatus;
 
         /// <summary>
         /// The id of the item
         /// </summary>
         /// <value>The id of the item</value>
         [JsonProperty(PropertyName = "item_id")]
-        public int? ItemId { get; set; }
+        public int? ItemId;
 
         /// <summary>
         /// The payment method object
         /// </summary>
         /// <value>The payment method object</value>
         [JsonProperty(PropertyName = "payment_method")]
-        public PaymentMethodResource PaymentMethod { get; set; }
+        public PaymentMethodResource PaymentMethod;
 
         /// <summary>
         /// The recurring price that has been set to override the base price. Null if not overriding
         /// </summary>
         /// <value>The recurring price that has been set to override the base price. Null if not overriding</value>
         [JsonProperty(PropertyName = "price_override")]
-        public decimal? PriceOverride { get; set; }
+        public decimal? PriceOverride;
 
         /// <summary>
         /// An explanation for the reason the price is being overridden
         /// </summary>
         /// <value>An explanation for the reason the price is being overridden</value>
         [JsonProperty(PropertyName = "price_override_reason")]
-        public string PriceOverrideReason { get; set; }
+        public string PriceOverrideReason;
 
         /// <summary>
         /// The default recurring price
         /// </summary>
         /// <value>The default recurring price</value>
         [JsonProperty(PropertyName = "recurring_price")]
-        public decimal? RecurringPrice { get; set; }
+        public decimal? RecurringPrice;
 
         /// <summary>
         /// The recurring sku of the subscription
         /// </summary>
         /// <value>The recurring sku of the subscription</value>
         [JsonProperty(PropertyName = "sku")]
-        public string Sku { get; set; }
+        public string Sku;
 
         /// <summary>
         /// The date the subscription will start
         /// </summary>
         /// <value>The date the subscription will start</value>
         [JsonProperty(PropertyName = "start_date")]
-        public long? StartDate { get; set; }
+        public long? StartDate;
 
         /// <summary>
         /// The status of the subscription
         /// </summary>
         /// <value>The status of the subscription</value>
         [JsonProperty(PropertyName = "subscription_status")]
-        public int? SubscriptionStatus { get; set; }
+        public int? SubscriptionStatus;
 
         /// <summary>
         /// The user
         /// </summary>
         /// <value>The user</value>
         [JsonProperty(PropertyName = "user")]
-        public SimpleUserResource User { get; set; }
+        public SimpleUserResource User;
 
         /// <inheritdoc />
         /// <summary>

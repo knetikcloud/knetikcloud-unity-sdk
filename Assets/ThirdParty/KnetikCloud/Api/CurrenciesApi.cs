@@ -137,7 +137,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(currency); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateCurrencyStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateCurrencyStartTime, mCreateCurrencyPath, "Sending server request...");
@@ -194,7 +194,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteCurrencyStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteCurrencyStartTime, mDeleteCurrencyPath, "Sending server request...");
@@ -272,7 +272,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetCurrenciesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCurrenciesStartTime, mGetCurrenciesPath, "Sending server request...");
@@ -329,7 +329,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetCurrencyStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCurrencyStartTime, mGetCurrencyPath, "Sending server request...");
@@ -389,7 +389,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(currency); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateCurrencyStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateCurrencyStartTime, mUpdateCurrencyPath, "Sending server request...");

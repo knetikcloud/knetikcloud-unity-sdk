@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -10,6 +12,7 @@ namespace com.knetikcloud.Model
     /// <summary>
     /// 
     /// </summary>
+    [KnetikFactory ("pre_req_entitlement")]
     public class PreReqEntitlement : Behavior
     {
         /// <summary>
@@ -17,7 +20,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The item ids that must already be in the user's inventory</value>
         [JsonProperty(PropertyName = "item_ids")]
-        public List<int?> ItemIds { get; set; }
+        public List<int?> ItemIds;
 
         /// <inheritdoc />
         /// <summary>
@@ -39,7 +42,7 @@ namespace com.knetikcloud.Model
         /// Get the JSON string presentation of the object
         /// </summary>
         /// <returns>JSON string presentation of the object</returns>
-        public  new string ToJson()
+        public new string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }

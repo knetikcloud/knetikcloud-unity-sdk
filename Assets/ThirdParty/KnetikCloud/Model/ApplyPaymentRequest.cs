@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,21 +19,21 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The id of the local invoice being paid.</value>
         [JsonProperty(PropertyName = "invoice_id")]
-        public int? InvoiceId { get; set; }
+        public int? InvoiceId;
 
         /// <summary>
         /// The encoded receipt string from Apple's services.
         /// </summary>
         /// <value>The encoded receipt string from Apple's services.</value>
         [JsonProperty(PropertyName = "receipt")]
-        public string Receipt { get; set; }
+        public string Receipt;
 
         /// <summary>
         /// The id of the specific transaction from Apple's services.
         /// </summary>
         /// <value>The id of the specific transaction from Apple's services.</value>
         [JsonProperty(PropertyName = "transaction_id")]
-        public string TransactionId { get; set; }
+        public string TransactionId;
 
         /// <inheritdoc />
         /// <summary>

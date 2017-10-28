@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -16,13 +18,13 @@ namespace com.knetikcloud.Model
         /// Gets or Sets Mongo
         /// </summary>
         [JsonProperty(PropertyName = "mongo")]
-        public MongoDatabaseConfig Mongo { get; set; }
+        public MongoDatabaseConfig Mongo;
 
         /// <summary>
         /// Gets or Sets Sql
         /// </summary>
         [JsonProperty(PropertyName = "sql")]
-        public SqlDatabaseConfig Sql { get; set; }
+        public SqlDatabaseConfig Sql;
 
         /// <inheritdoc />
         /// <summary>

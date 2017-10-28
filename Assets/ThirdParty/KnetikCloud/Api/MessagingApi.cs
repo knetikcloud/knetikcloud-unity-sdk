@@ -136,7 +136,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(rawEmailResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSendRawEmailStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSendRawEmailStartTime, mSendRawEmailPath, "Sending server request...");
@@ -187,7 +187,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(rawPushResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSendRawPushStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSendRawPushStartTime, mSendRawPushPath, "Sending server request...");
@@ -238,7 +238,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(rawSMSResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSendRawSMSStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSendRawSMSStartTime, mSendRawSMSPath, "Sending server request...");
@@ -289,7 +289,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(messageResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSendTemplatedEmailStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSendTemplatedEmailStartTime, mSendTemplatedEmailPath, "Sending server request...");
@@ -340,7 +340,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(templatePushResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSendTemplatedPushStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSendTemplatedPushStartTime, mSendTemplatedPushPath, "Sending server request...");
@@ -391,7 +391,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(templateSMSResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSendTemplatedSMSStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSendTemplatedSMSStartTime, mSendTemplatedSMSPath, "Sending server request...");

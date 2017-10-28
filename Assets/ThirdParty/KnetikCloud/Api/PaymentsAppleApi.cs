@@ -74,7 +74,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mVerifyAppleReceiptStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mVerifyAppleReceiptStartTime, mVerifyAppleReceiptPath, "Sending server request...");

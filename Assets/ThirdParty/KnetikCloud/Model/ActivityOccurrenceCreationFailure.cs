@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,7 +19,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The details of each user's entry, or just the current user's if not run with ACTIVITIES_ADMIN permission</value>
         [JsonProperty(PropertyName = "user_results")]
-        public List<ActivityOccurrenceJoinResult> UserResults { get; set; }
+        public List<ActivityOccurrenceJoinResult> UserResults;
 
         /// <inheritdoc />
         /// <summary>

@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,56 +19,56 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The comment content of that resource</value>
         [JsonProperty(PropertyName = "content")]
-        public string Content { get; set; }
+        public string Content;
 
         /// <summary>
         /// The type of object this comment applies to (ex: video, article, etc). Required when passed to /comments
         /// </summary>
         /// <value>The type of object this comment applies to (ex: video, article, etc). Required when passed to /comments</value>
         [JsonProperty(PropertyName = "context")]
-        public string Context { get; set; }
+        public string Context;
 
         /// <summary>
         /// The id of the object this comment applies to.  Required when passed to /comments
         /// </summary>
         /// <value>The id of the object this comment applies to.  Required when passed to /comments</value>
         [JsonProperty(PropertyName = "context_id")]
-        public int? ContextId { get; set; }
+        public int? ContextId;
 
         /// <summary>
         /// The date/time this resource was created in seconds since epoch
         /// </summary>
         /// <value>The date/time this resource was created in seconds since epoch</value>
         [JsonProperty(PropertyName = "created_date")]
-        public long? CreatedDate { get; set; }
+        public long? CreatedDate;
 
         /// <summary>
         /// The unique ID for that resource
         /// </summary>
         /// <value>The unique ID for that resource</value>
         [JsonProperty(PropertyName = "id")]
-        public long? Id { get; set; }
+        public long? Id;
 
         /// <summary>
         /// The summary of that resource
         /// </summary>
         /// <value>The summary of that resource</value>
         [JsonProperty(PropertyName = "summary")]
-        public string Summary { get; set; }
+        public string Summary;
 
         /// <summary>
         /// The date/time this resource was last updated in seconds since epoch
         /// </summary>
         /// <value>The date/time this resource was last updated in seconds since epoch</value>
         [JsonProperty(PropertyName = "updated_date")]
-        public long? UpdatedDate { get; set; }
+        public long? UpdatedDate;
 
         /// <summary>
         /// The user who created the comment
         /// </summary>
         /// <value>The user who created the comment</value>
         [JsonProperty(PropertyName = "user")]
-        public SimpleUserResource User { get; set; }
+        public SimpleUserResource User;
 
         /// <inheritdoc />
         /// <summary>

@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,112 +19,112 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The new balance of the wallet after the transaction</value>
         [JsonProperty(PropertyName = "balance")]
-        public decimal? Balance { get; set; }
+        public decimal? Balance;
 
         /// <summary>
         /// The unix timestamp in seconds of the transaction
         /// </summary>
         /// <value>The unix timestamp in seconds of the transaction</value>
         [JsonProperty(PropertyName = "create_date")]
-        public long? CreateDate { get; set; }
+        public long? CreateDate;
 
         /// <summary>
         /// The code of the currency for the transaction
         /// </summary>
         /// <value>The code of the currency for the transaction</value>
         [JsonProperty(PropertyName = "currency_code")]
-        public string CurrencyCode { get; set; }
+        public string CurrencyCode;
 
         /// <summary>
         /// The specific details of the transaction, such as a message from the admin that created it
         /// </summary>
         /// <value>The specific details of the transaction, such as a message from the admin that created it</value>
         [JsonProperty(PropertyName = "details")]
-        public string Details { get; set; }
+        public string Details;
 
         /// <summary>
         /// The id of the transaction
         /// </summary>
         /// <value>The id of the transaction</value>
         [JsonProperty(PropertyName = "id")]
-        public int? Id { get; set; }
+        public int? Id;
 
         /// <summary>
         /// The id of the invoice that spawned the transaction, if any
         /// </summary>
         /// <value>The id of the invoice that spawned the transaction, if any</value>
         [JsonProperty(PropertyName = "invoice_id")]
-        public int? InvoiceId { get; set; }
+        public int? InvoiceId;
 
         /// <summary>
         /// Whether the transaction has been refunded
         /// </summary>
         /// <value>Whether the transaction has been refunded</value>
         [JsonProperty(PropertyName = "is_refunded")]
-        public bool? IsRefunded { get; set; }
+        public bool? IsRefunded;
 
         /// <summary>
         /// The response
         /// </summary>
         /// <value>The response</value>
         [JsonProperty(PropertyName = "response")]
-        public string Response { get; set; }
+        public string Response;
 
         /// <summary>
         /// The root source of the transaction
         /// </summary>
         /// <value>The root source of the transaction</value>
         [JsonProperty(PropertyName = "source")]
-        public string Source { get; set; }
+        public string Source;
 
         /// <summary>
         /// If the transaction was successful
         /// </summary>
         /// <value>If the transaction was successful</value>
         [JsonProperty(PropertyName = "successful")]
-        public bool? Successful { get; set; }
+        public bool? Successful;
 
         /// <summary>
         /// The payment gateway (external) transaction ID
         /// </summary>
         /// <value>The payment gateway (external) transaction ID</value>
         [JsonProperty(PropertyName = "transaction_id")]
-        public string TransactionId { get; set; }
+        public string TransactionId;
 
         /// <summary>
         /// The general type of the transaction
         /// </summary>
         /// <value>The general type of the transaction</value>
         [JsonProperty(PropertyName = "type")]
-        public string Type { get; set; }
+        public string Type;
 
         /// <summary>
         /// The table name of the subclass
         /// </summary>
         /// <value>The table name of the subclass</value>
         [JsonProperty(PropertyName = "type_hint")]
-        public string TypeHint { get; set; }
+        public string TypeHint;
 
         /// <summary>
         /// The owner of the wallet
         /// </summary>
         /// <value>The owner of the wallet</value>
         [JsonProperty(PropertyName = "user")]
-        public SimpleUserResource User { get; set; }
+        public SimpleUserResource User;
 
         /// <summary>
         /// The amount of the transaction, positive if a gain, negative if an expenditure
         /// </summary>
         /// <value>The amount of the transaction, positive if a gain, negative if an expenditure</value>
         [JsonProperty(PropertyName = "value")]
-        public decimal? Value { get; set; }
+        public decimal? Value;
 
         /// <summary>
         /// The id of the wallet this transaction affected
         /// </summary>
         /// <value>The id of the wallet this transaction affected</value>
         [JsonProperty(PropertyName = "wallet_id")]
-        public int? WalletId { get; set; }
+        public int? WalletId;
 
         /// <inheritdoc />
         /// <summary>

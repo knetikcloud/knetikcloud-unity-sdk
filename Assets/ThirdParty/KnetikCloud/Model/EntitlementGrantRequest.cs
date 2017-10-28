@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,7 +19,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The ID of the entitlement item to grant</value>
         [JsonProperty(PropertyName = "entitlement_id")]
-        public int? EntitlementId { get; set; }
+        public int? EntitlementId;
 
         /// <inheritdoc />
         /// <summary>

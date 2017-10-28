@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,28 +19,28 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The date this event occurred as a unix timestamp in seconds</value>
         [JsonProperty(PropertyName = "date")]
-        public long? Date { get; set; }
+        public long? Date;
 
         /// <summary>
         /// The ID of the invoice
         /// </summary>
         /// <value>The ID of the invoice</value>
         [JsonProperty(PropertyName = "invoice_id")]
-        public int? InvoiceId { get; set; }
+        public int? InvoiceId;
 
         /// <summary>
         /// A message describing the event
         /// </summary>
         /// <value>A message describing the event</value>
         [JsonProperty(PropertyName = "message")]
-        public string Message { get; set; }
+        public string Message;
 
         /// <summary>
         /// The type of event
         /// </summary>
         /// <value>The type of event</value>
         [JsonProperty(PropertyName = "type")]
-        public string Type { get; set; }
+        public string Type;
 
         /// <inheritdoc />
         /// <summary>

@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,56 +19,56 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The context of that resource </value>
         [JsonProperty(PropertyName = "context")]
-        public string Context { get; set; }
+        public string Context;
 
         /// <summary>
         /// The context ID of that resource
         /// </summary>
         /// <value>The context ID of that resource</value>
         [JsonProperty(PropertyName = "context_id")]
-        public string ContextId { get; set; }
+        public string ContextId;
 
         /// <summary>
         /// The date/time this resource was created in seconds since epoch
         /// </summary>
         /// <value>The date/time this resource was created in seconds since epoch</value>
         [JsonProperty(PropertyName = "created_date")]
-        public long? CreatedDate { get; set; }
+        public long? CreatedDate;
 
         /// <summary>
         /// The unique ID for that resource
         /// </summary>
         /// <value>The unique ID for that resource</value>
         [JsonProperty(PropertyName = "id")]
-        public long? Id { get; set; }
+        public long? Id;
 
         /// <summary>
         /// The reason of that resource required only in case of active resolution
         /// </summary>
         /// <value>The reason of that resource required only in case of active resolution</value>
         [JsonProperty(PropertyName = "reason")]
-        public string Reason { get; set; }
+        public string Reason;
 
         /// <summary>
         /// The resolution of that resource
         /// </summary>
         /// <value>The resolution of that resource</value>
         [JsonProperty(PropertyName = "resolution")]
-        public string Resolution { get; set; }
+        public string Resolution;
 
         /// <summary>
         /// The date/time this report was resolved in seconds since epoch. Null if not resolved yet
         /// </summary>
         /// <value>The date/time this report was resolved in seconds since epoch. Null if not resolved yet</value>
         [JsonProperty(PropertyName = "resolved")]
-        public long? Resolved { get; set; }
+        public long? Resolved;
 
         /// <summary>
         /// The date/time this resource was last updated in seconds since epoch
         /// </summary>
         /// <value>The date/time this resource was last updated in seconds since epoch</value>
         [JsonProperty(PropertyName = "updated_date")]
-        public long? UpdatedDate { get; set; }
+        public long? UpdatedDate;
 
         /// <inheritdoc />
         /// <summary>

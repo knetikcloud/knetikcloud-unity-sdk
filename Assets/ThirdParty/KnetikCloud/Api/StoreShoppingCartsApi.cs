@@ -261,7 +261,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(customDiscount); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddCustomDiscountStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddCustomDiscountStartTime, mAddCustomDiscountPath, "Sending server request...");
@@ -319,7 +319,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(skuRequest); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddDiscountToCartStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddDiscountToCartStartTime, mAddDiscountToCartPath, "Sending server request...");
@@ -377,7 +377,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(cartItemRequest); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddItemToCartStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddItemToCartStartTime, mAddItemToCartPath, "Sending server request...");
@@ -437,7 +437,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mCreateCartStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateCartStartTime, mCreateCartPath, "Sending server request...");
@@ -494,7 +494,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetCartStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCartStartTime, mGetCartPath, "Sending server request...");
@@ -568,7 +568,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetCartsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCartsStartTime, mGetCartsPath, "Sending server request...");
@@ -625,7 +625,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetShippableStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetShippableStartTime, mGetShippablePath, "Sending server request...");
@@ -682,7 +682,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetShippingCountriesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetShippingCountriesStartTime, mGetShippingCountriesPath, "Sending server request...");
@@ -746,7 +746,7 @@ mRemoveDiscountFromCartPath = mRemoveDiscountFromCartPath.Replace("{" + "code" +
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mRemoveDiscountFromCartStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mRemoveDiscountFromCartStartTime, mRemoveDiscountFromCartPath, "Sending server request...");
@@ -804,7 +804,7 @@ mRemoveDiscountFromCartPath = mRemoveDiscountFromCartPath.Replace("{" + "code" +
             postBody = KnetikClient.DefaultClient.Serialize(currencyCode); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSetCartCurrencyStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSetCartCurrencyStartTime, mSetCartCurrencyPath, "Sending server request...");
@@ -862,7 +862,7 @@ mRemoveDiscountFromCartPath = mRemoveDiscountFromCartPath.Replace("{" + "code" +
             postBody = KnetikClient.DefaultClient.Serialize(userId); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSetCartOwnerStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSetCartOwnerStartTime, mSetCartOwnerPath, "Sending server request...");
@@ -920,7 +920,7 @@ mRemoveDiscountFromCartPath = mRemoveDiscountFromCartPath.Replace("{" + "code" +
             postBody = KnetikClient.DefaultClient.Serialize(cartItemRequest); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateItemInCartStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateItemInCartStartTime, mUpdateItemInCartPath, "Sending server request...");
@@ -978,7 +978,7 @@ mRemoveDiscountFromCartPath = mRemoveDiscountFromCartPath.Replace("{" + "code" +
             postBody = KnetikClient.DefaultClient.Serialize(cartShippingAddressRequest); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateShippingAddressStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateShippingAddressStartTime, mUpdateShippingAddressPath, "Sending server request...");

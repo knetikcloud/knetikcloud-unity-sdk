@@ -308,7 +308,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(activityResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateActivityStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateActivityStartTime, mCreateActivityPath, "Sending server request...");
@@ -367,7 +367,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(activityOccurrenceResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateActivityOccurrenceStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateActivityOccurrenceStartTime, mCreateActivityOccurrencePath, "Sending server request...");
@@ -420,7 +420,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(activityTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateActivityTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateActivityTemplateStartTime, mCreateActivityTemplatePath, "Sending server request...");
@@ -477,7 +477,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteActivityStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteActivityStartTime, mDeleteActivityPath, "Sending server request...");
@@ -538,7 +538,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteActivityTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteActivityTemplateStartTime, mDeleteActivityTemplatePath, "Sending server request...");
@@ -622,7 +622,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetActivitiesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetActivitiesStartTime, mGetActivitiesPath, "Sending server request...");
@@ -679,7 +679,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetActivityStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetActivityStartTime, mGetActivityPath, "Sending server request...");
@@ -736,7 +736,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetActivityOccurrenceDetailsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetActivityOccurrenceDetailsStartTime, mGetActivityOccurrenceDetailsPath, "Sending server request...");
@@ -793,7 +793,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetActivityTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetActivityTemplateStartTime, mGetActivityTemplatePath, "Sending server request...");
@@ -861,7 +861,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetActivityTemplatesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetActivityTemplatesStartTime, mGetActivityTemplatesPath, "Sending server request...");
@@ -953,7 +953,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mListActivityOccurrencesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mListActivityOccurrencesStartTime, mListActivityOccurrencesPath, "Sending server request...");
@@ -1013,7 +1013,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(activityOccurrenceResults); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSetActivityOccurrenceResultsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSetActivityOccurrenceResultsStartTime, mSetActivityOccurrenceResultsPath, "Sending server request...");
@@ -1073,7 +1073,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(activityResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateActivityStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateActivityStartTime, mUpdateActivityPath, "Sending server request...");
@@ -1133,7 +1133,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(activityOccurrenceStatus); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateActivityOccurrenceStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateActivityOccurrenceStartTime, mUpdateActivityOccurrencePath, "Sending server request...");
@@ -1191,7 +1191,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(activityTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateActivityTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateActivityTemplateStartTime, mUpdateActivityTemplatePath, "Sending server request...");

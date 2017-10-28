@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,35 +19,35 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The answer to the poll</value>
         [JsonProperty(PropertyName = "answer")]
-        public string Answer { get; set; }
+        public string Answer;
 
         /// <summary>
         /// The date the poll was answered, in seconds since unix epoc
         /// </summary>
         /// <value>The date the poll was answered, in seconds since unix epoc</value>
         [JsonProperty(PropertyName = "answered_date")]
-        public long? AnsweredDate { get; set; }
+        public long? AnsweredDate;
 
         /// <summary>
         /// The id of the poll response
         /// </summary>
         /// <value>The id of the poll response</value>
         [JsonProperty(PropertyName = "id")]
-        public string Id { get; set; }
+        public string Id;
 
         /// <summary>
         /// The id of the poll
         /// </summary>
         /// <value>The id of the poll</value>
         [JsonProperty(PropertyName = "poll_id")]
-        public string PollId { get; set; }
+        public string PollId;
 
         /// <summary>
         /// The user
         /// </summary>
         /// <value>The user</value>
         [JsonProperty(PropertyName = "user")]
-        public SimpleUserResource User { get; set; }
+        public SimpleUserResource User;
 
         /// <inheritdoc />
         /// <summary>

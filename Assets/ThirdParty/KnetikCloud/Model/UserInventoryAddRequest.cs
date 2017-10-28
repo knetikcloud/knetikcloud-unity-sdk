@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,28 +19,28 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>A note to be passed to the invoice or transaction</value>
         [JsonProperty(PropertyName = "note")]
-        public string Note { get; set; }
+        public string Note;
 
         /// <summary>
         /// A list of behaviors to ignore explicitely.  Ex: 'limited_gettable'
         /// </summary>
         /// <value>A list of behaviors to ignore explicitely.  Ex: 'limited_gettable'</value>
         [JsonProperty(PropertyName = "overrides")]
-        public List<string> Overrides { get; set; }
+        public List<string> Overrides;
 
         /// <summary>
         /// If set to true will cause the endpoint to skip creation of cart and invoice to track the inventory change
         /// </summary>
         /// <value>If set to true will cause the endpoint to skip creation of cart and invoice to track the inventory change</value>
         [JsonProperty(PropertyName = "skip_invoice")]
-        public bool? SkipInvoice { get; set; }
+        public bool? SkipInvoice;
 
         /// <summary>
         /// The specific SKU of the item to be added to the inventory
         /// </summary>
         /// <value>The specific SKU of the item to be added to the inventory</value>
         [JsonProperty(PropertyName = "sku")]
-        public string Sku { get; set; }
+        public string Sku;
 
         /// <inheritdoc />
         /// <summary>

@@ -271,7 +271,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(req); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateInvoiceStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateInvoiceStartTime, mCreateInvoicePath, "Sending server request...");
@@ -321,7 +321,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetFulFillmentStatusesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetFulFillmentStatusesStartTime, mGetFulFillmentStatusesPath, "Sending server request...");
@@ -378,7 +378,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetInvoiceStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetInvoiceStartTime, mGetInvoicePath, "Sending server request...");
@@ -447,7 +447,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetInvoiceLogsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetInvoiceLogsStartTime, mGetInvoiceLogsPath, "Sending server request...");
@@ -599,7 +599,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetInvoicesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetInvoicesStartTime, mGetInvoicesPath, "Sending server request...");
@@ -649,7 +649,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetPaymentStatusesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetPaymentStatusesStartTime, mGetPaymentStatusesPath, "Sending server request...");
@@ -709,7 +709,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mPayInvoiceStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mPayInvoiceStartTime, mPayInvoicePath, "Sending server request...");
@@ -786,7 +786,7 @@ mSetBundledInvoiceItemFulfillmentStatusPath = mSetBundledInvoiceItemFulfillmentS
             postBody = KnetikClient.DefaultClient.Serialize(status); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSetBundledInvoiceItemFulfillmentStatusStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSetBundledInvoiceItemFulfillmentStatusStartTime, mSetBundledInvoiceItemFulfillmentStatusPath, "Sending server request...");
@@ -844,7 +844,7 @@ mSetBundledInvoiceItemFulfillmentStatusPath = mSetBundledInvoiceItemFulfillmentS
             postBody = KnetikClient.DefaultClient.Serialize(externalRef); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSetExternalRefStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSetExternalRefStartTime, mSetExternalRefPath, "Sending server request...");
@@ -914,7 +914,7 @@ mSetInvoiceItemFulfillmentStatusPath = mSetInvoiceItemFulfillmentStatusPath.Repl
             postBody = KnetikClient.DefaultClient.Serialize(status); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSetInvoiceItemFulfillmentStatusStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSetInvoiceItemFulfillmentStatusStartTime, mSetInvoiceItemFulfillmentStatusPath, "Sending server request...");
@@ -972,7 +972,7 @@ mSetInvoiceItemFulfillmentStatusPath = mSetInvoiceItemFulfillmentStatusPath.Repl
             postBody = KnetikClient.DefaultClient.Serialize(orderNotes); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSetOrderNotesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSetOrderNotesStartTime, mSetOrderNotesPath, "Sending server request...");
@@ -1030,7 +1030,7 @@ mSetInvoiceItemFulfillmentStatusPath = mSetInvoiceItemFulfillmentStatusPath.Repl
             postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSetPaymentStatusStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSetPaymentStatusStartTime, mSetPaymentStatusPath, "Sending server request...");
@@ -1088,7 +1088,7 @@ mSetInvoiceItemFulfillmentStatusPath = mSetInvoiceItemFulfillmentStatusPath.Repl
             postBody = KnetikClient.DefaultClient.Serialize(billingInfoRequest); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateBillingInfoStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateBillingInfoStartTime, mUpdateBillingInfoPath, "Sending server request...");

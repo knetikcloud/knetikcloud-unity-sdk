@@ -234,7 +234,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUsageByDayStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUsageByDayStartTime, mGetUsageByDayPath, "Sending server request...");
@@ -336,7 +336,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUsageByHourStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUsageByHourStartTime, mGetUsageByHourPath, "Sending server request...");
@@ -438,7 +438,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUsageByMinuteStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUsageByMinuteStartTime, mGetUsageByMinutePath, "Sending server request...");
@@ -540,7 +540,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUsageByMonthStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUsageByMonthStartTime, mGetUsageByMonthPath, "Sending server request...");
@@ -642,7 +642,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUsageByYearStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUsageByYearStartTime, mGetUsageByYearPath, "Sending server request...");
@@ -714,7 +714,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUsageEndpointsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUsageEndpointsStartTime, mGetUsageEndpointsPath, "Sending server request...");

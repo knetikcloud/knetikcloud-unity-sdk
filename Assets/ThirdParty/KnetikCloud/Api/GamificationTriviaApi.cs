@@ -585,7 +585,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(answer); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddQuestionAnswersStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddQuestionAnswersStartTime, mAddQuestionAnswersPath, "Sending server request...");
@@ -645,7 +645,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(tag); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddQuestionTagStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddQuestionTagStartTime, mAddQuestionTagPath, "Sending server request...");
@@ -744,7 +744,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(tag); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddTagToQuestionsBatchStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddTagToQuestionsBatchStartTime, mAddTagToQuestionsBatchPath, "Sending server request...");
@@ -797,7 +797,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateImportJobStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateImportJobStartTime, mCreateImportJobPath, "Sending server request...");
@@ -850,7 +850,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(question); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateQuestionStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateQuestionStartTime, mCreateQuestionPath, "Sending server request...");
@@ -903,7 +903,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(questionTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateQuestionTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateQuestionTemplateStartTime, mCreateQuestionTemplatePath, "Sending server request...");
@@ -960,7 +960,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteImportJobStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteImportJobStartTime, mDeleteImportJobPath, "Sending server request...");
@@ -1015,7 +1015,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteQuestionStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteQuestionStartTime, mDeleteQuestionPath, "Sending server request...");
@@ -1077,7 +1077,7 @@ mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "id" + "}"
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteQuestionAnswersStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteQuestionAnswersStartTime, mDeleteQuestionAnswersPath, "Sending server request...");
@@ -1138,7 +1138,7 @@ mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "id" + "}"
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteQuestionTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteQuestionTemplateStartTime, mDeleteQuestionTemplatePath, "Sending server request...");
@@ -1193,7 +1193,7 @@ mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "id" + "}"
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetImportJobStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetImportJobStartTime, mGetImportJobPath, "Sending server request...");
@@ -1285,7 +1285,7 @@ mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "id" + "}"
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetImportJobsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetImportJobsStartTime, mGetImportJobsPath, "Sending server request...");
@@ -1342,7 +1342,7 @@ mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "id" + "}"
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetQuestionStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetQuestionStartTime, mGetQuestionPath, "Sending server request...");
@@ -1406,7 +1406,7 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetQuestionAnswerStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetQuestionAnswerStartTime, mGetQuestionAnswerPath, "Sending server request...");
@@ -1463,7 +1463,7 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetQuestionAnswersStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetQuestionAnswersStartTime, mGetQuestionAnswersPath, "Sending server request...");
@@ -1519,7 +1519,7 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetQuestionDeltasStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetQuestionDeltasStartTime, mGetQuestionDeltasPath, "Sending server request...");
@@ -1576,7 +1576,7 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetQuestionTagsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetQuestionTagsStartTime, mGetQuestionTagsPath, "Sending server request...");
@@ -1633,7 +1633,7 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetQuestionTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetQuestionTemplateStartTime, mGetQuestionTemplatePath, "Sending server request...");
@@ -1701,7 +1701,7 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetQuestionTemplatesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetQuestionTemplatesStartTime, mGetQuestionTemplatesPath, "Sending server request...");
@@ -1817,7 +1817,7 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetQuestionsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetQuestionsStartTime, mGetQuestionsPath, "Sending server request...");
@@ -1909,7 +1909,7 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetQuestionsCountStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetQuestionsCountStartTime, mGetQuestionsCountPath, "Sending server request...");
@@ -1977,7 +1977,7 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mProcessImportJobStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mProcessImportJobStartTime, mProcessImportJobPath, "Sending server request...");
@@ -2041,7 +2041,7 @@ mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", Kneti
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mRemoveQuestionTagStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mRemoveQuestionTagStartTime, mRemoveQuestionTagPath, "Sending server request...");
@@ -2144,7 +2144,7 @@ mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", Kneti
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mRemoveTagToQuestionsBatchStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mRemoveTagToQuestionsBatchStartTime, mRemoveTagToQuestionsBatchPath, "Sending server request...");
@@ -2212,7 +2212,7 @@ mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", Kneti
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSearchQuestionTagsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSearchQuestionTagsStartTime, mSearchQuestionTagsPath, "Sending server request...");
@@ -2272,7 +2272,7 @@ mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", Kneti
             postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateImportJobStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateImportJobStartTime, mUpdateImportJobPath, "Sending server request...");
@@ -2332,7 +2332,7 @@ mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", Kneti
             postBody = KnetikClient.DefaultClient.Serialize(question); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateQuestionStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateQuestionStartTime, mUpdateQuestionPath, "Sending server request...");
@@ -2399,7 +2399,7 @@ mUpdateQuestionAnswerPath = mUpdateQuestionAnswerPath.Replace("{" + "id" + "}", 
             postBody = KnetikClient.DefaultClient.Serialize(answer); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateQuestionAnswerStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateQuestionAnswerStartTime, mUpdateQuestionAnswerPath, "Sending server request...");
@@ -2457,7 +2457,7 @@ mUpdateQuestionAnswerPath = mUpdateQuestionAnswerPath.Replace("{" + "id" + "}", 
             postBody = KnetikClient.DefaultClient.Serialize(questionTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateQuestionTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateQuestionTemplateStartTime, mUpdateQuestionTemplatePath, "Sending server request...");
@@ -2552,7 +2552,7 @@ mUpdateQuestionAnswerPath = mUpdateQuestionAnswerPath.Replace("{" + "id" + "}", 
             postBody = KnetikClient.DefaultClient.Serialize(question); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateQuestionsInBulkStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateQuestionsInBulkStartTime, mUpdateQuestionsInBulkPath, "Sending server request...");

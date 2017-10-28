@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,35 +19,35 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The list of achievements associated with the group</value>
         [JsonProperty(PropertyName = "achievements")]
-        public List<UserAchievementResource> Achievements { get; set; }
+        public List<UserAchievementResource> Achievements;
 
         /// <summary>
         /// The name of the group.  If used by Leveling, this will represent the level name
         /// </summary>
         /// <value>The name of the group.  If used by Leveling, this will represent the level name</value>
         [JsonProperty(PropertyName = "group_name")]
-        public string GroupName { get; set; }
+        public string GroupName;
 
         /// <summary>
         /// The id of the achievement progress
         /// </summary>
         /// <value>The id of the achievement progress</value>
         [JsonProperty(PropertyName = "id")]
-        public string Id { get; set; }
+        public string Id;
 
         /// <summary>
         /// The current progress of the user on the group
         /// </summary>
         /// <value>The current progress of the user on the group</value>
         [JsonProperty(PropertyName = "progress")]
-        public int? Progress { get; set; }
+        public int? Progress;
 
         /// <summary>
         /// The id of the user whose progress is being tracked
         /// </summary>
         /// <value>The id of the user whose progress is being tracked</value>
         [JsonProperty(PropertyName = "user_id")]
-        public int? UserId { get; set; }
+        public int? UserId;
 
         /// <inheritdoc />
         /// <summary>

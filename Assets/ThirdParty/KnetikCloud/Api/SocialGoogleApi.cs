@@ -71,7 +71,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(googleToken); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mLinkAccounts1StartTime = DateTime.Now;
             KnetikLogger.LogRequest(mLinkAccounts1StartTime, mLinkAccounts1Path, "Sending server request...");

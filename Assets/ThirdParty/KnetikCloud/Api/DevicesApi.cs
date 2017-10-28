@@ -282,7 +282,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(userResources); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddDeviceUsersStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddDeviceUsersStartTime, mAddDeviceUsersPath, "Sending server request...");
@@ -340,7 +340,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(device); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateDeviceStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateDeviceStartTime, mCreateDevicePath, "Sending server request...");
@@ -393,7 +393,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(deviceTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateDeviceTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateDeviceTemplateStartTime, mCreateDeviceTemplatePath, "Sending server request...");
@@ -450,7 +450,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteDeviceStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteDeviceStartTime, mDeleteDevicePath, "Sending server request...");
@@ -511,7 +511,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteDeviceTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteDeviceTemplateStartTime, mDeleteDeviceTemplatePath, "Sending server request...");
@@ -573,7 +573,7 @@ mDeleteDeviceUserPath = mDeleteDeviceUserPath.Replace("{" + "user_id" + "}", Kne
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteDeviceUserStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteDeviceUserStartTime, mDeleteDeviceUserPath, "Sending server request...");
@@ -634,7 +634,7 @@ mDeleteDeviceUserPath = mDeleteDeviceUserPath.Replace("{" + "user_id" + "}", Kne
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteDeviceUsersStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteDeviceUsersStartTime, mDeleteDeviceUsersPath, "Sending server request...");
@@ -689,7 +689,7 @@ mDeleteDeviceUserPath = mDeleteDeviceUserPath.Replace("{" + "user_id" + "}", Kne
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetDeviceStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetDeviceStartTime, mGetDevicePath, "Sending server request...");
@@ -746,7 +746,7 @@ mDeleteDeviceUserPath = mDeleteDeviceUserPath.Replace("{" + "user_id" + "}", Kne
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetDeviceTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetDeviceTemplateStartTime, mGetDeviceTemplatePath, "Sending server request...");
@@ -814,7 +814,7 @@ mDeleteDeviceUserPath = mDeleteDeviceUserPath.Replace("{" + "user_id" + "}", Kne
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetDeviceTemplatesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetDeviceTemplatesStartTime, mGetDeviceTemplatesPath, "Sending server request...");
@@ -918,7 +918,7 @@ mDeleteDeviceUserPath = mDeleteDeviceUserPath.Replace("{" + "user_id" + "}", Kne
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetDevicesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetDevicesStartTime, mGetDevicesPath, "Sending server request...");
@@ -983,7 +983,7 @@ mDeleteDeviceUserPath = mDeleteDeviceUserPath.Replace("{" + "user_id" + "}", Kne
             postBody = KnetikClient.DefaultClient.Serialize(device); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateDeviceStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateDeviceStartTime, mUpdateDevicePath, "Sending server request...");
@@ -1043,7 +1043,7 @@ mDeleteDeviceUserPath = mDeleteDeviceUserPath.Replace("{" + "user_id" + "}", Kne
             postBody = KnetikClient.DefaultClient.Serialize(deviceTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateDeviceTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateDeviceTemplateStartTime, mUpdateDeviceTemplatePath, "Sending server request...");

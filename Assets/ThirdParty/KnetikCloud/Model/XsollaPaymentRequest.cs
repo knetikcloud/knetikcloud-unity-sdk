@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,14 +19,14 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The id of an invoice to pay</value>
         [JsonProperty(PropertyName = "invoice_id")]
-        public int? InvoiceId { get; set; }
+        public int? InvoiceId;
 
         /// <summary>
         /// The endpoint URL xsolla should forward the user to after they pay
         /// </summary>
         /// <value>The endpoint URL xsolla should forward the user to after they pay</value>
         [JsonProperty(PropertyName = "return_url")]
-        public string ReturnUrl { get; set; }
+        public string ReturnUrl;
 
         /// <inheritdoc />
         /// <summary>

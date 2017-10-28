@@ -154,7 +154,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(commentResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddCommentStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddCommentStartTime, mAddCommentPath, "Sending server request...");
@@ -211,7 +211,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteCommentStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteCommentStartTime, mDeleteCommentPath, "Sending server request...");
@@ -266,7 +266,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetCommentStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCommentStartTime, mGetCommentPath, "Sending server request...");
@@ -350,7 +350,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetCommentsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCommentsStartTime, mGetCommentsPath, "Sending server request...");
@@ -415,7 +415,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(query); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSearchCommentsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSearchCommentsStartTime, mSearchCommentsPath, "Sending server request...");
@@ -475,7 +475,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(content); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateCommentStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateCommentStartTime, mUpdateCommentPath, "Sending server request...");

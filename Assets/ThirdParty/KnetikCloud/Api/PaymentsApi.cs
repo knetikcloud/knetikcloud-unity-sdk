@@ -218,7 +218,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(paymentMethod); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreatePaymentMethodStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreatePaymentMethodStartTime, mCreatePaymentMethodPath, "Sending server request...");
@@ -282,7 +282,7 @@ mDeletePaymentMethodPath = mDeletePaymentMethodPath.Replace("{" + "id" + "}", Kn
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeletePaymentMethodStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeletePaymentMethodStartTime, mDeletePaymentMethodPath, "Sending server request...");
@@ -344,7 +344,7 @@ mGetPaymentMethodPath = mGetPaymentMethodPath.Replace("{" + "id" + "}", KnetikCl
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetPaymentMethodStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetPaymentMethodStartTime, mGetPaymentMethodPath, "Sending server request...");
@@ -401,7 +401,7 @@ mGetPaymentMethodPath = mGetPaymentMethodPath.Replace("{" + "id" + "}", KnetikCl
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetPaymentMethodTypeStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetPaymentMethodTypeStartTime, mGetPaymentMethodTypePath, "Sending server request...");
@@ -475,7 +475,7 @@ mGetPaymentMethodPath = mGetPaymentMethodPath.Replace("{" + "id" + "}", KnetikCl
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetPaymentMethodTypesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetPaymentMethodTypesStartTime, mGetPaymentMethodTypesPath, "Sending server request...");
@@ -574,7 +574,7 @@ mGetPaymentMethodPath = mGetPaymentMethodPath.Replace("{" + "id" + "}", KnetikCl
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetPaymentMethodsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetPaymentMethodsStartTime, mGetPaymentMethodsPath, "Sending server request...");
@@ -627,7 +627,7 @@ mGetPaymentMethodPath = mGetPaymentMethodPath.Replace("{" + "id" + "}", KnetikCl
             postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mPaymentAuthorizationStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mPaymentAuthorizationStartTime, mPaymentAuthorizationPath, "Sending server request...");
@@ -684,7 +684,7 @@ mGetPaymentMethodPath = mGetPaymentMethodPath.Replace("{" + "id" + "}", KnetikCl
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mPaymentCaptureStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mPaymentCaptureStartTime, mPaymentCapturePath, "Sending server request...");
@@ -749,7 +749,7 @@ mUpdatePaymentMethodPath = mUpdatePaymentMethodPath.Replace("{" + "id" + "}", Kn
             postBody = KnetikClient.DefaultClient.Serialize(paymentMethod); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdatePaymentMethodStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdatePaymentMethodStartTime, mUpdatePaymentMethodPath, "Sending server request...");

@@ -70,7 +70,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetHealthStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetHealthStartTime, mGetHealthPath, "Sending server request...");

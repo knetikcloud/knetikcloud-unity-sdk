@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,39 +19,39 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The arguments the operator apply to. See notes for details.</value>
         [JsonProperty(PropertyName = "args")]
-        public List<ExpressionResource> Args { get; set; }
+        public List<ExpressionResource> Args;
 
         /// <summary>
         /// Gets or Sets Definition
         /// </summary>
         [JsonProperty(PropertyName = "definition")]
-        public string Definition { get; set; }
+        public string Definition;
 
         /// <summary>
         /// The operator to be used in this predicate. See notes for details.
         /// </summary>
         /// <value>The operator to be used in this predicate. See notes for details.</value>
         [JsonProperty(PropertyName = "op")]
-        public string Op { get; set; }
+        public string Op;
 
         /// <summary>
         /// Gets or Sets ReturnType
         /// </summary>
         [JsonProperty(PropertyName = "return_type")]
-        public string ReturnType { get; set; }
+        public string ReturnType;
 
         /// <summary>
         /// The operators supported by this expression
         /// </summary>
         /// <value>The operators supported by this expression</value>
         [JsonProperty(PropertyName = "supported_operators")]
-        public List<OperationDefinitionResource> SupportedOperators { get; set; }
+        public List<OperationDefinitionResource> SupportedOperators;
 
         /// <summary>
         /// Gets or Sets Type
         /// </summary>
         [JsonProperty(PropertyName = "type")]
-        public string Type { get; set; }
+        public string Type;
 
         /// <inheritdoc />
         /// <summary>

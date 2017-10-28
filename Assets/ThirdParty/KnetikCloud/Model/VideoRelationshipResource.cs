@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,28 +19,28 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The owner of the relationship</value>
         [JsonProperty(PropertyName = "from")]
-        public SimpleReferenceResourcelong From { get; set; }
+        public SimpleReferenceResourcelong From;
 
         /// <summary>
         /// The id of the relationship
         /// </summary>
         /// <value>The id of the relationship</value>
         [JsonProperty(PropertyName = "id")]
-        public long? Id { get; set; }
+        public long? Id;
 
         /// <summary>
         /// Details about the relationship such as type or other information. Max length 10 characters
         /// </summary>
         /// <value>Details about the relationship such as type or other information. Max length 10 characters</value>
         [JsonProperty(PropertyName = "relationship_details")]
-        public string RelationshipDetails { get; set; }
+        public string RelationshipDetails;
 
         /// <summary>
         /// The target of the relationship.
         /// </summary>
         /// <value>The target of the relationship.</value>
         [JsonProperty(PropertyName = "to")]
-        public SimpleReferenceResourcelong To { get; set; }
+        public SimpleReferenceResourcelong To;
 
         /// <inheritdoc />
         /// <summary>

@@ -138,7 +138,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(breGlobalResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateBREGlobalStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateBREGlobalStartTime, mCreateBREGlobalPath, "Sending server request...");
@@ -195,7 +195,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteBREGlobalStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteBREGlobalStartTime, mDeleteBREGlobalPath, "Sending server request...");
@@ -250,7 +250,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetBREGlobalStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetBREGlobalStartTime, mGetBREGlobalPath, "Sending server request...");
@@ -318,7 +318,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetBREGlobalsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetBREGlobalsStartTime, mGetBREGlobalsPath, "Sending server request...");
@@ -378,7 +378,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(breGlobalResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateBREGlobalStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateBREGlobalStartTime, mUpdateBREGlobalPath, "Sending server request...");

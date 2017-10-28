@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,14 +19,14 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>SKU of item being purchased</value>
         [JsonProperty(PropertyName = "sku")]
-        public string Sku { get; set; }
+        public string Sku;
 
         /// <summary>
         /// ID of the user making the purchase. If null, currently logged in user will be used.
         /// </summary>
         /// <value>ID of the user making the purchase. If null, currently logged in user will be used.</value>
         [JsonProperty(PropertyName = "user_id")]
-        public int? UserId { get; set; }
+        public int? UserId;
 
         /// <inheritdoc />
         /// <summary>

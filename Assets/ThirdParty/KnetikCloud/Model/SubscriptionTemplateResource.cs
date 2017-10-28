@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,49 +19,49 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>Whether to allow additional properties beyond those specified or not</value>
         [JsonProperty(PropertyName = "allow_additional")]
-        public bool? AllowAdditional { get; set; }
+        public bool? AllowAdditional;
 
         /// <summary>
         /// The date/time this resource was created in seconds since unix epoch
         /// </summary>
         /// <value>The date/time this resource was created in seconds since unix epoch</value>
         [JsonProperty(PropertyName = "created_date")]
-        public long? CreatedDate { get; set; }
+        public long? CreatedDate;
 
         /// <summary>
         /// The id of the template
         /// </summary>
         /// <value>The id of the template</value>
         [JsonProperty(PropertyName = "id")]
-        public string Id { get; set; }
+        public string Id;
 
         /// <summary>
         /// The name of the template
         /// </summary>
         /// <value>The name of the template</value>
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name;
 
         /// <summary>
         /// A template to apply to all plans on a subscription using this template
         /// </summary>
         /// <value>A template to apply to all plans on a subscription using this template</value>
         [JsonProperty(PropertyName = "plan_template")]
-        public TemplateResource PlanTemplate { get; set; }
+        public TemplateResource PlanTemplate;
 
         /// <summary>
         /// The customized properties that are present
         /// </summary>
         /// <value>The customized properties that are present</value>
         [JsonProperty(PropertyName = "properties")]
-        public List<PropertyDefinitionResource> Properties { get; set; }
+        public List<PropertyDefinitionResource> Properties;
 
         /// <summary>
         /// The date/time this resource was last updated in seconds since unix epoch
         /// </summary>
         /// <value>The date/time this resource was last updated in seconds since unix epoch</value>
         [JsonProperty(PropertyName = "updated_date")]
-        public long? UpdatedDate { get; set; }
+        public long? UpdatedDate;
 
         /// <inheritdoc />
         /// <summary>

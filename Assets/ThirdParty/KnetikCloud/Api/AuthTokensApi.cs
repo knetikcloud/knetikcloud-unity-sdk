@@ -118,7 +118,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteTokensStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteTokensStartTime, mDeleteTokensPath, "Sending server request...");
@@ -180,7 +180,7 @@ mGetTokenPath = mGetTokenPath.Replace("{" + "client_id" + "}", KnetikClient.Defa
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetTokenStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetTokenStartTime, mGetTokenPath, "Sending server request...");
@@ -260,7 +260,7 @@ mGetTokenPath = mGetTokenPath.Replace("{" + "client_id" + "}", KnetikClient.Defa
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetTokensStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetTokensStartTime, mGetTokensPath, "Sending server request...");

@@ -224,7 +224,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(roleResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateRoleStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateRoleStartTime, mCreateRolePath, "Sending server request...");
@@ -287,7 +287,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteRoleStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteRoleStartTime, mDeleteRolePath, "Sending server request...");
@@ -342,7 +342,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetClientRolesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetClientRolesStartTime, mGetClientRolesPath, "Sending server request...");
@@ -399,7 +399,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetRoleStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetRoleStartTime, mGetRolePath, "Sending server request...");
@@ -479,7 +479,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetRolesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetRolesStartTime, mGetRolesPath, "Sending server request...");
@@ -536,7 +536,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUserRolesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUserRolesStartTime, mGetUserRolesPath, "Sending server request...");
@@ -596,7 +596,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(rolesList); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSetClientRolesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSetClientRolesStartTime, mSetClientRolesPath, "Sending server request...");
@@ -656,7 +656,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(permissionsList); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSetPermissionsForRoleStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSetPermissionsForRoleStartTime, mSetPermissionsForRolePath, "Sending server request...");
@@ -716,7 +716,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(rolesList); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSetUserRolesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSetUserRolesStartTime, mSetUserRolesPath, "Sending server request...");
@@ -776,7 +776,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(roleResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateRoleStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateRoleStartTime, mUpdateRolePath, "Sending server request...");

@@ -150,7 +150,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(savedAddressResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateAddressStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateAddressStartTime, mCreateAddressPath, "Sending server request...");
@@ -214,7 +214,7 @@ mDeleteAddressPath = mDeleteAddressPath.Replace("{" + "id" + "}", KnetikClient.D
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteAddressStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteAddressStartTime, mDeleteAddressPath, "Sending server request...");
@@ -276,7 +276,7 @@ mGetAddressPath = mGetAddressPath.Replace("{" + "id" + "}", KnetikClient.Default
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetAddressStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetAddressStartTime, mGetAddressPath, "Sending server request...");
@@ -351,7 +351,7 @@ mGetAddressPath = mGetAddressPath.Replace("{" + "id" + "}", KnetikClient.Default
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetAddressesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetAddressesStartTime, mGetAddressesPath, "Sending server request...");
@@ -418,7 +418,7 @@ mUpdateAddressPath = mUpdateAddressPath.Replace("{" + "id" + "}", KnetikClient.D
             postBody = KnetikClient.DefaultClient.Serialize(savedAddressResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateAddressStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateAddressStartTime, mUpdateAddressPath, "Sending server request...");

@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,56 +19,56 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>Whether to allow additional properties beyond those specified or not</value>
         [JsonProperty(PropertyName = "allow_additional")]
-        public bool? AllowAdditional { get; set; }
+        public bool? AllowAdditional;
 
         /// <summary>
         /// A property definition for all answers. If included each answer must match this definition's type and be valid
         /// </summary>
         /// <value>A property definition for all answers. If included each answer must match this definition's type and be valid</value>
         [JsonProperty(PropertyName = "answer_property")]
-        public PropertyDefinitionResource AnswerProperty { get; set; }
+        public PropertyDefinitionResource AnswerProperty;
 
         /// <summary>
         /// The date/time this resource was created in seconds since unix epoch
         /// </summary>
         /// <value>The date/time this resource was created in seconds since unix epoch</value>
         [JsonProperty(PropertyName = "created_date")]
-        public long? CreatedDate { get; set; }
+        public long? CreatedDate;
 
         /// <summary>
         /// The id of the template
         /// </summary>
         /// <value>The id of the template</value>
         [JsonProperty(PropertyName = "id")]
-        public string Id { get; set; }
+        public string Id;
 
         /// <summary>
         /// The name of the template
         /// </summary>
         /// <value>The name of the template</value>
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name;
 
         /// <summary>
         /// The customized properties that are present
         /// </summary>
         /// <value>The customized properties that are present</value>
         [JsonProperty(PropertyName = "properties")]
-        public List<PropertyDefinitionResource> Properties { get; set; }
+        public List<PropertyDefinitionResource> Properties;
 
         /// <summary>
         /// A property definition for the question itself. If included the answer must match this definition's type and be valid
         /// </summary>
         /// <value>A property definition for the question itself. If included the answer must match this definition's type and be valid</value>
         [JsonProperty(PropertyName = "question_property")]
-        public PropertyDefinitionResource QuestionProperty { get; set; }
+        public PropertyDefinitionResource QuestionProperty;
 
         /// <summary>
         /// The date/time this resource was last updated in seconds since unix epoch
         /// </summary>
         /// <value>The date/time this resource was last updated in seconds since unix epoch</value>
         [JsonProperty(PropertyName = "updated_date")]
-        public long? UpdatedDate { get; set; }
+        public long? UpdatedDate;
 
         /// <inheritdoc />
         /// <summary>

@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -10,6 +12,7 @@ namespace com.knetikcloud.Model
     /// <summary>
     /// 
     /// </summary>
+    [KnetikFactory ("time_period_gettable")]
     public class TimePeriodGettable : Behavior
     {
         /// <summary>
@@ -17,28 +20,28 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The time period limit</value>
         [JsonProperty(PropertyName = "get_limit")]
-        public int? GetLimit { get; set; }
+        public int? GetLimit;
 
         /// <summary>
         /// The name of a group of items. Multiple items with the same group name will be limited together, leave null to be assigned a random unique name. It is typical that the other properties here will be the same for all, but this is not enforced and the item being recieved will use its settings.
         /// </summary>
         /// <value>The name of a group of items. Multiple items with the same group name will be limited together, leave null to be assigned a random unique name. It is typical that the other properties here will be the same for all, but this is not enforced and the item being recieved will use its settings.</value>
         [JsonProperty(PropertyName = "group_name")]
-        public string GroupName { get; set; }
+        public string GroupName;
 
         /// <summary>
         /// The length of time
         /// </summary>
         /// <value>The length of time</value>
         [JsonProperty(PropertyName = "time_length")]
-        public int? TimeLength { get; set; }
+        public int? TimeLength;
 
         /// <summary>
         /// The unit of time
         /// </summary>
         /// <value>The unit of time</value>
         [JsonProperty(PropertyName = "unit_of_time")]
-        public string UnitOfTime { get; set; }
+        public string UnitOfTime;
 
         /// <inheritdoc />
         /// <summary>
@@ -63,7 +66,7 @@ namespace com.knetikcloud.Model
         /// Get the JSON string presentation of the object
         /// </summary>
         /// <returns>JSON string presentation of the object</returns>
-        public  new string ToJson()
+        public new string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }

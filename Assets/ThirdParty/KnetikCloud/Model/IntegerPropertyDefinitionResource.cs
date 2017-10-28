@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -10,6 +12,7 @@ namespace com.knetikcloud.Model
     /// <summary>
     /// 
     /// </summary>
+    [KnetikFactory ("integer")]
     public class IntegerPropertyDefinitionResource : PropertyDefinitionResource
     {
         /// <summary>
@@ -17,14 +20,14 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>If provided, the maximum value</value>
         [JsonProperty(PropertyName = "max")]
-        public int? Max { get; set; }
+        public int? Max;
 
         /// <summary>
         /// If provided, the minimum value
         /// </summary>
         /// <value>If provided, the minimum value</value>
         [JsonProperty(PropertyName = "min")]
-        public int? Min { get; set; }
+        public int? Min;
 
         /// <inheritdoc />
         /// <summary>
@@ -49,7 +52,7 @@ namespace com.knetikcloud.Model
         /// Get the JSON string presentation of the object
         /// </summary>
         /// <returns>JSON string presentation of the object</returns>
-        public  new string ToJson()
+        public new string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }

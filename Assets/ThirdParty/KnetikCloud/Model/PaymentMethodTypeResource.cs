@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,49 +19,49 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The id of the payment method type</value>
         [JsonProperty(PropertyName = "id")]
-        public int? Id { get; set; }
+        public int? Id;
 
         /// <summary>
         /// The maximum timelimit in hours for an invoice in the processing status while waiting on this payment method type. Defaults to the global config invoice.processing_expiration_hours if null
         /// </summary>
         /// <value>The maximum timelimit in hours for an invoice in the processing status while waiting on this payment method type. Defaults to the global config invoice.processing_expiration_hours if null</value>
         [JsonProperty(PropertyName = "invoice_processing_hours")]
-        public int? InvoiceProcessingHours { get; set; }
+        public int? InvoiceProcessingHours;
 
         /// <summary>
         /// The name of the payment method type
         /// </summary>
         /// <value>The name of the payment method type</value>
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name;
 
         /// <summary>
         /// Whether the payment handler supports the authorize and capture flow
         /// </summary>
         /// <value>Whether the payment handler supports the authorize and capture flow</value>
         [JsonProperty(PropertyName = "supports_capture")]
-        public bool? SupportsCapture { get; set; }
+        public bool? SupportsCapture;
 
         /// <summary>
         /// Whether the payment handler supports paying for part of an invoice, rather than the full grand_total
         /// </summary>
         /// <value>Whether the payment handler supports paying for part of an invoice, rather than the full grand_total</value>
         [JsonProperty(PropertyName = "supports_partial")]
-        public bool? SupportsPartial { get; set; }
+        public bool? SupportsPartial;
 
         /// <summary>
         /// Whether the payment handler supports rebilling the method later (for saved payments or subscriptions)
         /// </summary>
         /// <value>Whether the payment handler supports rebilling the method later (for saved payments or subscriptions)</value>
         [JsonProperty(PropertyName = "supports_rebill")]
-        public bool? SupportsRebill { get; set; }
+        public bool? SupportsRebill;
 
         /// <summary>
         /// Whether the payment handler supports refunding
         /// </summary>
         /// <value>Whether the payment handler supports refunding</value>
         [JsonProperty(PropertyName = "supports_refunds")]
-        public bool? SupportsRefunds { get; set; }
+        public bool? SupportsRefunds;
 
         /// <inheritdoc />
         /// <summary>

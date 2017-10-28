@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,103 +19,103 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>A map of additional properties, keyed on the property name.  Must match the names and types defined in the template for this item type, or be an extra not from the template</value>
         [JsonProperty(PropertyName = "additional_properties")]
-        public Dictionary<string, Property> AdditionalProperties { get; set; }
+        public Dictionary<string, Property> AdditionalProperties;
 
         /// <summary>
         /// The currency code for the SKU, a three letter string (ISO3)
         /// </summary>
         /// <value>The currency code for the SKU, a three letter string (ISO3)</value>
         [JsonProperty(PropertyName = "currency_code")]
-        public string CurrencyCode { get; set; }
+        public string CurrencyCode;
 
         /// <summary>
         /// The friendly name of the SKU as it will appear on invoices and reports. Typically represents the option name like red, large, etc
         /// </summary>
         /// <value>The friendly name of the SKU as it will appear on invoices and reports. Typically represents the option name like red, large, etc</value>
         [JsonProperty(PropertyName = "description")]
-        public string Description { get; set; }
+        public string Description;
 
         /// <summary>
         /// The number of SKUs currently in stock
         /// </summary>
         /// <value>The number of SKUs currently in stock</value>
         [JsonProperty(PropertyName = "inventory")]
-        public int? Inventory { get; set; }
+        public int? Inventory;
 
         /// <summary>
         /// Alerts vendor when SKU inventory drops below this value
         /// </summary>
         /// <value>Alerts vendor when SKU inventory drops below this value</value>
         [JsonProperty(PropertyName = "min_inventory_threshold")]
-        public int? MinInventoryThreshold { get; set; }
+        public int? MinInventoryThreshold;
 
         /// <summary>
         /// Gets or Sets NotAvailable
         /// </summary>
         [JsonProperty(PropertyName = "not_available")]
-        public bool? NotAvailable { get; set; }
+        public bool? NotAvailable;
 
         /// <summary>
         /// Gets or Sets NotDisplayable
         /// </summary>
         [JsonProperty(PropertyName = "not_displayable")]
-        public bool? NotDisplayable { get; set; }
+        public bool? NotDisplayable;
 
         /// <summary>
         /// The base price before any sale
         /// </summary>
         /// <value>The base price before any sale</value>
         [JsonProperty(PropertyName = "original_price")]
-        public decimal? OriginalPrice { get; set; }
+        public decimal? OriginalPrice;
 
         /// <summary>
         /// The current price of the SKU with sales, if any. Set original_price for the base
         /// </summary>
         /// <value>The current price of the SKU with sales, if any. Set original_price for the base</value>
         [JsonProperty(PropertyName = "price")]
-        public decimal? Price { get; set; }
+        public decimal? Price;
 
         /// <summary>
         /// Whether or not the SKU is currently visible to users. This will not block users from purchase. Use start_date or stop_date to prevent purchase. Default: true
         /// </summary>
         /// <value>Whether or not the SKU is currently visible to users. This will not block users from purchase. Use start_date or stop_date to prevent purchase. Default: true</value>
         [JsonProperty(PropertyName = "published")]
-        public bool? Published { get; set; }
+        public bool? Published;
 
         /// <summary>
         /// The id of a sale affecting the price, if any
         /// </summary>
         /// <value>The id of a sale affecting the price, if any</value>
         [JsonProperty(PropertyName = "sale_id")]
-        public int? SaleId { get; set; }
+        public int? SaleId;
 
         /// <summary>
         /// The name of a sale affecting the price, if any
         /// </summary>
         /// <value>The name of a sale affecting the price, if any</value>
         [JsonProperty(PropertyName = "sale_name")]
-        public string SaleName { get; set; }
+        public string SaleName;
 
         /// <summary>
         /// The stock keeping unit (SKU), a unique identifier for a given product.  Max 40 characters
         /// </summary>
         /// <value>The stock keeping unit (SKU), a unique identifier for a given product.  Max 40 characters</value>
         [JsonProperty(PropertyName = "sku")]
-        public string _Sku { get; set; }
+        public string _Sku;
 
         /// <summary>
         /// The date the sku becomes visible (if published) and available for purchase, unix timestamp in seconds.  If set to null, sku will become available immediately
         /// </summary>
         /// <value>The date the sku becomes visible (if published) and available for purchase, unix timestamp in seconds.  If set to null, sku will become available immediately</value>
         [JsonProperty(PropertyName = "start_date")]
-        public long? StartDate { get; set; }
+        public long? StartDate;
 
         /// <summary>
         /// The date the sku becomes hidden and unavailable for purchase, unix timestamp in seconds.  If set to null, sku is always available
         /// </summary>
         /// <value>The date the sku becomes hidden and unavailable for purchase, unix timestamp in seconds.  If set to null, sku is always available</value>
         [JsonProperty(PropertyName = "stop_date")]
-        public long? StopDate { get; set; }
+        public long? StopDate;
 
         /// <inheritdoc />
         /// <summary>

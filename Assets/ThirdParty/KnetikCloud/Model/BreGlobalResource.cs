@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,49 +19,49 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>A human readable description for display in admin pages</value>
         [JsonProperty(PropertyName = "description")]
-        public string Description { get; set; }
+        public string Description;
 
         /// <summary>
         /// The id of the global definition. Default is a random guid. Cannot be updated
         /// </summary>
         /// <value>The id of the global definition. Default is a random guid. Cannot be updated</value>
         [JsonProperty(PropertyName = "id")]
-        public string Id { get; set; }
+        public string Id;
 
         /// <summary>
         /// The key for the global. Must be unique when combined with scope names. Usually a single descriptive word like 'purchases' or 'logins'
         /// </summary>
         /// <value>The key for the global. Must be unique when combined with scope names. Usually a single descriptive word like 'purchases' or 'logins'</value>
         [JsonProperty(PropertyName = "key")]
-        public string Key { get; set; }
+        public string Key;
 
         /// <summary>
         /// A human readable name for display in admin pages
         /// </summary>
         /// <value>A human readable name for display in admin pages</value>
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name;
 
         /// <summary>
         /// A list of scoping parameters. Allows the global to have a different value in different context such as a count of purchases for each user (by putting a 'user' scope in this list). When using this global in a rule these scopes will need to be mapped with an expression to provide a value, similar to the parameters in an action
         /// </summary>
         /// <value>A list of scoping parameters. Allows the global to have a different value in different context such as a count of purchases for each user (by putting a 'user' scope in this list). When using this global in a rule these scopes will need to be mapped with an expression to provide a value, similar to the parameters in an action</value>
         [JsonProperty(PropertyName = "scopes")]
-        public List<BreGlobalScopeDefinition> Scopes { get; set; }
+        public List<BreGlobalScopeDefinition> Scopes;
 
         /// <summary>
         /// Where this global came from. System globals cannot be removed or updated
         /// </summary>
         /// <value>Where this global came from. System globals cannot be removed or updated</value>
         [JsonProperty(PropertyName = "system_global")]
-        public bool? SystemGlobal { get; set; }
+        public bool? SystemGlobal;
 
         /// <summary>
         /// The variable type the global stores. See the See Bre Variables enpoint for list
         /// </summary>
         /// <value>The variable type the global stores. See the See Bre Variables enpoint for list</value>
         [JsonProperty(PropertyName = "type")]
-        public string Type { get; set; }
+        public string Type;
 
         /// <inheritdoc />
         /// <summary>

@@ -195,7 +195,7 @@ mGetUserSubscriptionDetailsPath = mGetUserSubscriptionDetailsPath.Replace("{" + 
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUserSubscriptionDetailsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUserSubscriptionDetailsStartTime, mGetUserSubscriptionDetailsPath, "Sending server request...");
@@ -252,7 +252,7 @@ mGetUserSubscriptionDetailsPath = mGetUserSubscriptionDetailsPath.Replace("{" + 
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUsersSubscriptionDetailsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUsersSubscriptionDetailsStartTime, mGetUsersSubscriptionDetailsPath, "Sending server request...");
@@ -319,7 +319,7 @@ mReactivateUserSubscriptionPath = mReactivateUserSubscriptionPath.Replace("{" + 
             postBody = KnetikClient.DefaultClient.Serialize(reactivateSubscriptionRequest); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mReactivateUserSubscriptionStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mReactivateUserSubscriptionStartTime, mReactivateUserSubscriptionPath, "Sending server request...");
@@ -391,7 +391,7 @@ mSetSubscriptionBillDatePath = mSetSubscriptionBillDatePath.Replace("{" + "inven
             postBody = KnetikClient.DefaultClient.Serialize(billDate); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSetSubscriptionBillDateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSetSubscriptionBillDateStartTime, mSetSubscriptionBillDatePath, "Sending server request...");
@@ -456,7 +456,7 @@ mSetSubscriptionPaymentMethodPath = mSetSubscriptionPaymentMethodPath.Replace("{
             postBody = KnetikClient.DefaultClient.Serialize(paymentMethodId); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSetSubscriptionPaymentMethodStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSetSubscriptionPaymentMethodStartTime, mSetSubscriptionPaymentMethodPath, "Sending server request...");
@@ -526,7 +526,7 @@ mSetSubscriptionStatusPath = mSetSubscriptionStatusPath.Replace("{" + "inventory
             postBody = KnetikClient.DefaultClient.Serialize(status); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSetSubscriptionStatusStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSetSubscriptionStatusStartTime, mSetSubscriptionStatusPath, "Sending server request...");
@@ -591,7 +591,7 @@ mSetUserSubscriptionPlanPath = mSetUserSubscriptionPlanPath.Replace("{" + "inven
             postBody = KnetikClient.DefaultClient.Serialize(planId); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSetUserSubscriptionPlanStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSetUserSubscriptionPlanStartTime, mSetUserSubscriptionPlanPath, "Sending server request...");
@@ -656,7 +656,7 @@ mSetUserSubscriptionPricePath = mSetUserSubscriptionPricePath.Replace("{" + "inv
             postBody = KnetikClient.DefaultClient.Serialize(theOverrideDetails); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSetUserSubscriptionPriceStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSetUserSubscriptionPriceStartTime, mSetUserSubscriptionPricePath, "Sending server request...");

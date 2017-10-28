@@ -209,7 +209,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(shippingItem); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateShippingItemStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateShippingItemStartTime, mCreateShippingItemPath, "Sending server request...");
@@ -262,7 +262,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(shippingTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateShippingTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateShippingTemplateStartTime, mCreateShippingTemplatePath, "Sending server request...");
@@ -319,7 +319,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteShippingItemStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteShippingItemStartTime, mDeleteShippingItemPath, "Sending server request...");
@@ -380,7 +380,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteShippingTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteShippingTemplateStartTime, mDeleteShippingTemplatePath, "Sending server request...");
@@ -435,7 +435,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetShippingItemStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetShippingItemStartTime, mGetShippingItemPath, "Sending server request...");
@@ -492,7 +492,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetShippingTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetShippingTemplateStartTime, mGetShippingTemplatePath, "Sending server request...");
@@ -560,7 +560,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetShippingTemplatesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetShippingTemplatesStartTime, mGetShippingTemplatesPath, "Sending server request...");
@@ -626,7 +626,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(shippingItem); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateShippingItemStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateShippingItemStartTime, mUpdateShippingItemPath, "Sending server request...");
@@ -686,7 +686,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(shippingTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateShippingTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateShippingTemplateStartTime, mUpdateShippingTemplatePath, "Sending server request...");

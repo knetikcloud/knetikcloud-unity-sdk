@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,182 +19,182 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>A map of additional properties, keyed on the property name.  Must match the names and types defined in the template for this subscription</value>
         [JsonProperty(PropertyName = "additional_properties")]
-        public Dictionary<string, Property> AdditionalProperties { get; set; }
+        public Dictionary<string, Property> AdditionalProperties;
 
         /// <summary>
         /// The length of the billing cycle in number of billing cycle unit
         /// </summary>
         /// <value>The length of the billing cycle in number of billing cycle unit</value>
         [JsonProperty(PropertyName = "billing_cycle_length")]
-        public int? BillingCycleLength { get; set; }
+        public int? BillingCycleLength;
 
         /// <summary>
         /// The time period unit to apply to the length of billing cycles
         /// </summary>
         /// <value>The time period unit to apply to the length of billing cycles</value>
         [JsonProperty(PropertyName = "billing_cycle_unit")]
-        public string BillingCycleUnit { get; set; }
+        public string BillingCycleUnit;
 
         /// <summary>
         /// Whether this plan will be renewed on the consolidated billing cycle
         /// </summary>
         /// <value>Whether this plan will be renewed on the consolidated billing cycle</value>
         [JsonProperty(PropertyName = "consolidated")]
-        public bool? Consolidated { get; set; }
+        public bool? Consolidated;
 
         /// <summary>
         /// The ISO3 currency code to use for the fees
         /// </summary>
         /// <value>The ISO3 currency code to use for the fees</value>
         [JsonProperty(PropertyName = "currency_code")]
-        public string CurrencyCode { get; set; }
+        public string CurrencyCode;
 
         /// <summary>
         /// Used to schedule plan availability end date
         /// </summary>
         /// <value>Used to schedule plan availability end date</value>
         [JsonProperty(PropertyName = "end_date")]
-        public long? EndDate { get; set; }
+        public long? EndDate;
 
         /// <summary>
         /// Optional override for the length of the first billing cycle before the first recurring billing
         /// </summary>
         /// <value>Optional override for the length of the first billing cycle before the first recurring billing</value>
         [JsonProperty(PropertyName = "first_billing_cycle_length")]
-        public int? FirstBillingCycleLength { get; set; }
+        public int? FirstBillingCycleLength;
 
         /// <summary>
         /// The time period unit to apply to the length of the first billing cycle. Required when first_billing_cycle_length is specified
         /// </summary>
         /// <value>The time period unit to apply to the length of the first billing cycle. Required when first_billing_cycle_length is specified</value>
         [JsonProperty(PropertyName = "first_billing_cycle_unit")]
-        public string FirstBillingCycleUnit { get; set; }
+        public string FirstBillingCycleUnit;
 
         /// <summary>
         /// The number of late payment days before a subscription is canceled
         /// </summary>
         /// <value>The number of late payment days before a subscription is canceled</value>
         [JsonProperty(PropertyName = "grace_period")]
-        public int? GracePeriod { get; set; }
+        public int? GracePeriod;
 
         /// <summary>
         /// The id of the plan used to generate the SKUs
         /// </summary>
         /// <value>The id of the plan used to generate the SKUs</value>
         [JsonProperty(PropertyName = "id")]
-        public string Id { get; set; }
+        public string Id;
 
         /// <summary>
         /// The fee charged when the subscription is purchased
         /// </summary>
         /// <value>The fee charged when the subscription is purchased</value>
         [JsonProperty(PropertyName = "initial_fee")]
-        public decimal? InitialFee { get; set; }
+        public decimal? InitialFee;
 
         /// <summary>
         /// The SKU to be used when purchasing the subscription through the cart
         /// </summary>
         /// <value>The SKU to be used when purchasing the subscription through the cart</value>
         [JsonProperty(PropertyName = "initial_sku")]
-        public string InitialSku { get; set; }
+        public string InitialSku;
 
         /// <summary>
         /// The fee to add to the bill when an invoice has gone unpaid passed the grace period
         /// </summary>
         /// <value>The fee to add to the bill when an invoice has gone unpaid passed the grace period</value>
         [JsonProperty(PropertyName = "late_payment_fee")]
-        public decimal? LatePaymentFee { get; set; }
+        public decimal? LatePaymentFee;
 
         /// <summary>
         /// The SKU that will show on the invoice when the subscription is delinquent
         /// </summary>
         /// <value>The SKU that will show on the invoice when the subscription is delinquent</value>
         [JsonProperty(PropertyName = "late_payment_sku")]
-        public string LatePaymentSku { get; set; }
+        public string LatePaymentSku;
 
         /// <summary>
         /// Whether this plan is locked because it has been purchased by at least one user.  When locked, a number of properties can no longer be changed
         /// </summary>
         /// <value>Whether this plan is locked because it has been purchased by at least one user.  When locked, a number of properties can no longer be changed</value>
         [JsonProperty(PropertyName = "locked")]
-        public bool? Locked { get; set; }
+        public bool? Locked;
 
         /// <summary>
         /// The number of charge attempts before the subscription becomes delinquent
         /// </summary>
         /// <value>The number of charge attempts before the subscription becomes delinquent</value>
         [JsonProperty(PropertyName = "max_bill_attempts")]
-        public int? MaxBillAttempts { get; set; }
+        public int? MaxBillAttempts;
 
         /// <summary>
         /// Maximum number of renewals. If a migration plan is provided, the subscription will automatically switch to it when this limit is reached
         /// </summary>
         /// <value>Maximum number of renewals. If a migration plan is provided, the subscription will automatically switch to it when this limit is reached</value>
         [JsonProperty(PropertyName = "max_cycles")]
-        public int? MaxCycles { get; set; }
+        public int? MaxCycles;
 
         /// <summary>
         /// Automatically migrate to the specified plan when the subscription is first renewed
         /// </summary>
         /// <value>Automatically migrate to the specified plan when the subscription is first renewed</value>
         [JsonProperty(PropertyName = "migrate_to_plan")]
-        public string MigrateToPlan { get; set; }
+        public string MigrateToPlan;
 
         /// <summary>
         /// The minimum number of renewals to charge for
         /// </summary>
         /// <value>The minimum number of renewals to charge for</value>
         [JsonProperty(PropertyName = "min_cycles")]
-        public int? MinCycles { get; set; }
+        public int? MinCycles;
 
         /// <summary>
         /// The name of the plan used to generate the SKUs
         /// </summary>
         /// <value>The name of the plan used to generate the SKUs</value>
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name;
 
         /// <summary>
         /// Whether this plan is currently available
         /// </summary>
         /// <value>Whether this plan is currently available</value>
         [JsonProperty(PropertyName = "published")]
-        public bool? Published { get; set; }
+        public bool? Published;
 
         /// <summary>
         /// The fee to charge when a suspended subscription is to be re-activated
         /// </summary>
         /// <value>The fee to charge when a suspended subscription is to be re-activated</value>
         [JsonProperty(PropertyName = "reactivation_fee")]
-        public decimal? ReactivationFee { get; set; }
+        public decimal? ReactivationFee;
 
         /// <summary>
         /// The SKU that will show on the invoice when the subscription is re-activated after a suspension
         /// </summary>
         /// <value>The SKU that will show on the invoice when the subscription is re-activated after a suspension</value>
         [JsonProperty(PropertyName = "reactivation_sku")]
-        public string ReactivationSku { get; set; }
+        public string ReactivationSku;
 
         /// <summary>
         /// The recurring fee to charge for each renewal
         /// </summary>
         /// <value>The recurring fee to charge for each renewal</value>
         [JsonProperty(PropertyName = "recurring_fee")]
-        public decimal? RecurringFee { get; set; }
+        public decimal? RecurringFee;
 
         /// <summary>
         /// The SKU that will show on the invoice when the subscription is activated
         /// </summary>
         /// <value>The SKU that will show on the invoice when the subscription is activated</value>
         [JsonProperty(PropertyName = "recurring_sku")]
-        public string RecurringSku { get; set; }
+        public string RecurringSku;
 
         /// <summary>
         /// Used to schedule plan availability start date
         /// </summary>
         /// <value>Used to schedule plan availability start date</value>
         [JsonProperty(PropertyName = "start_date")]
-        public long? StartDate { get; set; }
+        public long? StartDate;
 
         /// <inheritdoc />
         /// <summary>

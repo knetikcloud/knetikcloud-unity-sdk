@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,14 +19,14 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The number of users that have expressed this disposition</value>
         [JsonProperty(PropertyName = "count")]
-        public long? Count { get; set; }
+        public long? Count;
 
         /// <summary>
         /// The name of the disposition this count is for
         /// </summary>
         /// <value>The name of the disposition this count is for</value>
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name;
 
         /// <inheritdoc />
         /// <summary>

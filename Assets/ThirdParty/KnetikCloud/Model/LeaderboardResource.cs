@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,21 +19,21 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The paginated list of user results, in order from best to worst</value>
         [JsonProperty(PropertyName = "entries")]
-        public List<LeaderboardEntryResource> Entries { get; set; }
+        public List<LeaderboardEntryResource> Entries;
 
         /// <summary>
         /// The id of the leaderboard
         /// </summary>
         /// <value>The id of the leaderboard</value>
         [JsonProperty(PropertyName = "id")]
-        public long? Id { get; set; }
+        public long? Id;
 
         /// <summary>
         /// The name of the strategy that defines how entries are stored and compared
         /// </summary>
         /// <value>The name of the strategy that defines how entries are stored and compared</value>
         [JsonProperty(PropertyName = "strategy")]
-        public string Strategy { get; set; }
+        public string Strategy;
 
         /// <inheritdoc />
         /// <summary>

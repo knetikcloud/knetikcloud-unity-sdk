@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using com.knetikcloud.Api;
 using com.knetikcloud.Credentials;
 using com.knetikcloud.Events;
+using com.knetikcloud.Factory;
 using com.knetikcloud.Model;
 using com.knetikcloud.Utils;
 using Newtonsoft.Json;
@@ -188,9 +189,15 @@ namespace com.knetikcloud.Client
         /// <param name="fileParams">File parameters.</param>
         /// <param name="authSettings">Authentication settings.</param>
         /// <returns>Object</returns>
-        public Object CallApi(string path, Method method, Dictionary<string, string> queryParams, string postBody,
-            Dictionary<string, string> headerParams, Dictionary<string, string> formParams, 
-            Dictionary<string, FileParameter> fileParams, string[] authSettings)
+        public Object CallApi(
+            string path,
+            Method method,
+            Dictionary<string, string> queryParams,
+            string postBody,
+            Dictionary<string, string> headerParams,
+            Dictionary<string, string> formParams, 
+            Dictionary<string, FileParameter> fileParams,
+            List<string> authSettings)
         {
             RestRequest request = new RestRequest(path, method);
    
@@ -270,7 +277,7 @@ namespace com.knetikcloud.Client
         /// <returns>Object representation of the JSON string.</returns>
         public object Deserialize(string content, Type type, IList<Parameter> headers)
         {
-            if (type == typeof(Object)) // return an object
+            if (type == typeof(object)) // return an object
             {
                 return content;
             }
@@ -324,7 +331,7 @@ namespace com.knetikcloud.Client
         {
             try
             {
-                return obj != null ? JsonConvert.SerializeObject(obj) : null;
+                return (obj != null) ? JsonConvert.SerializeObject(obj) : null;
             }
             catch (Exception e)
             {
@@ -338,31 +345,20 @@ namespace com.knetikcloud.Client
         /// <param name="queryParams">Query parameters.</param>
         /// <param name="headerParams">Header parameters.</param>
         /// <param name="authSettings">Authentication settings.</param>
-        public void UpdateParamsForAuth(Dictionary<string, string> queryParams, Dictionary<string, string> headerParams, string[] authSettings)
+        public void UpdateParamsForAuth(Dictionary<string, string> queryParams, Dictionary<string, string> headerParams, List<string> authSettings)
         {
-            if (authSettings == null || authSettings.Length == 0)
+            if ((authSettings == null) || (authSettings.Count == 0))
             {
                 return;
             }
 
-            foreach (string auth in authSettings)
+            if (!authSettings.Contains("oauth2_client_credentials_grant") && !authSettings.Contains("oauth2_password_grant"))
             {
-                // determine which one to use
-                switch(auth)
-                {
-                    case "oauth2_client_credentials_grant":
-                        
-                        //TODO support oauth
-                        break;
-                    case "oauth2_password_grant":
-                        
-                        //TODO support oauth
-                        break;
-                    default:
-                        //TODO show warning about security definition not found
-                        break;
-                }
+                return;
             }
+
+            string authToken = string.Format("{0} {1}", mAccessTokenApi.GetOAuthTokenData.TokenType, mAccessTokenApi.GetOAuthTokenData.AccessToken);
+            headerParams.Add("authorization", authToken);
         }
 
         /// <summary>
@@ -371,13 +367,14 @@ namespace com.knetikcloud.Client
         /// <param name="fromObject">Object to be casted</param>
         /// <param name="toObject">Target type</param>
         /// <returns>Casted object</returns>
-        public static Object ConvertType(Object fromObject, Type toObject)
+        public static object ConvertType(object fromObject, Type toObject)
         {
             return Convert.ChangeType(fromObject, toObject);
         }
 
         private void Awake()
         {
+            KnetikFactory.Initialize();
             ServicePointManager.ServerCertificateValidationCallback = RemoteCertificateValidationCallback;
 
             // Load project settings

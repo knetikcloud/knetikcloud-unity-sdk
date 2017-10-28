@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,56 +19,56 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The date/time this resource was created in seconds since unix epoch</value>
         [JsonProperty(PropertyName = "created_date")]
-        public long? CreatedDate { get; set; }
+        public long? CreatedDate;
 
         /// <summary>
         /// The unique id code for the currency used in the cart
         /// </summary>
         /// <value>The unique id code for the currency used in the cart</value>
         [JsonProperty(PropertyName = "currency_code")]
-        public string CurrencyCode { get; set; }
+        public string CurrencyCode;
 
         /// <summary>
         /// The grand total for the cart
         /// </summary>
         /// <value>The grand total for the cart</value>
         [JsonProperty(PropertyName = "grand_total")]
-        public decimal? GrandTotal { get; set; }
+        public decimal? GrandTotal;
 
         /// <summary>
         /// The unique ID for the cart
         /// </summary>
         /// <value>The unique ID for the cart</value>
         [JsonProperty(PropertyName = "id")]
-        public string Id { get; set; }
+        public string Id;
 
         /// <summary>
         /// The ID of the invoice associated with this cart
         /// </summary>
         /// <value>The ID of the invoice associated with this cart</value>
         [JsonProperty(PropertyName = "invoice_id")]
-        public decimal? InvoiceId { get; set; }
+        public decimal? InvoiceId;
 
         /// <summary>
         /// The number of items in the cart
         /// </summary>
         /// <value>The number of items in the cart</value>
         [JsonProperty(PropertyName = "items_in_cart")]
-        public int? ItemsInCart { get; set; }
+        public int? ItemsInCart;
 
         /// <summary>
         /// The status of the cart
         /// </summary>
         /// <value>The status of the cart</value>
         [JsonProperty(PropertyName = "status")]
-        public string Status { get; set; }
+        public string Status;
 
         /// <summary>
         /// The subtotal of all items in the cart
         /// </summary>
         /// <value>The subtotal of all items in the cart</value>
         [JsonProperty(PropertyName = "subtotal")]
-        public decimal? Subtotal { get; set; }
+        public decimal? Subtotal;
 
         /// <inheritdoc />
         /// <summary>

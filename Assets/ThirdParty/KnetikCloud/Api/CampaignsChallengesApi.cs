@@ -440,7 +440,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(challengeResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateChallengeStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateChallengeStartTime, mCreateChallengePath, "Sending server request...");
@@ -506,7 +506,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(challengeActivityResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateChallengeActivityStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateChallengeActivityStartTime, mCreateChallengeActivityPath, "Sending server request...");
@@ -559,7 +559,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(challengeActivityTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateChallengeActivityTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateChallengeActivityTemplateStartTime, mCreateChallengeActivityTemplatePath, "Sending server request...");
@@ -612,7 +612,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(challengeTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateChallengeTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateChallengeTemplateStartTime, mCreateChallengeTemplatePath, "Sending server request...");
@@ -669,7 +669,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteChallengeStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteChallengeStartTime, mDeleteChallengePath, "Sending server request...");
@@ -731,7 +731,7 @@ mDeleteChallengeActivityPath = mDeleteChallengeActivityPath.Replace("{" + "chall
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteChallengeActivityStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteChallengeActivityStartTime, mDeleteChallengeActivityPath, "Sending server request...");
@@ -792,7 +792,7 @@ mDeleteChallengeActivityPath = mDeleteChallengeActivityPath.Replace("{" + "chall
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteChallengeActivityTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteChallengeActivityTemplateStartTime, mDeleteChallengeActivityTemplatePath, "Sending server request...");
@@ -847,7 +847,7 @@ mDeleteChallengeActivityPath = mDeleteChallengeActivityPath.Replace("{" + "chall
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteChallengeEventStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteChallengeEventStartTime, mDeleteChallengeEventPath, "Sending server request...");
@@ -908,7 +908,7 @@ mDeleteChallengeActivityPath = mDeleteChallengeActivityPath.Replace("{" + "chall
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteChallengeTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteChallengeTemplateStartTime, mDeleteChallengeTemplatePath, "Sending server request...");
@@ -963,7 +963,7 @@ mDeleteChallengeActivityPath = mDeleteChallengeActivityPath.Replace("{" + "chall
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetChallengeStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetChallengeStartTime, mGetChallengePath, "Sending server request...");
@@ -1038,7 +1038,7 @@ mDeleteChallengeActivityPath = mDeleteChallengeActivityPath.Replace("{" + "chall
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetChallengeActivitiesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetChallengeActivitiesStartTime, mGetChallengeActivitiesPath, "Sending server request...");
@@ -1102,7 +1102,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetChallengeActivityStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetChallengeActivityStartTime, mGetChallengeActivityPath, "Sending server request...");
@@ -1159,7 +1159,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetChallengeActivityTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetChallengeActivityTemplateStartTime, mGetChallengeActivityTemplatePath, "Sending server request...");
@@ -1227,7 +1227,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetChallengeActivityTemplatesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetChallengeActivityTemplatesStartTime, mGetChallengeActivityTemplatesPath, "Sending server request...");
@@ -1284,7 +1284,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetChallengeEventStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetChallengeEventStartTime, mGetChallengeEventPath, "Sending server request...");
@@ -1376,7 +1376,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetChallengeEventsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetChallengeEventsStartTime, mGetChallengeEventsPath, "Sending server request...");
@@ -1433,7 +1433,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetChallengeTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetChallengeTemplateStartTime, mGetChallengeTemplatePath, "Sending server request...");
@@ -1501,7 +1501,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetChallengeTemplatesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetChallengeTemplatesStartTime, mGetChallengeTemplatesPath, "Sending server request...");
@@ -1587,7 +1587,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetChallengesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetChallengesStartTime, mGetChallengesPath, "Sending server request...");
@@ -1647,7 +1647,7 @@ mGetChallengeActivityPath = mGetChallengeActivityPath.Replace("{" + "challenge_i
             postBody = KnetikClient.DefaultClient.Serialize(challengeResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateChallengeStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateChallengeStartTime, mUpdateChallengePath, "Sending server request...");
@@ -1714,7 +1714,7 @@ mUpdateChallengeActivityPath = mUpdateChallengeActivityPath.Replace("{" + "chall
             postBody = KnetikClient.DefaultClient.Serialize(challengeActivityResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateChallengeActivityStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateChallengeActivityStartTime, mUpdateChallengeActivityPath, "Sending server request...");
@@ -1774,7 +1774,7 @@ mUpdateChallengeActivityPath = mUpdateChallengeActivityPath.Replace("{" + "chall
             postBody = KnetikClient.DefaultClient.Serialize(challengeActivityTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateChallengeActivityTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateChallengeActivityTemplateStartTime, mUpdateChallengeActivityTemplatePath, "Sending server request...");
@@ -1834,7 +1834,7 @@ mUpdateChallengeActivityPath = mUpdateChallengeActivityPath.Replace("{" + "chall
             postBody = KnetikClient.DefaultClient.Serialize(challengeTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateChallengeTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateChallengeTemplateStartTime, mUpdateChallengeTemplatePath, "Sending server request...");

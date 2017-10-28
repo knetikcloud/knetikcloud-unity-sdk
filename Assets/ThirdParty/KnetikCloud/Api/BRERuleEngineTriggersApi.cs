@@ -142,7 +142,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(breTriggerResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateBRETriggerStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateBRETriggerStartTime, mCreateBRETriggerPath, "Sending server request...");
@@ -199,7 +199,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteBRETriggerStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteBRETriggerStartTime, mDeleteBRETriggerPath, "Sending server request...");
@@ -254,7 +254,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetBRETriggerStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetBRETriggerStartTime, mGetBRETriggerPath, "Sending server request...");
@@ -346,7 +346,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetBRETriggersStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetBRETriggersStartTime, mGetBRETriggersPath, "Sending server request...");
@@ -406,7 +406,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(breTriggerResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateBRETriggerStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateBRETriggerStartTime, mUpdateBRETriggerPath, "Sending server request...");

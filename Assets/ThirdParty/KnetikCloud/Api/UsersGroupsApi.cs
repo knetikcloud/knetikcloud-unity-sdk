@@ -461,7 +461,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(user); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddMemberToGroupStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddMemberToGroupStartTime, mAddMemberToGroupPath, "Sending server request...");
@@ -526,7 +526,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(users); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddMembersToGroupStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddMembersToGroupStartTime, mAddMembersToGroupPath, "Sending server request...");
@@ -579,7 +579,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(groupResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateGroupStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateGroupStartTime, mCreateGroupPath, "Sending server request...");
@@ -632,7 +632,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(groupMemberTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateGroupMemberTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateGroupMemberTemplateStartTime, mCreateGroupMemberTemplatePath, "Sending server request...");
@@ -685,7 +685,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(groupTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateGroupTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateGroupTemplateStartTime, mCreateGroupTemplatePath, "Sending server request...");
@@ -742,7 +742,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteGroupStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteGroupStartTime, mDeleteGroupPath, "Sending server request...");
@@ -803,7 +803,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteGroupMemberTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteGroupMemberTemplateStartTime, mDeleteGroupMemberTemplatePath, "Sending server request...");
@@ -864,7 +864,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteGroupTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteGroupTemplateStartTime, mDeleteGroupTemplatePath, "Sending server request...");
@@ -919,7 +919,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetGroupStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetGroupStartTime, mGetGroupPath, "Sending server request...");
@@ -983,7 +983,7 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetGroupMemberStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetGroupMemberStartTime, mGetGroupMemberPath, "Sending server request...");
@@ -1040,7 +1040,7 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetGroupMemberTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetGroupMemberTemplateStartTime, mGetGroupMemberTemplatePath, "Sending server request...");
@@ -1108,7 +1108,7 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetGroupMemberTemplatesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetGroupMemberTemplatesStartTime, mGetGroupMemberTemplatesPath, "Sending server request...");
@@ -1183,7 +1183,7 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetGroupMembersStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetGroupMembersStartTime, mGetGroupMembersPath, "Sending server request...");
@@ -1240,7 +1240,7 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetGroupTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetGroupTemplateStartTime, mGetGroupTemplatePath, "Sending server request...");
@@ -1308,7 +1308,7 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetGroupTemplatesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetGroupTemplatesStartTime, mGetGroupTemplatesPath, "Sending server request...");
@@ -1371,7 +1371,7 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetGroupsForUserStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetGroupsForUserStartTime, mGetGroupsForUserPath, "Sending server request...");
@@ -1475,7 +1475,7 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mListGroupsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mListGroupsStartTime, mListGroupsPath, "Sending server request...");
@@ -1539,7 +1539,7 @@ mRemoveGroupMemberPath = mRemoveGroupMemberPath.Replace("{" + "user_id" + "}", K
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mRemoveGroupMemberStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mRemoveGroupMemberStartTime, mRemoveGroupMemberPath, "Sending server request...");
@@ -1597,7 +1597,7 @@ mRemoveGroupMemberPath = mRemoveGroupMemberPath.Replace("{" + "user_id" + "}", K
             postBody = KnetikClient.DefaultClient.Serialize(groupResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateGroupStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateGroupStartTime, mUpdateGroupPath, "Sending server request...");
@@ -1667,7 +1667,7 @@ mUpdateGroupMemberPropertiesPath = mUpdateGroupMemberPropertiesPath.Replace("{" 
             postBody = KnetikClient.DefaultClient.Serialize(order); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateGroupMemberPropertiesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateGroupMemberPropertiesStartTime, mUpdateGroupMemberPropertiesPath, "Sending server request...");
@@ -1737,7 +1737,7 @@ mUpdateGroupMemberProperties1Path = mUpdateGroupMemberProperties1Path.Replace("{
             postBody = KnetikClient.DefaultClient.Serialize(properties); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateGroupMemberProperties1StartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateGroupMemberProperties1StartTime, mUpdateGroupMemberProperties1Path, "Sending server request...");
@@ -1807,7 +1807,7 @@ mUpdateGroupMemberStatusPath = mUpdateGroupMemberStatusPath.Replace("{" + "user_
             postBody = KnetikClient.DefaultClient.Serialize(status); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateGroupMemberStatusStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateGroupMemberStatusStartTime, mUpdateGroupMemberStatusPath, "Sending server request...");
@@ -1865,7 +1865,7 @@ mUpdateGroupMemberStatusPath = mUpdateGroupMemberStatusPath.Replace("{" + "user_
             postBody = KnetikClient.DefaultClient.Serialize(groupMemberTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateGroupMemberTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateGroupMemberTemplateStartTime, mUpdateGroupMemberTemplatePath, "Sending server request...");
@@ -1925,7 +1925,7 @@ mUpdateGroupMemberStatusPath = mUpdateGroupMemberStatusPath.Replace("{" + "user_
             postBody = KnetikClient.DefaultClient.Serialize(groupTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateGroupTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateGroupTemplateStartTime, mUpdateGroupTemplatePath, "Sending server request...");

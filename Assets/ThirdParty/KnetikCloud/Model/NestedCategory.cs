@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,21 +19,21 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>Whether the category is active</value>
         [JsonProperty(PropertyName = "active")]
-        public bool? Active { get; set; }
+        public bool? Active;
 
         /// <summary>
         /// The id of the category
         /// </summary>
         /// <value>The id of the category</value>
         [JsonProperty(PropertyName = "id")]
-        public string Id { get; set; }
+        public string Id;
 
         /// <summary>
         /// The name of the category
         /// </summary>
         /// <value>The name of the category</value>
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name;
 
         /// <inheritdoc />
         /// <summary>

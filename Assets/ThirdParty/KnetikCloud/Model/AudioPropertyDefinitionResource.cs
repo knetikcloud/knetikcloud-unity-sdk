@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -10,6 +12,7 @@ namespace com.knetikcloud.Model
     /// <summary>
     /// 
     /// </summary>
+    [KnetikFactory ("audio")]
     public class AudioPropertyDefinitionResource : PropertyDefinitionResource
     {
         /// <summary>
@@ -17,21 +20,21 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>If provided, a file type the property must match</value>
         [JsonProperty(PropertyName = "file_type")]
-        public string FileType { get; set; }
+        public string FileType;
 
         /// <summary>
         /// If provided, the maximum length of the audio
         /// </summary>
         /// <value>If provided, the maximum length of the audio</value>
         [JsonProperty(PropertyName = "max_length")]
-        public int? MaxLength { get; set; }
+        public int? MaxLength;
 
         /// <summary>
         /// If provided, the minimum length of the audio
         /// </summary>
         /// <value>If provided, the minimum length of the audio</value>
         [JsonProperty(PropertyName = "min_length")]
-        public int? MinLength { get; set; }
+        public int? MinLength;
 
         /// <inheritdoc />
         /// <summary>
@@ -57,7 +60,7 @@ namespace com.knetikcloud.Model
         /// Get the JSON string presentation of the object
         /// </summary>
         /// <returns>JSON string presentation of the object</returns>
-        public  new string ToJson()
+        public new string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }

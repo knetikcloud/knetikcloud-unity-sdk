@@ -168,7 +168,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetItemRevenueStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetItemRevenueStartTime, mGetItemRevenuePath, "Sending server request...");
@@ -237,7 +237,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetRefundRevenueStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetRefundRevenueStartTime, mGetRefundRevenuePath, "Sending server request...");
@@ -318,7 +318,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetRevenueByCountryStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetRevenueByCountryStartTime, mGetRevenueByCountryPath, "Sending server request...");
@@ -399,7 +399,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetRevenueByItemStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetRevenueByItemStartTime, mGetRevenueByItemPath, "Sending server request...");
@@ -468,7 +468,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetSubscriptionRevenueStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetSubscriptionRevenueStartTime, mGetSubscriptionRevenuePath, "Sending server request...");

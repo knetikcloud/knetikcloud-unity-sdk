@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,14 +19,14 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The textual name of the option: Ex: Hard (level 10)</value>
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name;
 
         /// <summary>
         /// The value of the option. Ex: 10
         /// </summary>
         /// <value>The value of the option. Ex: 10</value>
         [JsonProperty(PropertyName = "value")]
-        public string Value { get; set; }
+        public string Value;
 
         /// <inheritdoc />
         /// <summary>

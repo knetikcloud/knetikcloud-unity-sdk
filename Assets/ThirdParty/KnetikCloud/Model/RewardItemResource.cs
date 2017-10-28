@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,35 +19,35 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The id of the item to reward</value>
         [JsonProperty(PropertyName = "item_id")]
-        public int? ItemId { get; set; }
+        public int? ItemId;
 
         /// <summary>
         /// The name of the item to reward (read only, set by id)
         /// </summary>
         /// <value>The name of the item to reward (read only, set by id)</value>
         [JsonProperty(PropertyName = "item_name")]
-        public string ItemName { get; set; }
+        public string ItemName;
 
         /// <summary>
         /// The highest number (worst) rank to give the reward to. Must be greater than or equal to minRank
         /// </summary>
         /// <value>The highest number (worst) rank to give the reward to. Must be greater than or equal to minRank</value>
         [JsonProperty(PropertyName = "max_rank")]
-        public int? MaxRank { get; set; }
+        public int? MaxRank;
 
         /// <summary>
         /// The lowest number (best) rank to give the reward to. Must be greater than zero
         /// </summary>
         /// <value>The lowest number (best) rank to give the reward to. Must be greater than zero</value>
         [JsonProperty(PropertyName = "min_rank")]
-        public int? MinRank { get; set; }
+        public int? MinRank;
 
         /// <summary>
         /// How many copies to give
         /// </summary>
         /// <value>How many copies to give</value>
         [JsonProperty(PropertyName = "quantity")]
-        public int? Quantity { get; set; }
+        public int? Quantity;
 
         /// <inheritdoc />
         /// <summary>

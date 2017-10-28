@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -16,55 +18,55 @@ namespace com.knetikcloud.Model
         /// Gets or Sets _Default
         /// </summary>
         [JsonProperty(PropertyName = "default")]
-        public bool? _Default { get; set; }
+        public bool? _Default;
 
         /// <summary>
         /// The expiration date for the payment method, expressed as seconds since epoch. Typically used for credit card payment methods
         /// </summary>
         /// <value>The expiration date for the payment method, expressed as seconds since epoch. Typically used for credit card payment methods</value>
         [JsonProperty(PropertyName = "expiration_date")]
-        public long? ExpirationDate { get; set; }
+        public long? ExpirationDate;
 
         /// <summary>
         /// The expiration month (1 - 12) for the payment method. Typically used for credit card payment methods
         /// </summary>
         /// <value>The expiration month (1 - 12) for the payment method. Typically used for credit card payment methods</value>
         [JsonProperty(PropertyName = "expiration_month")]
-        public int? ExpirationMonth { get; set; }
+        public int? ExpirationMonth;
 
         /// <summary>
         /// The expiration year for the payment method. Typically used for credit card payment methods
         /// </summary>
         /// <value>The expiration year for the payment method. Typically used for credit card payment methods</value>
         [JsonProperty(PropertyName = "expiration_year")]
-        public int? ExpirationYear { get; set; }
+        public int? ExpirationYear;
 
         /// <summary>
         /// The last 4 digits of the account number for the payment method. Typically used for credit card payment methods
         /// </summary>
         /// <value>The last 4 digits of the account number for the payment method. Typically used for credit card payment methods</value>
         [JsonProperty(PropertyName = "last4")]
-        public string Last4 { get; set; }
+        public string Last4;
 
         /// <summary>
         /// The sort value for the payment method
         /// </summary>
         /// <value>The sort value for the payment method</value>
         [JsonProperty(PropertyName = "sort")]
-        public int? Sort { get; set; }
+        public int? Sort;
 
         /// <summary>
         /// An optional unique identifier
         /// </summary>
         /// <value>An optional unique identifier</value>
         [JsonProperty(PropertyName = "unique_key")]
-        public string UniqueKey { get; set; }
+        public string UniqueKey;
 
         /// <summary>
         /// Gets or Sets Verified
         /// </summary>
         [JsonProperty(PropertyName = "verified")]
-        public bool? Verified { get; set; }
+        public bool? Verified;
 
         /// <inheritdoc />
         /// <summary>

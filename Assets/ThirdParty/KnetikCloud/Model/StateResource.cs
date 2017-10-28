@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,28 +19,28 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The code of the state</value>
         [JsonProperty(PropertyName = "code")]
-        public string Code { get; set; }
+        public string Code;
 
         /// <summary>
         /// The iso3 of the country this state is in
         /// </summary>
         /// <value>The iso3 of the country this state is in</value>
         [JsonProperty(PropertyName = "country_code_iso3")]
-        public string CountryCodeIso3 { get; set; }
+        public string CountryCodeIso3;
 
         /// <summary>
         /// The unique ID for the state
         /// </summary>
         /// <value>The unique ID for the state</value>
         [JsonProperty(PropertyName = "id")]
-        public int? Id { get; set; }
+        public int? Id;
 
         /// <summary>
         /// The name of the state
         /// </summary>
         /// <value>The name of the state</value>
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name;
 
         /// <inheritdoc />
         /// <summary>

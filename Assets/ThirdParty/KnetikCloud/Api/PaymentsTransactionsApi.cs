@@ -114,7 +114,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetTransactionStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetTransactionStartTime, mGetTransactionPath, "Sending server request...");
@@ -188,7 +188,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetTransactionsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetTransactionsStartTime, mGetTransactionsPath, "Sending server request...");
@@ -248,7 +248,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mRefundTransactionStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mRefundTransactionStartTime, mRefundTransactionPath, "Sending server request...");

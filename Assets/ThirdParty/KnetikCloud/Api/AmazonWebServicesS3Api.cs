@@ -108,7 +108,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetDownloadURLStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetDownloadURLStartTime, mGetDownloadURLPath, "Sending server request...");
@@ -170,7 +170,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetSignedS3URLStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetSignedS3URLStartTime, mGetSignedS3URLPath, "Sending server request...");

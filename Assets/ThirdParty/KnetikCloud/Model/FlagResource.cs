@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,49 +19,49 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The context of that resource</value>
         [JsonProperty(PropertyName = "context")]
-        public string Context { get; set; }
+        public string Context;
 
         /// <summary>
         /// The context_id of that resource
         /// </summary>
         /// <value>The context_id of that resource</value>
         [JsonProperty(PropertyName = "context_id")]
-        public string ContextId { get; set; }
+        public string ContextId;
 
         /// <summary>
         /// The date/time this resource was created in seconds since epoch
         /// </summary>
         /// <value>The date/time this resource was created in seconds since epoch</value>
         [JsonProperty(PropertyName = "created_date")]
-        public long? CreatedDate { get; set; }
+        public long? CreatedDate;
 
         /// <summary>
         /// The unique ID for that resource
         /// </summary>
         /// <value>The unique ID for that resource</value>
         [JsonProperty(PropertyName = "id")]
-        public long? Id { get; set; }
+        public long? Id;
 
         /// <summary>
         /// The flag reason of that resource
         /// </summary>
         /// <value>The flag reason of that resource</value>
         [JsonProperty(PropertyName = "reason")]
-        public string Reason { get; set; }
+        public string Reason;
 
         /// <summary>
         /// The date/time this resource was last updated in seconds since epoch
         /// </summary>
         /// <value>The date/time this resource was last updated in seconds since epoch</value>
         [JsonProperty(PropertyName = "updated_date")]
-        public long? UpdatedDate { get; set; }
+        public long? UpdatedDate;
 
         /// <summary>
         /// The basic user resource
         /// </summary>
         /// <value>The basic user resource</value>
         [JsonProperty(PropertyName = "user")]
-        public SimpleUserResource User { get; set; }
+        public SimpleUserResource User;
 
         /// <inheritdoc />
         /// <summary>

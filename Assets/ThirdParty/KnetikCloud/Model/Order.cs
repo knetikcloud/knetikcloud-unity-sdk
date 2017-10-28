@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -16,37 +18,37 @@ namespace com.knetikcloud.Model
         /// Gets or Sets Ascending
         /// </summary>
         [JsonProperty(PropertyName = "ascending")]
-        public bool? Ascending { get; set; }
+        public bool? Ascending;
 
         /// <summary>
         /// Gets or Sets Descending
         /// </summary>
         [JsonProperty(PropertyName = "descending")]
-        public bool? Descending { get; set; }
+        public bool? Descending;
 
         /// <summary>
         /// Gets or Sets Direction
         /// </summary>
         [JsonProperty(PropertyName = "direction")]
-        public string Direction { get; set; }
+        public string Direction;
 
         /// <summary>
         /// Gets or Sets IgnoreCase
         /// </summary>
         [JsonProperty(PropertyName = "ignore_case")]
-        public bool? IgnoreCase { get; set; }
+        public bool? IgnoreCase;
 
         /// <summary>
         /// Gets or Sets NullHandling
         /// </summary>
         [JsonProperty(PropertyName = "null_handling")]
-        public string NullHandling { get; set; }
+        public string NullHandling;
 
         /// <summary>
         /// Gets or Sets Property
         /// </summary>
         [JsonProperty(PropertyName = "property")]
-        public string Property { get; set; }
+        public string Property;
 
         /// <inheritdoc />
         /// <summary>

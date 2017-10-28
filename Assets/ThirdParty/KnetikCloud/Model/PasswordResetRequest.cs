@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,21 +19,21 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The user's email address</value>
         [JsonProperty(PropertyName = "email")]
-        public string Email { get; set; }
+        public string Email;
 
         /// <summary>
         /// The user's mobile phone number
         /// </summary>
         /// <value>The user's mobile phone number</value>
         [JsonProperty(PropertyName = "mobile_number")]
-        public string MobileNumber { get; set; }
+        public string MobileNumber;
 
         /// <summary>
         /// The user's username
         /// </summary>
         /// <value>The user's username</value>
         [JsonProperty(PropertyName = "username")]
-        public string Username { get; set; }
+        public string Username;
 
         /// <inheritdoc />
         /// <summary>

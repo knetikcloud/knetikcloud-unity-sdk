@@ -325,7 +325,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(tag); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddUserTagStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddUserTagStartTime, mAddUserTagPath, "Sending server request...");
@@ -376,7 +376,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(userTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateUserTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateUserTemplateStartTime, mCreateUserTemplatePath, "Sending server request...");
@@ -439,7 +439,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteUserTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteUserTemplateStartTime, mDeleteUserTemplatePath, "Sending server request...");
@@ -494,7 +494,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUserStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUserStartTime, mGetUserPath, "Sending server request...");
@@ -551,7 +551,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUserTagsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUserTagsStartTime, mGetUserTagsPath, "Sending server request...");
@@ -608,7 +608,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUserTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUserTemplateStartTime, mGetUserTemplatePath, "Sending server request...");
@@ -676,7 +676,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUserTemplatesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUserTemplatesStartTime, mGetUserTemplatesPath, "Sending server request...");
@@ -816,7 +816,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetUsersStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUsersStartTime, mGetUsersPath, "Sending server request...");
@@ -876,7 +876,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(newPasswordRequest); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mPasswordResetStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mPasswordResetStartTime, mPasswordResetPath, "Sending server request...");
@@ -927,7 +927,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(userResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mRegisterUserStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mRegisterUserStartTime, mRegisterUserPath, "Sending server request...");
@@ -991,7 +991,7 @@ mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mRemoveUserTagStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mRemoveUserTagStartTime, mRemoveUserTagPath, "Sending server request...");
@@ -1049,7 +1049,7 @@ mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.
             postBody = KnetikClient.DefaultClient.Serialize(password); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSetPasswordStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSetPasswordStartTime, mSetPasswordPath, "Sending server request...");
@@ -1104,7 +1104,7 @@ mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mStartPasswordResetStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mStartPasswordResetStartTime, mStartPasswordResetPath, "Sending server request...");
@@ -1155,7 +1155,7 @@ mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.
             postBody = KnetikClient.DefaultClient.Serialize(passwordReset); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mSubmitPasswordResetStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSubmitPasswordResetStartTime, mSubmitPasswordResetPath, "Sending server request...");
@@ -1213,7 +1213,7 @@ mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.
             postBody = KnetikClient.DefaultClient.Serialize(userResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateUserStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateUserStartTime, mUpdateUserPath, "Sending server request...");
@@ -1271,7 +1271,7 @@ mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.
             postBody = KnetikClient.DefaultClient.Serialize(userTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateUserTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateUserTemplateStartTime, mUpdateUserTemplatePath, "Sending server request...");

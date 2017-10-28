@@ -225,7 +225,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(couponItem); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateCouponItemStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateCouponItemStartTime, mCreateCouponItemPath, "Sending server request...");
@@ -278,7 +278,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(couponTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateCouponTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateCouponTemplateStartTime, mCreateCouponTemplatePath, "Sending server request...");
@@ -335,7 +335,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteCouponItemStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteCouponItemStartTime, mDeleteCouponItemPath, "Sending server request...");
@@ -396,7 +396,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteCouponTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteCouponTemplateStartTime, mDeleteCouponTemplatePath, "Sending server request...");
@@ -451,7 +451,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetCouponItemStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCouponItemStartTime, mGetCouponItemPath, "Sending server request...");
@@ -508,7 +508,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetCouponItemBySkuStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCouponItemBySkuStartTime, mGetCouponItemBySkuPath, "Sending server request...");
@@ -565,7 +565,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetCouponTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCouponTemplateStartTime, mGetCouponTemplatePath, "Sending server request...");
@@ -633,7 +633,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetCouponTemplatesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCouponTemplatesStartTime, mGetCouponTemplatesPath, "Sending server request...");
@@ -699,7 +699,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(couponItem); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateCouponItemStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateCouponItemStartTime, mUpdateCouponItemPath, "Sending server request...");
@@ -759,7 +759,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(couponTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateCouponTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateCouponTemplateStartTime, mUpdateCouponTemplatePath, "Sending server request...");

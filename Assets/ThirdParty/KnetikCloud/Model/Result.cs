@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,21 +19,21 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The JSAPI error code</value>
         [JsonProperty(PropertyName = "code")]
-        public int? Code { get; set; }
+        public int? Code;
 
         /// <summary>
         /// The id used for debugging lookup
         /// </summary>
         /// <value>The id used for debugging lookup</value>
         [JsonProperty(PropertyName = "request_id")]
-        public string RequestId { get; set; }
+        public string RequestId;
 
         /// <summary>
         /// The error object
         /// </summary>
         /// <value>The error object</value>
         [JsonProperty(PropertyName = "result")]
-        public List<ErrorResource> _Result { get; set; }
+        public List<ErrorResource> _Result;
 
         /// <inheritdoc />
         /// <summary>

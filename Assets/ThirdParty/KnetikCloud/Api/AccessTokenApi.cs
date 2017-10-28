@@ -129,7 +129,7 @@ namespace com.knetikcloud.Api
             }			
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetOAuthTokenStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetOAuthTokenStartTime, mGetOAuthTokenPath, "Sending server request...");

@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -16,61 +18,61 @@ namespace com.knetikcloud.Model
         /// Gets or Sets CurrencyCode
         /// </summary>
         [JsonProperty(PropertyName = "currency_code")]
-        public string CurrencyCode { get; set; }
+        public string CurrencyCode;
 
         /// <summary>
         /// Gets or Sets Description
         /// </summary>
         [JsonProperty(PropertyName = "description")]
-        public string Description { get; set; }
+        public string Description;
 
         /// <summary>
         /// Gets or Sets Name
         /// </summary>
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name;
 
         /// <summary>
         /// Gets or Sets OriginalPrice
         /// </summary>
         [JsonProperty(PropertyName = "original_price")]
-        public decimal? OriginalPrice { get; set; }
+        public decimal? OriginalPrice;
 
         /// <summary>
         /// Gets or Sets Price
         /// </summary>
         [JsonProperty(PropertyName = "price")]
-        public decimal? Price { get; set; }
+        public decimal? Price;
 
         /// <summary>
         /// Gets or Sets ShippingItemId
         /// </summary>
         [JsonProperty(PropertyName = "shipping_item_id")]
-        public int? ShippingItemId { get; set; }
+        public int? ShippingItemId;
 
         /// <summary>
         /// Gets or Sets Sku
         /// </summary>
         [JsonProperty(PropertyName = "sku")]
-        public string Sku { get; set; }
+        public string Sku;
 
         /// <summary>
         /// Gets or Sets Taxable
         /// </summary>
         [JsonProperty(PropertyName = "taxable")]
-        public bool? Taxable { get; set; }
+        public bool? Taxable;
 
         /// <summary>
         /// Gets or Sets VendorId
         /// </summary>
         [JsonProperty(PropertyName = "vendor_id")]
-        public int? VendorId { get; set; }
+        public int? VendorId;
 
         /// <summary>
         /// Gets or Sets VendorName
         /// </summary>
         [JsonProperty(PropertyName = "vendor_name")]
-        public string VendorName { get; set; }
+        public string VendorName;
 
         /// <inheritdoc />
         /// <summary>

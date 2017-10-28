@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -10,6 +12,7 @@ namespace com.knetikcloud.Model
     /// <summary>
     /// 
     /// </summary>
+    [KnetikFactory ("time_period_usable")]
     public class TimePeriodUsable : Behavior
     {
         /// <summary>
@@ -17,21 +20,21 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The amount of times it can be used</value>
         [JsonProperty(PropertyName = "max_use")]
-        public int? MaxUse { get; set; }
+        public int? MaxUse;
 
         /// <summary>
         /// The length of time
         /// </summary>
         /// <value>The length of time</value>
         [JsonProperty(PropertyName = "time_length")]
-        public int? TimeLength { get; set; }
+        public int? TimeLength;
 
         /// <summary>
         /// The unit of time
         /// </summary>
         /// <value>The unit of time</value>
         [JsonProperty(PropertyName = "unit_of_time")]
-        public string UnitOfTime { get; set; }
+        public string UnitOfTime;
 
         /// <inheritdoc />
         /// <summary>
@@ -55,7 +58,7 @@ namespace com.knetikcloud.Model
         /// Get the JSON string presentation of the object
         /// </summary>
         /// <returns>JSON string presentation of the object</returns>
-        public  new string ToJson()
+        public new string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }

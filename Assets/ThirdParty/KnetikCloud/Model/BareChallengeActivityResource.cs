@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,21 +19,21 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The id of the activity</value>
         [JsonProperty(PropertyName = "activity_id")]
-        public long? ActivityId { get; set; }
+        public long? ActivityId;
 
         /// <summary>
         /// The id of the challenge
         /// </summary>
         /// <value>The id of the challenge</value>
         [JsonProperty(PropertyName = "challenge_id")]
-        public long? ChallengeId { get; set; }
+        public long? ChallengeId;
 
         /// <summary>
         /// The unique ID for this resource
         /// </summary>
         /// <value>The unique ID for this resource</value>
         [JsonProperty(PropertyName = "id")]
-        public long? Id { get; set; }
+        public long? Id;
 
         /// <inheritdoc />
         /// <summary>

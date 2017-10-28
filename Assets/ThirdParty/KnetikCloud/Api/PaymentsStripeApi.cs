@@ -87,7 +87,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateStripePaymentMethodStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateStripePaymentMethodStartTime, mCreateStripePaymentMethodPath, "Sending server request...");
@@ -140,7 +140,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mPayStripeInvoiceStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mPayStripeInvoiceStartTime, mPayStripeInvoicePath, "Sending server request...");

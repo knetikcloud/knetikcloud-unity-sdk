@@ -98,7 +98,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetBREActionsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetBREActionsStartTime, mGetBREActionsPath, "Sending server request...");

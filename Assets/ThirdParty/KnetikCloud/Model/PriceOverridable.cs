@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -10,6 +12,7 @@ namespace com.knetikcloud.Model
     /// <summary>
     /// 
     /// </summary>
+    [KnetikFactory ("price_overridable")]
     public class PriceOverridable : Behavior
     {
         /// <summary>
@@ -17,14 +20,14 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The maximum price allowed</value>
         [JsonProperty(PropertyName = "max_price")]
-        public decimal? MaxPrice { get; set; }
+        public decimal? MaxPrice;
 
         /// <summary>
         /// The minimum price allowed
         /// </summary>
         /// <value>The minimum price allowed</value>
         [JsonProperty(PropertyName = "min_price")]
-        public decimal? MinPrice { get; set; }
+        public decimal? MinPrice;
 
         /// <inheritdoc />
         /// <summary>
@@ -47,7 +50,7 @@ namespace com.knetikcloud.Model
         /// Get the JSON string presentation of the object
         /// </summary>
         /// <returns>JSON string presentation of the object</returns>
-        public  new string ToJson()
+        public new string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }

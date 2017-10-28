@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,14 +19,14 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The description of the import job</value>
         [JsonProperty(PropertyName = "description")]
-        public string Description { get; set; }
+        public string Description;
 
         /// <summary>
         /// The line number of the import job
         /// </summary>
         /// <value>The line number of the import job</value>
         [JsonProperty(PropertyName = "line_number")]
-        public long? LineNumber { get; set; }
+        public long? LineNumber;
 
         /// <inheritdoc />
         /// <summary>

@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,28 +19,28 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The position of the user in the leaderboard. Null means non-compete or disqualification</value>
         [JsonProperty(PropertyName = "rank")]
-        public long? Rank { get; set; }
+        public long? Rank;
 
         /// <summary>
         /// The raw score in this leaderboard. Null means non-compete or disqualification
         /// </summary>
         /// <value>The raw score in this leaderboard. Null means non-compete or disqualification</value>
         [JsonProperty(PropertyName = "score")]
-        public long? Score { get; set; }
+        public long? Score;
 
         /// <summary>
         /// The date this score was recorded or updated. Unix timestamp in seconds
         /// </summary>
         /// <value>The date this score was recorded or updated. Unix timestamp in seconds</value>
         [JsonProperty(PropertyName = "updated_date")]
-        public long? UpdatedDate { get; set; }
+        public long? UpdatedDate;
 
         /// <summary>
         /// The player for this entry
         /// </summary>
         /// <value>The player for this entry</value>
         [JsonProperty(PropertyName = "user")]
-        public SimpleUserResource User { get; set; }
+        public SimpleUserResource User;
 
         /// <inheritdoc />
         /// <summary>

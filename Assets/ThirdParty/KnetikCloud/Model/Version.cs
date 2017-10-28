@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -16,7 +18,7 @@ namespace com.knetikcloud.Model
         /// Gets or Sets _Version
         /// </summary>
         [JsonProperty(PropertyName = "version")]
-        public string _Version { get; set; }
+        public string _Version;
 
         /// <inheritdoc />
         /// <summary>

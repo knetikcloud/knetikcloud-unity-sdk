@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,14 +19,14 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>A list of user ids to send the message to.</value>
         [JsonProperty(PropertyName = "recipients")]
-        public List<int?> Recipients { get; set; }
+        public List<int?> Recipients;
 
         /// <summary>
         /// The body of the outgoing message.
         /// </summary>
         /// <value>The body of the outgoing message.</value>
         [JsonProperty(PropertyName = "text")]
-        public string Text { get; set; }
+        public string Text;
 
         /// <inheritdoc />
         /// <summary>

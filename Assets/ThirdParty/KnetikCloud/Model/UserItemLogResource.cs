@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,49 +19,49 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The log entry id</value>
         [JsonProperty(PropertyName = "id")]
-        public int? Id { get; set; }
+        public int? Id;
 
         /// <summary>
         /// Additional information defined by the type
         /// </summary>
         /// <value>Additional information defined by the type</value>
         [JsonProperty(PropertyName = "info")]
-        public string Info { get; set; }
+        public string Info;
 
         /// <summary>
         /// The item interacted with
         /// </summary>
         /// <value>The item interacted with</value>
         [JsonProperty(PropertyName = "item")]
-        public SimpleReferenceResourceint Item { get; set; }
+        public SimpleReferenceResourceint Item;
 
         /// <summary>
         /// The date/time this event occurred in seconds since epoch
         /// </summary>
         /// <value>The date/time this event occurred in seconds since epoch</value>
         [JsonProperty(PropertyName = "log_date")]
-        public long? LogDate { get; set; }
+        public long? LogDate;
 
         /// <summary>
         /// The type of event
         /// </summary>
         /// <value>The type of event</value>
         [JsonProperty(PropertyName = "type")]
-        public string Type { get; set; }
+        public string Type;
 
         /// <summary>
         /// The user making the interaction
         /// </summary>
         /// <value>The user making the interaction</value>
         [JsonProperty(PropertyName = "user")]
-        public SimpleUserResource User { get; set; }
+        public SimpleUserResource User;
 
         /// <summary>
         /// The id of the inventory entry this event is related to, if any
         /// </summary>
         /// <value>The id of the inventory entry this event is related to, if any</value>
         [JsonProperty(PropertyName = "user_inventory")]
-        public int? UserInventory { get; set; }
+        public int? UserInventory;
 
         /// <inheritdoc />
         /// <summary>

@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,28 +19,28 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The affiliate key of the item</value>
         [JsonProperty(PropertyName = "affiliate_key")]
-        public string AffiliateKey { get; set; }
+        public string AffiliateKey;
 
         /// <summary>
         /// The catalog SKU of the item
         /// </summary>
         /// <value>The catalog SKU of the item</value>
         [JsonProperty(PropertyName = "catalog_sku")]
-        public string CatalogSku { get; set; }
+        public string CatalogSku;
 
         /// <summary>
         /// Allows to override the price of an item, if the behavior configuration permits it
         /// </summary>
         /// <value>Allows to override the price of an item, if the behavior configuration permits it</value>
         [JsonProperty(PropertyName = "price_override")]
-        public decimal? PriceOverride { get; set; }
+        public decimal? PriceOverride;
 
         /// <summary>
         /// The quantity of the item
         /// </summary>
         /// <value>The quantity of the item</value>
         [JsonProperty(PropertyName = "quantity")]
-        public int? Quantity { get; set; }
+        public int? Quantity;
 
         /// <inheritdoc />
         /// <summary>

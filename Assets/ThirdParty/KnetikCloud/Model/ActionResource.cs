@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,35 +19,35 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The category the action is in. All customer specific actions are in the 'custom' category</value>
         [JsonProperty(PropertyName = "category")]
-        public string Category { get; set; }
+        public string Category;
 
         /// <summary>
         /// The description of the action
         /// </summary>
         /// <value>The description of the action</value>
         [JsonProperty(PropertyName = "description")]
-        public string Description { get; set; }
+        public string Description;
 
         /// <summary>
         /// The name of the action. Used as the unique id for reference
         /// </summary>
         /// <value>The name of the action. Used as the unique id for reference</value>
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name;
 
         /// <summary>
         /// A list of tags for searching
         /// </summary>
         /// <value>A list of tags for searching</value>
         [JsonProperty(PropertyName = "tags")]
-        public List<string> Tags { get; set; }
+        public List<string> Tags;
 
         /// <summary>
         /// The variables required for the action
         /// </summary>
         /// <value>The variables required for the action</value>
         [JsonProperty(PropertyName = "variables")]
-        public List<ActionVariableResource> Variables { get; set; }
+        public List<ActionVariableResource> Variables;
 
         /// <inheritdoc />
         /// <summary>

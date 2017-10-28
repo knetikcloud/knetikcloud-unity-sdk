@@ -218,7 +218,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(artistResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddArtistStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddArtistStartTime, mAddArtistPath, "Sending server request...");
@@ -271,7 +271,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(artistTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateArtistTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateArtistTemplateStartTime, mCreateArtistTemplatePath, "Sending server request...");
@@ -328,7 +328,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteArtistStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteArtistStartTime, mDeleteArtistPath, "Sending server request...");
@@ -389,7 +389,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteArtistTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteArtistTemplateStartTime, mDeleteArtistTemplatePath, "Sending server request...");
@@ -450,7 +450,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetArtistStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetArtistStartTime, mGetArtistPath, "Sending server request...");
@@ -507,7 +507,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetArtistTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetArtistTemplateStartTime, mGetArtistTemplatePath, "Sending server request...");
@@ -575,7 +575,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetArtistTemplatesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetArtistTemplatesStartTime, mGetArtistTemplatesPath, "Sending server request...");
@@ -649,7 +649,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetArtistsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetArtistsStartTime, mGetArtistsPath, "Sending server request...");
@@ -709,7 +709,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(artistResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateArtistStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateArtistStartTime, mUpdateArtistPath, "Sending server request...");
@@ -767,7 +767,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(artistTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateArtistTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateArtistTemplateStartTime, mUpdateArtistTemplatePath, "Sending server request...");

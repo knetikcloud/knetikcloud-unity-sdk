@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,21 +19,21 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The name of the variable</value>
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name;
 
         /// <summary>
         /// Whether this variable is optional and can be left out/null
         /// </summary>
         /// <value>Whether this variable is optional and can be left out/null</value>
         [JsonProperty(PropertyName = "optional")]
-        public bool? Optional { get; set; }
+        public bool? Optional;
 
         /// <summary>
         /// The type of the variable (see variable type endpoint for list)
         /// </summary>
         /// <value>The type of the variable (see variable type endpoint for list)</value>
         [JsonProperty(PropertyName = "type")]
-        public string Type { get; set; }
+        public string Type;
 
         /// <inheritdoc />
         /// <summary>

@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -16,31 +18,31 @@ namespace com.knetikcloud.Model
         /// Gets or Sets Aliases
         /// </summary>
         [JsonProperty(PropertyName = "aliases")]
-        public string Aliases { get; set; }
+        public string Aliases;
 
         /// <summary>
         /// Gets or Sets Database
         /// </summary>
         [JsonProperty(PropertyName = "database")]
-        public DatabaseConfig Database { get; set; }
+        public DatabaseConfig Database;
 
         /// <summary>
         /// Gets or Sets Io
         /// </summary>
         [JsonProperty(PropertyName = "io")]
-        public IOConfig Io { get; set; }
+        public IOConfig Io;
 
         /// <summary>
         /// Gets or Sets Name
         /// </summary>
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name;
 
         /// <summary>
         /// Gets or Sets S3Config
         /// </summary>
         [JsonProperty(PropertyName = "s3_config")]
-        public S3Config S3Config { get; set; }
+        public S3Config S3Config;
 
         /// <inheritdoc />
         /// <summary>

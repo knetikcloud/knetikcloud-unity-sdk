@@ -225,7 +225,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(articleResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateArticleStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateArticleStartTime, mCreateArticlePath, "Sending server request...");
@@ -278,7 +278,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(articleTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateArticleTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateArticleTemplateStartTime, mCreateArticleTemplatePath, "Sending server request...");
@@ -335,7 +335,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteArticleStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteArticleStartTime, mDeleteArticlePath, "Sending server request...");
@@ -396,7 +396,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteArticleTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteArticleTemplateStartTime, mDeleteArticleTemplatePath, "Sending server request...");
@@ -451,7 +451,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetArticleStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetArticleStartTime, mGetArticlePath, "Sending server request...");
@@ -508,7 +508,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetArticleTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetArticleTemplateStartTime, mGetArticleTemplatePath, "Sending server request...");
@@ -576,7 +576,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetArticleTemplatesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetArticleTemplatesStartTime, mGetArticleTemplatesPath, "Sending server request...");
@@ -680,7 +680,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetArticlesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetArticlesStartTime, mGetArticlesPath, "Sending server request...");
@@ -740,7 +740,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(articleResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateArticleStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateArticleStartTime, mUpdateArticlePath, "Sending server request...");
@@ -800,7 +800,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(articleTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateArticleTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateArticleTemplateStartTime, mUpdateArticleTemplatePath, "Sending server request...");

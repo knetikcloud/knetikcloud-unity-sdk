@@ -110,7 +110,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetBREExpressionStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetBREExpressionStartTime, mGetBREExpressionPath, "Sending server request...");
@@ -166,7 +166,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetBREExpressionsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetBREExpressionsStartTime, mGetBREExpressionsPath, "Sending server request...");
@@ -219,7 +219,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(expression); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetExpressionAsTextStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetExpressionAsTextStartTime, mGetExpressionAsTextPath, "Sending server request...");

@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -16,19 +18,19 @@ namespace com.knetikcloud.Model
         /// Gets or Sets Definition
         /// </summary>
         [JsonProperty(PropertyName = "definition")]
-        public string Definition { get; set; }
+        public string Definition;
 
         /// <summary>
         /// Gets or Sets Map
         /// </summary>
         [JsonProperty(PropertyName = "map")]
-        public Dictionary<string, ExpressionResource> Map { get; set; }
+        public Dictionary<string, ExpressionResource> Map;
 
         /// <summary>
         /// Gets or Sets Type
         /// </summary>
         [JsonProperty(PropertyName = "type")]
-        public string Type { get; set; }
+        public string Type;
 
         /// <inheritdoc />
         /// <summary>

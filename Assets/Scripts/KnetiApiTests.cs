@@ -1,4 +1,5 @@
-﻿using com.knetikcloud.Api;
+﻿using System.Collections.Generic;
+using com.knetikcloud.Api;
 using com.knetikcloud.Client;
 using com.knetikcloud.Credentials;
 using com.knetikcloud.Events;
@@ -38,17 +39,16 @@ namespace KnetikTests
             if (e.ShouldProcess(this))
             {
                 KnetikClient.DefaultClient.AuthenticateWithUserCredentials(KnetikClient.ServerEnvironment.Staging, KnetikUserCredentials.Load());
-//                KnetikClient.DefaultClient.AuthenticateWithClientCredentials(KnetikClient.ServerEnvironment.Staging, KnetikClientCredentials.Load());
             }
         }
 
-        private void OnClientAuthenticated(KnetikClientAuthenticatedEvent e)
+        private static void OnClientAuthenticated(KnetikClientAuthenticatedEvent e)
         {
-            KnetikLogger.Log("*** TEST SUCCESSFUL***");
+            KnetikLogger.Log("*** CLIENT AUTHENTICATED SUCCESSFULLY ***");
             GetUserId();
         }
 
-        private void GetUserId()
+        private static void GetUserId()
         {
             UsersApi userApi = new UsersApi();
             userApi.GetUserComplete += GetUserComplete;
@@ -56,9 +56,17 @@ namespace KnetikTests
             userApi.GetUser("me");
         }
 
-        private void GetUserComplete(UserResource response)
+        private static void GetUserComplete(UserResource response)
         {
+            KnetikLogger.Log("*** USER RETRIEVED SUCCESSFULLY ***");
             KnetikLogger.Log(response.ToString());
+
+            KnetikLogger.Log("=== POLYMORPHIC TEST CONFIRMATION ===");
+
+            foreach (string key in response.AdditionalProperties.Keys)
+            {
+                KnetikLogger.Log(string.Format("{0}\n{1}", key, response.AdditionalProperties[key]));
+            }
         }
     }
 }

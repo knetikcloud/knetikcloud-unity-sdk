@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,35 +19,35 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The amount of the credit, negative for debt</value>
         [JsonProperty(PropertyName = "amount")]
-        public decimal? Amount { get; set; }
+        public decimal? Amount;
 
         /// <summary>
         /// The date this credit was added, unix timestamp in seconds
         /// </summary>
         /// <value>The date this credit was added, unix timestamp in seconds</value>
         [JsonProperty(PropertyName = "created_date")]
-        public long? CreatedDate { get; set; }
+        public long? CreatedDate;
 
         /// <summary>
         /// The id of the credit record
         /// </summary>
         /// <value>The id of the credit record</value>
         [JsonProperty(PropertyName = "id")]
-        public int? Id { get; set; }
+        public int? Id;
 
         /// <summary>
         /// The id of the subscription inventory entry
         /// </summary>
         /// <value>The id of the subscription inventory entry</value>
         [JsonProperty(PropertyName = "inventory_id")]
-        public int? InventoryId { get; set; }
+        public int? InventoryId;
 
         /// <summary>
         /// The reason for the subscription credit
         /// </summary>
         /// <value>The reason for the subscription credit</value>
         [JsonProperty(PropertyName = "reason")]
-        public string Reason { get; set; }
+        public string Reason;
 
         /// <inheritdoc />
         /// <summary>

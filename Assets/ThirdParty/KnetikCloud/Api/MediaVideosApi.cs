@@ -448,7 +448,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(userId); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddUserToVideoWhitelistStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddUserToVideoWhitelistStartTime, mAddUserToVideoWhitelistPath, "Sending server request...");
@@ -499,7 +499,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(videoResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddVideoStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddVideoStartTime, mAddVideoPath, "Sending server request...");
@@ -559,7 +559,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(commentResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddVideoCommentStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddVideoCommentStartTime, mAddVideoCommentPath, "Sending server request...");
@@ -619,7 +619,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(contributionResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddVideoContributorStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddVideoContributorStartTime, mAddVideoContributorPath, "Sending server request...");
@@ -677,7 +677,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(reason); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddVideoFlagStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddVideoFlagStartTime, mAddVideoFlagPath, "Sending server request...");
@@ -737,7 +737,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(videoRelationshipResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddVideoRelationshipsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddVideoRelationshipsStartTime, mAddVideoRelationshipsPath, "Sending server request...");
@@ -797,7 +797,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(dispositionResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateVideoDispositionStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateVideoDispositionStartTime, mCreateVideoDispositionPath, "Sending server request...");
@@ -854,7 +854,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteVideoStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteVideoStartTime, mDeleteVideoPath, "Sending server request...");
@@ -916,7 +916,7 @@ mDeleteVideoCommentPath = mDeleteVideoCommentPath.Replace("{" + "id" + "}", Knet
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteVideoCommentStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteVideoCommentStartTime, mDeleteVideoCommentPath, "Sending server request...");
@@ -971,7 +971,7 @@ mDeleteVideoCommentPath = mDeleteVideoCommentPath.Replace("{" + "id" + "}", Knet
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteVideoDispositionStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteVideoDispositionStartTime, mDeleteVideoDispositionPath, "Sending server request...");
@@ -1026,7 +1026,7 @@ mDeleteVideoCommentPath = mDeleteVideoCommentPath.Replace("{" + "id" + "}", Knet
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteVideoFlagStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteVideoFlagStartTime, mDeleteVideoFlagPath, "Sending server request...");
@@ -1088,7 +1088,7 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteVideoRelationshipStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteVideoRelationshipStartTime, mDeleteVideoRelationshipPath, "Sending server request...");
@@ -1161,7 +1161,7 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUserVideosStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUserVideosStartTime, mGetUserVideosPath, "Sending server request...");
@@ -1218,7 +1218,7 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetVideoStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetVideoStartTime, mGetVideoPath, "Sending server request...");
@@ -1287,7 +1287,7 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetVideoCommentsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetVideoCommentsStartTime, mGetVideoCommentsPath, "Sending server request...");
@@ -1356,7 +1356,7 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetVideoDispositionsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetVideoDispositionsStartTime, mGetVideoDispositionsPath, "Sending server request...");
@@ -1425,7 +1425,7 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetVideoRelationshipsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetVideoRelationshipsStartTime, mGetVideoRelationshipsPath, "Sending server request...");
@@ -1565,7 +1565,7 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetVideosStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetVideosStartTime, mGetVideosPath, "Sending server request...");
@@ -1629,7 +1629,7 @@ mRemoveUserFromVideoWhitelistPath = mRemoveUserFromVideoWhitelistPath.Replace("{
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mRemoveUserFromVideoWhitelistStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mRemoveUserFromVideoWhitelistStartTime, mRemoveUserFromVideoWhitelistPath, "Sending server request...");
@@ -1691,7 +1691,7 @@ mRemoveVideoContributorPath = mRemoveVideoContributorPath.Replace("{" + "id" + "
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mRemoveVideoContributorStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mRemoveVideoContributorStartTime, mRemoveVideoContributorPath, "Sending server request...");
@@ -1749,7 +1749,7 @@ mRemoveVideoContributorPath = mRemoveVideoContributorPath.Replace("{" + "id" + "
             postBody = KnetikClient.DefaultClient.Serialize(videoResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateVideoStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateVideoStartTime, mUpdateVideoPath, "Sending server request...");
@@ -1814,7 +1814,7 @@ mUpdateVideoCommentPath = mUpdateVideoCommentPath.Replace("{" + "id" + "}", Knet
             postBody = KnetikClient.DefaultClient.Serialize(content); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateVideoCommentStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateVideoCommentStartTime, mUpdateVideoCommentPath, "Sending server request...");
@@ -1879,7 +1879,7 @@ mUpdateVideoRelationshipPath = mUpdateVideoRelationshipPath.Replace("{" + "relat
             postBody = KnetikClient.DefaultClient.Serialize(details); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateVideoRelationshipStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateVideoRelationshipStartTime, mUpdateVideoRelationshipPath, "Sending server request...");
@@ -1934,7 +1934,7 @@ mUpdateVideoRelationshipPath = mUpdateVideoRelationshipPath.Replace("{" + "relat
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mViewVideoStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mViewVideoStartTime, mViewVideoPath, "Sending server request...");

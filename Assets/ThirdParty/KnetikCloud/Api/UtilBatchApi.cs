@@ -94,7 +94,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetBatchStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetBatchStartTime, mGetBatchPath, "Sending server request...");
@@ -147,7 +147,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(batch); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSendBatchStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSendBatchStartTime, mSendBatchPath, "Sending server request...");

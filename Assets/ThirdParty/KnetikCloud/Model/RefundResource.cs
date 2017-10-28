@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,21 +19,21 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The amount refunded</value>
         [JsonProperty(PropertyName = "amount")]
-        public double? Amount { get; set; }
+        public double? Amount;
 
         /// <summary>
         /// The id of the refund transaction
         /// </summary>
         /// <value>The id of the refund transaction</value>
         [JsonProperty(PropertyName = "refund_transaction_id")]
-        public int? RefundTransactionId { get; set; }
+        public int? RefundTransactionId;
 
         /// <summary>
         /// The id of the original transaction
         /// </summary>
         /// <value>The id of the original transaction</value>
         [JsonProperty(PropertyName = "transaction_id")]
-        public int? TransactionId { get; set; }
+        public int? TransactionId;
 
         /// <inheritdoc />
         /// <summary>

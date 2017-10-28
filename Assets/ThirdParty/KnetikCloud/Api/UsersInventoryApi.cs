@@ -416,7 +416,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(userInventoryAddRequest); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddItemToUserInventoryStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddItemToUserInventoryStartTime, mAddItemToUserInventoryPath, "Sending server request...");
@@ -486,7 +486,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCheckUserEntitlementItemStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCheckUserEntitlementItemStartTime, mCheckUserEntitlementItemPath, "Sending server request...");
@@ -543,7 +543,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
             postBody = KnetikClient.DefaultClient.Serialize(entitlementItem); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateEntitlementItemStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateEntitlementItemStartTime, mCreateEntitlementItemPath, "Sending server request...");
@@ -596,7 +596,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
             postBody = KnetikClient.DefaultClient.Serialize(template); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateEntitlementTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateEntitlementTemplateStartTime, mCreateEntitlementTemplatePath, "Sending server request...");
@@ -653,7 +653,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteEntitlementItemStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteEntitlementItemStartTime, mDeleteEntitlementItemPath, "Sending server request...");
@@ -714,7 +714,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteEntitlementTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteEntitlementTemplateStartTime, mDeleteEntitlementTemplatePath, "Sending server request...");
@@ -769,7 +769,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetEntitlementItemStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetEntitlementItemStartTime, mGetEntitlementItemPath, "Sending server request...");
@@ -843,7 +843,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetEntitlementItemsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetEntitlementItemsStartTime, mGetEntitlementItemsPath, "Sending server request...");
@@ -900,7 +900,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetEntitlementTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetEntitlementTemplateStartTime, mGetEntitlementTemplatePath, "Sending server request...");
@@ -968,7 +968,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetEntitlementTemplatesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetEntitlementTemplatesStartTime, mGetEntitlementTemplatesPath, "Sending server request...");
@@ -1073,7 +1073,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUserInventoriesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUserInventoriesStartTime, mGetUserInventoriesPath, "Sending server request...");
@@ -1137,7 +1137,7 @@ mGetUserInventoryPath = mGetUserInventoryPath.Replace("{" + "id" + "}", KnetikCl
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUserInventoryStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUserInventoryStartTime, mGetUserInventoryPath, "Sending server request...");
@@ -1213,7 +1213,7 @@ mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "id" + "}", Kn
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUserInventoryLogStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUserInventoryLogStartTime, mGetUserInventoryLogPath, "Sending server request...");
@@ -1311,7 +1311,7 @@ mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "id" + "}", Kn
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUsersInventoryStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUsersInventoryStartTime, mGetUsersInventoryPath, "Sending server request...");
@@ -1376,7 +1376,7 @@ mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "id" + "}", Kn
             postBody = KnetikClient.DefaultClient.Serialize(grantRequest); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGrantUserEntitlementStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGrantUserEntitlementStartTime, mGrantUserEntitlementPath, "Sending server request...");
@@ -1440,7 +1440,7 @@ mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "id" + "}", Kn
             postBody = KnetikClient.DefaultClient.Serialize(entitlementItem); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateEntitlementItemStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateEntitlementItemStartTime, mUpdateEntitlementItemPath, "Sending server request...");
@@ -1498,7 +1498,7 @@ mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "id" + "}", Kn
             postBody = KnetikClient.DefaultClient.Serialize(template); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateEntitlementTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateEntitlementTemplateStartTime, mUpdateEntitlementTemplatePath, "Sending server request...");
@@ -1565,7 +1565,7 @@ mUpdateUserInventoryBehaviorDataPath = mUpdateUserInventoryBehaviorDataPath.Repl
             postBody = KnetikClient.DefaultClient.Serialize(data); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateUserInventoryBehaviorDataStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateUserInventoryBehaviorDataStartTime, mUpdateUserInventoryBehaviorDataPath, "Sending server request...");
@@ -1630,7 +1630,7 @@ mUpdateUserInventoryExpiresPath = mUpdateUserInventoryExpiresPath.Replace("{" + 
             postBody = KnetikClient.DefaultClient.Serialize(timestamp); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateUserInventoryExpiresStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateUserInventoryExpiresStartTime, mUpdateUserInventoryExpiresPath, "Sending server request...");
@@ -1695,7 +1695,7 @@ mUpdateUserInventoryStatusPath = mUpdateUserInventoryStatusPath.Replace("{" + "i
             postBody = KnetikClient.DefaultClient.Serialize(inventoryStatus); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateUserInventoryStatusStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateUserInventoryStatusStartTime, mUpdateUserInventoryStatusPath, "Sending server request...");
@@ -1769,7 +1769,7 @@ mUseUserEntitlementItemPath = mUseUserEntitlementItemPath.Replace("{" + "item_id
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUseUserEntitlementItemStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUseUserEntitlementItemStartTime, mUseUserEntitlementItemPath, "Sending server request...");

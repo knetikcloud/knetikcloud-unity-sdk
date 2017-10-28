@@ -74,7 +74,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(breEvent); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSendBREEventStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSendBREEventStartTime, mSendBREEventPath, "Sending server request...");

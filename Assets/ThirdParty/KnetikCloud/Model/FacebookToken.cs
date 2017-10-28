@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,7 +19,7 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>A valid access token from facebook. See facebook documention for how to obtain one.</value>
         [JsonProperty(PropertyName = "access_token")]
-        public string AccessToken { get; set; }
+        public string AccessToken;
 
         /// <inheritdoc />
         /// <summary>

@@ -108,7 +108,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteMaintenanceStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteMaintenanceStartTime, mDeleteMaintenancePath, "Sending server request...");
@@ -156,7 +156,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetMaintenanceStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetMaintenanceStartTime, mGetMaintenancePath, "Sending server request...");
@@ -209,7 +209,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(maintenance); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSetMaintenanceStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSetMaintenanceStartTime, mSetMaintenancePath, "Sending server request...");
@@ -260,7 +260,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(maintenance); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateMaintenanceStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateMaintenanceStartTime, mUpdateMaintenancePath, "Sending server request...");

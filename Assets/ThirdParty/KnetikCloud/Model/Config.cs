@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,28 +19,28 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The description of the config.  Max 140 characters</value>
         [JsonProperty(PropertyName = "description")]
-        public string Description { get; set; }
+        public string Description;
 
         /// <summary>
         /// The name of the config
         /// </summary>
         /// <value>The name of the config</value>
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name;
 
         /// <summary>
         /// Whether the config is public for viewing. True means that it can be publicly viewed by all. Default: false
         /// </summary>
         /// <value>Whether the config is public for viewing. True means that it can be publicly viewed by all. Default: false</value>
         [JsonProperty(PropertyName = "public_read")]
-        public bool? PublicRead { get; set; }
+        public bool? PublicRead;
 
         /// <summary>
         /// The value of the config
         /// </summary>
         /// <value>The value of the config</value>
         [JsonProperty(PropertyName = "value")]
-        public string Value { get; set; }
+        public string Value;
 
         /// <inheritdoc />
         /// <summary>

@@ -276,7 +276,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(challengeId); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddChallengeToCampaignStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddChallengeToCampaignStartTime, mAddChallengeToCampaignPath, "Sending server request...");
@@ -327,7 +327,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(campaignResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateCampaignStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateCampaignStartTime, mCreateCampaignPath, "Sending server request...");
@@ -380,7 +380,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(campaignTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateCampaignTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateCampaignTemplateStartTime, mCreateCampaignTemplatePath, "Sending server request...");
@@ -437,7 +437,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteCampaignStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteCampaignStartTime, mDeleteCampaignPath, "Sending server request...");
@@ -498,7 +498,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteCampaignTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteCampaignTemplateStartTime, mDeleteCampaignTemplatePath, "Sending server request...");
@@ -553,7 +553,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetCampaignStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCampaignStartTime, mGetCampaignPath, "Sending server request...");
@@ -640,7 +640,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetCampaignChallengesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCampaignChallengesStartTime, mGetCampaignChallengesPath, "Sending server request...");
@@ -697,7 +697,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetCampaignTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCampaignTemplateStartTime, mGetCampaignTemplatePath, "Sending server request...");
@@ -765,7 +765,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetCampaignTemplatesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCampaignTemplatesStartTime, mGetCampaignTemplatesPath, "Sending server request...");
@@ -839,7 +839,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetCampaignsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCampaignsStartTime, mGetCampaignsPath, "Sending server request...");
@@ -903,7 +903,7 @@ mRemoveChallengeFromCampaignPath = mRemoveChallengeFromCampaignPath.Replace("{" 
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mRemoveChallengeFromCampaignStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mRemoveChallengeFromCampaignStartTime, mRemoveChallengeFromCampaignPath, "Sending server request...");
@@ -961,7 +961,7 @@ mRemoveChallengeFromCampaignPath = mRemoveChallengeFromCampaignPath.Replace("{" 
             postBody = KnetikClient.DefaultClient.Serialize(campaignResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateCampaignStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateCampaignStartTime, mUpdateCampaignPath, "Sending server request...");
@@ -1021,7 +1021,7 @@ mRemoveChallengeFromCampaignPath = mRemoveChallengeFromCampaignPath.Replace("{" 
             postBody = KnetikClient.DefaultClient.Serialize(campaignTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateCampaignTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateCampaignTemplateStartTime, mUpdateCampaignTemplatePath, "Sending server request...");

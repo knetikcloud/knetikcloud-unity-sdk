@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,28 +19,28 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>Whether the type is core and cannot be altered/deleted, read-only</value>
         [JsonProperty(PropertyName = "core")]
-        public bool? Core { get; set; }
+        public bool? Core;
 
         /// <summary>
         /// A description of the type
         /// </summary>
         /// <value>A description of the type</value>
         [JsonProperty(PropertyName = "description")]
-        public string Description { get; set; }
+        public string Description;
 
         /// <summary>
         /// The unique id of the type, read-only
         /// </summary>
         /// <value>The unique id of the type, read-only</value>
         [JsonProperty(PropertyName = "id")]
-        public int? Id { get; set; }
+        public int? Id;
 
         /// <summary>
         /// The name of the type
         /// </summary>
         /// <value>The name of the type</value>
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name;
 
         /// <inheritdoc />
         /// <summary>

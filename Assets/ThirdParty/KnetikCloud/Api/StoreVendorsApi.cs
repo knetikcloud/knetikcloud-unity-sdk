@@ -220,7 +220,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(vendor); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateVendorStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateVendorStartTime, mCreateVendorPath, "Sending server request...");
@@ -273,7 +273,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(vendorTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateVendorTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateVendorTemplateStartTime, mCreateVendorTemplatePath, "Sending server request...");
@@ -330,7 +330,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteVendorStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteVendorStartTime, mDeleteVendorPath, "Sending server request...");
@@ -391,7 +391,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteVendorTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteVendorTemplateStartTime, mDeleteVendorTemplatePath, "Sending server request...");
@@ -446,7 +446,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetVendorStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetVendorStartTime, mGetVendorPath, "Sending server request...");
@@ -503,7 +503,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetVendorTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetVendorTemplateStartTime, mGetVendorTemplatePath, "Sending server request...");
@@ -571,7 +571,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetVendorTemplatesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetVendorTemplatesStartTime, mGetVendorTemplatesPath, "Sending server request...");
@@ -645,7 +645,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetVendorsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetVendorsStartTime, mGetVendorsPath, "Sending server request...");
@@ -705,7 +705,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(vendor); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateVendorStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateVendorStartTime, mUpdateVendorPath, "Sending server request...");
@@ -765,7 +765,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(vendorTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateVendorTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateVendorTemplateStartTime, mUpdateVendorTemplatePath, "Sending server request...");

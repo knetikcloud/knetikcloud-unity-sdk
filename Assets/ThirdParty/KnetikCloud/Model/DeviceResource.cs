@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -10,6 +12,7 @@ namespace com.knetikcloud.Model
     /// <summary>
     /// 
     /// </summary>
+    [JsonConverter(typeof(KnetikJsonConverter<DeviceResource>))]
     public class DeviceResource
     {
         /// <summary>
@@ -17,119 +20,119 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>A map of additional properties, keyed on the property name.  Must match the names and types defined in the template if one is specified</value>
         [JsonProperty(PropertyName = "additional_properties")]
-        public Dictionary<string, Property> AdditionalProperties { get; set; }
+        public Dictionary<string, Property> AdditionalProperties;
 
         /// <summary>
         /// The date the device log was created
         /// </summary>
         /// <value>The date the device log was created</value>
         [JsonProperty(PropertyName = "created_date")]
-        public long? CreatedDate { get; set; }
+        public long? CreatedDate;
 
         /// <summary>
         /// The description of the device
         /// </summary>
         /// <value>The description of the device</value>
         [JsonProperty(PropertyName = "description")]
-        public string Description { get; set; }
+        public string Description;
 
         /// <summary>
         /// The type of device. Use mobile to specifically register mobile devices. This particular type will be used to send and receive notifications
         /// </summary>
         /// <value>The type of device. Use mobile to specifically register mobile devices. This particular type will be used to send and receive notifications</value>
         [JsonProperty(PropertyName = "device_type")]
-        public string DeviceType { get; set; }
+        public string DeviceType;
 
         /// <summary>
         /// The unique ID for this device
         /// </summary>
         /// <value>The unique ID for this device</value>
         [JsonProperty(PropertyName = "id")]
-        public string Id { get; set; }
+        public string Id;
 
         /// <summary>
         /// The physical location of the device, coordinates or named place (office, living room, etc)
         /// </summary>
         /// <value>The physical location of the device, coordinates or named place (office, living room, etc)</value>
         [JsonProperty(PropertyName = "location")]
-        public string Location { get; set; }
+        public string Location;
 
         /// <summary>
         /// The MAC (media access control) address of the device
         /// </summary>
         /// <value>The MAC (media access control) address of the device</value>
         [JsonProperty(PropertyName = "mac_address")]
-        public string MacAddress { get; set; }
+        public string MacAddress;
 
         /// <summary>
         /// The make of the device
         /// </summary>
         /// <value>The make of the device</value>
         [JsonProperty(PropertyName = "make")]
-        public string Make { get; set; }
+        public string Make;
 
         /// <summary>
         /// The model of the device
         /// </summary>
         /// <value>The model of the device</value>
         [JsonProperty(PropertyName = "model")]
-        public string Model { get; set; }
+        public string Model;
 
         /// <summary>
         /// The name of the device
         /// </summary>
         /// <value>The name of the device</value>
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name;
 
         /// <summary>
         /// The OS (operating system) on the device
         /// </summary>
         /// <value>The OS (operating system) on the device</value>
         [JsonProperty(PropertyName = "os")]
-        public string Os { get; set; }
+        public string Os;
 
         /// <summary>
         /// The user that owns the device
         /// </summary>
         /// <value>The user that owns the device</value>
         [JsonProperty(PropertyName = "owner")]
-        public SimpleUserResource Owner { get; set; }
+        public SimpleUserResource Owner;
 
         /// <summary>
         /// The serial number of the device
         /// </summary>
         /// <value>The serial number of the device</value>
         [JsonProperty(PropertyName = "serial")]
-        public string Serial { get; set; }
+        public string Serial;
 
         /// <summary>
         /// Random tags to facilitate search
         /// </summary>
         /// <value>Random tags to facilitate search</value>
         [JsonProperty(PropertyName = "tags")]
-        public List<string> Tags { get; set; }
+        public List<string> Tags;
 
         /// <summary>
         /// Use to describe and validate custom properties (custom schema). May be null and no validation of additional_properties will be done
         /// </summary>
         /// <value>Use to describe and validate custom properties (custom schema). May be null and no validation of additional_properties will be done</value>
         [JsonProperty(PropertyName = "template")]
-        public string Template { get; set; }
+        public string Template;
 
         /// <summary>
         /// The date the device log was updated
         /// </summary>
         /// <value>The date the device log was updated</value>
         [JsonProperty(PropertyName = "updated_date")]
-        public long? UpdatedDate { get; set; }
+        public long? UpdatedDate;
 
         /// <summary>
         /// The users currently using the device
         /// </summary>
         /// <value>The users currently using the device</value>
         [JsonProperty(PropertyName = "users")]
-        public List<SimpleUserResource> Users { get; set; }
+        public List<SimpleUserResource> Users;
 
         /// <inheritdoc />
         /// <summary>
