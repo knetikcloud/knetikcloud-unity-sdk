@@ -63,6 +63,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -109,20 +110,14 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public DispositionsApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mAddDispositionCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteDispositionCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetDispositionCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetDispositionCountsCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetDispositionsCoroutine = new KnetikCoroutine(KnetikClient);
+            mAddDispositionCoroutine = new KnetikCoroutine();
+            mDeleteDispositionCoroutine = new KnetikCoroutine();
+            mGetDispositionCoroutine = new KnetikCoroutine();
+            mGetDispositionCountsCoroutine = new KnetikCoroutine();
+            mGetDispositionsCoroutine = new KnetikCoroutine();
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
+        /// <inheritdoc />
         /// <summary>
         /// Add a new disposition 
         /// </summary>
@@ -142,10 +137,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(disposition); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(disposition); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddDispositionStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddDispositionStartTime, mAddDispositionPath, "Sending server request...");
@@ -166,7 +161,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling AddDisposition: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            AddDispositionData = (DispositionResource) KnetikClient.Deserialize(response.Content, typeof(DispositionResource), response.Headers);
+            AddDispositionData = (DispositionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(DispositionResource), response.Headers);
             KnetikLogger.LogResponse(mAddDispositionStartTime, mAddDispositionPath, string.Format("Response received successfully:\n{0}", AddDispositionData.ToString()));
 
             if (AddDispositionComplete != null)
@@ -174,6 +169,8 @@ namespace com.knetikcloud.Api
                 AddDispositionComplete(AddDispositionData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Delete a disposition 
         /// </summary>
@@ -191,7 +188,7 @@ namespace com.knetikcloud.Api
             {
                 mDeleteDispositionPath = mDeleteDispositionPath.Replace("{format}", "json");
             }
-            mDeleteDispositionPath = mDeleteDispositionPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteDispositionPath = mDeleteDispositionPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -200,7 +197,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteDispositionStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteDispositionStartTime, mDeleteDispositionPath, "Sending server request...");
@@ -227,6 +224,8 @@ namespace com.knetikcloud.Api
                 DeleteDispositionComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Returns a disposition 
         /// </summary>
@@ -244,7 +243,7 @@ namespace com.knetikcloud.Api
             {
                 mGetDispositionPath = mGetDispositionPath.Replace("{format}", "json");
             }
-            mGetDispositionPath = mGetDispositionPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetDispositionPath = mGetDispositionPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -253,7 +252,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetDispositionStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetDispositionStartTime, mGetDispositionPath, "Sending server request...");
@@ -274,7 +273,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetDisposition: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetDispositionData = (DispositionResource) KnetikClient.Deserialize(response.Content, typeof(DispositionResource), response.Headers);
+            GetDispositionData = (DispositionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(DispositionResource), response.Headers);
             KnetikLogger.LogResponse(mGetDispositionStartTime, mGetDispositionPath, string.Format("Response received successfully:\n{0}", GetDispositionData.ToString()));
 
             if (GetDispositionComplete != null)
@@ -282,6 +281,8 @@ namespace com.knetikcloud.Api
                 GetDispositionComplete(GetDispositionData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Returns a list of disposition counts 
         /// </summary>
@@ -304,16 +305,16 @@ namespace com.knetikcloud.Api
 
             if (filterContext != null)
             {
-                queryParams.Add("filter_context", KnetikClient.ParameterToString(filterContext));
+                queryParams.Add("filter_context", KnetikClient.DefaultClient.ParameterToString(filterContext));
             }
 
             if (filterOwner != null)
             {
-                queryParams.Add("filter_owner", KnetikClient.ParameterToString(filterOwner));
+                queryParams.Add("filter_owner", KnetikClient.DefaultClient.ParameterToString(filterOwner));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetDispositionCountsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetDispositionCountsStartTime, mGetDispositionCountsPath, "Sending server request...");
@@ -334,7 +335,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetDispositionCounts: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetDispositionCountsData = (List<DispositionCount>) KnetikClient.Deserialize(response.Content, typeof(List<DispositionCount>), response.Headers);
+            GetDispositionCountsData = (List<DispositionCount>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<DispositionCount>), response.Headers);
             KnetikLogger.LogResponse(mGetDispositionCountsStartTime, mGetDispositionCountsPath, string.Format("Response received successfully:\n{0}", GetDispositionCountsData.ToString()));
 
             if (GetDispositionCountsComplete != null)
@@ -342,6 +343,8 @@ namespace com.knetikcloud.Api
                 GetDispositionCountsComplete(GetDispositionCountsData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Returns a page of dispositions 
         /// </summary>
@@ -367,31 +370,31 @@ namespace com.knetikcloud.Api
 
             if (filterContext != null)
             {
-                queryParams.Add("filter_context", KnetikClient.ParameterToString(filterContext));
+                queryParams.Add("filter_context", KnetikClient.DefaultClient.ParameterToString(filterContext));
             }
 
             if (filterOwner != null)
             {
-                queryParams.Add("filter_owner", KnetikClient.ParameterToString(filterOwner));
+                queryParams.Add("filter_owner", KnetikClient.DefaultClient.ParameterToString(filterOwner));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetDispositionsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetDispositionsStartTime, mGetDispositionsPath, "Sending server request...");
@@ -412,7 +415,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetDispositions: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetDispositionsData = (PageResourceDispositionResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceDispositionResource), response.Headers);
+            GetDispositionsData = (PageResourceDispositionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceDispositionResource), response.Headers);
             KnetikLogger.LogResponse(mGetDispositionsStartTime, mGetDispositionsPath, string.Format("Response received successfully:\n{0}", GetDispositionsData.ToString()));
 
             if (GetDispositionsComplete != null)
@@ -420,5 +423,6 @@ namespace com.knetikcloud.Api
                 GetDispositionsComplete(GetDispositionsData);
             }
         }
+
     }
 }

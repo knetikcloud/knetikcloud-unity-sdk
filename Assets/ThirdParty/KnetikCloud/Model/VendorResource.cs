@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,113 +19,114 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>Whether the vendor is active.  Default = true</value>
         [JsonProperty(PropertyName = "active")]
-        public bool? Active { get; set; }
+        public bool? Active;
 
         /// <summary>
         /// A map of additional properties, keyed on the property name (private). Must match the names and types defined in the template for this user type, or be an extra not from the template
         /// </summary>
         /// <value>A map of additional properties, keyed on the property name (private). Must match the names and types defined in the template for this user type, or be an extra not from the template</value>
         [JsonProperty(PropertyName = "additional_properties")]
-        public Dictionary<string, Property> AdditionalProperties { get; set; }
+        public Dictionary<string, Property> AdditionalProperties;
 
         /// <summary>
         /// The date the vendor was added. Unix timestamp in seconds
         /// </summary>
         /// <value>The date the vendor was added. Unix timestamp in seconds</value>
         [JsonProperty(PropertyName = "create_date")]
-        public long? CreateDate { get; set; }
+        public long? CreateDate;
 
         /// <summary>
         /// A description of the vendor
         /// </summary>
         /// <value>A description of the vendor</value>
         [JsonProperty(PropertyName = "description")]
-        public string Description { get; set; }
+        public string Description;
 
         /// <summary>
         /// The id of the vendor
         /// </summary>
         /// <value>The id of the vendor</value>
         [JsonProperty(PropertyName = "id")]
-        public int? Id { get; set; }
+        public int? Id;
 
         /// <summary>
         /// The url of an image for the vendor
         /// </summary>
         /// <value>The url of an image for the vendor</value>
         [JsonProperty(PropertyName = "image_url")]
-        public string ImageUrl { get; set; }
+        public string ImageUrl;
 
         /// <summary>
         /// Whether the vendor needs to manually approve invoices before they are paid.  A separate checkout flow is required in this case.  Default: false
         /// </summary>
         /// <value>Whether the vendor needs to manually approve invoices before they are paid.  A separate checkout flow is required in this case.  Default: false</value>
         [JsonProperty(PropertyName = "manual_approval")]
-        public bool? ManualApproval { get; set; }
+        public bool? ManualApproval;
 
         /// <summary>
         /// The name of the vendor
         /// </summary>
         /// <value>The name of the vendor</value>
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name;
 
         /// <summary>
         /// The primary email address for the vendor
         /// </summary>
         /// <value>The primary email address for the vendor</value>
         [JsonProperty(PropertyName = "primary_contact_email")]
-        public string PrimaryContactEmail { get; set; }
+        public string PrimaryContactEmail;
 
         /// <summary>
         /// The name of the primary contact for the vendor
         /// </summary>
         /// <value>The name of the primary contact for the vendor</value>
         [JsonProperty(PropertyName = "primary_contact_name")]
-        public string PrimaryContactName { get; set; }
+        public string PrimaryContactName;
 
         /// <summary>
         /// The primary phone number for the vendor
         /// </summary>
         /// <value>The primary phone number for the vendor</value>
         [JsonProperty(PropertyName = "primary_contact_phone")]
-        public string PrimaryContactPhone { get; set; }
+        public string PrimaryContactPhone;
 
         /// <summary>
         /// The email address for sale inquiries for the vendor
         /// </summary>
         /// <value>The email address for sale inquiries for the vendor</value>
         [JsonProperty(PropertyName = "sales_email")]
-        public string SalesEmail { get; set; }
+        public string SalesEmail;
 
         /// <summary>
         /// The email address for support inquiries for the vendor
         /// </summary>
         /// <value>The email address for support inquiries for the vendor</value>
         [JsonProperty(PropertyName = "support_email")]
-        public string SupportEmail { get; set; }
+        public string SupportEmail;
 
         /// <summary>
         /// A user template this user is validated against (private). May be null and no validation of properties will be done
         /// </summary>
         /// <value>A user template this user is validated against (private). May be null and no validation of properties will be done</value>
         [JsonProperty(PropertyName = "template")]
-        public string Template { get; set; }
+        public string Template;
 
         /// <summary>
         /// The date the vendor was last updated. Unix timestamp in seconds
         /// </summary>
         /// <value>The date the vendor was last updated. Unix timestamp in seconds</value>
         [JsonProperty(PropertyName = "update_date")]
-        public long? UpdateDate { get; set; }
+        public long? UpdateDate;
 
         /// <summary>
         /// The url for the vendor's site
         /// </summary>
         /// <value>The url for the vendor's site</value>
         [JsonProperty(PropertyName = "url")]
-        public string Url { get; set; }
+        public string Url;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

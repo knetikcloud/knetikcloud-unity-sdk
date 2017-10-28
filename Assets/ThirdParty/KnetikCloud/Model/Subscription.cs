@@ -2,33 +2,38 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
+    [KnetikFactory ("subscription")]
     public class Subscription : StoreItem
     {
         /// <summary>
         /// Gets or Sets Availability
         /// </summary>
         [JsonProperty(PropertyName = "availability")]
-        public string Availability { get; set; }
+        public string Availability;
 
         /// <summary>
         /// Gets or Sets ConsolidationDayOfMonth
         /// </summary>
         [JsonProperty(PropertyName = "consolidation_day_of_month")]
-        public int? ConsolidationDayOfMonth { get; set; }
+        public int? ConsolidationDayOfMonth;
 
         /// <summary>
         /// Gets or Sets SubscriptionPlans
         /// </summary>
         [JsonProperty(PropertyName = "subscription_plans")]
-        public List<SubscriptionPlan> SubscriptionPlans { get; set; }
+        public List<SubscriptionPlan> SubscriptionPlans;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>
@@ -70,7 +75,7 @@ namespace com.knetikcloud.Model
         /// Get the JSON string presentation of the object
         /// </summary>
         /// <returns>JSON string presentation of the object</returns>
-        public  new string ToJson()
+        public new string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }

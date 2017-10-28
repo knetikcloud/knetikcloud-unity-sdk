@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,36 +19,37 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>Whether the category is currently active. If not, it and its questions will be filtered out.</value>
         [JsonProperty(PropertyName = "active")]
-        public bool? Active { get; set; }
+        public bool? Active;
 
         /// <summary>
         /// A map of additional properties, keyed on the property name.  Must match the names and types defined in the template for this item type
         /// </summary>
         /// <value>A map of additional properties, keyed on the property name.  Must match the names and types defined in the template for this item type</value>
         [JsonProperty(PropertyName = "additional_properties")]
-        public Dictionary<string, Property> AdditionalProperties { get; set; }
+        public Dictionary<string, Property> AdditionalProperties;
 
         /// <summary>
         /// The unique ID for this category
         /// </summary>
         /// <value>The unique ID for this category</value>
         [JsonProperty(PropertyName = "id")]
-        public string Id { get; set; }
+        public string Id;
 
         /// <summary>
         /// The name of this category. Cannot be blank
         /// </summary>
         /// <value>The name of this category. Cannot be blank</value>
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name;
 
         /// <summary>
         /// A category template this category is validated against (private). May be null and no validation of additional_properties will be done
         /// </summary>
         /// <value>A category template this category is validated against (private). May be null and no validation of additional_properties will be done</value>
         [JsonProperty(PropertyName = "template")]
-        public string Template { get; set; }
+        public string Template;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

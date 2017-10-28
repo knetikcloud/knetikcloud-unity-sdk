@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -15,8 +18,9 @@ namespace com.knetikcloud.Model
         /// Gets or Sets Value
         /// </summary>
         [JsonProperty(PropertyName = "value")]
-        public int? Value { get; set; }
+        public int? Value;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

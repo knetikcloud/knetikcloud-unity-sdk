@@ -2,13 +2,17 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
+    [KnetikFactory ("image")]
     public class ImagePropertyDefinitionResource : PropertyDefinitionResource
     {
         /// <summary>
@@ -16,36 +20,37 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>If provided, a file type that the property must match</value>
         [JsonProperty(PropertyName = "file_type")]
-        public string FileType { get; set; }
+        public string FileType;
 
         /// <summary>
         /// If provided, the maximum height of the image
         /// </summary>
         /// <value>If provided, the maximum height of the image</value>
         [JsonProperty(PropertyName = "max_height")]
-        public int? MaxHeight { get; set; }
+        public int? MaxHeight;
 
         /// <summary>
         /// If provided, the maximum width of the image
         /// </summary>
         /// <value>If provided, the maximum width of the image</value>
         [JsonProperty(PropertyName = "max_width")]
-        public int? MaxWidth { get; set; }
+        public int? MaxWidth;
 
         /// <summary>
         /// If provided, the minimum height of the image
         /// </summary>
         /// <value>If provided, the minimum height of the image</value>
         [JsonProperty(PropertyName = "min_height")]
-        public int? MinHeight { get; set; }
+        public int? MinHeight;
 
         /// <summary>
         /// If provided, the minimum width of the image
         /// </summary>
         /// <value>If provided, the minimum width of the image</value>
         [JsonProperty(PropertyName = "min_width")]
-        public int? MinWidth { get; set; }
+        public int? MinWidth;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>
@@ -71,7 +76,7 @@ namespace com.knetikcloud.Model
         /// Get the JSON string presentation of the object
         /// </summary>
         /// <returns>JSON string presentation of the object</returns>
-        public  new string ToJson()
+        public new string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }

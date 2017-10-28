@@ -42,6 +42,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -68,17 +69,11 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public ReportingChallengesApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mGetChallengeEventLeaderboardCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetChallengeEventParticipantsCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetChallengeEventLeaderboardCoroutine = new KnetikCoroutine();
+            mGetChallengeEventParticipantsCoroutine = new KnetikCoroutine();
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
+        /// <inheritdoc />
         /// <summary>
         /// Retrieve a challenge event leaderboard details Lists all leaderboard entries with additional user details
         /// </summary>
@@ -103,26 +98,26 @@ namespace com.knetikcloud.Api
 
             if (filterEvent != null)
             {
-                queryParams.Add("filter_event", KnetikClient.ParameterToString(filterEvent));
+                queryParams.Add("filter_event", KnetikClient.DefaultClient.ParameterToString(filterEvent));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetChallengeEventLeaderboardStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetChallengeEventLeaderboardStartTime, mGetChallengeEventLeaderboardPath, "Sending server request...");
@@ -143,7 +138,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetChallengeEventLeaderboard: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetChallengeEventLeaderboardData = (PageResourceChallengeEventParticipantResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceChallengeEventParticipantResource), response.Headers);
+            GetChallengeEventLeaderboardData = (PageResourceChallengeEventParticipantResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceChallengeEventParticipantResource), response.Headers);
             KnetikLogger.LogResponse(mGetChallengeEventLeaderboardStartTime, mGetChallengeEventLeaderboardPath, string.Format("Response received successfully:\n{0}", GetChallengeEventLeaderboardData.ToString()));
 
             if (GetChallengeEventLeaderboardComplete != null)
@@ -151,6 +146,8 @@ namespace com.knetikcloud.Api
                 GetChallengeEventLeaderboardComplete(GetChallengeEventLeaderboardData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Retrieve a challenge event participant details Lists all user submitted scores sorted by value, including those that do not apear in the leaderboard due to value or aggregation
         /// </summary>
@@ -175,26 +172,26 @@ namespace com.knetikcloud.Api
 
             if (filterEvent != null)
             {
-                queryParams.Add("filter_event", KnetikClient.ParameterToString(filterEvent));
+                queryParams.Add("filter_event", KnetikClient.DefaultClient.ParameterToString(filterEvent));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetChallengeEventParticipantsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetChallengeEventParticipantsStartTime, mGetChallengeEventParticipantsPath, "Sending server request...");
@@ -215,7 +212,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetChallengeEventParticipants: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetChallengeEventParticipantsData = (PageResourceChallengeEventParticipantResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceChallengeEventParticipantResource), response.Headers);
+            GetChallengeEventParticipantsData = (PageResourceChallengeEventParticipantResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceChallengeEventParticipantResource), response.Headers);
             KnetikLogger.LogResponse(mGetChallengeEventParticipantsStartTime, mGetChallengeEventParticipantsPath, string.Format("Response received successfully:\n{0}", GetChallengeEventParticipantsData.ToString()));
 
             if (GetChallengeEventParticipantsComplete != null)
@@ -223,5 +220,6 @@ namespace com.knetikcloud.Api
                 GetChallengeEventParticipantsComplete(GetChallengeEventParticipantsData);
             }
         }
+
     }
 }

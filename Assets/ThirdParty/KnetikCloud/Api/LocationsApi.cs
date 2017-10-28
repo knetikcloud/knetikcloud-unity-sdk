@@ -49,6 +49,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -89,19 +90,13 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public LocationsApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mGetCountriesCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetCountryByGeoLocationCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetCountryStatesCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetCurrencyByGeoLocationCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetCountriesCoroutine = new KnetikCoroutine();
+            mGetCountryByGeoLocationCoroutine = new KnetikCoroutine();
+            mGetCountryStatesCoroutine = new KnetikCoroutine();
+            mGetCurrencyByGeoLocationCoroutine = new KnetikCoroutine();
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
+        /// <inheritdoc />
         /// <summary>
         /// Get a list of countries 
         /// </summary>
@@ -121,7 +116,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetCountriesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCountriesStartTime, mGetCountriesPath, "Sending server request...");
@@ -142,7 +137,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetCountries: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetCountriesData = (List<CountryResource>) KnetikClient.Deserialize(response.Content, typeof(List<CountryResource>), response.Headers);
+            GetCountriesData = (List<CountryResource>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<CountryResource>), response.Headers);
             KnetikLogger.LogResponse(mGetCountriesStartTime, mGetCountriesPath, string.Format("Response received successfully:\n{0}", GetCountriesData.ToString()));
 
             if (GetCountriesComplete != null)
@@ -150,6 +145,8 @@ namespace com.knetikcloud.Api
                 GetCountriesComplete(GetCountriesData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Get the iso3 code of your country Determined by geo ip location
         /// </summary>
@@ -169,7 +166,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetCountryByGeoLocationStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCountryByGeoLocationStartTime, mGetCountryByGeoLocationPath, "Sending server request...");
@@ -190,7 +187,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetCountryByGeoLocation: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetCountryByGeoLocationData = (string) KnetikClient.Deserialize(response.Content, typeof(string), response.Headers);
+            GetCountryByGeoLocationData = (string) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(string), response.Headers);
             KnetikLogger.LogResponse(mGetCountryByGeoLocationStartTime, mGetCountryByGeoLocationPath, string.Format("Response received successfully:\n{0}", GetCountryByGeoLocationData.ToString()));
 
             if (GetCountryByGeoLocationComplete != null)
@@ -198,6 +195,8 @@ namespace com.knetikcloud.Api
                 GetCountryByGeoLocationComplete(GetCountryByGeoLocationData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Get a list of a country&#39;s states 
         /// </summary>
@@ -215,7 +214,7 @@ namespace com.knetikcloud.Api
             {
                 mGetCountryStatesPath = mGetCountryStatesPath.Replace("{format}", "json");
             }
-            mGetCountryStatesPath = mGetCountryStatesPath.Replace("{" + "country_code_iso3" + "}", KnetikClient.ParameterToString(countryCodeIso3));
+            mGetCountryStatesPath = mGetCountryStatesPath.Replace("{" + "country_code_iso3" + "}", KnetikClient.DefaultClient.ParameterToString(countryCodeIso3));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -224,7 +223,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetCountryStatesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCountryStatesStartTime, mGetCountryStatesPath, "Sending server request...");
@@ -245,7 +244,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetCountryStates: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetCountryStatesData = (List<StateResource>) KnetikClient.Deserialize(response.Content, typeof(List<StateResource>), response.Headers);
+            GetCountryStatesData = (List<StateResource>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<StateResource>), response.Headers);
             KnetikLogger.LogResponse(mGetCountryStatesStartTime, mGetCountryStatesPath, string.Format("Response received successfully:\n{0}", GetCountryStatesData.ToString()));
 
             if (GetCountryStatesComplete != null)
@@ -253,6 +252,8 @@ namespace com.knetikcloud.Api
                 GetCountryStatesComplete(GetCountryStatesData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Get the currency information of your country Determined by geo ip location, currency to country mapping and a fallback setting
         /// </summary>
@@ -272,7 +273,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetCurrencyByGeoLocationStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCurrencyByGeoLocationStartTime, mGetCurrencyByGeoLocationPath, "Sending server request...");
@@ -293,7 +294,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetCurrencyByGeoLocation: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetCurrencyByGeoLocationData = (CurrencyResource) KnetikClient.Deserialize(response.Content, typeof(CurrencyResource), response.Headers);
+            GetCurrencyByGeoLocationData = (CurrencyResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CurrencyResource), response.Headers);
             KnetikLogger.LogResponse(mGetCurrencyByGeoLocationStartTime, mGetCurrencyByGeoLocationPath, string.Format("Response received successfully:\n{0}", GetCurrencyByGeoLocationData.ToString()));
 
             if (GetCurrencyByGeoLocationComplete != null)
@@ -301,5 +302,6 @@ namespace com.knetikcloud.Api
                 GetCurrencyByGeoLocationComplete(GetCurrencyByGeoLocationData);
             }
         }
+
     }
 }

@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,50 +19,51 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The number of clients this role is assigned to</value>
         [JsonProperty(PropertyName = "client_count")]
-        public int? ClientCount { get; set; }
+        public int? ClientCount;
 
         /// <summary>
         /// The date the role was added. Unix timestamp in seconds
         /// </summary>
         /// <value>The date the role was added. Unix timestamp in seconds</value>
         [JsonProperty(PropertyName = "created_date")]
-        public long? CreatedDate { get; set; }
+        public long? CreatedDate;
 
         /// <summary>
         /// Whether a role is locked from being deleted
         /// </summary>
         /// <value>Whether a role is locked from being deleted</value>
         [JsonProperty(PropertyName = "locked")]
-        public bool? Locked { get; set; }
+        public bool? Locked;
 
         /// <summary>
         /// The name of the role used for display purposes
         /// </summary>
         /// <value>The name of the role used for display purposes</value>
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name;
 
         /// <summary>
         /// The keyword that defines the role
         /// </summary>
         /// <value>The keyword that defines the role</value>
         [JsonProperty(PropertyName = "role")]
-        public string Role { get; set; }
+        public string Role;
 
         /// <summary>
         /// The list of permissions this role has
         /// </summary>
         /// <value>The list of permissions this role has</value>
         [JsonProperty(PropertyName = "role_permission")]
-        public List<PermissionResource> RolePermission { get; set; }
+        public List<PermissionResource> RolePermission;
 
         /// <summary>
         /// The number of users this role is assigned to
         /// </summary>
         /// <value>The number of users this role is assigned to</value>
         [JsonProperty(PropertyName = "user_count")]
-        public int? UserCount { get; set; }
+        public int? UserCount;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

@@ -307,6 +307,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -522,45 +523,39 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public GamificationTriviaApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mAddQuestionAnswersCoroutine = new KnetikCoroutine(KnetikClient);
-            mAddQuestionTagCoroutine = new KnetikCoroutine(KnetikClient);
-            mAddTagToQuestionsBatchCoroutine = new KnetikCoroutine(KnetikClient);
-            mCreateImportJobCoroutine = new KnetikCoroutine(KnetikClient);
-            mCreateQuestionCoroutine = new KnetikCoroutine(KnetikClient);
-            mCreateQuestionTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteImportJobCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteQuestionCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteQuestionAnswersCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteQuestionTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetImportJobCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetImportJobsCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetQuestionCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetQuestionAnswerCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetQuestionAnswersCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetQuestionDeltasCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetQuestionTagsCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetQuestionTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetQuestionTemplatesCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetQuestionsCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetQuestionsCountCoroutine = new KnetikCoroutine(KnetikClient);
-            mProcessImportJobCoroutine = new KnetikCoroutine(KnetikClient);
-            mRemoveQuestionTagCoroutine = new KnetikCoroutine(KnetikClient);
-            mRemoveTagToQuestionsBatchCoroutine = new KnetikCoroutine(KnetikClient);
-            mSearchQuestionTagsCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateImportJobCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateQuestionCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateQuestionAnswerCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateQuestionTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateQuestionsInBulkCoroutine = new KnetikCoroutine(KnetikClient);
+            mAddQuestionAnswersCoroutine = new KnetikCoroutine();
+            mAddQuestionTagCoroutine = new KnetikCoroutine();
+            mAddTagToQuestionsBatchCoroutine = new KnetikCoroutine();
+            mCreateImportJobCoroutine = new KnetikCoroutine();
+            mCreateQuestionCoroutine = new KnetikCoroutine();
+            mCreateQuestionTemplateCoroutine = new KnetikCoroutine();
+            mDeleteImportJobCoroutine = new KnetikCoroutine();
+            mDeleteQuestionCoroutine = new KnetikCoroutine();
+            mDeleteQuestionAnswersCoroutine = new KnetikCoroutine();
+            mDeleteQuestionTemplateCoroutine = new KnetikCoroutine();
+            mGetImportJobCoroutine = new KnetikCoroutine();
+            mGetImportJobsCoroutine = new KnetikCoroutine();
+            mGetQuestionCoroutine = new KnetikCoroutine();
+            mGetQuestionAnswerCoroutine = new KnetikCoroutine();
+            mGetQuestionAnswersCoroutine = new KnetikCoroutine();
+            mGetQuestionDeltasCoroutine = new KnetikCoroutine();
+            mGetQuestionTagsCoroutine = new KnetikCoroutine();
+            mGetQuestionTemplateCoroutine = new KnetikCoroutine();
+            mGetQuestionTemplatesCoroutine = new KnetikCoroutine();
+            mGetQuestionsCoroutine = new KnetikCoroutine();
+            mGetQuestionsCountCoroutine = new KnetikCoroutine();
+            mProcessImportJobCoroutine = new KnetikCoroutine();
+            mRemoveQuestionTagCoroutine = new KnetikCoroutine();
+            mRemoveTagToQuestionsBatchCoroutine = new KnetikCoroutine();
+            mSearchQuestionTagsCoroutine = new KnetikCoroutine();
+            mUpdateImportJobCoroutine = new KnetikCoroutine();
+            mUpdateQuestionCoroutine = new KnetikCoroutine();
+            mUpdateQuestionAnswerCoroutine = new KnetikCoroutine();
+            mUpdateQuestionTemplateCoroutine = new KnetikCoroutine();
+            mUpdateQuestionsInBulkCoroutine = new KnetikCoroutine();
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
+        /// <inheritdoc />
         /// <summary>
         /// Add an answer to a question 
         /// </summary>
@@ -579,7 +574,7 @@ namespace com.knetikcloud.Api
             {
                 mAddQuestionAnswersPath = mAddQuestionAnswersPath.Replace("{format}", "json");
             }
-            mAddQuestionAnswersPath = mAddQuestionAnswersPath.Replace("{" + "question_id" + "}", KnetikClient.ParameterToString(questionId));
+            mAddQuestionAnswersPath = mAddQuestionAnswersPath.Replace("{" + "question_id" + "}", KnetikClient.DefaultClient.ParameterToString(questionId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -587,10 +582,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(answer); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(answer); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddQuestionAnswersStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddQuestionAnswersStartTime, mAddQuestionAnswersPath, "Sending server request...");
@@ -611,7 +606,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling AddQuestionAnswers: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            AddQuestionAnswersData = (AnswerResource) KnetikClient.Deserialize(response.Content, typeof(AnswerResource), response.Headers);
+            AddQuestionAnswersData = (AnswerResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(AnswerResource), response.Headers);
             KnetikLogger.LogResponse(mAddQuestionAnswersStartTime, mAddQuestionAnswersPath, string.Format("Response received successfully:\n{0}", AddQuestionAnswersData.ToString()));
 
             if (AddQuestionAnswersComplete != null)
@@ -619,6 +614,8 @@ namespace com.knetikcloud.Api
                 AddQuestionAnswersComplete(AddQuestionAnswersData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Add a tag to a question 
         /// </summary>
@@ -637,7 +634,7 @@ namespace com.knetikcloud.Api
             {
                 mAddQuestionTagPath = mAddQuestionTagPath.Replace("{format}", "json");
             }
-            mAddQuestionTagPath = mAddQuestionTagPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mAddQuestionTagPath = mAddQuestionTagPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -645,10 +642,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(tag); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(tag); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddQuestionTagStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddQuestionTagStartTime, mAddQuestionTagPath, "Sending server request...");
@@ -675,6 +672,8 @@ namespace com.knetikcloud.Api
                 AddQuestionTagComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Add a tag to a batch of questions All questions that dont&#39;t have the tag and match filters will have it added. The returned number is the number of questions updated.
         /// </summary>
@@ -704,48 +703,48 @@ namespace com.knetikcloud.Api
 
             if (filterSearch != null)
             {
-                queryParams.Add("filter_search", KnetikClient.ParameterToString(filterSearch));
+                queryParams.Add("filter_search", KnetikClient.DefaultClient.ParameterToString(filterSearch));
             }
 
             if (filterIdset != null)
             {
-                queryParams.Add("filter_idset", KnetikClient.ParameterToString(filterIdset));
+                queryParams.Add("filter_idset", KnetikClient.DefaultClient.ParameterToString(filterIdset));
             }
 
             if (filterCategory != null)
             {
-                queryParams.Add("filter_category", KnetikClient.ParameterToString(filterCategory));
+                queryParams.Add("filter_category", KnetikClient.DefaultClient.ParameterToString(filterCategory));
             }
 
             if (filterTag != null)
             {
-                queryParams.Add("filter_tag", KnetikClient.ParameterToString(filterTag));
+                queryParams.Add("filter_tag", KnetikClient.DefaultClient.ParameterToString(filterTag));
             }
 
             if (filterTagset != null)
             {
-                queryParams.Add("filter_tagset", KnetikClient.ParameterToString(filterTagset));
+                queryParams.Add("filter_tagset", KnetikClient.DefaultClient.ParameterToString(filterTagset));
             }
 
             if (filterType != null)
             {
-                queryParams.Add("filter_type", KnetikClient.ParameterToString(filterType));
+                queryParams.Add("filter_type", KnetikClient.DefaultClient.ParameterToString(filterType));
             }
 
             if (filterPublished != null)
             {
-                queryParams.Add("filter_published", KnetikClient.ParameterToString(filterPublished));
+                queryParams.Add("filter_published", KnetikClient.DefaultClient.ParameterToString(filterPublished));
             }
 
             if (filterImportId != null)
             {
-                queryParams.Add("filter_import_id", KnetikClient.ParameterToString(filterImportId));
+                queryParams.Add("filter_import_id", KnetikClient.DefaultClient.ParameterToString(filterImportId));
             }
 
-            postBody = KnetikClient.Serialize(tag); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(tag); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddTagToQuestionsBatchStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddTagToQuestionsBatchStartTime, mAddTagToQuestionsBatchPath, "Sending server request...");
@@ -766,7 +765,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling AddTagToQuestionsBatch: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            AddTagToQuestionsBatchData = (int?) KnetikClient.Deserialize(response.Content, typeof(int?), response.Headers);
+            AddTagToQuestionsBatchData = (int?) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(int?), response.Headers);
             KnetikLogger.LogResponse(mAddTagToQuestionsBatchStartTime, mAddTagToQuestionsBatchPath, string.Format("Response received successfully:\n{0}", AddTagToQuestionsBatchData.ToString()));
 
             if (AddTagToQuestionsBatchComplete != null)
@@ -774,6 +773,8 @@ namespace com.knetikcloud.Api
                 AddTagToQuestionsBatchComplete(AddTagToQuestionsBatchData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Create an import job Set up a job to import a set of trivia questions from a cvs file at a remote url. the file will be validated asynchronously but will not be processed until started manually with the process endpoint.
         /// </summary>
@@ -793,10 +794,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(request); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateImportJobStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateImportJobStartTime, mCreateImportJobPath, "Sending server request...");
@@ -817,7 +818,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateImportJob: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateImportJobData = (ImportJobResource) KnetikClient.Deserialize(response.Content, typeof(ImportJobResource), response.Headers);
+            CreateImportJobData = (ImportJobResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ImportJobResource), response.Headers);
             KnetikLogger.LogResponse(mCreateImportJobStartTime, mCreateImportJobPath, string.Format("Response received successfully:\n{0}", CreateImportJobData.ToString()));
 
             if (CreateImportJobComplete != null)
@@ -825,6 +826,8 @@ namespace com.knetikcloud.Api
                 CreateImportJobComplete(CreateImportJobData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Create a question 
         /// </summary>
@@ -844,10 +847,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(question); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(question); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateQuestionStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateQuestionStartTime, mCreateQuestionPath, "Sending server request...");
@@ -868,7 +871,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateQuestion: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateQuestionData = (QuestionResource) KnetikClient.Deserialize(response.Content, typeof(QuestionResource), response.Headers);
+            CreateQuestionData = (QuestionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(QuestionResource), response.Headers);
             KnetikLogger.LogResponse(mCreateQuestionStartTime, mCreateQuestionPath, string.Format("Response received successfully:\n{0}", CreateQuestionData.ToString()));
 
             if (CreateQuestionComplete != null)
@@ -876,6 +879,8 @@ namespace com.knetikcloud.Api
                 CreateQuestionComplete(CreateQuestionData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Create a question template Question templates define a type of question and the properties they have
         /// </summary>
@@ -895,10 +900,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(questionTemplateResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(questionTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateQuestionTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateQuestionTemplateStartTime, mCreateQuestionTemplatePath, "Sending server request...");
@@ -919,7 +924,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateQuestionTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateQuestionTemplateData = (QuestionTemplateResource) KnetikClient.Deserialize(response.Content, typeof(QuestionTemplateResource), response.Headers);
+            CreateQuestionTemplateData = (QuestionTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(QuestionTemplateResource), response.Headers);
             KnetikLogger.LogResponse(mCreateQuestionTemplateStartTime, mCreateQuestionTemplatePath, string.Format("Response received successfully:\n{0}", CreateQuestionTemplateData.ToString()));
 
             if (CreateQuestionTemplateComplete != null)
@@ -927,6 +932,8 @@ namespace com.knetikcloud.Api
                 CreateQuestionTemplateComplete(CreateQuestionTemplateData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Delete an import job Also deletes all questions that were imported by it
         /// </summary>
@@ -944,7 +951,7 @@ namespace com.knetikcloud.Api
             {
                 mDeleteImportJobPath = mDeleteImportJobPath.Replace("{format}", "json");
             }
-            mDeleteImportJobPath = mDeleteImportJobPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteImportJobPath = mDeleteImportJobPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -953,7 +960,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteImportJobStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteImportJobStartTime, mDeleteImportJobPath, "Sending server request...");
@@ -980,6 +987,8 @@ namespace com.knetikcloud.Api
                 DeleteImportJobComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Delete a question 
         /// </summary>
@@ -997,7 +1006,7 @@ namespace com.knetikcloud.Api
             {
                 mDeleteQuestionPath = mDeleteQuestionPath.Replace("{format}", "json");
             }
-            mDeleteQuestionPath = mDeleteQuestionPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteQuestionPath = mDeleteQuestionPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1006,7 +1015,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteQuestionStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteQuestionStartTime, mDeleteQuestionPath, "Sending server request...");
@@ -1033,6 +1042,8 @@ namespace com.knetikcloud.Api
                 DeleteQuestionComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Remove an answer from a question 
         /// </summary>
@@ -1056,8 +1067,8 @@ namespace com.knetikcloud.Api
             {
                 mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{format}", "json");
             }
-            mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "question_id" + "}", KnetikClient.ParameterToString(questionId));
-mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "question_id" + "}", KnetikClient.DefaultClient.ParameterToString(questionId));
+mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1066,7 +1077,7 @@ mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "id" + "}"
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteQuestionAnswersStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteQuestionAnswersStartTime, mDeleteQuestionAnswersPath, "Sending server request...");
@@ -1093,6 +1104,8 @@ mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "id" + "}"
                 DeleteQuestionAnswersComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Delete a question template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
         /// </summary>
@@ -1111,7 +1124,7 @@ mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "id" + "}"
             {
                 mDeleteQuestionTemplatePath = mDeleteQuestionTemplatePath.Replace("{format}", "json");
             }
-            mDeleteQuestionTemplatePath = mDeleteQuestionTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteQuestionTemplatePath = mDeleteQuestionTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1121,11 +1134,11 @@ mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "id" + "}"
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.ParameterToString(cascade));
+                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteQuestionTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteQuestionTemplateStartTime, mDeleteQuestionTemplatePath, "Sending server request...");
@@ -1152,6 +1165,8 @@ mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "id" + "}"
                 DeleteQuestionTemplateComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Get an import job 
         /// </summary>
@@ -1169,7 +1184,7 @@ mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "id" + "}"
             {
                 mGetImportJobPath = mGetImportJobPath.Replace("{format}", "json");
             }
-            mGetImportJobPath = mGetImportJobPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetImportJobPath = mGetImportJobPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1178,7 +1193,7 @@ mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "id" + "}"
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetImportJobStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetImportJobStartTime, mGetImportJobPath, "Sending server request...");
@@ -1199,7 +1214,7 @@ mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "id" + "}"
                 throw new KnetikException((int)response.StatusCode, "Error calling GetImportJob: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetImportJobData = (ImportJobResource) KnetikClient.Deserialize(response.Content, typeof(ImportJobResource), response.Headers);
+            GetImportJobData = (ImportJobResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ImportJobResource), response.Headers);
             KnetikLogger.LogResponse(mGetImportJobStartTime, mGetImportJobPath, string.Format("Response received successfully:\n{0}", GetImportJobData.ToString()));
 
             if (GetImportJobComplete != null)
@@ -1207,6 +1222,8 @@ mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "id" + "}"
                 GetImportJobComplete(GetImportJobData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Get a list of import job 
         /// </summary>
@@ -1234,41 +1251,41 @@ mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "id" + "}"
 
             if (filterVendor != null)
             {
-                queryParams.Add("filter_vendor", KnetikClient.ParameterToString(filterVendor));
+                queryParams.Add("filter_vendor", KnetikClient.DefaultClient.ParameterToString(filterVendor));
             }
 
             if (filterCategory != null)
             {
-                queryParams.Add("filter_category", KnetikClient.ParameterToString(filterCategory));
+                queryParams.Add("filter_category", KnetikClient.DefaultClient.ParameterToString(filterCategory));
             }
 
             if (filterName != null)
             {
-                queryParams.Add("filter_name", KnetikClient.ParameterToString(filterName));
+                queryParams.Add("filter_name", KnetikClient.DefaultClient.ParameterToString(filterName));
             }
 
             if (filterStatus != null)
             {
-                queryParams.Add("filter_status", KnetikClient.ParameterToString(filterStatus));
+                queryParams.Add("filter_status", KnetikClient.DefaultClient.ParameterToString(filterStatus));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetImportJobsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetImportJobsStartTime, mGetImportJobsPath, "Sending server request...");
@@ -1289,7 +1306,7 @@ mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "id" + "}"
                 throw new KnetikException((int)response.StatusCode, "Error calling GetImportJobs: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetImportJobsData = (PageResourceImportJobResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceImportJobResource), response.Headers);
+            GetImportJobsData = (PageResourceImportJobResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceImportJobResource), response.Headers);
             KnetikLogger.LogResponse(mGetImportJobsStartTime, mGetImportJobsPath, string.Format("Response received successfully:\n{0}", GetImportJobsData.ToString()));
 
             if (GetImportJobsComplete != null)
@@ -1297,6 +1314,8 @@ mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "id" + "}"
                 GetImportJobsComplete(GetImportJobsData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Get a single question 
         /// </summary>
@@ -1314,7 +1333,7 @@ mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "id" + "}"
             {
                 mGetQuestionPath = mGetQuestionPath.Replace("{format}", "json");
             }
-            mGetQuestionPath = mGetQuestionPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetQuestionPath = mGetQuestionPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1323,7 +1342,7 @@ mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "id" + "}"
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetQuestionStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetQuestionStartTime, mGetQuestionPath, "Sending server request...");
@@ -1344,7 +1363,7 @@ mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "id" + "}"
                 throw new KnetikException((int)response.StatusCode, "Error calling GetQuestion: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetQuestionData = (QuestionResource) KnetikClient.Deserialize(response.Content, typeof(QuestionResource), response.Headers);
+            GetQuestionData = (QuestionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(QuestionResource), response.Headers);
             KnetikLogger.LogResponse(mGetQuestionStartTime, mGetQuestionPath, string.Format("Response received successfully:\n{0}", GetQuestionData.ToString()));
 
             if (GetQuestionComplete != null)
@@ -1352,6 +1371,8 @@ mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "id" + "}"
                 GetQuestionComplete(GetQuestionData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Get an answer for a question 
         /// </summary>
@@ -1375,8 +1396,8 @@ mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "id" + "}"
             {
                 mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{format}", "json");
             }
-            mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "question_id" + "}", KnetikClient.ParameterToString(questionId));
-mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "question_id" + "}", KnetikClient.DefaultClient.ParameterToString(questionId));
+mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1385,7 +1406,7 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetQuestionAnswerStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetQuestionAnswerStartTime, mGetQuestionAnswerPath, "Sending server request...");
@@ -1406,7 +1427,7 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
                 throw new KnetikException((int)response.StatusCode, "Error calling GetQuestionAnswer: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetQuestionAnswerData = (AnswerResource) KnetikClient.Deserialize(response.Content, typeof(AnswerResource), response.Headers);
+            GetQuestionAnswerData = (AnswerResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(AnswerResource), response.Headers);
             KnetikLogger.LogResponse(mGetQuestionAnswerStartTime, mGetQuestionAnswerPath, string.Format("Response received successfully:\n{0}", GetQuestionAnswerData.ToString()));
 
             if (GetQuestionAnswerComplete != null)
@@ -1414,6 +1435,8 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
                 GetQuestionAnswerComplete(GetQuestionAnswerData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// List the answers available for a question 
         /// </summary>
@@ -1431,7 +1454,7 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
             {
                 mGetQuestionAnswersPath = mGetQuestionAnswersPath.Replace("{format}", "json");
             }
-            mGetQuestionAnswersPath = mGetQuestionAnswersPath.Replace("{" + "question_id" + "}", KnetikClient.ParameterToString(questionId));
+            mGetQuestionAnswersPath = mGetQuestionAnswersPath.Replace("{" + "question_id" + "}", KnetikClient.DefaultClient.ParameterToString(questionId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1440,7 +1463,7 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetQuestionAnswersStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetQuestionAnswersStartTime, mGetQuestionAnswersPath, "Sending server request...");
@@ -1461,7 +1484,7 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
                 throw new KnetikException((int)response.StatusCode, "Error calling GetQuestionAnswers: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetQuestionAnswersData = (List<AnswerResource>) KnetikClient.Deserialize(response.Content, typeof(List<AnswerResource>), response.Headers);
+            GetQuestionAnswersData = (List<AnswerResource>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<AnswerResource>), response.Headers);
             KnetikLogger.LogResponse(mGetQuestionAnswersStartTime, mGetQuestionAnswersPath, string.Format("Response received successfully:\n{0}", GetQuestionAnswersData.ToString()));
 
             if (GetQuestionAnswersComplete != null)
@@ -1469,6 +1492,8 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
                 GetQuestionAnswersComplete(GetQuestionAnswersData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// List question deltas in ascending order of updated date The &#39;since&#39; parameter is important to avoid getting a full list of all questions. Implementors should make sure they pass the updated date of the last resource loaded, not the date of the last request, in order to avoid gaps
         /// </summary>
@@ -1490,11 +1515,11 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
 
             if (since != null)
             {
-                queryParams.Add("since", KnetikClient.ParameterToString(since));
+                queryParams.Add("since", KnetikClient.DefaultClient.ParameterToString(since));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetQuestionDeltasStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetQuestionDeltasStartTime, mGetQuestionDeltasPath, "Sending server request...");
@@ -1515,7 +1540,7 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
                 throw new KnetikException((int)response.StatusCode, "Error calling GetQuestionDeltas: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetQuestionDeltasData = (List<DeltaResource>) KnetikClient.Deserialize(response.Content, typeof(List<DeltaResource>), response.Headers);
+            GetQuestionDeltasData = (List<DeltaResource>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<DeltaResource>), response.Headers);
             KnetikLogger.LogResponse(mGetQuestionDeltasStartTime, mGetQuestionDeltasPath, string.Format("Response received successfully:\n{0}", GetQuestionDeltasData.ToString()));
 
             if (GetQuestionDeltasComplete != null)
@@ -1523,6 +1548,8 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
                 GetQuestionDeltasComplete(GetQuestionDeltasData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// List the tags for a question 
         /// </summary>
@@ -1540,7 +1567,7 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
             {
                 mGetQuestionTagsPath = mGetQuestionTagsPath.Replace("{format}", "json");
             }
-            mGetQuestionTagsPath = mGetQuestionTagsPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetQuestionTagsPath = mGetQuestionTagsPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1549,7 +1576,7 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetQuestionTagsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetQuestionTagsStartTime, mGetQuestionTagsPath, "Sending server request...");
@@ -1570,7 +1597,7 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
                 throw new KnetikException((int)response.StatusCode, "Error calling GetQuestionTags: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetQuestionTagsData = (List<string>) KnetikClient.Deserialize(response.Content, typeof(List<string>), response.Headers);
+            GetQuestionTagsData = (List<string>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<string>), response.Headers);
             KnetikLogger.LogResponse(mGetQuestionTagsStartTime, mGetQuestionTagsPath, string.Format("Response received successfully:\n{0}", GetQuestionTagsData.ToString()));
 
             if (GetQuestionTagsComplete != null)
@@ -1578,6 +1605,8 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
                 GetQuestionTagsComplete(GetQuestionTagsData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Get a single question template 
         /// </summary>
@@ -1595,7 +1624,7 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
             {
                 mGetQuestionTemplatePath = mGetQuestionTemplatePath.Replace("{format}", "json");
             }
-            mGetQuestionTemplatePath = mGetQuestionTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetQuestionTemplatePath = mGetQuestionTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1604,7 +1633,7 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetQuestionTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetQuestionTemplateStartTime, mGetQuestionTemplatePath, "Sending server request...");
@@ -1625,7 +1654,7 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
                 throw new KnetikException((int)response.StatusCode, "Error calling GetQuestionTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetQuestionTemplateData = (QuestionTemplateResource) KnetikClient.Deserialize(response.Content, typeof(QuestionTemplateResource), response.Headers);
+            GetQuestionTemplateData = (QuestionTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(QuestionTemplateResource), response.Headers);
             KnetikLogger.LogResponse(mGetQuestionTemplateStartTime, mGetQuestionTemplatePath, string.Format("Response received successfully:\n{0}", GetQuestionTemplateData.ToString()));
 
             if (GetQuestionTemplateComplete != null)
@@ -1633,6 +1662,8 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
                 GetQuestionTemplateComplete(GetQuestionTemplateData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// List and search question templates 
         /// </summary>
@@ -1656,21 +1687,21 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetQuestionTemplatesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetQuestionTemplatesStartTime, mGetQuestionTemplatesPath, "Sending server request...");
@@ -1691,7 +1722,7 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
                 throw new KnetikException((int)response.StatusCode, "Error calling GetQuestionTemplates: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetQuestionTemplatesData = (PageResourceQuestionTemplateResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceQuestionTemplateResource), response.Headers);
+            GetQuestionTemplatesData = (PageResourceQuestionTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceQuestionTemplateResource), response.Headers);
             KnetikLogger.LogResponse(mGetQuestionTemplatesStartTime, mGetQuestionTemplatesPath, string.Format("Response received successfully:\n{0}", GetQuestionTemplatesData.ToString()));
 
             if (GetQuestionTemplatesComplete != null)
@@ -1699,6 +1730,8 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
                 GetQuestionTemplatesComplete(GetQuestionTemplatesData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// List and search questions 
         /// </summary>
@@ -1730,61 +1763,61 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             if (filterSearch != null)
             {
-                queryParams.Add("filter_search", KnetikClient.ParameterToString(filterSearch));
+                queryParams.Add("filter_search", KnetikClient.DefaultClient.ParameterToString(filterSearch));
             }
 
             if (filterIdset != null)
             {
-                queryParams.Add("filter_idset", KnetikClient.ParameterToString(filterIdset));
+                queryParams.Add("filter_idset", KnetikClient.DefaultClient.ParameterToString(filterIdset));
             }
 
             if (filterCategory != null)
             {
-                queryParams.Add("filter_category", KnetikClient.ParameterToString(filterCategory));
+                queryParams.Add("filter_category", KnetikClient.DefaultClient.ParameterToString(filterCategory));
             }
 
             if (filterTagset != null)
             {
-                queryParams.Add("filter_tagset", KnetikClient.ParameterToString(filterTagset));
+                queryParams.Add("filter_tagset", KnetikClient.DefaultClient.ParameterToString(filterTagset));
             }
 
             if (filterTag != null)
             {
-                queryParams.Add("filter_tag", KnetikClient.ParameterToString(filterTag));
+                queryParams.Add("filter_tag", KnetikClient.DefaultClient.ParameterToString(filterTag));
             }
 
             if (filterType != null)
             {
-                queryParams.Add("filter_type", KnetikClient.ParameterToString(filterType));
+                queryParams.Add("filter_type", KnetikClient.DefaultClient.ParameterToString(filterType));
             }
 
             if (filterPublished != null)
             {
-                queryParams.Add("filter_published", KnetikClient.ParameterToString(filterPublished));
+                queryParams.Add("filter_published", KnetikClient.DefaultClient.ParameterToString(filterPublished));
             }
 
             if (filterImportId != null)
             {
-                queryParams.Add("filter_import_id", KnetikClient.ParameterToString(filterImportId));
+                queryParams.Add("filter_import_id", KnetikClient.DefaultClient.ParameterToString(filterImportId));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetQuestionsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetQuestionsStartTime, mGetQuestionsPath, "Sending server request...");
@@ -1805,7 +1838,7 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
                 throw new KnetikException((int)response.StatusCode, "Error calling GetQuestions: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetQuestionsData = (PageResourceQuestionResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceQuestionResource), response.Headers);
+            GetQuestionsData = (PageResourceQuestionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceQuestionResource), response.Headers);
             KnetikLogger.LogResponse(mGetQuestionsStartTime, mGetQuestionsPath, string.Format("Response received successfully:\n{0}", GetQuestionsData.ToString()));
 
             if (GetQuestionsComplete != null)
@@ -1813,6 +1846,8 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
                 GetQuestionsComplete(GetQuestionsData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Count questions based on filters This is also provided by the list endpoint so you don&#39;t need to call this for pagination purposes
         /// </summary>
@@ -1840,41 +1875,41 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
 
             if (filterSearch != null)
             {
-                queryParams.Add("filter_search", KnetikClient.ParameterToString(filterSearch));
+                queryParams.Add("filter_search", KnetikClient.DefaultClient.ParameterToString(filterSearch));
             }
 
             if (filterIdset != null)
             {
-                queryParams.Add("filter_idset", KnetikClient.ParameterToString(filterIdset));
+                queryParams.Add("filter_idset", KnetikClient.DefaultClient.ParameterToString(filterIdset));
             }
 
             if (filterCategory != null)
             {
-                queryParams.Add("filter_category", KnetikClient.ParameterToString(filterCategory));
+                queryParams.Add("filter_category", KnetikClient.DefaultClient.ParameterToString(filterCategory));
             }
 
             if (filterTag != null)
             {
-                queryParams.Add("filter_tag", KnetikClient.ParameterToString(filterTag));
+                queryParams.Add("filter_tag", KnetikClient.DefaultClient.ParameterToString(filterTag));
             }
 
             if (filterTagset != null)
             {
-                queryParams.Add("filter_tagset", KnetikClient.ParameterToString(filterTagset));
+                queryParams.Add("filter_tagset", KnetikClient.DefaultClient.ParameterToString(filterTagset));
             }
 
             if (filterType != null)
             {
-                queryParams.Add("filter_type", KnetikClient.ParameterToString(filterType));
+                queryParams.Add("filter_type", KnetikClient.DefaultClient.ParameterToString(filterType));
             }
 
             if (filterPublished != null)
             {
-                queryParams.Add("filter_published", KnetikClient.ParameterToString(filterPublished));
+                queryParams.Add("filter_published", KnetikClient.DefaultClient.ParameterToString(filterPublished));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetQuestionsCountStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetQuestionsCountStartTime, mGetQuestionsCountPath, "Sending server request...");
@@ -1895,7 +1930,7 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
                 throw new KnetikException((int)response.StatusCode, "Error calling GetQuestionsCount: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetQuestionsCountData = (long?) KnetikClient.Deserialize(response.Content, typeof(long?), response.Headers);
+            GetQuestionsCountData = (long?) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(long?), response.Headers);
             KnetikLogger.LogResponse(mGetQuestionsCountStartTime, mGetQuestionsCountPath, string.Format("Response received successfully:\n{0}", GetQuestionsCountData.ToString()));
 
             if (GetQuestionsCountComplete != null)
@@ -1903,6 +1938,8 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
                 GetQuestionsCountComplete(GetQuestionsCountData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Start processing an import job Will process the CSV file and add new questions asynchronously. The status of the job must be &#39;VALID&#39;.
         /// </summary>
@@ -1926,7 +1963,7 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
             {
                 mProcessImportJobPath = mProcessImportJobPath.Replace("{format}", "json");
             }
-            mProcessImportJobPath = mProcessImportJobPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mProcessImportJobPath = mProcessImportJobPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1936,11 +1973,11 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
 
             if (publishNow != null)
             {
-                queryParams.Add("publish_now", KnetikClient.ParameterToString(publishNow));
+                queryParams.Add("publish_now", KnetikClient.DefaultClient.ParameterToString(publishNow));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mProcessImportJobStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mProcessImportJobStartTime, mProcessImportJobPath, "Sending server request...");
@@ -1961,7 +1998,7 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
                 throw new KnetikException((int)response.StatusCode, "Error calling ProcessImportJob: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            ProcessImportJobData = (ImportJobResource) KnetikClient.Deserialize(response.Content, typeof(ImportJobResource), response.Headers);
+            ProcessImportJobData = (ImportJobResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ImportJobResource), response.Headers);
             KnetikLogger.LogResponse(mProcessImportJobStartTime, mProcessImportJobPath, string.Format("Response received successfully:\n{0}", ProcessImportJobData.ToString()));
 
             if (ProcessImportJobComplete != null)
@@ -1969,6 +2006,8 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
                 ProcessImportJobComplete(ProcessImportJobData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Remove a tag from a question 
         /// </summary>
@@ -1992,8 +2031,8 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
             {
                 mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{format}", "json");
             }
-            mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
-mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", KnetikClient.ParameterToString(tag));
+            mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", KnetikClient.DefaultClient.ParameterToString(tag));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -2002,7 +2041,7 @@ mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", Kneti
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mRemoveQuestionTagStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mRemoveQuestionTagStartTime, mRemoveQuestionTagPath, "Sending server request...");
@@ -2029,6 +2068,8 @@ mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", Kneti
                 RemoveQuestionTagComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Remove a tag from a batch of questions ll questions that have the tag and match filters will have it removed. The returned number is the number of questions updated.
         /// </summary>
@@ -2054,7 +2095,7 @@ mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", Kneti
             {
                 mRemoveTagToQuestionsBatchPath = mRemoveTagToQuestionsBatchPath.Replace("{format}", "json");
             }
-            mRemoveTagToQuestionsBatchPath = mRemoveTagToQuestionsBatchPath.Replace("{" + "tag" + "}", KnetikClient.ParameterToString(tag));
+            mRemoveTagToQuestionsBatchPath = mRemoveTagToQuestionsBatchPath.Replace("{" + "tag" + "}", KnetikClient.DefaultClient.ParameterToString(tag));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -2064,46 +2105,46 @@ mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", Kneti
 
             if (filterSearch != null)
             {
-                queryParams.Add("filter_search", KnetikClient.ParameterToString(filterSearch));
+                queryParams.Add("filter_search", KnetikClient.DefaultClient.ParameterToString(filterSearch));
             }
 
             if (filterIdset != null)
             {
-                queryParams.Add("filter_idset", KnetikClient.ParameterToString(filterIdset));
+                queryParams.Add("filter_idset", KnetikClient.DefaultClient.ParameterToString(filterIdset));
             }
 
             if (filterCategory != null)
             {
-                queryParams.Add("filter_category", KnetikClient.ParameterToString(filterCategory));
+                queryParams.Add("filter_category", KnetikClient.DefaultClient.ParameterToString(filterCategory));
             }
 
             if (filterTag != null)
             {
-                queryParams.Add("filter_tag", KnetikClient.ParameterToString(filterTag));
+                queryParams.Add("filter_tag", KnetikClient.DefaultClient.ParameterToString(filterTag));
             }
 
             if (filterTagset != null)
             {
-                queryParams.Add("filter_tagset", KnetikClient.ParameterToString(filterTagset));
+                queryParams.Add("filter_tagset", KnetikClient.DefaultClient.ParameterToString(filterTagset));
             }
 
             if (filterType != null)
             {
-                queryParams.Add("filter_type", KnetikClient.ParameterToString(filterType));
+                queryParams.Add("filter_type", KnetikClient.DefaultClient.ParameterToString(filterType));
             }
 
             if (filterPublished != null)
             {
-                queryParams.Add("filter_published", KnetikClient.ParameterToString(filterPublished));
+                queryParams.Add("filter_published", KnetikClient.DefaultClient.ParameterToString(filterPublished));
             }
 
             if (filterImportId != null)
             {
-                queryParams.Add("filter_import_id", KnetikClient.ParameterToString(filterImportId));
+                queryParams.Add("filter_import_id", KnetikClient.DefaultClient.ParameterToString(filterImportId));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mRemoveTagToQuestionsBatchStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mRemoveTagToQuestionsBatchStartTime, mRemoveTagToQuestionsBatchPath, "Sending server request...");
@@ -2124,7 +2165,7 @@ mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", Kneti
                 throw new KnetikException((int)response.StatusCode, "Error calling RemoveTagToQuestionsBatch: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            RemoveTagToQuestionsBatchData = (int?) KnetikClient.Deserialize(response.Content, typeof(int?), response.Headers);
+            RemoveTagToQuestionsBatchData = (int?) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(int?), response.Headers);
             KnetikLogger.LogResponse(mRemoveTagToQuestionsBatchStartTime, mRemoveTagToQuestionsBatchPath, string.Format("Response received successfully:\n{0}", RemoveTagToQuestionsBatchData.ToString()));
 
             if (RemoveTagToQuestionsBatchComplete != null)
@@ -2132,6 +2173,8 @@ mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", Kneti
                 RemoveTagToQuestionsBatchComplete(RemoveTagToQuestionsBatchData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// List and search tags by the beginning of the string For performance reasons, search &amp; category filters are mutually exclusive. If category is specified, search filter will be ignored in order to do fast matches for typeahead.
         /// </summary>
@@ -2155,21 +2198,21 @@ mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", Kneti
 
             if (filterSearch != null)
             {
-                queryParams.Add("filter_search", KnetikClient.ParameterToString(filterSearch));
+                queryParams.Add("filter_search", KnetikClient.DefaultClient.ParameterToString(filterSearch));
             }
 
             if (filterCategory != null)
             {
-                queryParams.Add("filter_category", KnetikClient.ParameterToString(filterCategory));
+                queryParams.Add("filter_category", KnetikClient.DefaultClient.ParameterToString(filterCategory));
             }
 
             if (filterImportId != null)
             {
-                queryParams.Add("filter_import_id", KnetikClient.ParameterToString(filterImportId));
+                queryParams.Add("filter_import_id", KnetikClient.DefaultClient.ParameterToString(filterImportId));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSearchQuestionTagsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSearchQuestionTagsStartTime, mSearchQuestionTagsPath, "Sending server request...");
@@ -2190,7 +2233,7 @@ mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", Kneti
                 throw new KnetikException((int)response.StatusCode, "Error calling SearchQuestionTags: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            SearchQuestionTagsData = (List<string>) KnetikClient.Deserialize(response.Content, typeof(List<string>), response.Headers);
+            SearchQuestionTagsData = (List<string>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<string>), response.Headers);
             KnetikLogger.LogResponse(mSearchQuestionTagsStartTime, mSearchQuestionTagsPath, string.Format("Response received successfully:\n{0}", SearchQuestionTagsData.ToString()));
 
             if (SearchQuestionTagsComplete != null)
@@ -2198,6 +2241,8 @@ mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", Kneti
                 SearchQuestionTagsComplete(SearchQuestionTagsData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Update an import job Changes should be made before process is started for there to be any effect.
         /// </summary>
@@ -2216,7 +2261,7 @@ mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", Kneti
             {
                 mUpdateImportJobPath = mUpdateImportJobPath.Replace("{format}", "json");
             }
-            mUpdateImportJobPath = mUpdateImportJobPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateImportJobPath = mUpdateImportJobPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -2224,10 +2269,10 @@ mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", Kneti
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(request); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateImportJobStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateImportJobStartTime, mUpdateImportJobPath, "Sending server request...");
@@ -2248,7 +2293,7 @@ mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", Kneti
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateImportJob: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateImportJobData = (ImportJobResource) KnetikClient.Deserialize(response.Content, typeof(ImportJobResource), response.Headers);
+            UpdateImportJobData = (ImportJobResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ImportJobResource), response.Headers);
             KnetikLogger.LogResponse(mUpdateImportJobStartTime, mUpdateImportJobPath, string.Format("Response received successfully:\n{0}", UpdateImportJobData.ToString()));
 
             if (UpdateImportJobComplete != null)
@@ -2256,6 +2301,8 @@ mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", Kneti
                 UpdateImportJobComplete(UpdateImportJobData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Update a question 
         /// </summary>
@@ -2274,7 +2321,7 @@ mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", Kneti
             {
                 mUpdateQuestionPath = mUpdateQuestionPath.Replace("{format}", "json");
             }
-            mUpdateQuestionPath = mUpdateQuestionPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateQuestionPath = mUpdateQuestionPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -2282,10 +2329,10 @@ mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", Kneti
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(question); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(question); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateQuestionStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateQuestionStartTime, mUpdateQuestionPath, "Sending server request...");
@@ -2306,7 +2353,7 @@ mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", Kneti
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateQuestion: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateQuestionData = (QuestionResource) KnetikClient.Deserialize(response.Content, typeof(QuestionResource), response.Headers);
+            UpdateQuestionData = (QuestionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(QuestionResource), response.Headers);
             KnetikLogger.LogResponse(mUpdateQuestionStartTime, mUpdateQuestionPath, string.Format("Response received successfully:\n{0}", UpdateQuestionData.ToString()));
 
             if (UpdateQuestionComplete != null)
@@ -2314,6 +2361,8 @@ mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", Kneti
                 UpdateQuestionComplete(UpdateQuestionData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Update an answer for a question 
         /// </summary>
@@ -2338,8 +2387,8 @@ mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", Kneti
             {
                 mUpdateQuestionAnswerPath = mUpdateQuestionAnswerPath.Replace("{format}", "json");
             }
-            mUpdateQuestionAnswerPath = mUpdateQuestionAnswerPath.Replace("{" + "question_id" + "}", KnetikClient.ParameterToString(questionId));
-mUpdateQuestionAnswerPath = mUpdateQuestionAnswerPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateQuestionAnswerPath = mUpdateQuestionAnswerPath.Replace("{" + "question_id" + "}", KnetikClient.DefaultClient.ParameterToString(questionId));
+mUpdateQuestionAnswerPath = mUpdateQuestionAnswerPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -2347,10 +2396,10 @@ mUpdateQuestionAnswerPath = mUpdateQuestionAnswerPath.Replace("{" + "id" + "}", 
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(answer); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(answer); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateQuestionAnswerStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateQuestionAnswerStartTime, mUpdateQuestionAnswerPath, "Sending server request...");
@@ -2377,6 +2426,8 @@ mUpdateQuestionAnswerPath = mUpdateQuestionAnswerPath.Replace("{" + "id" + "}", 
                 UpdateQuestionAnswerComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Update a question template 
         /// </summary>
@@ -2395,7 +2446,7 @@ mUpdateQuestionAnswerPath = mUpdateQuestionAnswerPath.Replace("{" + "id" + "}", 
             {
                 mUpdateQuestionTemplatePath = mUpdateQuestionTemplatePath.Replace("{format}", "json");
             }
-            mUpdateQuestionTemplatePath = mUpdateQuestionTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateQuestionTemplatePath = mUpdateQuestionTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -2403,10 +2454,10 @@ mUpdateQuestionAnswerPath = mUpdateQuestionAnswerPath.Replace("{" + "id" + "}", 
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(questionTemplateResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(questionTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateQuestionTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateQuestionTemplateStartTime, mUpdateQuestionTemplatePath, "Sending server request...");
@@ -2427,7 +2478,7 @@ mUpdateQuestionAnswerPath = mUpdateQuestionAnswerPath.Replace("{" + "id" + "}", 
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateQuestionTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateQuestionTemplateData = (QuestionTemplateResource) KnetikClient.Deserialize(response.Content, typeof(QuestionTemplateResource), response.Headers);
+            UpdateQuestionTemplateData = (QuestionTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(QuestionTemplateResource), response.Headers);
             KnetikLogger.LogResponse(mUpdateQuestionTemplateStartTime, mUpdateQuestionTemplatePath, string.Format("Response received successfully:\n{0}", UpdateQuestionTemplateData.ToString()));
 
             if (UpdateQuestionTemplateComplete != null)
@@ -2435,6 +2486,8 @@ mUpdateQuestionAnswerPath = mUpdateQuestionAnswerPath.Replace("{" + "id" + "}", 
                 UpdateQuestionTemplateComplete(UpdateQuestionTemplateData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Bulk update questions Will update all questions that match filters used (or all questions in system if no filters used). Body should match a question resource with only those properties you wish to set. Null values will be ignored. Returned number is how many were updated.
         /// </summary>
@@ -2463,43 +2516,43 @@ mUpdateQuestionAnswerPath = mUpdateQuestionAnswerPath.Replace("{" + "id" + "}", 
 
             if (filterSearch != null)
             {
-                queryParams.Add("filter_search", KnetikClient.ParameterToString(filterSearch));
+                queryParams.Add("filter_search", KnetikClient.DefaultClient.ParameterToString(filterSearch));
             }
 
             if (filterIdset != null)
             {
-                queryParams.Add("filter_idset", KnetikClient.ParameterToString(filterIdset));
+                queryParams.Add("filter_idset", KnetikClient.DefaultClient.ParameterToString(filterIdset));
             }
 
             if (filterCategory != null)
             {
-                queryParams.Add("filter_category", KnetikClient.ParameterToString(filterCategory));
+                queryParams.Add("filter_category", KnetikClient.DefaultClient.ParameterToString(filterCategory));
             }
 
             if (filterTagset != null)
             {
-                queryParams.Add("filter_tagset", KnetikClient.ParameterToString(filterTagset));
+                queryParams.Add("filter_tagset", KnetikClient.DefaultClient.ParameterToString(filterTagset));
             }
 
             if (filterType != null)
             {
-                queryParams.Add("filter_type", KnetikClient.ParameterToString(filterType));
+                queryParams.Add("filter_type", KnetikClient.DefaultClient.ParameterToString(filterType));
             }
 
             if (filterPublished != null)
             {
-                queryParams.Add("filter_published", KnetikClient.ParameterToString(filterPublished));
+                queryParams.Add("filter_published", KnetikClient.DefaultClient.ParameterToString(filterPublished));
             }
 
             if (filterImportId != null)
             {
-                queryParams.Add("filter_import_id", KnetikClient.ParameterToString(filterImportId));
+                queryParams.Add("filter_import_id", KnetikClient.DefaultClient.ParameterToString(filterImportId));
             }
 
-            postBody = KnetikClient.Serialize(question); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(question); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateQuestionsInBulkStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateQuestionsInBulkStartTime, mUpdateQuestionsInBulkPath, "Sending server request...");
@@ -2520,7 +2573,7 @@ mUpdateQuestionAnswerPath = mUpdateQuestionAnswerPath.Replace("{" + "id" + "}", 
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateQuestionsInBulk: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateQuestionsInBulkData = (int?) KnetikClient.Deserialize(response.Content, typeof(int?), response.Headers);
+            UpdateQuestionsInBulkData = (int?) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(int?), response.Headers);
             KnetikLogger.LogResponse(mUpdateQuestionsInBulkStartTime, mUpdateQuestionsInBulkPath, string.Format("Response received successfully:\n{0}", UpdateQuestionsInBulkData.ToString()));
 
             if (UpdateQuestionsInBulkComplete != null)
@@ -2528,5 +2581,6 @@ mUpdateQuestionAnswerPath = mUpdateQuestionAnswerPath.Replace("{" + "id" + "}", 
                 UpdateQuestionsInBulkComplete(UpdateQuestionsInBulkData);
             }
         }
+
     }
 }

@@ -107,6 +107,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -188,25 +189,19 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public AuthRolesApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mCreateRoleCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteRoleCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetClientRolesCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetRoleCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetRolesCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetUserRolesCoroutine = new KnetikCoroutine(KnetikClient);
-            mSetClientRolesCoroutine = new KnetikCoroutine(KnetikClient);
-            mSetPermissionsForRoleCoroutine = new KnetikCoroutine(KnetikClient);
-            mSetUserRolesCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateRoleCoroutine = new KnetikCoroutine(KnetikClient);
+            mCreateRoleCoroutine = new KnetikCoroutine();
+            mDeleteRoleCoroutine = new KnetikCoroutine();
+            mGetClientRolesCoroutine = new KnetikCoroutine();
+            mGetRoleCoroutine = new KnetikCoroutine();
+            mGetRolesCoroutine = new KnetikCoroutine();
+            mGetUserRolesCoroutine = new KnetikCoroutine();
+            mSetClientRolesCoroutine = new KnetikCoroutine();
+            mSetPermissionsForRoleCoroutine = new KnetikCoroutine();
+            mSetUserRolesCoroutine = new KnetikCoroutine();
+            mUpdateRoleCoroutine = new KnetikCoroutine();
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
+        /// <inheritdoc />
         /// <summary>
         /// Create a new role 
         /// </summary>
@@ -226,10 +221,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(roleResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(roleResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateRoleStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateRoleStartTime, mCreateRolePath, "Sending server request...");
@@ -250,7 +245,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateRole: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateRoleData = (RoleResource) KnetikClient.Deserialize(response.Content, typeof(RoleResource), response.Headers);
+            CreateRoleData = (RoleResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(RoleResource), response.Headers);
             KnetikLogger.LogResponse(mCreateRoleStartTime, mCreateRolePath, string.Format("Response received successfully:\n{0}", CreateRoleData.ToString()));
 
             if (CreateRoleComplete != null)
@@ -258,6 +253,8 @@ namespace com.knetikcloud.Api
                 CreateRoleComplete(CreateRoleData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Delete a role 
         /// </summary>
@@ -276,7 +273,7 @@ namespace com.knetikcloud.Api
             {
                 mDeleteRolePath = mDeleteRolePath.Replace("{format}", "json");
             }
-            mDeleteRolePath = mDeleteRolePath.Replace("{" + "role" + "}", KnetikClient.ParameterToString(role));
+            mDeleteRolePath = mDeleteRolePath.Replace("{" + "role" + "}", KnetikClient.DefaultClient.ParameterToString(role));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -286,11 +283,11 @@ namespace com.knetikcloud.Api
 
             if (force != null)
             {
-                queryParams.Add("force", KnetikClient.ParameterToString(force));
+                queryParams.Add("force", KnetikClient.DefaultClient.ParameterToString(force));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteRoleStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteRoleStartTime, mDeleteRolePath, "Sending server request...");
@@ -317,6 +314,8 @@ namespace com.knetikcloud.Api
                 DeleteRoleComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Get roles for a client 
         /// </summary>
@@ -334,7 +333,7 @@ namespace com.knetikcloud.Api
             {
                 mGetClientRolesPath = mGetClientRolesPath.Replace("{format}", "json");
             }
-            mGetClientRolesPath = mGetClientRolesPath.Replace("{" + "client_key" + "}", KnetikClient.ParameterToString(clientKey));
+            mGetClientRolesPath = mGetClientRolesPath.Replace("{" + "client_key" + "}", KnetikClient.DefaultClient.ParameterToString(clientKey));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -343,7 +342,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetClientRolesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetClientRolesStartTime, mGetClientRolesPath, "Sending server request...");
@@ -364,7 +363,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetClientRoles: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetClientRolesData = (List<RoleResource>) KnetikClient.Deserialize(response.Content, typeof(List<RoleResource>), response.Headers);
+            GetClientRolesData = (List<RoleResource>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<RoleResource>), response.Headers);
             KnetikLogger.LogResponse(mGetClientRolesStartTime, mGetClientRolesPath, string.Format("Response received successfully:\n{0}", GetClientRolesData.ToString()));
 
             if (GetClientRolesComplete != null)
@@ -372,6 +371,8 @@ namespace com.knetikcloud.Api
                 GetClientRolesComplete(GetClientRolesData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Get a single role 
         /// </summary>
@@ -389,7 +390,7 @@ namespace com.knetikcloud.Api
             {
                 mGetRolePath = mGetRolePath.Replace("{format}", "json");
             }
-            mGetRolePath = mGetRolePath.Replace("{" + "role" + "}", KnetikClient.ParameterToString(role));
+            mGetRolePath = mGetRolePath.Replace("{" + "role" + "}", KnetikClient.DefaultClient.ParameterToString(role));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -398,7 +399,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetRoleStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetRoleStartTime, mGetRolePath, "Sending server request...");
@@ -419,7 +420,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetRole: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetRoleData = (RoleResource) KnetikClient.Deserialize(response.Content, typeof(RoleResource), response.Headers);
+            GetRoleData = (RoleResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(RoleResource), response.Headers);
             KnetikLogger.LogResponse(mGetRoleStartTime, mGetRolePath, string.Format("Response received successfully:\n{0}", GetRoleData.ToString()));
 
             if (GetRoleComplete != null)
@@ -427,6 +428,8 @@ namespace com.knetikcloud.Api
                 GetRoleComplete(GetRoleData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// List and search roles 
         /// </summary>
@@ -452,31 +455,31 @@ namespace com.knetikcloud.Api
 
             if (filterName != null)
             {
-                queryParams.Add("filter_name", KnetikClient.ParameterToString(filterName));
+                queryParams.Add("filter_name", KnetikClient.DefaultClient.ParameterToString(filterName));
             }
 
             if (filterRole != null)
             {
-                queryParams.Add("filter_role", KnetikClient.ParameterToString(filterRole));
+                queryParams.Add("filter_role", KnetikClient.DefaultClient.ParameterToString(filterRole));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetRolesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetRolesStartTime, mGetRolesPath, "Sending server request...");
@@ -497,7 +500,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetRoles: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetRolesData = (PageResourceRoleResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceRoleResource), response.Headers);
+            GetRolesData = (PageResourceRoleResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceRoleResource), response.Headers);
             KnetikLogger.LogResponse(mGetRolesStartTime, mGetRolesPath, string.Format("Response received successfully:\n{0}", GetRolesData.ToString()));
 
             if (GetRolesComplete != null)
@@ -505,6 +508,8 @@ namespace com.knetikcloud.Api
                 GetRolesComplete(GetRolesData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Get roles for a user 
         /// </summary>
@@ -522,7 +527,7 @@ namespace com.knetikcloud.Api
             {
                 mGetUserRolesPath = mGetUserRolesPath.Replace("{format}", "json");
             }
-            mGetUserRolesPath = mGetUserRolesPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+            mGetUserRolesPath = mGetUserRolesPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -531,7 +536,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUserRolesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUserRolesStartTime, mGetUserRolesPath, "Sending server request...");
@@ -552,7 +557,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetUserRoles: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetUserRolesData = (List<RoleResource>) KnetikClient.Deserialize(response.Content, typeof(List<RoleResource>), response.Headers);
+            GetUserRolesData = (List<RoleResource>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<RoleResource>), response.Headers);
             KnetikLogger.LogResponse(mGetUserRolesStartTime, mGetUserRolesPath, string.Format("Response received successfully:\n{0}", GetUserRolesData.ToString()));
 
             if (GetUserRolesComplete != null)
@@ -560,6 +565,8 @@ namespace com.knetikcloud.Api
                 GetUserRolesComplete(GetUserRolesData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Set roles for a client 
         /// </summary>
@@ -578,7 +585,7 @@ namespace com.knetikcloud.Api
             {
                 mSetClientRolesPath = mSetClientRolesPath.Replace("{format}", "json");
             }
-            mSetClientRolesPath = mSetClientRolesPath.Replace("{" + "client_key" + "}", KnetikClient.ParameterToString(clientKey));
+            mSetClientRolesPath = mSetClientRolesPath.Replace("{" + "client_key" + "}", KnetikClient.DefaultClient.ParameterToString(clientKey));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -586,10 +593,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(rolesList); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(rolesList); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSetClientRolesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSetClientRolesStartTime, mSetClientRolesPath, "Sending server request...");
@@ -610,7 +617,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling SetClientRoles: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            SetClientRolesData = (ClientResource) KnetikClient.Deserialize(response.Content, typeof(ClientResource), response.Headers);
+            SetClientRolesData = (ClientResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ClientResource), response.Headers);
             KnetikLogger.LogResponse(mSetClientRolesStartTime, mSetClientRolesPath, string.Format("Response received successfully:\n{0}", SetClientRolesData.ToString()));
 
             if (SetClientRolesComplete != null)
@@ -618,6 +625,8 @@ namespace com.knetikcloud.Api
                 SetClientRolesComplete(SetClientRolesData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Set permissions for a role 
         /// </summary>
@@ -636,7 +645,7 @@ namespace com.knetikcloud.Api
             {
                 mSetPermissionsForRolePath = mSetPermissionsForRolePath.Replace("{format}", "json");
             }
-            mSetPermissionsForRolePath = mSetPermissionsForRolePath.Replace("{" + "role" + "}", KnetikClient.ParameterToString(role));
+            mSetPermissionsForRolePath = mSetPermissionsForRolePath.Replace("{" + "role" + "}", KnetikClient.DefaultClient.ParameterToString(role));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -644,10 +653,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(permissionsList); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(permissionsList); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSetPermissionsForRoleStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSetPermissionsForRoleStartTime, mSetPermissionsForRolePath, "Sending server request...");
@@ -668,7 +677,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling SetPermissionsForRole: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            SetPermissionsForRoleData = (RoleResource) KnetikClient.Deserialize(response.Content, typeof(RoleResource), response.Headers);
+            SetPermissionsForRoleData = (RoleResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(RoleResource), response.Headers);
             KnetikLogger.LogResponse(mSetPermissionsForRoleStartTime, mSetPermissionsForRolePath, string.Format("Response received successfully:\n{0}", SetPermissionsForRoleData.ToString()));
 
             if (SetPermissionsForRoleComplete != null)
@@ -676,6 +685,8 @@ namespace com.knetikcloud.Api
                 SetPermissionsForRoleComplete(SetPermissionsForRoleData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Set roles for a user 
         /// </summary>
@@ -694,7 +705,7 @@ namespace com.knetikcloud.Api
             {
                 mSetUserRolesPath = mSetUserRolesPath.Replace("{format}", "json");
             }
-            mSetUserRolesPath = mSetUserRolesPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+            mSetUserRolesPath = mSetUserRolesPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -702,10 +713,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(rolesList); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(rolesList); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSetUserRolesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSetUserRolesStartTime, mSetUserRolesPath, "Sending server request...");
@@ -726,7 +737,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling SetUserRoles: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            SetUserRolesData = (UserResource) KnetikClient.Deserialize(response.Content, typeof(UserResource), response.Headers);
+            SetUserRolesData = (UserResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(UserResource), response.Headers);
             KnetikLogger.LogResponse(mSetUserRolesStartTime, mSetUserRolesPath, string.Format("Response received successfully:\n{0}", SetUserRolesData.ToString()));
 
             if (SetUserRolesComplete != null)
@@ -734,6 +745,8 @@ namespace com.knetikcloud.Api
                 SetUserRolesComplete(SetUserRolesData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Update a role 
         /// </summary>
@@ -752,7 +765,7 @@ namespace com.knetikcloud.Api
             {
                 mUpdateRolePath = mUpdateRolePath.Replace("{format}", "json");
             }
-            mUpdateRolePath = mUpdateRolePath.Replace("{" + "role" + "}", KnetikClient.ParameterToString(role));
+            mUpdateRolePath = mUpdateRolePath.Replace("{" + "role" + "}", KnetikClient.DefaultClient.ParameterToString(role));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -760,10 +773,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(roleResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(roleResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateRoleStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateRoleStartTime, mUpdateRolePath, "Sending server request...");
@@ -784,7 +797,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateRole: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateRoleData = (RoleResource) KnetikClient.Deserialize(response.Content, typeof(RoleResource), response.Headers);
+            UpdateRoleData = (RoleResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(RoleResource), response.Headers);
             KnetikLogger.LogResponse(mUpdateRoleStartTime, mUpdateRolePath, string.Format("Response received successfully:\n{0}", UpdateRoleData.ToString()));
 
             if (UpdateRoleComplete != null)
@@ -792,5 +805,6 @@ namespace com.knetikcloud.Api
                 UpdateRoleComplete(UpdateRoleData);
             }
         }
+
     }
 }

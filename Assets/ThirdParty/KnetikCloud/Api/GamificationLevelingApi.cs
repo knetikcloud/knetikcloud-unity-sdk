@@ -67,19 +67,19 @@ namespace com.knetikcloud.Api
         /// <summary>
         /// Get a user&#39;s progress for a given level schema 
         /// </summary>
-        /// <param name="userId">The id of the user</param>
+        /// <param name="userId">The id of the user or &#39;me&#39;</param>
         /// <param name="name">The level schema name</param>
-        void GetUserLevel(int? userId, string name);
+        void GetUserLevel(string userId, string name);
 
         /// <summary>
         /// Get a user&#39;s progress for all level schemas Filtering and sorting is based on the LevelingResource object, not the UserLevelingResource that is returned here.
         /// </summary>
-        /// <param name="userId">The id of the user</param>
+        /// <param name="userId">The id of the user or &#39;me&#39;</param>
         /// <param name="filterName">Filter for level schemas whose name contains a given string</param>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
-        void GetUserLevels(int? userId, string filterName, int? size, int? page, string order);
+        void GetUserLevels(string userId, string filterName, int? size, int? page, string order);
 
         /// <summary>
         /// Update or create a leveling progress record for a user If no progress record yet exists for the user, it will be created. Otherwise the provided value will be added to it. May be negative. If progress meets or exceeds the level&#39;s max_value it will be marked as earned and a BRE event will be triggered for the &lt;code&gt;BreAchievementEarnedTrigger&lt;/code&gt;.
@@ -106,6 +106,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -185,25 +186,19 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public GamificationLevelingApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mCreateLevelCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteLevelCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetLevelCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetLevelTriggersCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetLevelsCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetUserLevelCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetUserLevelsCoroutine = new KnetikCoroutine(KnetikClient);
-            mIncrementProgressCoroutine = new KnetikCoroutine(KnetikClient);
-            mSetProgressCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateLevelCoroutine = new KnetikCoroutine(KnetikClient);
+            mCreateLevelCoroutine = new KnetikCoroutine();
+            mDeleteLevelCoroutine = new KnetikCoroutine();
+            mGetLevelCoroutine = new KnetikCoroutine();
+            mGetLevelTriggersCoroutine = new KnetikCoroutine();
+            mGetLevelsCoroutine = new KnetikCoroutine();
+            mGetUserLevelCoroutine = new KnetikCoroutine();
+            mGetUserLevelsCoroutine = new KnetikCoroutine();
+            mIncrementProgressCoroutine = new KnetikCoroutine();
+            mSetProgressCoroutine = new KnetikCoroutine();
+            mUpdateLevelCoroutine = new KnetikCoroutine();
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
+        /// <inheritdoc />
         /// <summary>
         /// Create a level schema 
         /// </summary>
@@ -223,10 +218,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(level); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(level); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateLevelStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateLevelStartTime, mCreateLevelPath, "Sending server request...");
@@ -247,7 +242,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateLevel: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateLevelData = (LevelingResource) KnetikClient.Deserialize(response.Content, typeof(LevelingResource), response.Headers);
+            CreateLevelData = (LevelingResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(LevelingResource), response.Headers);
             KnetikLogger.LogResponse(mCreateLevelStartTime, mCreateLevelPath, string.Format("Response received successfully:\n{0}", CreateLevelData.ToString()));
 
             if (CreateLevelComplete != null)
@@ -255,6 +250,8 @@ namespace com.knetikcloud.Api
                 CreateLevelComplete(CreateLevelData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Delete a level 
         /// </summary>
@@ -272,7 +269,7 @@ namespace com.knetikcloud.Api
             {
                 mDeleteLevelPath = mDeleteLevelPath.Replace("{format}", "json");
             }
-            mDeleteLevelPath = mDeleteLevelPath.Replace("{" + "name" + "}", KnetikClient.ParameterToString(name));
+            mDeleteLevelPath = mDeleteLevelPath.Replace("{" + "name" + "}", KnetikClient.DefaultClient.ParameterToString(name));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -281,7 +278,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteLevelStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteLevelStartTime, mDeleteLevelPath, "Sending server request...");
@@ -308,6 +305,8 @@ namespace com.knetikcloud.Api
                 DeleteLevelComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Retrieve a level 
         /// </summary>
@@ -325,7 +324,7 @@ namespace com.knetikcloud.Api
             {
                 mGetLevelPath = mGetLevelPath.Replace("{format}", "json");
             }
-            mGetLevelPath = mGetLevelPath.Replace("{" + "name" + "}", KnetikClient.ParameterToString(name));
+            mGetLevelPath = mGetLevelPath.Replace("{" + "name" + "}", KnetikClient.DefaultClient.ParameterToString(name));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -334,7 +333,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetLevelStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetLevelStartTime, mGetLevelPath, "Sending server request...");
@@ -355,7 +354,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetLevel: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetLevelData = (LevelingResource) KnetikClient.Deserialize(response.Content, typeof(LevelingResource), response.Headers);
+            GetLevelData = (LevelingResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(LevelingResource), response.Headers);
             KnetikLogger.LogResponse(mGetLevelStartTime, mGetLevelPath, string.Format("Response received successfully:\n{0}", GetLevelData.ToString()));
 
             if (GetLevelComplete != null)
@@ -363,6 +362,8 @@ namespace com.knetikcloud.Api
                 GetLevelComplete(GetLevelData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Get the list of triggers that can be used to trigger a leveling progress update 
         /// </summary>
@@ -382,7 +383,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetLevelTriggersStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetLevelTriggersStartTime, mGetLevelTriggersPath, "Sending server request...");
@@ -403,7 +404,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetLevelTriggers: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetLevelTriggersData = (List<BreTriggerResource>) KnetikClient.Deserialize(response.Content, typeof(List<BreTriggerResource>), response.Headers);
+            GetLevelTriggersData = (List<BreTriggerResource>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<BreTriggerResource>), response.Headers);
             KnetikLogger.LogResponse(mGetLevelTriggersStartTime, mGetLevelTriggersPath, string.Format("Response received successfully:\n{0}", GetLevelTriggersData.ToString()));
 
             if (GetLevelTriggersComplete != null)
@@ -411,6 +412,8 @@ namespace com.knetikcloud.Api
                 GetLevelTriggersComplete(GetLevelTriggersData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// List and search levels Get a list of levels schemas with optional filtering
         /// </summary>
@@ -435,26 +438,26 @@ namespace com.knetikcloud.Api
 
             if (filterName != null)
             {
-                queryParams.Add("filter_name", KnetikClient.ParameterToString(filterName));
+                queryParams.Add("filter_name", KnetikClient.DefaultClient.ParameterToString(filterName));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetLevelsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetLevelsStartTime, mGetLevelsPath, "Sending server request...");
@@ -475,7 +478,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetLevels: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetLevelsData = (PageResourceLevelingResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceLevelingResource), response.Headers);
+            GetLevelsData = (PageResourceLevelingResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceLevelingResource), response.Headers);
             KnetikLogger.LogResponse(mGetLevelsStartTime, mGetLevelsPath, string.Format("Response received successfully:\n{0}", GetLevelsData.ToString()));
 
             if (GetLevelsComplete != null)
@@ -483,12 +486,14 @@ namespace com.knetikcloud.Api
                 GetLevelsComplete(GetLevelsData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Get a user&#39;s progress for a given level schema 
         /// </summary>
-        /// <param name="userId">The id of the user</param>
+        /// <param name="userId">The id of the user or &#39;me&#39;</param>
         /// <param name="name">The level schema name</param>
-        public void GetUserLevel(int? userId, string name)
+        public void GetUserLevel(string userId, string name)
         {
             // verify the required parameter 'userId' is set
             if (userId == null)
@@ -506,8 +511,8 @@ namespace com.knetikcloud.Api
             {
                 mGetUserLevelPath = mGetUserLevelPath.Replace("{format}", "json");
             }
-            mGetUserLevelPath = mGetUserLevelPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-mGetUserLevelPath = mGetUserLevelPath.Replace("{" + "name" + "}", KnetikClient.ParameterToString(name));
+            mGetUserLevelPath = mGetUserLevelPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
+mGetUserLevelPath = mGetUserLevelPath.Replace("{" + "name" + "}", KnetikClient.DefaultClient.ParameterToString(name));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -516,7 +521,7 @@ mGetUserLevelPath = mGetUserLevelPath.Replace("{" + "name" + "}", KnetikClient.P
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUserLevelStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUserLevelStartTime, mGetUserLevelPath, "Sending server request...");
@@ -537,7 +542,7 @@ mGetUserLevelPath = mGetUserLevelPath.Replace("{" + "name" + "}", KnetikClient.P
                 throw new KnetikException((int)response.StatusCode, "Error calling GetUserLevel: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetUserLevelData = (UserLevelingResource) KnetikClient.Deserialize(response.Content, typeof(UserLevelingResource), response.Headers);
+            GetUserLevelData = (UserLevelingResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(UserLevelingResource), response.Headers);
             KnetikLogger.LogResponse(mGetUserLevelStartTime, mGetUserLevelPath, string.Format("Response received successfully:\n{0}", GetUserLevelData.ToString()));
 
             if (GetUserLevelComplete != null)
@@ -545,15 +550,17 @@ mGetUserLevelPath = mGetUserLevelPath.Replace("{" + "name" + "}", KnetikClient.P
                 GetUserLevelComplete(GetUserLevelData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Get a user&#39;s progress for all level schemas Filtering and sorting is based on the LevelingResource object, not the UserLevelingResource that is returned here.
         /// </summary>
-        /// <param name="userId">The id of the user</param>
+        /// <param name="userId">The id of the user or &#39;me&#39;</param>
         /// <param name="filterName">Filter for level schemas whose name contains a given string</param>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
-        public void GetUserLevels(int? userId, string filterName, int? size, int? page, string order)
+        public void GetUserLevels(string userId, string filterName, int? size, int? page, string order)
         {
             // verify the required parameter 'userId' is set
             if (userId == null)
@@ -566,7 +573,7 @@ mGetUserLevelPath = mGetUserLevelPath.Replace("{" + "name" + "}", KnetikClient.P
             {
                 mGetUserLevelsPath = mGetUserLevelsPath.Replace("{format}", "json");
             }
-            mGetUserLevelsPath = mGetUserLevelsPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+            mGetUserLevelsPath = mGetUserLevelsPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -576,26 +583,26 @@ mGetUserLevelPath = mGetUserLevelPath.Replace("{" + "name" + "}", KnetikClient.P
 
             if (filterName != null)
             {
-                queryParams.Add("filter_name", KnetikClient.ParameterToString(filterName));
+                queryParams.Add("filter_name", KnetikClient.DefaultClient.ParameterToString(filterName));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUserLevelsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUserLevelsStartTime, mGetUserLevelsPath, "Sending server request...");
@@ -616,7 +623,7 @@ mGetUserLevelPath = mGetUserLevelPath.Replace("{" + "name" + "}", KnetikClient.P
                 throw new KnetikException((int)response.StatusCode, "Error calling GetUserLevels: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetUserLevelsData = (PageResourceUserLevelingResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceUserLevelingResource), response.Headers);
+            GetUserLevelsData = (PageResourceUserLevelingResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceUserLevelingResource), response.Headers);
             KnetikLogger.LogResponse(mGetUserLevelsStartTime, mGetUserLevelsPath, string.Format("Response received successfully:\n{0}", GetUserLevelsData.ToString()));
 
             if (GetUserLevelsComplete != null)
@@ -624,6 +631,8 @@ mGetUserLevelPath = mGetUserLevelPath.Replace("{" + "name" + "}", KnetikClient.P
                 GetUserLevelsComplete(GetUserLevelsData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Update or create a leveling progress record for a user If no progress record yet exists for the user, it will be created. Otherwise the provided value will be added to it. May be negative. If progress meets or exceeds the level&#39;s max_value it will be marked as earned and a BRE event will be triggered for the &lt;code&gt;BreAchievementEarnedTrigger&lt;/code&gt;.
         /// </summary>
@@ -648,8 +657,8 @@ mGetUserLevelPath = mGetUserLevelPath.Replace("{" + "name" + "}", KnetikClient.P
             {
                 mIncrementProgressPath = mIncrementProgressPath.Replace("{format}", "json");
             }
-            mIncrementProgressPath = mIncrementProgressPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-mIncrementProgressPath = mIncrementProgressPath.Replace("{" + "name" + "}", KnetikClient.ParameterToString(name));
+            mIncrementProgressPath = mIncrementProgressPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
+mIncrementProgressPath = mIncrementProgressPath.Replace("{" + "name" + "}", KnetikClient.DefaultClient.ParameterToString(name));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -657,10 +666,10 @@ mIncrementProgressPath = mIncrementProgressPath.Replace("{" + "name" + "}", Knet
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(progress); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(progress); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mIncrementProgressStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mIncrementProgressStartTime, mIncrementProgressPath, "Sending server request...");
@@ -687,6 +696,8 @@ mIncrementProgressPath = mIncrementProgressPath.Replace("{" + "name" + "}", Knet
                 IncrementProgressComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Set leveling progress for a user If no progress record yet exists for the user, it will be created. Otherwise it will be updated to the provided value. If progress meets or exceeds the level&#39;s max_value it will be marked as earned and a BRE event will be triggered for the &lt;code&gt;BreAchievementEarnedTrigger&lt;/code&gt;.
         /// </summary>
@@ -711,8 +722,8 @@ mIncrementProgressPath = mIncrementProgressPath.Replace("{" + "name" + "}", Knet
             {
                 mSetProgressPath = mSetProgressPath.Replace("{format}", "json");
             }
-            mSetProgressPath = mSetProgressPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-mSetProgressPath = mSetProgressPath.Replace("{" + "name" + "}", KnetikClient.ParameterToString(name));
+            mSetProgressPath = mSetProgressPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
+mSetProgressPath = mSetProgressPath.Replace("{" + "name" + "}", KnetikClient.DefaultClient.ParameterToString(name));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -720,10 +731,10 @@ mSetProgressPath = mSetProgressPath.Replace("{" + "name" + "}", KnetikClient.Par
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(progress); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(progress); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSetProgressStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSetProgressStartTime, mSetProgressPath, "Sending server request...");
@@ -750,6 +761,8 @@ mSetProgressPath = mSetProgressPath.Replace("{" + "name" + "}", KnetikClient.Par
                 SetProgressComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Update a level 
         /// </summary>
@@ -768,7 +781,7 @@ mSetProgressPath = mSetProgressPath.Replace("{" + "name" + "}", KnetikClient.Par
             {
                 mUpdateLevelPath = mUpdateLevelPath.Replace("{format}", "json");
             }
-            mUpdateLevelPath = mUpdateLevelPath.Replace("{" + "name" + "}", KnetikClient.ParameterToString(name));
+            mUpdateLevelPath = mUpdateLevelPath.Replace("{" + "name" + "}", KnetikClient.DefaultClient.ParameterToString(name));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -776,10 +789,10 @@ mSetProgressPath = mSetProgressPath.Replace("{" + "name" + "}", KnetikClient.Par
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(newLevel); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(newLevel); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateLevelStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateLevelStartTime, mUpdateLevelPath, "Sending server request...");
@@ -800,7 +813,7 @@ mSetProgressPath = mSetProgressPath.Replace("{" + "name" + "}", KnetikClient.Par
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateLevel: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateLevelData = (LevelingResource) KnetikClient.Deserialize(response.Content, typeof(LevelingResource), response.Headers);
+            UpdateLevelData = (LevelingResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(LevelingResource), response.Headers);
             KnetikLogger.LogResponse(mUpdateLevelStartTime, mUpdateLevelPath, string.Format("Response received successfully:\n{0}", UpdateLevelData.ToString()));
 
             if (UpdateLevelComplete != null)
@@ -808,5 +821,6 @@ mSetProgressPath = mSetProgressPath.Replace("{" + "name" + "}", KnetikClient.Par
                 UpdateLevelComplete(UpdateLevelData);
             }
         }
+
     }
 }

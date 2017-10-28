@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,50 +19,51 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The category this trigger belongs to. See endpoints for related asset information. All new triggers are in category 'custom'</value>
         [JsonProperty(PropertyName = "category")]
-        public string Category { get; set; }
+        public string Category;
 
         /// <summary>
         /// The unique name for the event. This serves as the unique identifier. Cannot be changed after creation
         /// </summary>
         /// <value>The unique name for the event. This serves as the unique identifier. Cannot be changed after creation</value>
         [JsonProperty(PropertyName = "event_name")]
-        public string EventName { get; set; }
+        public string EventName;
 
         /// <summary>
         /// A list of parameters that will be sent with the event when the trigger is fired. These must be included in the event and match the described types
         /// </summary>
         /// <value>A list of parameters that will be sent with the event when the trigger is fired. These must be included in the event and match the described types</value>
         [JsonProperty(PropertyName = "parameters")]
-        public List<BreTriggerParameterDefinition> Parameters { get; set; }
+        public List<BreTriggerParameterDefinition> Parameters;
 
         /// <summary>
         /// Where this trigger came from. System triggers cannot be removed or updated
         /// </summary>
         /// <value>Where this trigger came from. System triggers cannot be removed or updated</value>
         [JsonProperty(PropertyName = "system_trigger")]
-        public bool? SystemTrigger { get; set; }
+        public bool? SystemTrigger;
 
         /// <summary>
         /// A list of tags for filtering
         /// </summary>
         /// <value>A list of tags for filtering</value>
         [JsonProperty(PropertyName = "tags")]
-        public List<string> Tags { get; set; }
+        public List<string> Tags;
 
         /// <summary>
         /// A description of the trigger
         /// </summary>
         /// <value>A description of the trigger</value>
         [JsonProperty(PropertyName = "trigger_description")]
-        public string TriggerDescription { get; set; }
+        public string TriggerDescription;
 
         /// <summary>
         /// A human readable name for this trigger
         /// </summary>
         /// <value>A human readable name for this trigger</value>
         [JsonProperty(PropertyName = "trigger_name")]
-        public string TriggerName { get; set; }
+        public string TriggerName;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

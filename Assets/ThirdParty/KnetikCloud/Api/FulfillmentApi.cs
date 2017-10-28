@@ -59,6 +59,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -104,20 +105,14 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public FulfillmentApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mCreateFulfillmentTypeCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteFulfillmentTypeCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetFulfillmentTypeCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetFulfillmentTypesCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateFulfillmentTypeCoroutine = new KnetikCoroutine(KnetikClient);
+            mCreateFulfillmentTypeCoroutine = new KnetikCoroutine();
+            mDeleteFulfillmentTypeCoroutine = new KnetikCoroutine();
+            mGetFulfillmentTypeCoroutine = new KnetikCoroutine();
+            mGetFulfillmentTypesCoroutine = new KnetikCoroutine();
+            mUpdateFulfillmentTypeCoroutine = new KnetikCoroutine();
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
+        /// <inheritdoc />
         /// <summary>
         /// Create a fulfillment type 
         /// </summary>
@@ -137,10 +132,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(type); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(type); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateFulfillmentTypeStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateFulfillmentTypeStartTime, mCreateFulfillmentTypePath, "Sending server request...");
@@ -161,7 +156,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateFulfillmentType: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateFulfillmentTypeData = (FulfillmentType) KnetikClient.Deserialize(response.Content, typeof(FulfillmentType), response.Headers);
+            CreateFulfillmentTypeData = (FulfillmentType) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(FulfillmentType), response.Headers);
             KnetikLogger.LogResponse(mCreateFulfillmentTypeStartTime, mCreateFulfillmentTypePath, string.Format("Response received successfully:\n{0}", CreateFulfillmentTypeData.ToString()));
 
             if (CreateFulfillmentTypeComplete != null)
@@ -169,6 +164,8 @@ namespace com.knetikcloud.Api
                 CreateFulfillmentTypeComplete(CreateFulfillmentTypeData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Delete a fulfillment type 
         /// </summary>
@@ -186,7 +183,7 @@ namespace com.knetikcloud.Api
             {
                 mDeleteFulfillmentTypePath = mDeleteFulfillmentTypePath.Replace("{format}", "json");
             }
-            mDeleteFulfillmentTypePath = mDeleteFulfillmentTypePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteFulfillmentTypePath = mDeleteFulfillmentTypePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -195,7 +192,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteFulfillmentTypeStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteFulfillmentTypeStartTime, mDeleteFulfillmentTypePath, "Sending server request...");
@@ -222,6 +219,8 @@ namespace com.knetikcloud.Api
                 DeleteFulfillmentTypeComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Get a single fulfillment type 
         /// </summary>
@@ -239,7 +238,7 @@ namespace com.knetikcloud.Api
             {
                 mGetFulfillmentTypePath = mGetFulfillmentTypePath.Replace("{format}", "json");
             }
-            mGetFulfillmentTypePath = mGetFulfillmentTypePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetFulfillmentTypePath = mGetFulfillmentTypePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -248,7 +247,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetFulfillmentTypeStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetFulfillmentTypeStartTime, mGetFulfillmentTypePath, "Sending server request...");
@@ -269,7 +268,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetFulfillmentType: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetFulfillmentTypeData = (FulfillmentType) KnetikClient.Deserialize(response.Content, typeof(FulfillmentType), response.Headers);
+            GetFulfillmentTypeData = (FulfillmentType) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(FulfillmentType), response.Headers);
             KnetikLogger.LogResponse(mGetFulfillmentTypeStartTime, mGetFulfillmentTypePath, string.Format("Response received successfully:\n{0}", GetFulfillmentTypeData.ToString()));
 
             if (GetFulfillmentTypeComplete != null)
@@ -277,6 +276,8 @@ namespace com.knetikcloud.Api
                 GetFulfillmentTypeComplete(GetFulfillmentTypeData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// List and search fulfillment types 
         /// </summary>
@@ -300,21 +301,21 @@ namespace com.knetikcloud.Api
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetFulfillmentTypesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetFulfillmentTypesStartTime, mGetFulfillmentTypesPath, "Sending server request...");
@@ -335,7 +336,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetFulfillmentTypes: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetFulfillmentTypesData = (PageResourceFulfillmentType) KnetikClient.Deserialize(response.Content, typeof(PageResourceFulfillmentType), response.Headers);
+            GetFulfillmentTypesData = (PageResourceFulfillmentType) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceFulfillmentType), response.Headers);
             KnetikLogger.LogResponse(mGetFulfillmentTypesStartTime, mGetFulfillmentTypesPath, string.Format("Response received successfully:\n{0}", GetFulfillmentTypesData.ToString()));
 
             if (GetFulfillmentTypesComplete != null)
@@ -343,6 +344,8 @@ namespace com.knetikcloud.Api
                 GetFulfillmentTypesComplete(GetFulfillmentTypesData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Update a fulfillment type 
         /// </summary>
@@ -361,7 +364,7 @@ namespace com.knetikcloud.Api
             {
                 mUpdateFulfillmentTypePath = mUpdateFulfillmentTypePath.Replace("{format}", "json");
             }
-            mUpdateFulfillmentTypePath = mUpdateFulfillmentTypePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateFulfillmentTypePath = mUpdateFulfillmentTypePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -369,10 +372,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(fulfillmentType); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(fulfillmentType); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateFulfillmentTypeStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateFulfillmentTypeStartTime, mUpdateFulfillmentTypePath, "Sending server request...");
@@ -399,5 +402,6 @@ namespace com.knetikcloud.Api
                 UpdateFulfillmentTypeComplete();
             }
         }
+
     }
 }

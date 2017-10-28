@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,43 +19,44 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The request body as would be passed to the URI</value>
         [JsonProperty(PropertyName = "body")]
-        public Object Body { get; set; }
+        public Object Body;
 
         /// <summary>
         /// Content type used, Ex:(application/json)
         /// </summary>
         /// <value>Content type used, Ex:(application/json)</value>
         [JsonProperty(PropertyName = "content_type")]
-        public string ContentType { get; set; }
+        public string ContentType;
 
         /// <summary>
         /// The HTTP method used, Ex: (GET)
         /// </summary>
         /// <value>The HTTP method used, Ex: (GET)</value>
         [JsonProperty(PropertyName = "method")]
-        public string Method { get; set; }
+        public string Method;
 
         /// <summary>
         /// Time in seconds before process will timeout.  Default is 60.  Range is 1-300
         /// </summary>
         /// <value>Time in seconds before process will timeout.  Default is 60.  Range is 1-300</value>
         [JsonProperty(PropertyName = "timeout")]
-        public int? Timeout { get; set; }
+        public int? Timeout;
 
         /// <summary>
         /// The oauth token only
         /// </summary>
         /// <value>The oauth token only</value>
         [JsonProperty(PropertyName = "token")]
-        public string Token { get; set; }
+        public string Token;
 
         /// <summary>
         /// Full URI of REST call
         /// </summary>
         /// <value>Full URI of REST call</value>
         [JsonProperty(PropertyName = "uri")]
-        public string Uri { get; set; }
+        public string Uri;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

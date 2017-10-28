@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,22 +19,23 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The result body</value>
         [JsonProperty(PropertyName = "body")]
-        public Object Body { get; set; }
+        public Object Body;
 
         /// <summary>
         /// The HTTP response code
         /// </summary>
         /// <value>The HTTP response code</value>
         [JsonProperty(PropertyName = "code")]
-        public int? Code { get; set; }
+        public int? Code;
 
         /// <summary>
         /// Full URI of REST call
         /// </summary>
         /// <value>Full URI of REST call</value>
         [JsonProperty(PropertyName = "uri")]
-        public string Uri { get; set; }
+        public string Uri;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -15,128 +18,129 @@ namespace com.knetikcloud.Model
         /// Gets or Sets AvailableShippingOptions
         /// </summary>
         [JsonProperty(PropertyName = "available_shipping_options")]
-        public List<CartShippingOption> AvailableShippingOptions { get; set; }
+        public List<CartShippingOption> AvailableShippingOptions;
 
         /// <summary>
         /// Gets or Sets CountryTax
         /// </summary>
         [JsonProperty(PropertyName = "country_tax")]
-        public decimal? CountryTax { get; set; }
+        public decimal? CountryTax;
 
         /// <summary>
         /// Gets or Sets Coupons
         /// </summary>
         [JsonProperty(PropertyName = "coupons")]
-        public List<CouponDefinition> Coupons { get; set; }
+        public List<CouponDefinition> Coupons;
 
         /// <summary>
         /// Gets or Sets Created
         /// </summary>
         [JsonProperty(PropertyName = "created")]
-        public long? Created { get; set; }
+        public long? Created;
 
         /// <summary>
         /// Gets or Sets CurrencyCode
         /// </summary>
         [JsonProperty(PropertyName = "currency_code")]
-        public string CurrencyCode { get; set; }
+        public string CurrencyCode;
 
         /// <summary>
         /// Gets or Sets DiscountTotal
         /// </summary>
         [JsonProperty(PropertyName = "discount_total")]
-        public decimal? DiscountTotal { get; set; }
+        public decimal? DiscountTotal;
 
         /// <summary>
         /// Gets or Sets ErrorCode
         /// </summary>
         [JsonProperty(PropertyName = "error_code")]
-        public int? ErrorCode { get; set; }
+        public int? ErrorCode;
 
         /// <summary>
         /// Gets or Sets ErrorMessage
         /// </summary>
         [JsonProperty(PropertyName = "error_message")]
-        public string ErrorMessage { get; set; }
+        public string ErrorMessage;
 
         /// <summary>
         /// Gets or Sets GrandTotal
         /// </summary>
         [JsonProperty(PropertyName = "grand_total")]
-        public decimal? GrandTotal { get; set; }
+        public decimal? GrandTotal;
 
         /// <summary>
         /// Gets or Sets Id
         /// </summary>
         [JsonProperty(PropertyName = "id")]
-        public string Id { get; set; }
+        public string Id;
 
         /// <summary>
         /// Gets or Sets InvoiceId
         /// </summary>
         [JsonProperty(PropertyName = "invoice_id")]
-        public decimal? InvoiceId { get; set; }
+        public decimal? InvoiceId;
 
         /// <summary>
         /// Gets or Sets Items
         /// </summary>
         [JsonProperty(PropertyName = "items")]
-        public List<CartLineItem> Items { get; set; }
+        public List<CartLineItem> Items;
 
         /// <summary>
         /// Gets or Sets Owner
         /// </summary>
         [JsonProperty(PropertyName = "owner")]
-        public int? Owner { get; set; }
+        public int? Owner;
 
         /// <summary>
         /// Gets or Sets SelectedShippingOptions
         /// </summary>
         [JsonProperty(PropertyName = "selected_shipping_options")]
-        public List<CartShippingOption> SelectedShippingOptions { get; set; }
+        public List<CartShippingOption> SelectedShippingOptions;
 
         /// <summary>
         /// Gets or Sets Shippable
         /// </summary>
         [JsonProperty(PropertyName = "shippable")]
-        public bool? Shippable { get; set; }
+        public bool? Shippable;
 
         /// <summary>
         /// Gets or Sets ShippingAddress
         /// </summary>
         [JsonProperty(PropertyName = "shipping_address")]
-        public CartShippingAddressRequest ShippingAddress { get; set; }
+        public CartShippingAddressRequest ShippingAddress;
 
         /// <summary>
         /// Gets or Sets ShippingCost
         /// </summary>
         [JsonProperty(PropertyName = "shipping_cost")]
-        public decimal? ShippingCost { get; set; }
+        public decimal? ShippingCost;
 
         /// <summary>
         /// Gets or Sets StateTax
         /// </summary>
         [JsonProperty(PropertyName = "state_tax")]
-        public decimal? StateTax { get; set; }
+        public decimal? StateTax;
 
         /// <summary>
         /// Gets or Sets Status
         /// </summary>
         [JsonProperty(PropertyName = "status")]
-        public string Status { get; set; }
+        public string Status;
 
         /// <summary>
         /// Gets or Sets Subtotal
         /// </summary>
         [JsonProperty(PropertyName = "subtotal")]
-        public decimal? Subtotal { get; set; }
+        public decimal? Subtotal;
 
         /// <summary>
         /// Gets or Sets Updated
         /// </summary>
         [JsonProperty(PropertyName = "updated")]
-        public long? Updated { get; set; }
+        public long? Updated;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

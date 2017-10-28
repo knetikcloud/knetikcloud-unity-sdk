@@ -27,6 +27,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -46,16 +47,10 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public UtilHealthApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mGetHealthCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetHealthCoroutine = new KnetikCoroutine();
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
+        /// <inheritdoc />
         /// <summary>
         /// Get health info 
         /// </summary>
@@ -75,7 +70,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetHealthStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetHealthStartTime, mGetHealthPath, "Sending server request...");
@@ -96,7 +91,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetHealth: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetHealthData = (Object) KnetikClient.Deserialize(response.Content, typeof(Object), response.Headers);
+            GetHealthData = (Object) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(Object), response.Headers);
             KnetikLogger.LogResponse(mGetHealthStartTime, mGetHealthPath, string.Format("Response received successfully:\n{0}", GetHealthData.ToString()));
 
             if (GetHealthComplete != null)
@@ -104,5 +99,6 @@ namespace com.knetikcloud.Api
                 GetHealthComplete(GetHealthData);
             }
         }
+
     }
 }

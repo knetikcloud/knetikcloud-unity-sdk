@@ -38,6 +38,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -64,17 +65,11 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public BRERuleEngineVariablesApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mGetBREVariableTypesCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetBREVariableValuesCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetBREVariableTypesCoroutine = new KnetikCoroutine();
+            mGetBREVariableValuesCoroutine = new KnetikCoroutine();
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
+        /// <inheritdoc />
         /// <summary>
         /// Get a list of variable types available Types include integer, string, user and invoice. These are used to qualify trigger parameters and action variables with strong typing.
         /// </summary>
@@ -94,7 +89,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetBREVariableTypesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetBREVariableTypesStartTime, mGetBREVariableTypesPath, "Sending server request...");
@@ -115,7 +110,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetBREVariableTypes: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetBREVariableTypesData = (List<VariableTypeResource>) KnetikClient.Deserialize(response.Content, typeof(List<VariableTypeResource>), response.Headers);
+            GetBREVariableTypesData = (List<VariableTypeResource>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<VariableTypeResource>), response.Headers);
             KnetikLogger.LogResponse(mGetBREVariableTypesStartTime, mGetBREVariableTypesPath, string.Format("Response received successfully:\n{0}", GetBREVariableTypesData.ToString()));
 
             if (GetBREVariableTypesComplete != null)
@@ -123,6 +118,8 @@ namespace com.knetikcloud.Api
                 GetBREVariableTypesComplete(GetBREVariableTypesData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// List valid values for a type Used to lookup users to fill in a user constant for example. Only types marked as enumerable are suppoorted here.
         /// </summary>
@@ -143,7 +140,7 @@ namespace com.knetikcloud.Api
             {
                 mGetBREVariableValuesPath = mGetBREVariableValuesPath.Replace("{format}", "json");
             }
-            mGetBREVariableValuesPath = mGetBREVariableValuesPath.Replace("{" + "name" + "}", KnetikClient.ParameterToString(name));
+            mGetBREVariableValuesPath = mGetBREVariableValuesPath.Replace("{" + "name" + "}", KnetikClient.DefaultClient.ParameterToString(name));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -153,21 +150,21 @@ namespace com.knetikcloud.Api
 
             if (filterName != null)
             {
-                queryParams.Add("filter_name", KnetikClient.ParameterToString(filterName));
+                queryParams.Add("filter_name", KnetikClient.DefaultClient.ParameterToString(filterName));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetBREVariableValuesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetBREVariableValuesStartTime, mGetBREVariableValuesPath, "Sending server request...");
@@ -188,7 +185,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetBREVariableValues: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetBREVariableValuesData = (PageResourceSimpleReferenceResourceobject) KnetikClient.Deserialize(response.Content, typeof(PageResourceSimpleReferenceResourceobject), response.Headers);
+            GetBREVariableValuesData = (PageResourceSimpleReferenceResourceobject) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceSimpleReferenceResourceobject), response.Headers);
             KnetikLogger.LogResponse(mGetBREVariableValuesStartTime, mGetBREVariableValuesPath, string.Format("Response received successfully:\n{0}", GetBREVariableValuesData.ToString()));
 
             if (GetBREVariableValuesComplete != null)
@@ -196,5 +193,6 @@ namespace com.knetikcloud.Api
                 GetBREVariableValuesComplete(GetBREVariableValuesData);
             }
         }
+
     }
 }

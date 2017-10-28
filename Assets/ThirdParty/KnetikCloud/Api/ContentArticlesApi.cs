@@ -109,6 +109,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -189,25 +190,19 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public ContentArticlesApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mCreateArticleCoroutine = new KnetikCoroutine(KnetikClient);
-            mCreateArticleTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteArticleCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteArticleTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetArticleCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetArticleTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetArticleTemplatesCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetArticlesCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateArticleCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateArticleTemplateCoroutine = new KnetikCoroutine(KnetikClient);
+            mCreateArticleCoroutine = new KnetikCoroutine();
+            mCreateArticleTemplateCoroutine = new KnetikCoroutine();
+            mDeleteArticleCoroutine = new KnetikCoroutine();
+            mDeleteArticleTemplateCoroutine = new KnetikCoroutine();
+            mGetArticleCoroutine = new KnetikCoroutine();
+            mGetArticleTemplateCoroutine = new KnetikCoroutine();
+            mGetArticleTemplatesCoroutine = new KnetikCoroutine();
+            mGetArticlesCoroutine = new KnetikCoroutine();
+            mUpdateArticleCoroutine = new KnetikCoroutine();
+            mUpdateArticleTemplateCoroutine = new KnetikCoroutine();
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
+        /// <inheritdoc />
         /// <summary>
         /// Create a new article Articles are blobs of text with titles, a category and assets. Formatting and display of the text is in the hands of the front end.
         /// </summary>
@@ -227,10 +222,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(articleResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(articleResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateArticleStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateArticleStartTime, mCreateArticlePath, "Sending server request...");
@@ -251,7 +246,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateArticle: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateArticleData = (ArticleResource) KnetikClient.Deserialize(response.Content, typeof(ArticleResource), response.Headers);
+            CreateArticleData = (ArticleResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ArticleResource), response.Headers);
             KnetikLogger.LogResponse(mCreateArticleStartTime, mCreateArticlePath, string.Format("Response received successfully:\n{0}", CreateArticleData.ToString()));
 
             if (CreateArticleComplete != null)
@@ -259,6 +254,8 @@ namespace com.knetikcloud.Api
                 CreateArticleComplete(CreateArticleData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Create an article template Article Templates define a type of article and the properties they have
         /// </summary>
@@ -278,10 +275,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(articleTemplateResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(articleTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateArticleTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateArticleTemplateStartTime, mCreateArticleTemplatePath, "Sending server request...");
@@ -302,7 +299,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateArticleTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateArticleTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            CreateArticleTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
             KnetikLogger.LogResponse(mCreateArticleTemplateStartTime, mCreateArticleTemplatePath, string.Format("Response received successfully:\n{0}", CreateArticleTemplateData.ToString()));
 
             if (CreateArticleTemplateComplete != null)
@@ -310,6 +307,8 @@ namespace com.knetikcloud.Api
                 CreateArticleTemplateComplete(CreateArticleTemplateData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Delete an existing article 
         /// </summary>
@@ -327,7 +326,7 @@ namespace com.knetikcloud.Api
             {
                 mDeleteArticlePath = mDeleteArticlePath.Replace("{format}", "json");
             }
-            mDeleteArticlePath = mDeleteArticlePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteArticlePath = mDeleteArticlePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -336,7 +335,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteArticleStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteArticleStartTime, mDeleteArticlePath, "Sending server request...");
@@ -363,6 +362,8 @@ namespace com.knetikcloud.Api
                 DeleteArticleComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Delete an article template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
         /// </summary>
@@ -381,7 +382,7 @@ namespace com.knetikcloud.Api
             {
                 mDeleteArticleTemplatePath = mDeleteArticleTemplatePath.Replace("{format}", "json");
             }
-            mDeleteArticleTemplatePath = mDeleteArticleTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteArticleTemplatePath = mDeleteArticleTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -391,11 +392,11 @@ namespace com.knetikcloud.Api
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.ParameterToString(cascade));
+                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteArticleTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteArticleTemplateStartTime, mDeleteArticleTemplatePath, "Sending server request...");
@@ -422,6 +423,8 @@ namespace com.knetikcloud.Api
                 DeleteArticleTemplateComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Get a single article 
         /// </summary>
@@ -439,7 +442,7 @@ namespace com.knetikcloud.Api
             {
                 mGetArticlePath = mGetArticlePath.Replace("{format}", "json");
             }
-            mGetArticlePath = mGetArticlePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetArticlePath = mGetArticlePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -448,7 +451,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetArticleStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetArticleStartTime, mGetArticlePath, "Sending server request...");
@@ -469,7 +472,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetArticle: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetArticleData = (ArticleResource) KnetikClient.Deserialize(response.Content, typeof(ArticleResource), response.Headers);
+            GetArticleData = (ArticleResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ArticleResource), response.Headers);
             KnetikLogger.LogResponse(mGetArticleStartTime, mGetArticlePath, string.Format("Response received successfully:\n{0}", GetArticleData.ToString()));
 
             if (GetArticleComplete != null)
@@ -477,6 +480,8 @@ namespace com.knetikcloud.Api
                 GetArticleComplete(GetArticleData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Get a single article template 
         /// </summary>
@@ -494,7 +499,7 @@ namespace com.knetikcloud.Api
             {
                 mGetArticleTemplatePath = mGetArticleTemplatePath.Replace("{format}", "json");
             }
-            mGetArticleTemplatePath = mGetArticleTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetArticleTemplatePath = mGetArticleTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -503,7 +508,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetArticleTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetArticleTemplateStartTime, mGetArticleTemplatePath, "Sending server request...");
@@ -524,7 +529,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetArticleTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetArticleTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            GetArticleTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
             KnetikLogger.LogResponse(mGetArticleTemplateStartTime, mGetArticleTemplatePath, string.Format("Response received successfully:\n{0}", GetArticleTemplateData.ToString()));
 
             if (GetArticleTemplateComplete != null)
@@ -532,6 +537,8 @@ namespace com.knetikcloud.Api
                 GetArticleTemplateComplete(GetArticleTemplateData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// List and search article templates 
         /// </summary>
@@ -555,21 +562,21 @@ namespace com.knetikcloud.Api
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetArticleTemplatesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetArticleTemplatesStartTime, mGetArticleTemplatesPath, "Sending server request...");
@@ -590,7 +597,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetArticleTemplates: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetArticleTemplatesData = (PageResourceTemplateResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceTemplateResource), response.Headers);
+            GetArticleTemplatesData = (PageResourceTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceTemplateResource), response.Headers);
             KnetikLogger.LogResponse(mGetArticleTemplatesStartTime, mGetArticleTemplatesPath, string.Format("Response received successfully:\n{0}", GetArticleTemplatesData.ToString()));
 
             if (GetArticleTemplatesComplete != null)
@@ -598,6 +605,8 @@ namespace com.knetikcloud.Api
                 GetArticleTemplatesComplete(GetArticleTemplatesData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// List and search articles Get a list of articles with optional filtering. Assets will not be filled in on the resources returned. Use &#39;Get a single article&#39; to retrieve the full resource with assets for a given item as needed.
         /// </summary>
@@ -627,51 +636,51 @@ namespace com.knetikcloud.Api
 
             if (filterActiveOnly != null)
             {
-                queryParams.Add("filter_active_only", KnetikClient.ParameterToString(filterActiveOnly));
+                queryParams.Add("filter_active_only", KnetikClient.DefaultClient.ParameterToString(filterActiveOnly));
             }
 
             if (filterCategory != null)
             {
-                queryParams.Add("filter_category", KnetikClient.ParameterToString(filterCategory));
+                queryParams.Add("filter_category", KnetikClient.DefaultClient.ParameterToString(filterCategory));
             }
 
             if (filterTagset != null)
             {
-                queryParams.Add("filter_tagset", KnetikClient.ParameterToString(filterTagset));
+                queryParams.Add("filter_tagset", KnetikClient.DefaultClient.ParameterToString(filterTagset));
             }
 
             if (filterTagIntersection != null)
             {
-                queryParams.Add("filter_tag_intersection", KnetikClient.ParameterToString(filterTagIntersection));
+                queryParams.Add("filter_tag_intersection", KnetikClient.DefaultClient.ParameterToString(filterTagIntersection));
             }
 
             if (filterTagExclusion != null)
             {
-                queryParams.Add("filter_tag_exclusion", KnetikClient.ParameterToString(filterTagExclusion));
+                queryParams.Add("filter_tag_exclusion", KnetikClient.DefaultClient.ParameterToString(filterTagExclusion));
             }
 
             if (filterTitle != null)
             {
-                queryParams.Add("filter_title", KnetikClient.ParameterToString(filterTitle));
+                queryParams.Add("filter_title", KnetikClient.DefaultClient.ParameterToString(filterTitle));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetArticlesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetArticlesStartTime, mGetArticlesPath, "Sending server request...");
@@ -692,7 +701,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetArticles: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetArticlesData = (PageResourceArticleResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceArticleResource), response.Headers);
+            GetArticlesData = (PageResourceArticleResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceArticleResource), response.Headers);
             KnetikLogger.LogResponse(mGetArticlesStartTime, mGetArticlesPath, string.Format("Response received successfully:\n{0}", GetArticlesData.ToString()));
 
             if (GetArticlesComplete != null)
@@ -700,6 +709,8 @@ namespace com.knetikcloud.Api
                 GetArticlesComplete(GetArticlesData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Update an existing article 
         /// </summary>
@@ -718,7 +729,7 @@ namespace com.knetikcloud.Api
             {
                 mUpdateArticlePath = mUpdateArticlePath.Replace("{format}", "json");
             }
-            mUpdateArticlePath = mUpdateArticlePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateArticlePath = mUpdateArticlePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -726,10 +737,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(articleResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(articleResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateArticleStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateArticleStartTime, mUpdateArticlePath, "Sending server request...");
@@ -750,7 +761,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateArticle: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateArticleData = (ArticleResource) KnetikClient.Deserialize(response.Content, typeof(ArticleResource), response.Headers);
+            UpdateArticleData = (ArticleResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ArticleResource), response.Headers);
             KnetikLogger.LogResponse(mUpdateArticleStartTime, mUpdateArticlePath, string.Format("Response received successfully:\n{0}", UpdateArticleData.ToString()));
 
             if (UpdateArticleComplete != null)
@@ -758,6 +769,8 @@ namespace com.knetikcloud.Api
                 UpdateArticleComplete(UpdateArticleData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Update an article template 
         /// </summary>
@@ -776,7 +789,7 @@ namespace com.knetikcloud.Api
             {
                 mUpdateArticleTemplatePath = mUpdateArticleTemplatePath.Replace("{format}", "json");
             }
-            mUpdateArticleTemplatePath = mUpdateArticleTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateArticleTemplatePath = mUpdateArticleTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -784,10 +797,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(articleTemplateResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(articleTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateArticleTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateArticleTemplateStartTime, mUpdateArticleTemplatePath, "Sending server request...");
@@ -808,7 +821,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateArticleTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateArticleTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            UpdateArticleTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
             KnetikLogger.LogResponse(mUpdateArticleTemplateStartTime, mUpdateArticleTemplatePath, string.Format("Response received successfully:\n{0}", UpdateArticleTemplateData.ToString()));
 
             if (UpdateArticleTemplateComplete != null)
@@ -816,5 +829,6 @@ namespace com.knetikcloud.Api
                 UpdateArticleTemplateComplete(UpdateArticleTemplateData);
             }
         }
+
     }
 }

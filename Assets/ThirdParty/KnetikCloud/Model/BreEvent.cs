@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,15 +19,16 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The event name of the trigger to be fired</value>
         [JsonProperty(PropertyName = "event_name")]
-        public string EventName { get; set; }
+        public string EventName;
 
         /// <summary>
         /// The parameters to the event. A Map (assosiative array) with a key for each trigger parameter name and a corrosponding value.
         /// </summary>
         /// <value>The parameters to the event. A Map (assosiative array) with a key for each trigger parameter name and a corrosponding value.</value>
         [JsonProperty(PropertyName = "params")]
-        public Object _Params { get; set; }
+        public Object _Params;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

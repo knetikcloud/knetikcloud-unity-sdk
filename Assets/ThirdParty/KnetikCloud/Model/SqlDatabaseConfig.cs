@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -15,38 +18,39 @@ namespace com.knetikcloud.Model
         /// Gets or Sets ConnectionPoolSize
         /// </summary>
         [JsonProperty(PropertyName = "connection_pool_size")]
-        public int? ConnectionPoolSize { get; set; }
+        public int? ConnectionPoolSize;
 
         /// <summary>
         /// Gets or Sets DbName
         /// </summary>
         [JsonProperty(PropertyName = "db_name")]
-        public string DbName { get; set; }
+        public string DbName;
 
         /// <summary>
         /// Gets or Sets Hostname
         /// </summary>
         [JsonProperty(PropertyName = "hostname")]
-        public string Hostname { get; set; }
+        public string Hostname;
 
         /// <summary>
         /// Gets or Sets Password
         /// </summary>
         [JsonProperty(PropertyName = "password")]
-        public string Password { get; set; }
+        public string Password;
 
         /// <summary>
         /// Gets or Sets Port
         /// </summary>
         [JsonProperty(PropertyName = "port")]
-        public int? Port { get; set; }
+        public int? Port;
 
         /// <summary>
         /// Gets or Sets Username
         /// </summary>
         [JsonProperty(PropertyName = "username")]
-        public string Username { get; set; }
+        public string Username;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

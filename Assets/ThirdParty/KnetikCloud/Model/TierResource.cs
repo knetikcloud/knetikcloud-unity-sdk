@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,22 +19,23 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>A map of additional properties, keyed on the property name.  Must match the names and types defined in the template for this item type</value>
         [JsonProperty(PropertyName = "additional_properties")]
-        public Dictionary<string, Property> AdditionalProperties { get; set; }
+        public Dictionary<string, Property> AdditionalProperties;
 
         /// <summary>
         /// The name of the tier
         /// </summary>
         /// <value>The name of the tier</value>
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name;
 
         /// <summary>
         /// The required progress for the tier
         /// </summary>
         /// <value>The required progress for the tier</value>
         [JsonProperty(PropertyName = "required_progress")]
-        public int? RequiredProgress { get; set; }
+        public int? RequiredProgress;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

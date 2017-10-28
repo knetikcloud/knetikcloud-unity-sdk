@@ -1,4 +1,5 @@
-﻿using com.knetikcloud.Client;
+﻿using System;
+using com.knetikcloud.Client;
 using UnityEditor;
 using UnityEngine;
 
@@ -48,7 +49,7 @@ namespace com.knetikcloud.UnityEditor
         private static string GetResourceRelativePath(string unityPath)
         {
             string resourcesFolder = KnetikAssetDatabaseUtils.ResourcesFolderName + KnetikAssetDatabaseUtils.DirectorySeparator;
-            string pathToResources = unityPath.Substring(0, unityPath.IndexOf(resourcesFolder));
+            string pathToResources = unityPath.Substring(0, unityPath.IndexOf(resourcesFolder, StringComparison.InvariantCulture));
 
             // Remove all folders leading up to the Resources folder
             pathToResources = unityPath.Replace(pathToResources, string.Empty);

@@ -87,6 +87,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -150,23 +151,17 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public UsersSubscriptionsApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mGetUserSubscriptionDetailsCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetUsersSubscriptionDetailsCoroutine = new KnetikCoroutine(KnetikClient);
-            mReactivateUserSubscriptionCoroutine = new KnetikCoroutine(KnetikClient);
-            mSetSubscriptionBillDateCoroutine = new KnetikCoroutine(KnetikClient);
-            mSetSubscriptionPaymentMethodCoroutine = new KnetikCoroutine(KnetikClient);
-            mSetSubscriptionStatusCoroutine = new KnetikCoroutine(KnetikClient);
-            mSetUserSubscriptionPlanCoroutine = new KnetikCoroutine(KnetikClient);
-            mSetUserSubscriptionPriceCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetUserSubscriptionDetailsCoroutine = new KnetikCoroutine();
+            mGetUsersSubscriptionDetailsCoroutine = new KnetikCoroutine();
+            mReactivateUserSubscriptionCoroutine = new KnetikCoroutine();
+            mSetSubscriptionBillDateCoroutine = new KnetikCoroutine();
+            mSetSubscriptionPaymentMethodCoroutine = new KnetikCoroutine();
+            mSetSubscriptionStatusCoroutine = new KnetikCoroutine();
+            mSetUserSubscriptionPlanCoroutine = new KnetikCoroutine();
+            mSetUserSubscriptionPriceCoroutine = new KnetikCoroutine();
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
+        /// <inheritdoc />
         /// <summary>
         /// Get details about a user&#39;s subscription 
         /// </summary>
@@ -190,8 +185,8 @@ namespace com.knetikcloud.Api
             {
                 mGetUserSubscriptionDetailsPath = mGetUserSubscriptionDetailsPath.Replace("{format}", "json");
             }
-            mGetUserSubscriptionDetailsPath = mGetUserSubscriptionDetailsPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-mGetUserSubscriptionDetailsPath = mGetUserSubscriptionDetailsPath.Replace("{" + "inventory_id" + "}", KnetikClient.ParameterToString(inventoryId));
+            mGetUserSubscriptionDetailsPath = mGetUserSubscriptionDetailsPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
+mGetUserSubscriptionDetailsPath = mGetUserSubscriptionDetailsPath.Replace("{" + "inventory_id" + "}", KnetikClient.DefaultClient.ParameterToString(inventoryId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -200,7 +195,7 @@ mGetUserSubscriptionDetailsPath = mGetUserSubscriptionDetailsPath.Replace("{" + 
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUserSubscriptionDetailsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUserSubscriptionDetailsStartTime, mGetUserSubscriptionDetailsPath, "Sending server request...");
@@ -221,7 +216,7 @@ mGetUserSubscriptionDetailsPath = mGetUserSubscriptionDetailsPath.Replace("{" + 
                 throw new KnetikException((int)response.StatusCode, "Error calling GetUserSubscriptionDetails: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetUserSubscriptionDetailsData = (InventorySubscriptionResource) KnetikClient.Deserialize(response.Content, typeof(InventorySubscriptionResource), response.Headers);
+            GetUserSubscriptionDetailsData = (InventorySubscriptionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(InventorySubscriptionResource), response.Headers);
             KnetikLogger.LogResponse(mGetUserSubscriptionDetailsStartTime, mGetUserSubscriptionDetailsPath, string.Format("Response received successfully:\n{0}", GetUserSubscriptionDetailsData.ToString()));
 
             if (GetUserSubscriptionDetailsComplete != null)
@@ -229,6 +224,8 @@ mGetUserSubscriptionDetailsPath = mGetUserSubscriptionDetailsPath.Replace("{" + 
                 GetUserSubscriptionDetailsComplete(GetUserSubscriptionDetailsData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Get details about a user&#39;s subscriptions 
         /// </summary>
@@ -246,7 +243,7 @@ mGetUserSubscriptionDetailsPath = mGetUserSubscriptionDetailsPath.Replace("{" + 
             {
                 mGetUsersSubscriptionDetailsPath = mGetUsersSubscriptionDetailsPath.Replace("{format}", "json");
             }
-            mGetUsersSubscriptionDetailsPath = mGetUsersSubscriptionDetailsPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+            mGetUsersSubscriptionDetailsPath = mGetUsersSubscriptionDetailsPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -255,7 +252,7 @@ mGetUserSubscriptionDetailsPath = mGetUserSubscriptionDetailsPath.Replace("{" + 
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUsersSubscriptionDetailsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUsersSubscriptionDetailsStartTime, mGetUsersSubscriptionDetailsPath, "Sending server request...");
@@ -276,7 +273,7 @@ mGetUserSubscriptionDetailsPath = mGetUserSubscriptionDetailsPath.Replace("{" + 
                 throw new KnetikException((int)response.StatusCode, "Error calling GetUsersSubscriptionDetails: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetUsersSubscriptionDetailsData = (List<InventorySubscriptionResource>) KnetikClient.Deserialize(response.Content, typeof(List<InventorySubscriptionResource>), response.Headers);
+            GetUsersSubscriptionDetailsData = (List<InventorySubscriptionResource>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<InventorySubscriptionResource>), response.Headers);
             KnetikLogger.LogResponse(mGetUsersSubscriptionDetailsStartTime, mGetUsersSubscriptionDetailsPath, string.Format("Response received successfully:\n{0}", GetUsersSubscriptionDetailsData.ToString()));
 
             if (GetUsersSubscriptionDetailsComplete != null)
@@ -284,6 +281,8 @@ mGetUserSubscriptionDetailsPath = mGetUserSubscriptionDetailsPath.Replace("{" + 
                 GetUsersSubscriptionDetailsComplete(GetUsersSubscriptionDetailsData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Reactivate a subscription and charge fee 
         /// </summary>
@@ -308,8 +307,8 @@ mGetUserSubscriptionDetailsPath = mGetUserSubscriptionDetailsPath.Replace("{" + 
             {
                 mReactivateUserSubscriptionPath = mReactivateUserSubscriptionPath.Replace("{format}", "json");
             }
-            mReactivateUserSubscriptionPath = mReactivateUserSubscriptionPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-mReactivateUserSubscriptionPath = mReactivateUserSubscriptionPath.Replace("{" + "inventory_id" + "}", KnetikClient.ParameterToString(inventoryId));
+            mReactivateUserSubscriptionPath = mReactivateUserSubscriptionPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
+mReactivateUserSubscriptionPath = mReactivateUserSubscriptionPath.Replace("{" + "inventory_id" + "}", KnetikClient.DefaultClient.ParameterToString(inventoryId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -317,10 +316,10 @@ mReactivateUserSubscriptionPath = mReactivateUserSubscriptionPath.Replace("{" + 
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(reactivateSubscriptionRequest); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(reactivateSubscriptionRequest); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mReactivateUserSubscriptionStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mReactivateUserSubscriptionStartTime, mReactivateUserSubscriptionPath, "Sending server request...");
@@ -341,7 +340,7 @@ mReactivateUserSubscriptionPath = mReactivateUserSubscriptionPath.Replace("{" + 
                 throw new KnetikException((int)response.StatusCode, "Error calling ReactivateUserSubscription: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            ReactivateUserSubscriptionData = (InvoiceResource) KnetikClient.Deserialize(response.Content, typeof(InvoiceResource), response.Headers);
+            ReactivateUserSubscriptionData = (InvoiceResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(InvoiceResource), response.Headers);
             KnetikLogger.LogResponse(mReactivateUserSubscriptionStartTime, mReactivateUserSubscriptionPath, string.Format("Response received successfully:\n{0}", ReactivateUserSubscriptionData.ToString()));
 
             if (ReactivateUserSubscriptionComplete != null)
@@ -349,6 +348,8 @@ mReactivateUserSubscriptionPath = mReactivateUserSubscriptionPath.Replace("{" + 
                 ReactivateUserSubscriptionComplete(ReactivateUserSubscriptionData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Set a new date to bill a subscription on 
         /// </summary>
@@ -378,8 +379,8 @@ mReactivateUserSubscriptionPath = mReactivateUserSubscriptionPath.Replace("{" + 
             {
                 mSetSubscriptionBillDatePath = mSetSubscriptionBillDatePath.Replace("{format}", "json");
             }
-            mSetSubscriptionBillDatePath = mSetSubscriptionBillDatePath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-mSetSubscriptionBillDatePath = mSetSubscriptionBillDatePath.Replace("{" + "inventory_id" + "}", KnetikClient.ParameterToString(inventoryId));
+            mSetSubscriptionBillDatePath = mSetSubscriptionBillDatePath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
+mSetSubscriptionBillDatePath = mSetSubscriptionBillDatePath.Replace("{" + "inventory_id" + "}", KnetikClient.DefaultClient.ParameterToString(inventoryId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -387,10 +388,10 @@ mSetSubscriptionBillDatePath = mSetSubscriptionBillDatePath.Replace("{" + "inven
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(billDate); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(billDate); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSetSubscriptionBillDateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSetSubscriptionBillDateStartTime, mSetSubscriptionBillDatePath, "Sending server request...");
@@ -417,6 +418,8 @@ mSetSubscriptionBillDatePath = mSetSubscriptionBillDatePath.Replace("{" + "inven
                 SetSubscriptionBillDateComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Set the payment method to use for a subscription May send null to use floating default
         /// </summary>
@@ -441,8 +444,8 @@ mSetSubscriptionBillDatePath = mSetSubscriptionBillDatePath.Replace("{" + "inven
             {
                 mSetSubscriptionPaymentMethodPath = mSetSubscriptionPaymentMethodPath.Replace("{format}", "json");
             }
-            mSetSubscriptionPaymentMethodPath = mSetSubscriptionPaymentMethodPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-mSetSubscriptionPaymentMethodPath = mSetSubscriptionPaymentMethodPath.Replace("{" + "inventory_id" + "}", KnetikClient.ParameterToString(inventoryId));
+            mSetSubscriptionPaymentMethodPath = mSetSubscriptionPaymentMethodPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
+mSetSubscriptionPaymentMethodPath = mSetSubscriptionPaymentMethodPath.Replace("{" + "inventory_id" + "}", KnetikClient.DefaultClient.ParameterToString(inventoryId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -450,10 +453,10 @@ mSetSubscriptionPaymentMethodPath = mSetSubscriptionPaymentMethodPath.Replace("{
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(paymentMethodId); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(paymentMethodId); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSetSubscriptionPaymentMethodStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSetSubscriptionPaymentMethodStartTime, mSetSubscriptionPaymentMethodPath, "Sending server request...");
@@ -480,6 +483,8 @@ mSetSubscriptionPaymentMethodPath = mSetSubscriptionPaymentMethodPath.Replace("{
                 SetSubscriptionPaymentMethodComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Set the status of a subscription Note that the new status may be blocked if the system is not configured to allow the current status to be changed to the new, to enforce proper flow. The default options for statuses are shown below but may be altered for special use cases
         /// </summary>
@@ -509,8 +514,8 @@ mSetSubscriptionPaymentMethodPath = mSetSubscriptionPaymentMethodPath.Replace("{
             {
                 mSetSubscriptionStatusPath = mSetSubscriptionStatusPath.Replace("{format}", "json");
             }
-            mSetSubscriptionStatusPath = mSetSubscriptionStatusPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-mSetSubscriptionStatusPath = mSetSubscriptionStatusPath.Replace("{" + "inventory_id" + "}", KnetikClient.ParameterToString(inventoryId));
+            mSetSubscriptionStatusPath = mSetSubscriptionStatusPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
+mSetSubscriptionStatusPath = mSetSubscriptionStatusPath.Replace("{" + "inventory_id" + "}", KnetikClient.DefaultClient.ParameterToString(inventoryId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -518,10 +523,10 @@ mSetSubscriptionStatusPath = mSetSubscriptionStatusPath.Replace("{" + "inventory
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(status); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(status); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSetSubscriptionStatusStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSetSubscriptionStatusStartTime, mSetSubscriptionStatusPath, "Sending server request...");
@@ -548,6 +553,8 @@ mSetSubscriptionStatusPath = mSetSubscriptionStatusPath.Replace("{" + "inventory
                 SetSubscriptionStatusComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Set a new subscription plan for a user 
         /// </summary>
@@ -572,8 +579,8 @@ mSetSubscriptionStatusPath = mSetSubscriptionStatusPath.Replace("{" + "inventory
             {
                 mSetUserSubscriptionPlanPath = mSetUserSubscriptionPlanPath.Replace("{format}", "json");
             }
-            mSetUserSubscriptionPlanPath = mSetUserSubscriptionPlanPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-mSetUserSubscriptionPlanPath = mSetUserSubscriptionPlanPath.Replace("{" + "inventory_id" + "}", KnetikClient.ParameterToString(inventoryId));
+            mSetUserSubscriptionPlanPath = mSetUserSubscriptionPlanPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
+mSetUserSubscriptionPlanPath = mSetUserSubscriptionPlanPath.Replace("{" + "inventory_id" + "}", KnetikClient.DefaultClient.ParameterToString(inventoryId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -581,10 +588,10 @@ mSetUserSubscriptionPlanPath = mSetUserSubscriptionPlanPath.Replace("{" + "inven
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(planId); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(planId); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSetUserSubscriptionPlanStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSetUserSubscriptionPlanStartTime, mSetUserSubscriptionPlanPath, "Sending server request...");
@@ -611,6 +618,8 @@ mSetUserSubscriptionPlanPath = mSetUserSubscriptionPlanPath.Replace("{" + "inven
                 SetUserSubscriptionPlanComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Set a new subscription price for a user This new price will be what the user is charged at the begining of each new period. This override is specific to the current subscription and will not carry over if they end and later re-subscribe. It will persist if the plan is changed using the setUserSubscriptionPlan endpoint.
         /// </summary>
@@ -635,8 +644,8 @@ mSetUserSubscriptionPlanPath = mSetUserSubscriptionPlanPath.Replace("{" + "inven
             {
                 mSetUserSubscriptionPricePath = mSetUserSubscriptionPricePath.Replace("{format}", "json");
             }
-            mSetUserSubscriptionPricePath = mSetUserSubscriptionPricePath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-mSetUserSubscriptionPricePath = mSetUserSubscriptionPricePath.Replace("{" + "inventory_id" + "}", KnetikClient.ParameterToString(inventoryId));
+            mSetUserSubscriptionPricePath = mSetUserSubscriptionPricePath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
+mSetUserSubscriptionPricePath = mSetUserSubscriptionPricePath.Replace("{" + "inventory_id" + "}", KnetikClient.DefaultClient.ParameterToString(inventoryId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -644,10 +653,10 @@ mSetUserSubscriptionPricePath = mSetUserSubscriptionPricePath.Replace("{" + "inv
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(theOverrideDetails); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(theOverrideDetails); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSetUserSubscriptionPriceStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSetUserSubscriptionPriceStartTime, mSetUserSubscriptionPricePath, "Sending server request...");
@@ -674,5 +683,6 @@ mSetUserSubscriptionPricePath = mSetUserSubscriptionPricePath.Replace("{" + "inv
                 SetUserSubscriptionPriceComplete();
             }
         }
+
     }
 }

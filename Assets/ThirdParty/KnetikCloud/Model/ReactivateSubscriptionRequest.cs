@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,15 +19,16 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The inventory to reactivate. Only required if using the deprecated subscriptions service</value>
         [JsonProperty(PropertyName = "inventory_id")]
-        public int? InventoryId { get; set; }
+        public int? InventoryId;
 
         /// <summary>
         /// Whether to add the additional reactivation fee in addition to the recurring fee
         /// </summary>
         /// <value>Whether to add the additional reactivation fee in addition to the recurring fee</value>
         [JsonProperty(PropertyName = "reactivation_fee")]
-        public bool? ReactivationFee { get; set; }
+        public bool? ReactivationFee;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

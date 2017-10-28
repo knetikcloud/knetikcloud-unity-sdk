@@ -2,71 +2,76 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
+    [KnetikFactory ("item")]
     public class StoreItem : Item
     {
         /// <summary>
-        /// Whether or not the item is currently displayable.  Default = true
+        /// Whether or not the item is currently visible to users. Does not block purchase; Use store_start or store_end to block purchase.  Default = true
         /// </summary>
-        /// <value>Whether or not the item is currently displayable.  Default = true</value>
+        /// <value>Whether or not the item is currently visible to users. Does not block purchase; Use store_start or store_end to block purchase.  Default = true</value>
         [JsonProperty(PropertyName = "displayable")]
-        public bool? Displayable { get; set; }
+        public bool? Displayable;
 
         /// <summary>
         /// A list of country ID to include in the blacklist/whitelist geo policy
         /// </summary>
         /// <value>A list of country ID to include in the blacklist/whitelist geo policy</value>
         [JsonProperty(PropertyName = "geo_country_list")]
-        public List<string> GeoCountryList { get; set; }
+        public List<string> GeoCountryList;
 
         /// <summary>
         /// Whether to use the geo_country_list as a black list or white list for item geographical availability
         /// </summary>
         /// <value>Whether to use the geo_country_list as a black list or white list for item geographical availability</value>
         [JsonProperty(PropertyName = "geo_policy_type")]
-        public string GeoPolicyType { get; set; }
+        public string GeoPolicyType;
 
         /// <summary>
         /// Provides the abstract shipping needs if this item is physical and can be shipped.  A value of zero means no shipping needed.  Default = 0
         /// </summary>
         /// <value>Provides the abstract shipping needs if this item is physical and can be shipped.  A value of zero means no shipping needed.  Default = 0</value>
         [JsonProperty(PropertyName = "shipping_tier")]
-        public int? ShippingTier { get; set; }
+        public int? ShippingTier;
 
         /// <summary>
         /// The skus for the item. Each defines a unique configuration for the item to be purchased (Large-Blue, Small-Green, etc). These are what is ultimately selected in the store and added to the cart
         /// </summary>
         /// <value>The skus for the item. Each defines a unique configuration for the item to be purchased (Large-Blue, Small-Green, etc). These are what is ultimately selected in the store and added to the cart</value>
         [JsonProperty(PropertyName = "skus")]
-        public List<Sku> Skus { get; set; }
+        public List<Sku> Skus;
 
         /// <summary>
-        /// The date the item will leave the store, unix timestamp in seconds.  If set to null, item will never leave the store
+        /// The date the item will become hidden and unavailable for purchase, unix timestamp in seconds.  If set to null, item will never leave the store
         /// </summary>
-        /// <value>The date the item will leave the store, unix timestamp in seconds.  If set to null, item will never leave the store</value>
+        /// <value>The date the item will become hidden and unavailable for purchase, unix timestamp in seconds.  If set to null, item will never leave the store</value>
         [JsonProperty(PropertyName = "store_end")]
-        public long? StoreEnd { get; set; }
+        public long? StoreEnd;
 
         /// <summary>
-        /// The date the item will appear in the store, unix timestamp in seconds.  If set to null, item will appear in store immediately
+        /// The date the item will become visible (if displayable) and available for purchase, unix timestamp in seconds.  If set to null, item will appear in store immediately
         /// </summary>
-        /// <value>The date the item will appear in the store, unix timestamp in seconds.  If set to null, item will appear in store immediately</value>
+        /// <value>The date the item will become visible (if displayable) and available for purchase, unix timestamp in seconds.  If set to null, item will appear in store immediately</value>
         [JsonProperty(PropertyName = "store_start")]
-        public long? StoreStart { get; set; }
+        public long? StoreStart;
 
         /// <summary>
         /// The vendor who provides the item
         /// </summary>
         /// <value>The vendor who provides the item</value>
         [JsonProperty(PropertyName = "vendor_id")]
-        public int? VendorId { get; set; }
+        public int? VendorId;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>
@@ -105,7 +110,7 @@ namespace com.knetikcloud.Model
         /// Get the JSON string presentation of the object
         /// </summary>
         /// <returns>JSON string presentation of the object</returns>
-        public  new string ToJson()
+        public new string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }

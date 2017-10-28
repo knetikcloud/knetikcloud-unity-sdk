@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,85 +19,86 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The iso3 code for the currency for this discountValue.  The sku purchased will have to match for it this sale to apply</value>
         [JsonProperty(PropertyName = "currency_code")]
-        public string CurrencyCode { get; set; }
+        public string CurrencyCode;
 
         /// <summary>
         /// The way in which the price is reduced. 'value' means subtracting directly, 'percentage' means subtracting by the price times the discountValue (1.0 == 100%)
         /// </summary>
         /// <value>The way in which the price is reduced. 'value' means subtracting directly, 'percentage' means subtracting by the price times the discountValue (1.0 == 100%)</value>
         [JsonProperty(PropertyName = "discount_type")]
-        public string DiscountType { get; set; }
+        public string DiscountType;
 
         /// <summary>
         /// The amount deducted from the price, in the same currencyCode as the item
         /// </summary>
         /// <value>The amount deducted from the price, in the same currencyCode as the item</value>
         [JsonProperty(PropertyName = "discount_value")]
-        public double? DiscountValue { get; set; }
+        public double? DiscountValue;
 
         /// <summary>
         /// The id of the sale
         /// </summary>
         /// <value>The id of the sale</value>
         [JsonProperty(PropertyName = "id")]
-        public int? Id { get; set; }
+        public int? Id;
 
         /// <summary>
         /// The id of the item this sale applies to.  Leave null to use other filters
         /// </summary>
         /// <value>The id of the item this sale applies to.  Leave null to use other filters</value>
         [JsonProperty(PropertyName = "item")]
-        public int? Item { get; set; }
+        public int? Item;
 
         /// <summary>
         /// The long description of the sale
         /// </summary>
         /// <value>The long description of the sale</value>
         [JsonProperty(PropertyName = "long_description")]
-        public string LongDescription { get; set; }
+        public string LongDescription;
 
         /// <summary>
         /// The name of the sale.  Max 40 characters
         /// </summary>
         /// <value>The name of the sale.  Max 40 characters</value>
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name;
 
         /// <summary>
         /// The date the sale ends, null for never.  Unix timestamp in seconds
         /// </summary>
         /// <value>The date the sale ends, null for never.  Unix timestamp in seconds</value>
         [JsonProperty(PropertyName = "sale_end_date")]
-        public long? SaleEndDate { get; set; }
+        public long? SaleEndDate;
 
         /// <summary>
         /// The date the sale begins.  Unix timestamp in seconds
         /// </summary>
         /// <value>The date the sale begins.  Unix timestamp in seconds</value>
         [JsonProperty(PropertyName = "sale_start_date")]
-        public long? SaleStartDate { get; set; }
+        public long? SaleStartDate;
 
         /// <summary>
         /// The short description of the sale.  Max 140 characters
         /// </summary>
         /// <value>The short description of the sale.  Max 140 characters</value>
         [JsonProperty(PropertyName = "short_description")]
-        public string ShortDescription { get; set; }
+        public string ShortDescription;
 
         /// <summary>
         /// The tag this sale applies to.  Leave null to skip this filter (applies to all tags)
         /// </summary>
         /// <value>The tag this sale applies to.  Leave null to skip this filter (applies to all tags)</value>
         [JsonProperty(PropertyName = "tag")]
-        public string Tag { get; set; }
+        public string Tag;
 
         /// <summary>
         /// The id of the vendor this sale applies to.  Leave null to skip this filter (applies to all vendors)
         /// </summary>
         /// <value>The id of the vendor this sale applies to.  Leave null to skip this filter (applies to all vendors)</value>
         [JsonProperty(PropertyName = "vendor")]
-        public int? Vendor { get; set; }
+        public int? Vendor;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

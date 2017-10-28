@@ -2,13 +2,17 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
+    [KnetikFactory ("spendable")]
     public class Spendable : Behavior
     {
         /// <summary>
@@ -16,15 +20,16 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The code of the currency</value>
         [JsonProperty(PropertyName = "currency_code")]
-        public string CurrencyCode { get; set; }
+        public string CurrencyCode;
 
         /// <summary>
         /// The spendable value
         /// </summary>
         /// <value>The spendable value</value>
         [JsonProperty(PropertyName = "value")]
-        public int? Value { get; set; }
+        public int? Value;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>
@@ -45,7 +50,7 @@ namespace com.knetikcloud.Model
         /// Get the JSON string presentation of the object
         /// </summary>
         /// <returns>JSON string presentation of the object</returns>
-        public  new string ToJson()
+        public new string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }

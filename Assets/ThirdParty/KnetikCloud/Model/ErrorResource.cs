@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,22 +19,23 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>Extra details about the error, if needed</value>
         [JsonProperty(PropertyName = "details")]
-        public Object Details { get; set; }
+        public Object Details;
 
         /// <summary>
         /// The JSON key the message pertains to
         /// </summary>
         /// <value>The JSON key the message pertains to</value>
         [JsonProperty(PropertyName = "field")]
-        public Object Field { get; set; }
+        public Object Field;
 
         /// <summary>
         /// The message explaining the error
         /// </summary>
         /// <value>The message explaining the error</value>
         [JsonProperty(PropertyName = "message")]
-        public string Message { get; set; }
+        public string Message;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

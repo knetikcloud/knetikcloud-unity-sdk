@@ -27,6 +27,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -46,16 +47,10 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public UtilVersionApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mGetVersionCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetVersionCoroutine = new KnetikCoroutine();
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
+        /// <inheritdoc />
         /// <summary>
         /// Get current version info 
         /// </summary>
@@ -75,7 +70,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetVersionStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetVersionStartTime, mGetVersionPath, "Sending server request...");
@@ -96,7 +91,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetVersion: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetVersionData = (Version) KnetikClient.Deserialize(response.Content, typeof(Version), response.Headers);
+            GetVersionData = (Version) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(Version), response.Headers);
             KnetikLogger.LogResponse(mGetVersionStartTime, mGetVersionPath, string.Format("Response received successfully:\n{0}", GetVersionData.ToString()));
 
             if (GetVersionComplete != null)
@@ -104,5 +99,6 @@ namespace com.knetikcloud.Api
                 GetVersionComplete(GetVersionData);
             }
         }
+
     }
 }

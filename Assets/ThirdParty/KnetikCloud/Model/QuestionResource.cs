@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,106 +19,107 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>A map of additional properties, keyed on the property name.  Must match the names and types defined in the template for this item type</value>
         [JsonProperty(PropertyName = "additional_properties")]
-        public Dictionary<string, Property> AdditionalProperties { get; set; }
+        public Dictionary<string, Property> AdditionalProperties;
 
         /// <summary>
         /// The list of available answers
         /// </summary>
         /// <value>The list of available answers</value>
         [JsonProperty(PropertyName = "answers")]
-        public List<AnswerResource> Answers { get; set; }
+        public List<AnswerResource> Answers;
 
         /// <summary>
         /// The category for the question
         /// </summary>
         /// <value>The category for the question</value>
         [JsonProperty(PropertyName = "category")]
-        public NestedCategory Category { get; set; }
+        public NestedCategory Category;
 
         /// <summary>
         /// The date/time this resource was created in seconds since unix epoch
         /// </summary>
         /// <value>The date/time this resource was created in seconds since unix epoch</value>
         [JsonProperty(PropertyName = "created_date")]
-        public long? CreatedDate { get; set; }
+        public long? CreatedDate;
 
         /// <summary>
         /// The difficulty of the question
         /// </summary>
         /// <value>The difficulty of the question</value>
         [JsonProperty(PropertyName = "difficulty")]
-        public int? Difficulty { get; set; }
+        public int? Difficulty;
 
         /// <summary>
         /// The unique ID for that resource
         /// </summary>
         /// <value>The unique ID for that resource</value>
         [JsonProperty(PropertyName = "id")]
-        public string Id { get; set; }
+        public string Id;
 
         /// <summary>
         /// The id of the import job that created the question, or null if not from an import
         /// </summary>
         /// <value>The id of the import job that created the question, or null if not from an import</value>
         [JsonProperty(PropertyName = "import_id")]
-        public long? ImportId { get; set; }
+        public long? ImportId;
 
         /// <summary>
         /// When the question becomes available, null for never, in seconds since epoch
         /// </summary>
         /// <value>When the question becomes available, null for never, in seconds since epoch</value>
         [JsonProperty(PropertyName = "published_date")]
-        public long? PublishedDate { get; set; }
+        public long? PublishedDate;
 
         /// <summary>
         /// The question. Different 'type' values indicate different structures as the question may be test, image, etc. See information on additional properties for the list and their structures
         /// </summary>
         /// <value>The question. Different 'type' values indicate different structures as the question may be test, image, etc. See information on additional properties for the list and their structures</value>
         [JsonProperty(PropertyName = "question")]
-        public Property Question { get; set; }
+        public Property Question;
 
         /// <summary>
         /// The first source of the question
         /// </summary>
         /// <value>The first source of the question</value>
         [JsonProperty(PropertyName = "source1")]
-        public string Source1 { get; set; }
+        public string Source1;
 
         /// <summary>
         /// The second source of the question
         /// </summary>
         /// <value>The second source of the question</value>
         [JsonProperty(PropertyName = "source2")]
-        public string Source2 { get; set; }
+        public string Source2;
 
         /// <summary>
         /// The list of tags
         /// </summary>
         /// <value>The list of tags</value>
         [JsonProperty(PropertyName = "tags")]
-        public List<string> Tags { get; set; }
+        public List<string> Tags;
 
         /// <summary>
         /// A question template this question is validated against (private). May be null and no validation of additional_properties will be done
         /// </summary>
         /// <value>A question template this question is validated against (private). May be null and no validation of additional_properties will be done</value>
         [JsonProperty(PropertyName = "template")]
-        public string Template { get; set; }
+        public string Template;
 
         /// <summary>
         /// The date/time this resource was last updated in seconds since unix epoch
         /// </summary>
         /// <value>The date/time this resource was last updated in seconds since unix epoch</value>
         [JsonProperty(PropertyName = "updated_date")]
-        public long? UpdatedDate { get; set; }
+        public long? UpdatedDate;
 
         /// <summary>
         /// The supplier of the question
         /// </summary>
         /// <value>The supplier of the question</value>
         [JsonProperty(PropertyName = "vendor")]
-        public string Vendor { get; set; }
+        public string Vendor;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

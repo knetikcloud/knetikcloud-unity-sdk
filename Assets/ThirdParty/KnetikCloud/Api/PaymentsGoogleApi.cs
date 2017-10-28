@@ -28,6 +28,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -47,16 +48,10 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public PaymentsGoogleApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mHandleGooglePaymentCoroutine = new KnetikCoroutine(KnetikClient);
+            mHandleGooglePaymentCoroutine = new KnetikCoroutine();
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
+        /// <inheritdoc />
         /// <summary>
         /// Mark an invoice paid with Google Mark an invoice paid with Google. Verifies signature from Google and treats the developerPayload field inside the json payload as the id of the invoice to pay. Returns the transaction ID if successful.
         /// </summary>
@@ -76,10 +71,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(request); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mHandleGooglePaymentStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mHandleGooglePaymentStartTime, mHandleGooglePaymentPath, "Sending server request...");
@@ -100,7 +95,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling HandleGooglePayment: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            HandleGooglePaymentData = (int?) KnetikClient.Deserialize(response.Content, typeof(int?), response.Headers);
+            HandleGooglePaymentData = (int?) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(int?), response.Headers);
             KnetikLogger.LogResponse(mHandleGooglePaymentStartTime, mHandleGooglePaymentPath, string.Format("Response received successfully:\n{0}", HandleGooglePaymentData.ToString()));
 
             if (HandleGooglePaymentComplete != null)
@@ -108,5 +103,6 @@ namespace com.knetikcloud.Api
                 HandleGooglePaymentComplete(HandleGooglePaymentData);
             }
         }
+
     }
 }

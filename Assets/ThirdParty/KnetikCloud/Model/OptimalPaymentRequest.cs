@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,50 +19,51 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The email address of the user</value>
         [JsonProperty(PropertyName = "email")]
-        public string Email { get; set; }
+        public string Email;
 
         /// <summary>
         /// The first name of the user
         /// </summary>
         /// <value>The first name of the user</value>
         [JsonProperty(PropertyName = "first_name")]
-        public string FirstName { get; set; }
+        public string FirstName;
 
         /// <summary>
         /// The id of the invoice to pay
         /// </summary>
         /// <value>The id of the invoice to pay</value>
         [JsonProperty(PropertyName = "invoice_id")]
-        public int? InvoiceId { get; set; }
+        public int? InvoiceId;
 
         /// <summary>
         /// The last name of the user
         /// </summary>
         /// <value>The last name of the user</value>
         [JsonProperty(PropertyName = "last_name")]
-        public string LastName { get; set; }
+        public string LastName;
 
         /// <summary>
         /// The url to redirect the user to after declining payment
         /// </summary>
         /// <value>The url to redirect the user to after declining payment</value>
         [JsonProperty(PropertyName = "on_decline")]
-        public string OnDecline { get; set; }
+        public string OnDecline;
 
         /// <summary>
         /// The url to redirect the user to after an error in payment
         /// </summary>
         /// <value>The url to redirect the user to after an error in payment</value>
         [JsonProperty(PropertyName = "on_error")]
-        public string OnError { get; set; }
+        public string OnError;
 
         /// <summary>
         /// The url to redirect the user to after successful payment
         /// </summary>
         /// <value>The url to redirect the user to after successful payment</value>
         [JsonProperty(PropertyName = "on_success")]
-        public string OnSuccess { get; set; }
+        public string OnSuccess;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

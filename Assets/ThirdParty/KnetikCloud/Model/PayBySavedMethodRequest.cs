@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,15 +19,16 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The id of the payment method to use. Must belong to the caller, be public or have PAYMENTS_ADMIN permission</value>
         [JsonProperty(PropertyName = "payment_method")]
-        public int? PaymentMethod { get; set; }
+        public int? PaymentMethod;
 
         /// <summary>
         /// The id of a user to bill. Must have PAYMENTS_ADMIN permission
         /// </summary>
         /// <value>The id of a user to bill. Must have PAYMENTS_ADMIN permission</value>
         [JsonProperty(PropertyName = "user_id")]
-        public int? UserId { get; set; }
+        public int? UserId;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

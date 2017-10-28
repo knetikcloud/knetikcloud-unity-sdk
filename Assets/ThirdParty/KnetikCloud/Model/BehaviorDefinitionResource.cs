@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,29 +19,30 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>Description of the behavior</value>
         [JsonProperty(PropertyName = "description")]
-        public string Description { get; set; }
+        public string Description;
 
         /// <summary>
         /// Pre-requisite behaviors that an item must have in order to also have this behavior
         /// </summary>
         /// <value>Pre-requisite behaviors that an item must have in order to also have this behavior</value>
         [JsonProperty(PropertyName = "prerequisite_behaviors")]
-        public List<Behavior> PrerequisiteBehaviors { get; set; }
+        public List<Behavior> PrerequisiteBehaviors;
 
         /// <summary>
         /// Configurable properties of the behavior
         /// </summary>
         /// <value>Configurable properties of the behavior</value>
         [JsonProperty(PropertyName = "properties")]
-        public List<PropertyFieldResource> Properties { get; set; }
+        public List<PropertyFieldResource> Properties;
 
         /// <summary>
         /// The behavior type
         /// </summary>
         /// <value>The behavior type</value>
         [JsonProperty(PropertyName = "type_hint")]
-        public string TypeHint { get; set; }
+        public string TypeHint;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

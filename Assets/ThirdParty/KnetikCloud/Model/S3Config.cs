@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -15,26 +18,27 @@ namespace com.knetikcloud.Model
         /// Gets or Sets BucketName
         /// </summary>
         [JsonProperty(PropertyName = "bucket_name")]
-        public string BucketName { get; set; }
+        public string BucketName;
 
         /// <summary>
         /// Gets or Sets CdnUrl
         /// </summary>
         [JsonProperty(PropertyName = "cdn_url")]
-        public string CdnUrl { get; set; }
+        public string CdnUrl;
 
         /// <summary>
         /// Gets or Sets Region
         /// </summary>
         [JsonProperty(PropertyName = "region")]
-        public string Region { get; set; }
+        public string Region;
 
         /// <summary>
         /// Gets or Sets UploadPrefix
         /// </summary>
         [JsonProperty(PropertyName = "upload_prefix")]
-        public string UploadPrefix { get; set; }
+        public string UploadPrefix;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

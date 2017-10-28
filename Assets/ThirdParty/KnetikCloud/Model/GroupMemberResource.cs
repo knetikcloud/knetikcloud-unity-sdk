@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,57 +19,58 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>A map of additional properties, keyed on the property name (private). Must match the names and types defined in the template for this type, or be an extra not from the template</value>
         [JsonProperty(PropertyName = "additional_properties")]
-        public Dictionary<string, Property> AdditionalProperties { get; set; }
+        public Dictionary<string, Property> AdditionalProperties;
 
         /// <summary>
         /// The url of the user's avatar image
         /// </summary>
         /// <value>The url of the user's avatar image</value>
         [JsonProperty(PropertyName = "avatar_url")]
-        public string AvatarUrl { get; set; }
+        public string AvatarUrl;
 
         /// <summary>
         /// The public username of the user
         /// </summary>
         /// <value>The public username of the user</value>
         [JsonProperty(PropertyName = "display_name")]
-        public string DisplayName { get; set; }
+        public string DisplayName;
 
         /// <summary>
         /// The id of the user
         /// </summary>
         /// <value>The id of the user</value>
         [JsonProperty(PropertyName = "id")]
-        public int? Id { get; set; }
+        public int? Id;
 
         /// <summary>
         /// The position of the member in the group if applicable. Read notes for details
         /// </summary>
         /// <value>The position of the member in the group if applicable. Read notes for details</value>
         [JsonProperty(PropertyName = "order")]
-        public string Order { get; set; }
+        public string Order;
 
         /// <summary>
         /// The member's access level. Default: member
         /// </summary>
         /// <value>The member's access level. Default: member</value>
         [JsonProperty(PropertyName = "status")]
-        public string Status { get; set; }
+        public string Status;
 
         /// <summary>
         /// A template this member additional properties are validated against (private). May be null and no validation of properties will be done
         /// </summary>
         /// <value>A template this member additional properties are validated against (private). May be null and no validation of properties will be done</value>
         [JsonProperty(PropertyName = "template")]
-        public string Template { get; set; }
+        public string Template;
 
         /// <summary>
         /// The username of the user
         /// </summary>
         /// <value>The username of the user</value>
         [JsonProperty(PropertyName = "username")]
-        public string Username { get; set; }
+        public string Username;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

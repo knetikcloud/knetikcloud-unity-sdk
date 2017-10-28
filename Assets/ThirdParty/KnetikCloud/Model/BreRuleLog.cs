@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,43 +19,44 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>Whether the rule ran</value>
         [JsonProperty(PropertyName = "ran")]
-        public bool? Ran { get; set; }
+        public bool? Ran;
 
         /// <summary>
         /// The reason for the rule
         /// </summary>
         /// <value>The reason for the rule</value>
         [JsonProperty(PropertyName = "reason")]
-        public string Reason { get; set; }
+        public string Reason;
 
         /// <summary>
         /// The end date of the rule in seconds
         /// </summary>
         /// <value>The end date of the rule in seconds</value>
         [JsonProperty(PropertyName = "rule_end_date")]
-        public long? RuleEndDate { get; set; }
+        public long? RuleEndDate;
 
         /// <summary>
         /// The id of the rule
         /// </summary>
         /// <value>The id of the rule</value>
         [JsonProperty(PropertyName = "rule_id")]
-        public string RuleId { get; set; }
+        public string RuleId;
 
         /// <summary>
         /// The name of the rule
         /// </summary>
         /// <value>The name of the rule</value>
         [JsonProperty(PropertyName = "rule_name")]
-        public string RuleName { get; set; }
+        public string RuleName;
 
         /// <summary>
         /// The start date of the rule in seconds
         /// </summary>
         /// <value>The start date of the rule in seconds</value>
         [JsonProperty(PropertyName = "rule_start_date")]
-        public long? RuleStartDate { get; set; }
+        public long? RuleStartDate;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

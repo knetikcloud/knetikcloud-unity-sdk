@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,36 +19,37 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The current balance of the wallet</value>
         [JsonProperty(PropertyName = "balance")]
-        public decimal? Balance { get; set; }
+        public decimal? Balance;
 
         /// <summary>
         /// The ISO currency code for the wallet
         /// </summary>
         /// <value>The ISO currency code for the wallet</value>
         [JsonProperty(PropertyName = "code")]
-        public string Code { get; set; }
+        public string Code;
 
         /// <summary>
         /// The name of the currency stored in the wallet
         /// </summary>
         /// <value>The name of the currency stored in the wallet</value>
         [JsonProperty(PropertyName = "currency_name")]
-        public string CurrencyName { get; set; }
+        public string CurrencyName;
 
         /// <summary>
         /// The unique ID of the wallet
         /// </summary>
         /// <value>The unique ID of the wallet</value>
         [JsonProperty(PropertyName = "id")]
-        public int? Id { get; set; }
+        public int? Id;
 
         /// <summary>
         /// The ID of the user to whom the wallet belongs
         /// </summary>
         /// <value>The ID of the user to whom the wallet belongs</value>
         [JsonProperty(PropertyName = "user_id")]
-        public int? UserId { get; set; }
+        public int? UserId;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

@@ -66,6 +66,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -112,20 +113,14 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public UsersAddressesApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mCreateAddressCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteAddressCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetAddressCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetAddressesCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateAddressCoroutine = new KnetikCoroutine(KnetikClient);
+            mCreateAddressCoroutine = new KnetikCoroutine();
+            mDeleteAddressCoroutine = new KnetikCoroutine();
+            mGetAddressCoroutine = new KnetikCoroutine();
+            mGetAddressesCoroutine = new KnetikCoroutine();
+            mUpdateAddressCoroutine = new KnetikCoroutine();
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
+        /// <inheritdoc />
         /// <summary>
         /// Create a new address 
         /// </summary>
@@ -144,7 +139,7 @@ namespace com.knetikcloud.Api
             {
                 mCreateAddressPath = mCreateAddressPath.Replace("{format}", "json");
             }
-            mCreateAddressPath = mCreateAddressPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+            mCreateAddressPath = mCreateAddressPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -152,10 +147,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(savedAddressResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(savedAddressResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateAddressStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateAddressStartTime, mCreateAddressPath, "Sending server request...");
@@ -176,7 +171,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateAddress: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateAddressData = (SavedAddressResource) KnetikClient.Deserialize(response.Content, typeof(SavedAddressResource), response.Headers);
+            CreateAddressData = (SavedAddressResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(SavedAddressResource), response.Headers);
             KnetikLogger.LogResponse(mCreateAddressStartTime, mCreateAddressPath, string.Format("Response received successfully:\n{0}", CreateAddressData.ToString()));
 
             if (CreateAddressComplete != null)
@@ -184,6 +179,8 @@ namespace com.knetikcloud.Api
                 CreateAddressComplete(CreateAddressData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Delete an address 
         /// </summary>
@@ -207,8 +204,8 @@ namespace com.knetikcloud.Api
             {
                 mDeleteAddressPath = mDeleteAddressPath.Replace("{format}", "json");
             }
-            mDeleteAddressPath = mDeleteAddressPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-mDeleteAddressPath = mDeleteAddressPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteAddressPath = mDeleteAddressPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
+mDeleteAddressPath = mDeleteAddressPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -217,7 +214,7 @@ mDeleteAddressPath = mDeleteAddressPath.Replace("{" + "id" + "}", KnetikClient.P
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteAddressStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteAddressStartTime, mDeleteAddressPath, "Sending server request...");
@@ -244,6 +241,8 @@ mDeleteAddressPath = mDeleteAddressPath.Replace("{" + "id" + "}", KnetikClient.P
                 DeleteAddressComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Get a single address 
         /// </summary>
@@ -267,8 +266,8 @@ mDeleteAddressPath = mDeleteAddressPath.Replace("{" + "id" + "}", KnetikClient.P
             {
                 mGetAddressPath = mGetAddressPath.Replace("{format}", "json");
             }
-            mGetAddressPath = mGetAddressPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-mGetAddressPath = mGetAddressPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetAddressPath = mGetAddressPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
+mGetAddressPath = mGetAddressPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -277,7 +276,7 @@ mGetAddressPath = mGetAddressPath.Replace("{" + "id" + "}", KnetikClient.Paramet
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetAddressStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetAddressStartTime, mGetAddressPath, "Sending server request...");
@@ -298,7 +297,7 @@ mGetAddressPath = mGetAddressPath.Replace("{" + "id" + "}", KnetikClient.Paramet
                 throw new KnetikException((int)response.StatusCode, "Error calling GetAddress: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetAddressData = (SavedAddressResource) KnetikClient.Deserialize(response.Content, typeof(SavedAddressResource), response.Headers);
+            GetAddressData = (SavedAddressResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(SavedAddressResource), response.Headers);
             KnetikLogger.LogResponse(mGetAddressStartTime, mGetAddressPath, string.Format("Response received successfully:\n{0}", GetAddressData.ToString()));
 
             if (GetAddressComplete != null)
@@ -306,6 +305,8 @@ mGetAddressPath = mGetAddressPath.Replace("{" + "id" + "}", KnetikClient.Paramet
                 GetAddressComplete(GetAddressData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// List and search addresses 
         /// </summary>
@@ -326,7 +327,7 @@ mGetAddressPath = mGetAddressPath.Replace("{" + "id" + "}", KnetikClient.Paramet
             {
                 mGetAddressesPath = mGetAddressesPath.Replace("{format}", "json");
             }
-            mGetAddressesPath = mGetAddressesPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+            mGetAddressesPath = mGetAddressesPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -336,21 +337,21 @@ mGetAddressPath = mGetAddressPath.Replace("{" + "id" + "}", KnetikClient.Paramet
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetAddressesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetAddressesStartTime, mGetAddressesPath, "Sending server request...");
@@ -371,7 +372,7 @@ mGetAddressPath = mGetAddressPath.Replace("{" + "id" + "}", KnetikClient.Paramet
                 throw new KnetikException((int)response.StatusCode, "Error calling GetAddresses: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetAddressesData = (PageResourceSavedAddressResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceSavedAddressResource), response.Headers);
+            GetAddressesData = (PageResourceSavedAddressResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceSavedAddressResource), response.Headers);
             KnetikLogger.LogResponse(mGetAddressesStartTime, mGetAddressesPath, string.Format("Response received successfully:\n{0}", GetAddressesData.ToString()));
 
             if (GetAddressesComplete != null)
@@ -379,6 +380,8 @@ mGetAddressPath = mGetAddressPath.Replace("{" + "id" + "}", KnetikClient.Paramet
                 GetAddressesComplete(GetAddressesData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Update an address 
         /// </summary>
@@ -403,8 +406,8 @@ mGetAddressPath = mGetAddressPath.Replace("{" + "id" + "}", KnetikClient.Paramet
             {
                 mUpdateAddressPath = mUpdateAddressPath.Replace("{format}", "json");
             }
-            mUpdateAddressPath = mUpdateAddressPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-mUpdateAddressPath = mUpdateAddressPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateAddressPath = mUpdateAddressPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
+mUpdateAddressPath = mUpdateAddressPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -412,10 +415,10 @@ mUpdateAddressPath = mUpdateAddressPath.Replace("{" + "id" + "}", KnetikClient.P
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(savedAddressResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(savedAddressResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateAddressStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateAddressStartTime, mUpdateAddressPath, "Sending server request...");
@@ -436,7 +439,7 @@ mUpdateAddressPath = mUpdateAddressPath.Replace("{" + "id" + "}", KnetikClient.P
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateAddress: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateAddressData = (SavedAddressResource) KnetikClient.Deserialize(response.Content, typeof(SavedAddressResource), response.Headers);
+            UpdateAddressData = (SavedAddressResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(SavedAddressResource), response.Headers);
             KnetikLogger.LogResponse(mUpdateAddressStartTime, mUpdateAddressPath, string.Format("Response received successfully:\n{0}", UpdateAddressData.ToString()));
 
             if (UpdateAddressComplete != null)
@@ -444,5 +447,6 @@ mUpdateAddressPath = mUpdateAddressPath.Replace("{" + "id" + "}", KnetikClient.P
                 UpdateAddressComplete(UpdateAddressData);
             }
         }
+
     }
 }

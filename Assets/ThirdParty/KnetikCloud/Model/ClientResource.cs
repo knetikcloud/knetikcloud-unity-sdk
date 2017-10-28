@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,71 +19,72 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The expiration time of an initial oauth token in seconds</value>
         [JsonProperty(PropertyName = "access_token_validity_seconds")]
-        public int? AccessTokenValiditySeconds { get; set; }
+        public int? AccessTokenValiditySeconds;
 
         /// <summary>
         /// The client_id field of the oauth token request
         /// </summary>
         /// <value>The client_id field of the oauth token request</value>
         [JsonProperty(PropertyName = "client_key")]
-        public string ClientKey { get; set; }
+        public string ClientKey;
 
         /// <summary>
         /// The oauth grant type as in: password (username/password auth), client_credentials (server-to-server, private clients), refresh_token (to allow clients to refresh their initial token), facebook, google, etc) See documentation for a complete list. Use dedicated endpoint PUT /grant-types to edit this list
         /// </summary>
         /// <value>The oauth grant type as in: password (username/password auth), client_credentials (server-to-server, private clients), refresh_token (to allow clients to refresh their initial token), facebook, google, etc) See documentation for a complete list. Use dedicated endpoint PUT /grant-types to edit this list</value>
         [JsonProperty(PropertyName = "grant_types")]
-        public List<string> GrantTypes { get; set; }
+        public List<string> GrantTypes;
 
         /// <summary>
         /// Generated unique ID for the client
         /// </summary>
         /// <value>Generated unique ID for the client</value>
         [JsonProperty(PropertyName = "id")]
-        public int? Id { get; set; }
+        public int? Id;
 
         /// <summary>
         /// Set to true if the client is public i.e the secret key can be secured
         /// </summary>
         /// <value>Set to true if the client is public i.e the secret key can be secured</value>
         [JsonProperty(PropertyName = "is_public")]
-        public bool? IsPublic { get; set; }
+        public bool? IsPublic;
 
         /// <summary>
         /// Used to flag system clients that are not meant to be tinkered with
         /// </summary>
         /// <value>Used to flag system clients that are not meant to be tinkered with</value>
         [JsonProperty(PropertyName = "locked")]
-        public bool? Locked { get; set; }
+        public bool? Locked;
 
         /// <summary>
         /// The friendly name of the client
         /// </summary>
         /// <value>The friendly name of the client</value>
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name;
 
         /// <summary>
         /// A redirection URL to use when granting access to third-parties (seldomly used)
         /// </summary>
         /// <value>A redirection URL to use when granting access to third-parties (seldomly used)</value>
         [JsonProperty(PropertyName = "redirect_uris")]
-        public List<string> RedirectUris { get; set; }
+        public List<string> RedirectUris;
 
         /// <summary>
         /// The expiration time of a refresh oauth token in seconds
         /// </summary>
         /// <value>The expiration time of a refresh oauth token in seconds</value>
         [JsonProperty(PropertyName = "refresh_token_validity_seconds")]
-        public int? RefreshTokenValiditySeconds { get; set; }
+        public int? RefreshTokenValiditySeconds;
 
         /// <summary>
         /// The client-secret field of the oauth request when creating a private client
         /// </summary>
         /// <value>The client-secret field of the oauth request when creating a private client</value>
         [JsonProperty(PropertyName = "secret")]
-        public string Secret { get; set; }
+        public string Secret;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

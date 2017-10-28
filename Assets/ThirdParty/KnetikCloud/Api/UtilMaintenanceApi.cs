@@ -44,6 +44,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -81,19 +82,13 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public UtilMaintenanceApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mDeleteMaintenanceCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetMaintenanceCoroutine = new KnetikCoroutine(KnetikClient);
-            mSetMaintenanceCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateMaintenanceCoroutine = new KnetikCoroutine(KnetikClient);
+            mDeleteMaintenanceCoroutine = new KnetikCoroutine();
+            mGetMaintenanceCoroutine = new KnetikCoroutine();
+            mSetMaintenanceCoroutine = new KnetikCoroutine();
+            mUpdateMaintenanceCoroutine = new KnetikCoroutine();
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
+        /// <inheritdoc />
         /// <summary>
         /// Delete maintenance info 
         /// </summary>
@@ -113,7 +108,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteMaintenanceStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteMaintenanceStartTime, mDeleteMaintenancePath, "Sending server request...");
@@ -140,6 +135,8 @@ namespace com.knetikcloud.Api
                 DeleteMaintenanceComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Get current maintenance info Get current maintenance info. 404 if no maintenance.
         /// </summary>
@@ -159,7 +156,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetMaintenanceStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetMaintenanceStartTime, mGetMaintenancePath, "Sending server request...");
@@ -180,7 +177,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetMaintenance: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetMaintenanceData = (Maintenance) KnetikClient.Deserialize(response.Content, typeof(Maintenance), response.Headers);
+            GetMaintenanceData = (Maintenance) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(Maintenance), response.Headers);
             KnetikLogger.LogResponse(mGetMaintenanceStartTime, mGetMaintenancePath, string.Format("Response received successfully:\n{0}", GetMaintenanceData.ToString()));
 
             if (GetMaintenanceComplete != null)
@@ -188,6 +185,8 @@ namespace com.knetikcloud.Api
                 GetMaintenanceComplete(GetMaintenanceData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Set current maintenance info 
         /// </summary>
@@ -207,10 +206,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(maintenance); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(maintenance); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSetMaintenanceStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSetMaintenanceStartTime, mSetMaintenancePath, "Sending server request...");
@@ -237,6 +236,8 @@ namespace com.knetikcloud.Api
                 SetMaintenanceComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Update current maintenance info 
         /// </summary>
@@ -256,10 +257,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(maintenance); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(maintenance); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateMaintenanceStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateMaintenanceStartTime, mUpdateMaintenancePath, "Sending server request...");
@@ -286,5 +287,6 @@ namespace com.knetikcloud.Api
                 UpdateMaintenanceComplete();
             }
         }
+
     }
 }

@@ -224,6 +224,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -391,39 +392,33 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public MediaVideosApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mAddUserToVideoWhitelistCoroutine = new KnetikCoroutine(KnetikClient);
-            mAddVideoCoroutine = new KnetikCoroutine(KnetikClient);
-            mAddVideoCommentCoroutine = new KnetikCoroutine(KnetikClient);
-            mAddVideoContributorCoroutine = new KnetikCoroutine(KnetikClient);
-            mAddVideoFlagCoroutine = new KnetikCoroutine(KnetikClient);
-            mAddVideoRelationshipsCoroutine = new KnetikCoroutine(KnetikClient);
-            mCreateVideoDispositionCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteVideoCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteVideoCommentCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteVideoDispositionCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteVideoFlagCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteVideoRelationshipCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetUserVideosCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetVideoCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetVideoCommentsCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetVideoDispositionsCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetVideoRelationshipsCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetVideosCoroutine = new KnetikCoroutine(KnetikClient);
-            mRemoveUserFromVideoWhitelistCoroutine = new KnetikCoroutine(KnetikClient);
-            mRemoveVideoContributorCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateVideoCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateVideoCommentCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateVideoRelationshipCoroutine = new KnetikCoroutine(KnetikClient);
-            mViewVideoCoroutine = new KnetikCoroutine(KnetikClient);
+            mAddUserToVideoWhitelistCoroutine = new KnetikCoroutine();
+            mAddVideoCoroutine = new KnetikCoroutine();
+            mAddVideoCommentCoroutine = new KnetikCoroutine();
+            mAddVideoContributorCoroutine = new KnetikCoroutine();
+            mAddVideoFlagCoroutine = new KnetikCoroutine();
+            mAddVideoRelationshipsCoroutine = new KnetikCoroutine();
+            mCreateVideoDispositionCoroutine = new KnetikCoroutine();
+            mDeleteVideoCoroutine = new KnetikCoroutine();
+            mDeleteVideoCommentCoroutine = new KnetikCoroutine();
+            mDeleteVideoDispositionCoroutine = new KnetikCoroutine();
+            mDeleteVideoFlagCoroutine = new KnetikCoroutine();
+            mDeleteVideoRelationshipCoroutine = new KnetikCoroutine();
+            mGetUserVideosCoroutine = new KnetikCoroutine();
+            mGetVideoCoroutine = new KnetikCoroutine();
+            mGetVideoCommentsCoroutine = new KnetikCoroutine();
+            mGetVideoDispositionsCoroutine = new KnetikCoroutine();
+            mGetVideoRelationshipsCoroutine = new KnetikCoroutine();
+            mGetVideosCoroutine = new KnetikCoroutine();
+            mRemoveUserFromVideoWhitelistCoroutine = new KnetikCoroutine();
+            mRemoveVideoContributorCoroutine = new KnetikCoroutine();
+            mUpdateVideoCoroutine = new KnetikCoroutine();
+            mUpdateVideoCommentCoroutine = new KnetikCoroutine();
+            mUpdateVideoRelationshipCoroutine = new KnetikCoroutine();
+            mViewVideoCoroutine = new KnetikCoroutine();
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
+        /// <inheritdoc />
         /// <summary>
         /// Adds a user to a video&#39;s whitelist Whitelisted users can view video regardless of privacy setting.
         /// </summary>
@@ -442,7 +437,7 @@ namespace com.knetikcloud.Api
             {
                 mAddUserToVideoWhitelistPath = mAddUserToVideoWhitelistPath.Replace("{format}", "json");
             }
-            mAddUserToVideoWhitelistPath = mAddUserToVideoWhitelistPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mAddUserToVideoWhitelistPath = mAddUserToVideoWhitelistPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -450,10 +445,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(userId); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(userId); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddUserToVideoWhitelistStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddUserToVideoWhitelistStartTime, mAddUserToVideoWhitelistPath, "Sending server request...");
@@ -480,6 +475,8 @@ namespace com.knetikcloud.Api
                 AddUserToVideoWhitelistComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Adds a new video in the system 
         /// </summary>
@@ -499,10 +496,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(videoResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(videoResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddVideoStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddVideoStartTime, mAddVideoPath, "Sending server request...");
@@ -523,7 +520,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling AddVideo: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            AddVideoData = (VideoResource) KnetikClient.Deserialize(response.Content, typeof(VideoResource), response.Headers);
+            AddVideoData = (VideoResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(VideoResource), response.Headers);
             KnetikLogger.LogResponse(mAddVideoStartTime, mAddVideoPath, string.Format("Response received successfully:\n{0}", AddVideoData.ToString()));
 
             if (AddVideoComplete != null)
@@ -531,6 +528,8 @@ namespace com.knetikcloud.Api
                 AddVideoComplete(AddVideoData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Add a new video comment 
         /// </summary>
@@ -549,7 +548,7 @@ namespace com.knetikcloud.Api
             {
                 mAddVideoCommentPath = mAddVideoCommentPath.Replace("{format}", "json");
             }
-            mAddVideoCommentPath = mAddVideoCommentPath.Replace("{" + "video_id" + "}", KnetikClient.ParameterToString(videoId));
+            mAddVideoCommentPath = mAddVideoCommentPath.Replace("{" + "video_id" + "}", KnetikClient.DefaultClient.ParameterToString(videoId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -557,10 +556,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(commentResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(commentResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddVideoCommentStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddVideoCommentStartTime, mAddVideoCommentPath, "Sending server request...");
@@ -581,7 +580,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling AddVideoComment: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            AddVideoCommentData = (CommentResource) KnetikClient.Deserialize(response.Content, typeof(CommentResource), response.Headers);
+            AddVideoCommentData = (CommentResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CommentResource), response.Headers);
             KnetikLogger.LogResponse(mAddVideoCommentStartTime, mAddVideoCommentPath, string.Format("Response received successfully:\n{0}", AddVideoCommentData.ToString()));
 
             if (AddVideoCommentComplete != null)
@@ -589,6 +588,8 @@ namespace com.knetikcloud.Api
                 AddVideoCommentComplete(AddVideoCommentData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Adds a contributor to a video 
         /// </summary>
@@ -607,7 +608,7 @@ namespace com.knetikcloud.Api
             {
                 mAddVideoContributorPath = mAddVideoContributorPath.Replace("{format}", "json");
             }
-            mAddVideoContributorPath = mAddVideoContributorPath.Replace("{" + "video_id" + "}", KnetikClient.ParameterToString(videoId));
+            mAddVideoContributorPath = mAddVideoContributorPath.Replace("{" + "video_id" + "}", KnetikClient.DefaultClient.ParameterToString(videoId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -615,10 +616,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(contributionResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(contributionResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddVideoContributorStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddVideoContributorStartTime, mAddVideoContributorPath, "Sending server request...");
@@ -645,6 +646,8 @@ namespace com.knetikcloud.Api
                 AddVideoContributorComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Add a new flag 
         /// </summary>
@@ -663,7 +666,7 @@ namespace com.knetikcloud.Api
             {
                 mAddVideoFlagPath = mAddVideoFlagPath.Replace("{format}", "json");
             }
-            mAddVideoFlagPath = mAddVideoFlagPath.Replace("{" + "video_id" + "}", KnetikClient.ParameterToString(videoId));
+            mAddVideoFlagPath = mAddVideoFlagPath.Replace("{" + "video_id" + "}", KnetikClient.DefaultClient.ParameterToString(videoId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -671,10 +674,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(reason); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(reason); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddVideoFlagStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddVideoFlagStartTime, mAddVideoFlagPath, "Sending server request...");
@@ -695,7 +698,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling AddVideoFlag: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            AddVideoFlagData = (FlagResource) KnetikClient.Deserialize(response.Content, typeof(FlagResource), response.Headers);
+            AddVideoFlagData = (FlagResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(FlagResource), response.Headers);
             KnetikLogger.LogResponse(mAddVideoFlagStartTime, mAddVideoFlagPath, string.Format("Response received successfully:\n{0}", AddVideoFlagData.ToString()));
 
             if (AddVideoFlagComplete != null)
@@ -703,6 +706,8 @@ namespace com.knetikcloud.Api
                 AddVideoFlagComplete(AddVideoFlagData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Adds one or more existing videos as related to this one 
         /// </summary>
@@ -721,7 +726,7 @@ namespace com.knetikcloud.Api
             {
                 mAddVideoRelationshipsPath = mAddVideoRelationshipsPath.Replace("{format}", "json");
             }
-            mAddVideoRelationshipsPath = mAddVideoRelationshipsPath.Replace("{" + "video_id" + "}", KnetikClient.ParameterToString(videoId));
+            mAddVideoRelationshipsPath = mAddVideoRelationshipsPath.Replace("{" + "video_id" + "}", KnetikClient.DefaultClient.ParameterToString(videoId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -729,10 +734,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(videoRelationshipResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(videoRelationshipResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddVideoRelationshipsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddVideoRelationshipsStartTime, mAddVideoRelationshipsPath, "Sending server request...");
@@ -753,7 +758,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling AddVideoRelationships: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            AddVideoRelationshipsData = (VideoRelationshipResource) KnetikClient.Deserialize(response.Content, typeof(VideoRelationshipResource), response.Headers);
+            AddVideoRelationshipsData = (VideoRelationshipResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(VideoRelationshipResource), response.Headers);
             KnetikLogger.LogResponse(mAddVideoRelationshipsStartTime, mAddVideoRelationshipsPath, string.Format("Response received successfully:\n{0}", AddVideoRelationshipsData.ToString()));
 
             if (AddVideoRelationshipsComplete != null)
@@ -761,6 +766,8 @@ namespace com.knetikcloud.Api
                 AddVideoRelationshipsComplete(AddVideoRelationshipsData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Create a video disposition 
         /// </summary>
@@ -779,7 +786,7 @@ namespace com.knetikcloud.Api
             {
                 mCreateVideoDispositionPath = mCreateVideoDispositionPath.Replace("{format}", "json");
             }
-            mCreateVideoDispositionPath = mCreateVideoDispositionPath.Replace("{" + "video_id" + "}", KnetikClient.ParameterToString(videoId));
+            mCreateVideoDispositionPath = mCreateVideoDispositionPath.Replace("{" + "video_id" + "}", KnetikClient.DefaultClient.ParameterToString(videoId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -787,10 +794,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(dispositionResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(dispositionResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateVideoDispositionStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateVideoDispositionStartTime, mCreateVideoDispositionPath, "Sending server request...");
@@ -811,7 +818,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateVideoDisposition: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateVideoDispositionData = (DispositionResource) KnetikClient.Deserialize(response.Content, typeof(DispositionResource), response.Headers);
+            CreateVideoDispositionData = (DispositionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(DispositionResource), response.Headers);
             KnetikLogger.LogResponse(mCreateVideoDispositionStartTime, mCreateVideoDispositionPath, string.Format("Response received successfully:\n{0}", CreateVideoDispositionData.ToString()));
 
             if (CreateVideoDispositionComplete != null)
@@ -819,6 +826,8 @@ namespace com.knetikcloud.Api
                 CreateVideoDispositionComplete(CreateVideoDispositionData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Deletes a video from the system if no resources are attached to it 
         /// </summary>
@@ -836,7 +845,7 @@ namespace com.knetikcloud.Api
             {
                 mDeleteVideoPath = mDeleteVideoPath.Replace("{format}", "json");
             }
-            mDeleteVideoPath = mDeleteVideoPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteVideoPath = mDeleteVideoPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -845,7 +854,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteVideoStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteVideoStartTime, mDeleteVideoPath, "Sending server request...");
@@ -872,6 +881,8 @@ namespace com.knetikcloud.Api
                 DeleteVideoComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Delete a video comment 
         /// </summary>
@@ -895,8 +906,8 @@ namespace com.knetikcloud.Api
             {
                 mDeleteVideoCommentPath = mDeleteVideoCommentPath.Replace("{format}", "json");
             }
-            mDeleteVideoCommentPath = mDeleteVideoCommentPath.Replace("{" + "video_id" + "}", KnetikClient.ParameterToString(videoId));
-mDeleteVideoCommentPath = mDeleteVideoCommentPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteVideoCommentPath = mDeleteVideoCommentPath.Replace("{" + "video_id" + "}", KnetikClient.DefaultClient.ParameterToString(videoId));
+mDeleteVideoCommentPath = mDeleteVideoCommentPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -905,7 +916,7 @@ mDeleteVideoCommentPath = mDeleteVideoCommentPath.Replace("{" + "id" + "}", Knet
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteVideoCommentStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteVideoCommentStartTime, mDeleteVideoCommentPath, "Sending server request...");
@@ -932,6 +943,8 @@ mDeleteVideoCommentPath = mDeleteVideoCommentPath.Replace("{" + "id" + "}", Knet
                 DeleteVideoCommentComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Delete a video disposition 
         /// </summary>
@@ -949,7 +962,7 @@ mDeleteVideoCommentPath = mDeleteVideoCommentPath.Replace("{" + "id" + "}", Knet
             {
                 mDeleteVideoDispositionPath = mDeleteVideoDispositionPath.Replace("{format}", "json");
             }
-            mDeleteVideoDispositionPath = mDeleteVideoDispositionPath.Replace("{" + "disposition_id" + "}", KnetikClient.ParameterToString(dispositionId));
+            mDeleteVideoDispositionPath = mDeleteVideoDispositionPath.Replace("{" + "disposition_id" + "}", KnetikClient.DefaultClient.ParameterToString(dispositionId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -958,7 +971,7 @@ mDeleteVideoCommentPath = mDeleteVideoCommentPath.Replace("{" + "id" + "}", Knet
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteVideoDispositionStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteVideoDispositionStartTime, mDeleteVideoDispositionPath, "Sending server request...");
@@ -985,6 +998,8 @@ mDeleteVideoCommentPath = mDeleteVideoCommentPath.Replace("{" + "id" + "}", Knet
                 DeleteVideoDispositionComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Delete a flag 
         /// </summary>
@@ -1002,7 +1017,7 @@ mDeleteVideoCommentPath = mDeleteVideoCommentPath.Replace("{" + "id" + "}", Knet
             {
                 mDeleteVideoFlagPath = mDeleteVideoFlagPath.Replace("{format}", "json");
             }
-            mDeleteVideoFlagPath = mDeleteVideoFlagPath.Replace("{" + "video_id" + "}", KnetikClient.ParameterToString(videoId));
+            mDeleteVideoFlagPath = mDeleteVideoFlagPath.Replace("{" + "video_id" + "}", KnetikClient.DefaultClient.ParameterToString(videoId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1011,7 +1026,7 @@ mDeleteVideoCommentPath = mDeleteVideoCommentPath.Replace("{" + "id" + "}", Knet
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteVideoFlagStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteVideoFlagStartTime, mDeleteVideoFlagPath, "Sending server request...");
@@ -1038,6 +1053,8 @@ mDeleteVideoCommentPath = mDeleteVideoCommentPath.Replace("{" + "id" + "}", Knet
                 DeleteVideoFlagComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Delete a video&#39;s relationship 
         /// </summary>
@@ -1061,8 +1078,8 @@ mDeleteVideoCommentPath = mDeleteVideoCommentPath.Replace("{" + "id" + "}", Knet
             {
                 mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{format}", "json");
             }
-            mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "video_id" + "}", KnetikClient.ParameterToString(videoId));
-mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "video_id" + "}", KnetikClient.DefaultClient.ParameterToString(videoId));
+mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1071,7 +1088,7 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteVideoRelationshipStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteVideoRelationshipStartTime, mDeleteVideoRelationshipPath, "Sending server request...");
@@ -1098,6 +1115,8 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
                 DeleteVideoRelationshipComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Get user videos 
         /// </summary>
@@ -1118,7 +1137,7 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
             {
                 mGetUserVideosPath = mGetUserVideosPath.Replace("{format}", "json");
             }
-            mGetUserVideosPath = mGetUserVideosPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+            mGetUserVideosPath = mGetUserVideosPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1128,21 +1147,21 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
 
             if (excludeFlagged != null)
             {
-                queryParams.Add("exclude_flagged", KnetikClient.ParameterToString(excludeFlagged));
+                queryParams.Add("exclude_flagged", KnetikClient.DefaultClient.ParameterToString(excludeFlagged));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUserVideosStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUserVideosStartTime, mGetUserVideosPath, "Sending server request...");
@@ -1163,7 +1182,7 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
                 throw new KnetikException((int)response.StatusCode, "Error calling GetUserVideos: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetUserVideosData = (PageResourceVideoResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceVideoResource), response.Headers);
+            GetUserVideosData = (PageResourceVideoResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceVideoResource), response.Headers);
             KnetikLogger.LogResponse(mGetUserVideosStartTime, mGetUserVideosPath, string.Format("Response received successfully:\n{0}", GetUserVideosData.ToString()));
 
             if (GetUserVideosComplete != null)
@@ -1171,6 +1190,8 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
                 GetUserVideosComplete(GetUserVideosData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Loads a specific video details 
         /// </summary>
@@ -1188,7 +1209,7 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
             {
                 mGetVideoPath = mGetVideoPath.Replace("{format}", "json");
             }
-            mGetVideoPath = mGetVideoPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetVideoPath = mGetVideoPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1197,7 +1218,7 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetVideoStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetVideoStartTime, mGetVideoPath, "Sending server request...");
@@ -1218,7 +1239,7 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
                 throw new KnetikException((int)response.StatusCode, "Error calling GetVideo: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetVideoData = (VideoResource) KnetikClient.Deserialize(response.Content, typeof(VideoResource), response.Headers);
+            GetVideoData = (VideoResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(VideoResource), response.Headers);
             KnetikLogger.LogResponse(mGetVideoStartTime, mGetVideoPath, string.Format("Response received successfully:\n{0}", GetVideoData.ToString()));
 
             if (GetVideoComplete != null)
@@ -1226,6 +1247,8 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
                 GetVideoComplete(GetVideoData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Returns a page of comments for a video 
         /// </summary>
@@ -1245,7 +1268,7 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
             {
                 mGetVideoCommentsPath = mGetVideoCommentsPath.Replace("{format}", "json");
             }
-            mGetVideoCommentsPath = mGetVideoCommentsPath.Replace("{" + "video_id" + "}", KnetikClient.ParameterToString(videoId));
+            mGetVideoCommentsPath = mGetVideoCommentsPath.Replace("{" + "video_id" + "}", KnetikClient.DefaultClient.ParameterToString(videoId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1255,16 +1278,16 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetVideoCommentsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetVideoCommentsStartTime, mGetVideoCommentsPath, "Sending server request...");
@@ -1285,7 +1308,7 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
                 throw new KnetikException((int)response.StatusCode, "Error calling GetVideoComments: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetVideoCommentsData = (PageResourceCommentResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceCommentResource), response.Headers);
+            GetVideoCommentsData = (PageResourceCommentResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceCommentResource), response.Headers);
             KnetikLogger.LogResponse(mGetVideoCommentsStartTime, mGetVideoCommentsPath, string.Format("Response received successfully:\n{0}", GetVideoCommentsData.ToString()));
 
             if (GetVideoCommentsComplete != null)
@@ -1293,6 +1316,8 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
                 GetVideoCommentsComplete(GetVideoCommentsData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Returns a page of dispositions for a video 
         /// </summary>
@@ -1312,7 +1337,7 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
             {
                 mGetVideoDispositionsPath = mGetVideoDispositionsPath.Replace("{format}", "json");
             }
-            mGetVideoDispositionsPath = mGetVideoDispositionsPath.Replace("{" + "video_id" + "}", KnetikClient.ParameterToString(videoId));
+            mGetVideoDispositionsPath = mGetVideoDispositionsPath.Replace("{" + "video_id" + "}", KnetikClient.DefaultClient.ParameterToString(videoId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1322,16 +1347,16 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetVideoDispositionsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetVideoDispositionsStartTime, mGetVideoDispositionsPath, "Sending server request...");
@@ -1352,7 +1377,7 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
                 throw new KnetikException((int)response.StatusCode, "Error calling GetVideoDispositions: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetVideoDispositionsData = (PageResourceDispositionResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceDispositionResource), response.Headers);
+            GetVideoDispositionsData = (PageResourceDispositionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceDispositionResource), response.Headers);
             KnetikLogger.LogResponse(mGetVideoDispositionsStartTime, mGetVideoDispositionsPath, string.Format("Response received successfully:\n{0}", GetVideoDispositionsData.ToString()));
 
             if (GetVideoDispositionsComplete != null)
@@ -1360,6 +1385,8 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
                 GetVideoDispositionsComplete(GetVideoDispositionsData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Returns a page of video relationships 
         /// </summary>
@@ -1379,7 +1406,7 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
             {
                 mGetVideoRelationshipsPath = mGetVideoRelationshipsPath.Replace("{format}", "json");
             }
-            mGetVideoRelationshipsPath = mGetVideoRelationshipsPath.Replace("{" + "video_id" + "}", KnetikClient.ParameterToString(videoId));
+            mGetVideoRelationshipsPath = mGetVideoRelationshipsPath.Replace("{" + "video_id" + "}", KnetikClient.DefaultClient.ParameterToString(videoId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1389,16 +1416,16 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetVideoRelationshipsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetVideoRelationshipsStartTime, mGetVideoRelationshipsPath, "Sending server request...");
@@ -1419,7 +1446,7 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
                 throw new KnetikException((int)response.StatusCode, "Error calling GetVideoRelationships: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetVideoRelationshipsData = (PageResourceVideoRelationshipResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceVideoRelationshipResource), response.Headers);
+            GetVideoRelationshipsData = (PageResourceVideoRelationshipResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceVideoRelationshipResource), response.Headers);
             KnetikLogger.LogResponse(mGetVideoRelationshipsStartTime, mGetVideoRelationshipsPath, string.Format("Response received successfully:\n{0}", GetVideoRelationshipsData.ToString()));
 
             if (GetVideoRelationshipsComplete != null)
@@ -1427,6 +1454,8 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
                 GetVideoRelationshipsComplete(GetVideoRelationshipsData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Search videos using the documented filters 
         /// </summary>
@@ -1462,81 +1491,81 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
 
             if (excludeFlagged != null)
             {
-                queryParams.Add("exclude_flagged", KnetikClient.ParameterToString(excludeFlagged));
+                queryParams.Add("exclude_flagged", KnetikClient.DefaultClient.ParameterToString(excludeFlagged));
             }
 
             if (filterVideosByUploader != null)
             {
-                queryParams.Add("filter_videos_by_uploader", KnetikClient.ParameterToString(filterVideosByUploader));
+                queryParams.Add("filter_videos_by_uploader", KnetikClient.DefaultClient.ParameterToString(filterVideosByUploader));
             }
 
             if (filterCategory != null)
             {
-                queryParams.Add("filter_category", KnetikClient.ParameterToString(filterCategory));
+                queryParams.Add("filter_category", KnetikClient.DefaultClient.ParameterToString(filterCategory));
             }
 
             if (filterTagset != null)
             {
-                queryParams.Add("filter_tagset", KnetikClient.ParameterToString(filterTagset));
+                queryParams.Add("filter_tagset", KnetikClient.DefaultClient.ParameterToString(filterTagset));
             }
 
             if (filterVideosByName != null)
             {
-                queryParams.Add("filter_videos_by_name", KnetikClient.ParameterToString(filterVideosByName));
+                queryParams.Add("filter_videos_by_name", KnetikClient.DefaultClient.ParameterToString(filterVideosByName));
             }
 
             if (filterVideosByContributor != null)
             {
-                queryParams.Add("filter_videos_by_contributor", KnetikClient.ParameterToString(filterVideosByContributor));
+                queryParams.Add("filter_videos_by_contributor", KnetikClient.DefaultClient.ParameterToString(filterVideosByContributor));
             }
 
             if (filterVideosByAuthor != null)
             {
-                queryParams.Add("filter_videos_by_author", KnetikClient.ParameterToString(filterVideosByAuthor));
+                queryParams.Add("filter_videos_by_author", KnetikClient.DefaultClient.ParameterToString(filterVideosByAuthor));
             }
 
             if (filterHasAuthor != null)
             {
-                queryParams.Add("filter_has_author", KnetikClient.ParameterToString(filterHasAuthor));
+                queryParams.Add("filter_has_author", KnetikClient.DefaultClient.ParameterToString(filterHasAuthor));
             }
 
             if (filterHasUploader != null)
             {
-                queryParams.Add("filter_has_uploader", KnetikClient.ParameterToString(filterHasUploader));
+                queryParams.Add("filter_has_uploader", KnetikClient.DefaultClient.ParameterToString(filterHasUploader));
             }
 
             if (filterRelatedTo != null)
             {
-                queryParams.Add("filter_related_to", KnetikClient.ParameterToString(filterRelatedTo));
+                queryParams.Add("filter_related_to", KnetikClient.DefaultClient.ParameterToString(filterRelatedTo));
             }
 
             if (filterFriends != null)
             {
-                queryParams.Add("filter_friends", KnetikClient.ParameterToString(filterFriends));
+                queryParams.Add("filter_friends", KnetikClient.DefaultClient.ParameterToString(filterFriends));
             }
 
             if (filterDisposition != null)
             {
-                queryParams.Add("filter_disposition", KnetikClient.ParameterToString(filterDisposition));
+                queryParams.Add("filter_disposition", KnetikClient.DefaultClient.ParameterToString(filterDisposition));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetVideosStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetVideosStartTime, mGetVideosPath, "Sending server request...");
@@ -1557,7 +1586,7 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
                 throw new KnetikException((int)response.StatusCode, "Error calling GetVideos: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetVideosData = (PageResourceVideoResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceVideoResource), response.Headers);
+            GetVideosData = (PageResourceVideoResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceVideoResource), response.Headers);
             KnetikLogger.LogResponse(mGetVideosStartTime, mGetVideosPath, string.Format("Response received successfully:\n{0}", GetVideosData.ToString()));
 
             if (GetVideosComplete != null)
@@ -1565,6 +1594,8 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
                 GetVideosComplete(GetVideosData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Removes a user from a video&#39;s whitelist Remove the user with the id given in the path from the whitelist of users that can view this video regardless of privacy setting.
         /// </summary>
@@ -1588,8 +1619,8 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
             {
                 mRemoveUserFromVideoWhitelistPath = mRemoveUserFromVideoWhitelistPath.Replace("{format}", "json");
             }
-            mRemoveUserFromVideoWhitelistPath = mRemoveUserFromVideoWhitelistPath.Replace("{" + "video_id" + "}", KnetikClient.ParameterToString(videoId));
-mRemoveUserFromVideoWhitelistPath = mRemoveUserFromVideoWhitelistPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mRemoveUserFromVideoWhitelistPath = mRemoveUserFromVideoWhitelistPath.Replace("{" + "video_id" + "}", KnetikClient.DefaultClient.ParameterToString(videoId));
+mRemoveUserFromVideoWhitelistPath = mRemoveUserFromVideoWhitelistPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1598,7 +1629,7 @@ mRemoveUserFromVideoWhitelistPath = mRemoveUserFromVideoWhitelistPath.Replace("{
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mRemoveUserFromVideoWhitelistStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mRemoveUserFromVideoWhitelistStartTime, mRemoveUserFromVideoWhitelistPath, "Sending server request...");
@@ -1625,6 +1656,8 @@ mRemoveUserFromVideoWhitelistPath = mRemoveUserFromVideoWhitelistPath.Replace("{
                 RemoveUserFromVideoWhitelistComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Removes a contributor from a video 
         /// </summary>
@@ -1648,8 +1681,8 @@ mRemoveUserFromVideoWhitelistPath = mRemoveUserFromVideoWhitelistPath.Replace("{
             {
                 mRemoveVideoContributorPath = mRemoveVideoContributorPath.Replace("{format}", "json");
             }
-            mRemoveVideoContributorPath = mRemoveVideoContributorPath.Replace("{" + "video_id" + "}", KnetikClient.ParameterToString(videoId));
-mRemoveVideoContributorPath = mRemoveVideoContributorPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mRemoveVideoContributorPath = mRemoveVideoContributorPath.Replace("{" + "video_id" + "}", KnetikClient.DefaultClient.ParameterToString(videoId));
+mRemoveVideoContributorPath = mRemoveVideoContributorPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1658,7 +1691,7 @@ mRemoveVideoContributorPath = mRemoveVideoContributorPath.Replace("{" + "id" + "
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mRemoveVideoContributorStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mRemoveVideoContributorStartTime, mRemoveVideoContributorPath, "Sending server request...");
@@ -1685,6 +1718,8 @@ mRemoveVideoContributorPath = mRemoveVideoContributorPath.Replace("{" + "id" + "
                 RemoveVideoContributorComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Modifies a video&#39;s details 
         /// </summary>
@@ -1703,7 +1738,7 @@ mRemoveVideoContributorPath = mRemoveVideoContributorPath.Replace("{" + "id" + "
             {
                 mUpdateVideoPath = mUpdateVideoPath.Replace("{format}", "json");
             }
-            mUpdateVideoPath = mUpdateVideoPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateVideoPath = mUpdateVideoPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1711,10 +1746,10 @@ mRemoveVideoContributorPath = mRemoveVideoContributorPath.Replace("{" + "id" + "
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(videoResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(videoResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateVideoStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateVideoStartTime, mUpdateVideoPath, "Sending server request...");
@@ -1741,6 +1776,8 @@ mRemoveVideoContributorPath = mRemoveVideoContributorPath.Replace("{" + "id" + "
                 UpdateVideoComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Update a video comment 
         /// </summary>
@@ -1765,8 +1802,8 @@ mRemoveVideoContributorPath = mRemoveVideoContributorPath.Replace("{" + "id" + "
             {
                 mUpdateVideoCommentPath = mUpdateVideoCommentPath.Replace("{format}", "json");
             }
-            mUpdateVideoCommentPath = mUpdateVideoCommentPath.Replace("{" + "video_id" + "}", KnetikClient.ParameterToString(videoId));
-mUpdateVideoCommentPath = mUpdateVideoCommentPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateVideoCommentPath = mUpdateVideoCommentPath.Replace("{" + "video_id" + "}", KnetikClient.DefaultClient.ParameterToString(videoId));
+mUpdateVideoCommentPath = mUpdateVideoCommentPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1774,10 +1811,10 @@ mUpdateVideoCommentPath = mUpdateVideoCommentPath.Replace("{" + "id" + "}", Knet
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(content); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(content); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateVideoCommentStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateVideoCommentStartTime, mUpdateVideoCommentPath, "Sending server request...");
@@ -1804,6 +1841,8 @@ mUpdateVideoCommentPath = mUpdateVideoCommentPath.Replace("{" + "id" + "}", Knet
                 UpdateVideoCommentComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Update a video&#39;s relationship details 
         /// </summary>
@@ -1828,8 +1867,8 @@ mUpdateVideoCommentPath = mUpdateVideoCommentPath.Replace("{" + "id" + "}", Knet
             {
                 mUpdateVideoRelationshipPath = mUpdateVideoRelationshipPath.Replace("{format}", "json");
             }
-            mUpdateVideoRelationshipPath = mUpdateVideoRelationshipPath.Replace("{" + "video_id" + "}", KnetikClient.ParameterToString(videoId));
-mUpdateVideoRelationshipPath = mUpdateVideoRelationshipPath.Replace("{" + "relationship_id" + "}", KnetikClient.ParameterToString(relationshipId));
+            mUpdateVideoRelationshipPath = mUpdateVideoRelationshipPath.Replace("{" + "video_id" + "}", KnetikClient.DefaultClient.ParameterToString(videoId));
+mUpdateVideoRelationshipPath = mUpdateVideoRelationshipPath.Replace("{" + "relationship_id" + "}", KnetikClient.DefaultClient.ParameterToString(relationshipId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1837,10 +1876,10 @@ mUpdateVideoRelationshipPath = mUpdateVideoRelationshipPath.Replace("{" + "relat
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(details); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(details); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateVideoRelationshipStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateVideoRelationshipStartTime, mUpdateVideoRelationshipPath, "Sending server request...");
@@ -1867,6 +1906,8 @@ mUpdateVideoRelationshipPath = mUpdateVideoRelationshipPath.Replace("{" + "relat
                 UpdateVideoRelationshipComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Increment a video&#39;s view count 
         /// </summary>
@@ -1884,7 +1925,7 @@ mUpdateVideoRelationshipPath = mUpdateVideoRelationshipPath.Replace("{" + "relat
             {
                 mViewVideoPath = mViewVideoPath.Replace("{format}", "json");
             }
-            mViewVideoPath = mViewVideoPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mViewVideoPath = mViewVideoPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1893,7 +1934,7 @@ mUpdateVideoRelationshipPath = mUpdateVideoRelationshipPath.Replace("{" + "relat
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mViewVideoStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mViewVideoStartTime, mViewVideoPath, "Sending server request...");
@@ -1920,5 +1961,6 @@ mUpdateVideoRelationshipPath = mUpdateVideoRelationshipPath.Replace("{" + "relat
                 ViewVideoComplete();
             }
         }
+
     }
 }

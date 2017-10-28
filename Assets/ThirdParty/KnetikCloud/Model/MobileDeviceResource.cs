@@ -2,13 +2,17 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
+    [KnetikFactory ("mobile_device")]
     public class MobileDeviceResource : DeviceResource
     {
         /// <summary>
@@ -16,28 +20,29 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The authorization code for push notifications provided by the provider platform (APNS, GCM, etc).</value>
         [JsonProperty(PropertyName = "authorization")]
-        public string Authorization { get; set; }
+        public string Authorization;
 
         /// <summary>
         /// Gets or Sets Imei
         /// </summary>
         [JsonProperty(PropertyName = "imei")]
-        public string Imei { get; set; }
+        public string Imei;
 
         /// <summary>
         /// The platform used for push notifications. Only Apple and Android are supported at the moment.
         /// </summary>
         /// <value>The platform used for push notifications. Only Apple and Android are supported at the moment.</value>
         [JsonProperty(PropertyName = "notification_platform")]
-        public string NotificationPlatform { get; set; }
+        public string NotificationPlatform;
 
         /// <summary>
         /// The phone number associated with this device if applicable, in international format
         /// </summary>
         /// <value>The phone number associated with this device if applicable, in international format</value>
         [JsonProperty(PropertyName = "number")]
-        public string Number { get; set; }
+        public string Number;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>
@@ -75,7 +80,7 @@ namespace com.knetikcloud.Model
         /// Get the JSON string presentation of the object
         /// </summary>
         /// <returns>JSON string presentation of the object</returns>
-        public  new string ToJson()
+        public new string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }

@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,36 +19,37 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>Flag indicating whether the user has earned the achievement</value>
         [JsonProperty(PropertyName = "achieved")]
-        public bool? Achieved { get; set; }
+        public bool? Achieved;
 
         /// <summary>
         /// The achievement being tracked.  If used for Leveling, this represents the tier name
         /// </summary>
         /// <value>The achievement being tracked.  If used for Leveling, this represents the tier name</value>
         [JsonProperty(PropertyName = "achievement_name")]
-        public string AchievementName { get; set; }
+        public string AchievementName;
 
         /// <summary>
         /// The date/time this resource was created in seconds since unix epoch
         /// </summary>
         /// <value>The date/time this resource was created in seconds since unix epoch</value>
         [JsonProperty(PropertyName = "created_date")]
-        public long? CreatedDate { get; set; }
+        public long? CreatedDate;
 
         /// <summary>
         /// The date/time the achievement was earned as a unix timestamp in seconds
         /// </summary>
         /// <value>The date/time the achievement was earned as a unix timestamp in seconds</value>
         [JsonProperty(PropertyName = "earned_date")]
-        public long? EarnedDate { get; set; }
+        public long? EarnedDate;
 
         /// <summary>
         /// The date/time this resource was last updated in seconds since unix epoch
         /// </summary>
         /// <value>The date/time this resource was last updated in seconds since unix epoch</value>
         [JsonProperty(PropertyName = "updated_date")]
-        public long? UpdatedDate { get; set; }
+        public long? UpdatedDate;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

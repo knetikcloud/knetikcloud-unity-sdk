@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,64 +19,65 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The url of the user's avatar image</value>
         [JsonProperty(PropertyName = "avatar_url")]
-        public string AvatarUrl { get; set; }
+        public string AvatarUrl;
 
         /// <summary>
         /// The chosen display name of the user, defaults to username if not present
         /// </summary>
         /// <value>The chosen display name of the user, defaults to username if not present</value>
         [JsonProperty(PropertyName = "display_name")]
-        public string DisplayName { get; set; }
+        public string DisplayName;
 
         /// <summary>
         /// The user's email address (private). May be required and/or unique depending on system configuration (both on by default). Must match standard email requirements if provided (RFC 2822)
         /// </summary>
         /// <value>The user's email address (private). May be required and/or unique depending on system configuration (both on by default). Must match standard email requirements if provided (RFC 2822)</value>
         [JsonProperty(PropertyName = "email")]
-        public string Email { get; set; }
+        public string Email;
 
         /// <summary>
         /// The user's full name (private)
         /// </summary>
         /// <value>The user's full name (private)</value>
         [JsonProperty(PropertyName = "fullname")]
-        public string Fullname { get; set; }
+        public string Fullname;
 
         /// <summary>
         /// The id of the user
         /// </summary>
         /// <value>The id of the user</value>
         [JsonProperty(PropertyName = "id")]
-        public int? Id { get; set; }
+        public int? Id;
 
         /// <summary>
         /// The date the user last interacted with the API (private)
         /// </summary>
         /// <value>The date the user last interacted with the API (private)</value>
         [JsonProperty(PropertyName = "last_activity")]
-        public long? LastActivity { get; set; }
+        public long? LastActivity;
 
         /// <summary>
         /// The date the user's info was last updated as a unix timestamp
         /// </summary>
         /// <value>The date the user's info was last updated as a unix timestamp</value>
         [JsonProperty(PropertyName = "last_updated")]
-        public long? LastUpdated { get; set; }
+        public long? LastUpdated;
 
         /// <summary>
         /// The user's date of registration as a unix timestamp
         /// </summary>
         /// <value>The user's date of registration as a unix timestamp</value>
         [JsonProperty(PropertyName = "member_since")]
-        public long? MemberSince { get; set; }
+        public long? MemberSince;
 
         /// <summary>
         /// The login username for the user (private). May be set to match email if system does not require usernames separately.
         /// </summary>
         /// <value>The login username for the user (private). May be set to match email if system does not require usernames separately.</value>
         [JsonProperty(PropertyName = "username")]
-        public string Username { get; set; }
+        public string Username;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

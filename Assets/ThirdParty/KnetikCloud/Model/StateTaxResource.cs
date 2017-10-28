@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,43 +19,44 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The iso3 code of the country, cannot be changed</value>
         [JsonProperty(PropertyName = "country_iso3")]
-        public string CountryIso3 { get; set; }
+        public string CountryIso3;
 
         /// <summary>
         /// Whether the state is exempt from paying the country tax
         /// </summary>
         /// <value>Whether the state is exempt from paying the country tax</value>
         [JsonProperty(PropertyName = "federally_exempt")]
-        public bool? FederallyExempt { get; set; }
+        public bool? FederallyExempt;
 
         /// <summary>
         /// The name of the tax
         /// </summary>
         /// <value>The name of the tax</value>
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name;
 
         /// <summary>
         /// The tax rate as a percentage to a maximum of two decimal places (1.5 means 1.5%)
         /// </summary>
         /// <value>The tax rate as a percentage to a maximum of two decimal places (1.5 means 1.5%)</value>
         [JsonProperty(PropertyName = "rate")]
-        public double? Rate { get; set; }
+        public double? Rate;
 
         /// <summary>
         /// The code of the state, cannot be changed
         /// </summary>
         /// <value>The code of the state, cannot be changed</value>
         [JsonProperty(PropertyName = "state_code")]
-        public string StateCode { get; set; }
+        public string StateCode;
 
         /// <summary>
         /// Whether the tax applies to shipping costs
         /// </summary>
         /// <value>Whether the tax applies to shipping costs</value>
         [JsonProperty(PropertyName = "tax_shipping")]
-        public bool? TaxShipping { get; set; }
+        public bool? TaxShipping;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,22 +19,23 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The raw score. Null means non-compete or disqualification</value>
         [JsonProperty(PropertyName = "score")]
-        public long? Score { get; set; }
+        public long? Score;
 
         /// <summary>
         /// Any tags for the metric. Each unique tag will translate into a unique leaderboard. Maximum 5 tags and 50 characters each
         /// </summary>
         /// <value>Any tags for the metric. Each unique tag will translate into a unique leaderboard. Maximum 5 tags and 50 characters each</value>
         [JsonProperty(PropertyName = "tags")]
-        public List<string> Tags { get; set; }
+        public List<string> Tags;
 
         /// <summary>
         /// The id of the player
         /// </summary>
         /// <value>The id of the player</value>
         [JsonProperty(PropertyName = "user_id")]
-        public int? UserId { get; set; }
+        public int? UserId;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

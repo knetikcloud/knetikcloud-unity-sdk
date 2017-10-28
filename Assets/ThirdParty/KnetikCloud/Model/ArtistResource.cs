@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,92 +19,93 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>A map of additional properties, keyed on the property name.  Must match the names and types defined in the template for this item type</value>
         [JsonProperty(PropertyName = "additional_properties")]
-        public Dictionary<string, Property> AdditionalProperties { get; set; }
+        public Dictionary<string, Property> AdditionalProperties;
 
         /// <summary>
         /// YYYY/MM/DD when this artist was born
         /// </summary>
         /// <value>YYYY/MM/DD when this artist was born</value>
         [JsonProperty(PropertyName = "born")]
-        public string Born { get; set; }
+        public string Born;
 
         /// <summary>
         /// The current number of contributions the artist has made
         /// </summary>
         /// <value>The current number of contributions the artist has made</value>
         [JsonProperty(PropertyName = "contribution_count")]
-        public int? ContributionCount { get; set; }
+        public int? ContributionCount;
 
         /// <summary>
         /// The list of media this artist has contributed to as well as role(s) during contribution.  Use media endpoint to add contributions
         /// </summary>
         /// <value>The list of media this artist has contributed to as well as role(s) during contribution.  Use media endpoint to add contributions</value>
         [JsonProperty(PropertyName = "contributions")]
-        public List<ContributionResource> Contributions { get; set; }
+        public List<ContributionResource> Contributions;
 
         /// <summary>
         /// The date/time this resource was created in seconds since unix epoch
         /// </summary>
         /// <value>The date/time this resource was created in seconds since unix epoch</value>
         [JsonProperty(PropertyName = "created_date")]
-        public long? CreatedDate { get; set; }
+        public long? CreatedDate;
 
         /// <summary>
         /// YYYY/MM/DD when this artist died
         /// </summary>
         /// <value>YYYY/MM/DD when this artist died</value>
         [JsonProperty(PropertyName = "died")]
-        public string Died { get; set; }
+        public string Died;
 
         /// <summary>
         /// The unique ID for that resource
         /// </summary>
         /// <value>The unique ID for that resource</value>
         [JsonProperty(PropertyName = "id")]
-        public long? Id { get; set; }
+        public long? Id;
 
         /// <summary>
         /// The user friendly name of that resource. Defaults to blank string
         /// </summary>
         /// <value>The user friendly name of that resource. Defaults to blank string</value>
         [JsonProperty(PropertyName = "long_description")]
-        public string LongDescription { get; set; }
+        public string LongDescription;
 
         /// <summary>
         /// The user friendly name of that resource
         /// </summary>
         /// <value>The user friendly name of that resource</value>
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name;
 
         /// <summary>
         /// The sort order priority ofr the artist.  Default 100
         /// </summary>
         /// <value>The sort order priority ofr the artist.  Default 100</value>
         [JsonProperty(PropertyName = "priority")]
-        public int? Priority { get; set; }
+        public int? Priority;
 
         /// <summary>
         /// The user friendly name of that resource. Defaults to blank string
         /// </summary>
         /// <value>The user friendly name of that resource. Defaults to blank string</value>
         [JsonProperty(PropertyName = "short_description")]
-        public string ShortDescription { get; set; }
+        public string ShortDescription;
 
         /// <summary>
         /// An artist template this artist is validated against (private). May be null and no validation of additional_properties will be done
         /// </summary>
         /// <value>An artist template this artist is validated against (private). May be null and no validation of additional_properties will be done</value>
         [JsonProperty(PropertyName = "template")]
-        public string Template { get; set; }
+        public string Template;
 
         /// <summary>
         /// The date/time this resource was last updated in seconds since unix epoch
         /// </summary>
         /// <value>The date/time this resource was last updated in seconds since unix epoch</value>
         [JsonProperty(PropertyName = "updated_date")]
-        public long? UpdatedDate { get; set; }
+        public long? UpdatedDate;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

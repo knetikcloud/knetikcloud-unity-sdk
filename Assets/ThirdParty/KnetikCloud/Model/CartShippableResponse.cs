@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,15 +19,16 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The id of the cart</value>
         [JsonProperty(PropertyName = "cart_id")]
-        public int? CartId { get; set; }
+        public int? CartId;
 
         /// <summary>
         /// Whether the item is shippable
         /// </summary>
         /// <value>Whether the item is shippable</value>
         [JsonProperty(PropertyName = "shippable")]
-        public bool? Shippable { get; set; }
+        public bool? Shippable;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

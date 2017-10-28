@@ -2,13 +2,17 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
+    [KnetikFactory ("map")]
     public class MapProperty : Property
     {
         /// <summary>
@@ -16,8 +20,9 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>A map/object of string to sub-property</value>
         [JsonProperty(PropertyName = "map")]
-        public Dictionary<string, Property> Map { get; set; }
+        public Dictionary<string, Property> Map;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>
@@ -36,7 +41,7 @@ namespace com.knetikcloud.Model
         /// Get the JSON string presentation of the object
         /// </summary>
         /// <returns>JSON string presentation of the object</returns>
-        public  new string ToJson()
+        public new string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }

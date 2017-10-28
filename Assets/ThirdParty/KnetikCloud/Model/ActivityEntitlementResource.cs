@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,36 +19,37 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The ISO3 currency code the price is in, if available</value>
         [JsonProperty(PropertyName = "currency_code")]
-        public string CurrencyCode { get; set; }
+        public string CurrencyCode;
 
         /// <summary>
         /// The id of the entitlement item
         /// </summary>
         /// <value>The id of the entitlement item</value>
         [JsonProperty(PropertyName = "item_id")]
-        public int? ItemId { get; set; }
+        public int? ItemId;
 
         /// <summary>
         /// The name of the entitlement item
         /// </summary>
         /// <value>The name of the entitlement item</value>
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name;
 
         /// <summary>
         /// The price of the sku, if available
         /// </summary>
         /// <value>The price of the sku, if available</value>
         [JsonProperty(PropertyName = "price")]
-        public decimal? Price { get; set; }
+        public decimal? Price;
 
         /// <summary>
         /// The sku id, if available. If multiple are available, then first one is returned
         /// </summary>
         /// <value>The sku id, if available. If multiple are available, then first one is returned</value>
         [JsonProperty(PropertyName = "sku")]
-        public string Sku { get; set; }
+        public string Sku;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

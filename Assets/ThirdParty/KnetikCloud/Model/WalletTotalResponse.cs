@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,15 +19,16 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The currency code</value>
         [JsonProperty(PropertyName = "currency_code")]
-        public string CurrencyCode { get; set; }
+        public string CurrencyCode;
 
         /// <summary>
         /// The sum of all wallets in the system for this currency
         /// </summary>
         /// <value>The sum of all wallets in the system for this currency</value>
         [JsonProperty(PropertyName = "total")]
-        public decimal? Total { get; set; }
+        public decimal? Total;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

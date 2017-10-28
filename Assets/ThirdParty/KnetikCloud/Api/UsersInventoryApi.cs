@@ -212,6 +212,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -362,36 +363,30 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public UsersInventoryApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mAddItemToUserInventoryCoroutine = new KnetikCoroutine(KnetikClient);
-            mCheckUserEntitlementItemCoroutine = new KnetikCoroutine(KnetikClient);
-            mCreateEntitlementItemCoroutine = new KnetikCoroutine(KnetikClient);
-            mCreateEntitlementTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteEntitlementItemCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteEntitlementTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetEntitlementItemCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetEntitlementItemsCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetEntitlementTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetEntitlementTemplatesCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetUserInventoriesCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetUserInventoryCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetUserInventoryLogCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetUsersInventoryCoroutine = new KnetikCoroutine(KnetikClient);
-            mGrantUserEntitlementCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateEntitlementItemCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateEntitlementTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateUserInventoryBehaviorDataCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateUserInventoryExpiresCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateUserInventoryStatusCoroutine = new KnetikCoroutine(KnetikClient);
-            mUseUserEntitlementItemCoroutine = new KnetikCoroutine(KnetikClient);
+            mAddItemToUserInventoryCoroutine = new KnetikCoroutine();
+            mCheckUserEntitlementItemCoroutine = new KnetikCoroutine();
+            mCreateEntitlementItemCoroutine = new KnetikCoroutine();
+            mCreateEntitlementTemplateCoroutine = new KnetikCoroutine();
+            mDeleteEntitlementItemCoroutine = new KnetikCoroutine();
+            mDeleteEntitlementTemplateCoroutine = new KnetikCoroutine();
+            mGetEntitlementItemCoroutine = new KnetikCoroutine();
+            mGetEntitlementItemsCoroutine = new KnetikCoroutine();
+            mGetEntitlementTemplateCoroutine = new KnetikCoroutine();
+            mGetEntitlementTemplatesCoroutine = new KnetikCoroutine();
+            mGetUserInventoriesCoroutine = new KnetikCoroutine();
+            mGetUserInventoryCoroutine = new KnetikCoroutine();
+            mGetUserInventoryLogCoroutine = new KnetikCoroutine();
+            mGetUsersInventoryCoroutine = new KnetikCoroutine();
+            mGrantUserEntitlementCoroutine = new KnetikCoroutine();
+            mUpdateEntitlementItemCoroutine = new KnetikCoroutine();
+            mUpdateEntitlementTemplateCoroutine = new KnetikCoroutine();
+            mUpdateUserInventoryBehaviorDataCoroutine = new KnetikCoroutine();
+            mUpdateUserInventoryExpiresCoroutine = new KnetikCoroutine();
+            mUpdateUserInventoryStatusCoroutine = new KnetikCoroutine();
+            mUseUserEntitlementItemCoroutine = new KnetikCoroutine();
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
+        /// <inheritdoc />
         /// <summary>
         /// Adds an item to the user inventory The inventory is fulfilled asynchronously UNLESS the invoice is explicitely skipped. Depending on the use case, it might require the client to verify that the entitlement was added after the fact or configure a BRE rule to get a notification in real time
         /// </summary>
@@ -410,7 +405,7 @@ namespace com.knetikcloud.Api
             {
                 mAddItemToUserInventoryPath = mAddItemToUserInventoryPath.Replace("{format}", "json");
             }
-            mAddItemToUserInventoryPath = mAddItemToUserInventoryPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mAddItemToUserInventoryPath = mAddItemToUserInventoryPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -418,10 +413,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(userInventoryAddRequest); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(userInventoryAddRequest); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddItemToUserInventoryStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddItemToUserInventoryStartTime, mAddItemToUserInventoryPath, "Sending server request...");
@@ -442,7 +437,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling AddItemToUserInventory: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            AddItemToUserInventoryData = (InvoiceResource) KnetikClient.Deserialize(response.Content, typeof(InvoiceResource), response.Headers);
+            AddItemToUserInventoryData = (InvoiceResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(InvoiceResource), response.Headers);
             KnetikLogger.LogResponse(mAddItemToUserInventoryStartTime, mAddItemToUserInventoryPath, string.Format("Response received successfully:\n{0}", AddItemToUserInventoryData.ToString()));
 
             if (AddItemToUserInventoryComplete != null)
@@ -450,6 +445,8 @@ namespace com.knetikcloud.Api
                 AddItemToUserInventoryComplete(AddItemToUserInventoryData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Check for access to an item without consuming Useful for pre-check and accounts for all various buisness rules
         /// </summary>
@@ -474,8 +471,8 @@ namespace com.knetikcloud.Api
             {
                 mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{format}", "json");
             }
-            mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "item_id" + "}", KnetikClient.ParameterToString(itemId));
+            mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
+mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "item_id" + "}", KnetikClient.DefaultClient.ParameterToString(itemId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -485,11 +482,11 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
 
             if (sku != null)
             {
-                queryParams.Add("sku", KnetikClient.ParameterToString(sku));
+                queryParams.Add("sku", KnetikClient.DefaultClient.ParameterToString(sku));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCheckUserEntitlementItemStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCheckUserEntitlementItemStartTime, mCheckUserEntitlementItemPath, "Sending server request...");
@@ -516,6 +513,8 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 CheckUserEntitlementItemComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Create an entitlement item 
         /// </summary>
@@ -538,13 +537,13 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.ParameterToString(cascade));
+                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
             }
 
-            postBody = KnetikClient.Serialize(entitlementItem); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(entitlementItem); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateEntitlementItemStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateEntitlementItemStartTime, mCreateEntitlementItemPath, "Sending server request...");
@@ -565,7 +564,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateEntitlementItem: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateEntitlementItemData = (EntitlementItem) KnetikClient.Deserialize(response.Content, typeof(EntitlementItem), response.Headers);
+            CreateEntitlementItemData = (EntitlementItem) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(EntitlementItem), response.Headers);
             KnetikLogger.LogResponse(mCreateEntitlementItemStartTime, mCreateEntitlementItemPath, string.Format("Response received successfully:\n{0}", CreateEntitlementItemData.ToString()));
 
             if (CreateEntitlementItemComplete != null)
@@ -573,6 +572,8 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 CreateEntitlementItemComplete(CreateEntitlementItemData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Create an entitlement template Entitlement templates define a type of entitlement and the properties they have
         /// </summary>
@@ -592,10 +593,10 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(template); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(template); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateEntitlementTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateEntitlementTemplateStartTime, mCreateEntitlementTemplatePath, "Sending server request...");
@@ -616,7 +617,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateEntitlementTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateEntitlementTemplateData = (ItemTemplateResource) KnetikClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
+            CreateEntitlementTemplateData = (ItemTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
             KnetikLogger.LogResponse(mCreateEntitlementTemplateStartTime, mCreateEntitlementTemplatePath, string.Format("Response received successfully:\n{0}", CreateEntitlementTemplateData.ToString()));
 
             if (CreateEntitlementTemplateComplete != null)
@@ -624,6 +625,8 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 CreateEntitlementTemplateComplete(CreateEntitlementTemplateData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Delete an entitlement item 
         /// </summary>
@@ -641,7 +644,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
             {
                 mDeleteEntitlementItemPath = mDeleteEntitlementItemPath.Replace("{format}", "json");
             }
-            mDeleteEntitlementItemPath = mDeleteEntitlementItemPath.Replace("{" + "entitlement_id" + "}", KnetikClient.ParameterToString(entitlementId));
+            mDeleteEntitlementItemPath = mDeleteEntitlementItemPath.Replace("{" + "entitlement_id" + "}", KnetikClient.DefaultClient.ParameterToString(entitlementId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -650,7 +653,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteEntitlementItemStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteEntitlementItemStartTime, mDeleteEntitlementItemPath, "Sending server request...");
@@ -677,6 +680,8 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 DeleteEntitlementItemComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Delete an entitlement template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
         /// </summary>
@@ -695,7 +700,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
             {
                 mDeleteEntitlementTemplatePath = mDeleteEntitlementTemplatePath.Replace("{format}", "json");
             }
-            mDeleteEntitlementTemplatePath = mDeleteEntitlementTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteEntitlementTemplatePath = mDeleteEntitlementTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -705,11 +710,11 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.ParameterToString(cascade));
+                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteEntitlementTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteEntitlementTemplateStartTime, mDeleteEntitlementTemplatePath, "Sending server request...");
@@ -736,6 +741,8 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 DeleteEntitlementTemplateComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Get a single entitlement item 
         /// </summary>
@@ -753,7 +760,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
             {
                 mGetEntitlementItemPath = mGetEntitlementItemPath.Replace("{format}", "json");
             }
-            mGetEntitlementItemPath = mGetEntitlementItemPath.Replace("{" + "entitlement_id" + "}", KnetikClient.ParameterToString(entitlementId));
+            mGetEntitlementItemPath = mGetEntitlementItemPath.Replace("{" + "entitlement_id" + "}", KnetikClient.DefaultClient.ParameterToString(entitlementId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -762,7 +769,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetEntitlementItemStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetEntitlementItemStartTime, mGetEntitlementItemPath, "Sending server request...");
@@ -783,7 +790,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 throw new KnetikException((int)response.StatusCode, "Error calling GetEntitlementItem: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetEntitlementItemData = (EntitlementItem) KnetikClient.Deserialize(response.Content, typeof(EntitlementItem), response.Headers);
+            GetEntitlementItemData = (EntitlementItem) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(EntitlementItem), response.Headers);
             KnetikLogger.LogResponse(mGetEntitlementItemStartTime, mGetEntitlementItemPath, string.Format("Response received successfully:\n{0}", GetEntitlementItemData.ToString()));
 
             if (GetEntitlementItemComplete != null)
@@ -791,6 +798,8 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 GetEntitlementItemComplete(GetEntitlementItemData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// List and search entitlement items 
         /// </summary>
@@ -815,26 +824,26 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
 
             if (filterTemplate != null)
             {
-                queryParams.Add("filter_template", KnetikClient.ParameterToString(filterTemplate));
+                queryParams.Add("filter_template", KnetikClient.DefaultClient.ParameterToString(filterTemplate));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetEntitlementItemsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetEntitlementItemsStartTime, mGetEntitlementItemsPath, "Sending server request...");
@@ -855,7 +864,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 throw new KnetikException((int)response.StatusCode, "Error calling GetEntitlementItems: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetEntitlementItemsData = (PageResourceEntitlementItem) KnetikClient.Deserialize(response.Content, typeof(PageResourceEntitlementItem), response.Headers);
+            GetEntitlementItemsData = (PageResourceEntitlementItem) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceEntitlementItem), response.Headers);
             KnetikLogger.LogResponse(mGetEntitlementItemsStartTime, mGetEntitlementItemsPath, string.Format("Response received successfully:\n{0}", GetEntitlementItemsData.ToString()));
 
             if (GetEntitlementItemsComplete != null)
@@ -863,6 +872,8 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 GetEntitlementItemsComplete(GetEntitlementItemsData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Get a single entitlement template 
         /// </summary>
@@ -880,7 +891,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
             {
                 mGetEntitlementTemplatePath = mGetEntitlementTemplatePath.Replace("{format}", "json");
             }
-            mGetEntitlementTemplatePath = mGetEntitlementTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetEntitlementTemplatePath = mGetEntitlementTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -889,7 +900,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetEntitlementTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetEntitlementTemplateStartTime, mGetEntitlementTemplatePath, "Sending server request...");
@@ -910,7 +921,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 throw new KnetikException((int)response.StatusCode, "Error calling GetEntitlementTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetEntitlementTemplateData = (ItemTemplateResource) KnetikClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
+            GetEntitlementTemplateData = (ItemTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
             KnetikLogger.LogResponse(mGetEntitlementTemplateStartTime, mGetEntitlementTemplatePath, string.Format("Response received successfully:\n{0}", GetEntitlementTemplateData.ToString()));
 
             if (GetEntitlementTemplateComplete != null)
@@ -918,6 +929,8 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 GetEntitlementTemplateComplete(GetEntitlementTemplateData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// List and search entitlement templates 
         /// </summary>
@@ -941,21 +954,21 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetEntitlementTemplatesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetEntitlementTemplatesStartTime, mGetEntitlementTemplatesPath, "Sending server request...");
@@ -976,7 +989,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 throw new KnetikException((int)response.StatusCode, "Error calling GetEntitlementTemplates: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetEntitlementTemplatesData = (PageResourceItemTemplateResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceItemTemplateResource), response.Headers);
+            GetEntitlementTemplatesData = (PageResourceItemTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceItemTemplateResource), response.Headers);
             KnetikLogger.LogResponse(mGetEntitlementTemplatesStartTime, mGetEntitlementTemplatesPath, string.Format("Response received successfully:\n{0}", GetEntitlementTemplatesData.ToString()));
 
             if (GetEntitlementTemplatesComplete != null)
@@ -984,6 +997,8 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 GetEntitlementTemplatesComplete(GetEntitlementTemplatesData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// List the user inventory entries for a given user 
         /// </summary>
@@ -1009,7 +1024,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
             {
                 mGetUserInventoriesPath = mGetUserInventoriesPath.Replace("{format}", "json");
             }
-            mGetUserInventoriesPath = mGetUserInventoriesPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetUserInventoriesPath = mGetUserInventoriesPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1019,46 +1034,46 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
 
             if (inactive != null)
             {
-                queryParams.Add("inactive", KnetikClient.ParameterToString(inactive));
+                queryParams.Add("inactive", KnetikClient.DefaultClient.ParameterToString(inactive));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (filterItemName != null)
             {
-                queryParams.Add("filter_item_name", KnetikClient.ParameterToString(filterItemName));
+                queryParams.Add("filter_item_name", KnetikClient.DefaultClient.ParameterToString(filterItemName));
             }
 
             if (filterItemId != null)
             {
-                queryParams.Add("filter_item_id", KnetikClient.ParameterToString(filterItemId));
+                queryParams.Add("filter_item_id", KnetikClient.DefaultClient.ParameterToString(filterItemId));
             }
 
             if (filterUsername != null)
             {
-                queryParams.Add("filter_username", KnetikClient.ParameterToString(filterUsername));
+                queryParams.Add("filter_username", KnetikClient.DefaultClient.ParameterToString(filterUsername));
             }
 
             if (filterGroup != null)
             {
-                queryParams.Add("filter_group", KnetikClient.ParameterToString(filterGroup));
+                queryParams.Add("filter_group", KnetikClient.DefaultClient.ParameterToString(filterGroup));
             }
 
             if (filterDate != null)
             {
-                queryParams.Add("filter_date", KnetikClient.ParameterToString(filterDate));
+                queryParams.Add("filter_date", KnetikClient.DefaultClient.ParameterToString(filterDate));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUserInventoriesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUserInventoriesStartTime, mGetUserInventoriesPath, "Sending server request...");
@@ -1079,7 +1094,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 throw new KnetikException((int)response.StatusCode, "Error calling GetUserInventories: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetUserInventoriesData = (PageResourceUserInventoryResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceUserInventoryResource), response.Headers);
+            GetUserInventoriesData = (PageResourceUserInventoryResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceUserInventoryResource), response.Headers);
             KnetikLogger.LogResponse(mGetUserInventoriesStartTime, mGetUserInventoriesPath, string.Format("Response received successfully:\n{0}", GetUserInventoriesData.ToString()));
 
             if (GetUserInventoriesComplete != null)
@@ -1087,6 +1102,8 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
                 GetUserInventoriesComplete(GetUserInventoriesData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Get an inventory entry 
         /// </summary>
@@ -1110,8 +1127,8 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
             {
                 mGetUserInventoryPath = mGetUserInventoryPath.Replace("{format}", "json");
             }
-            mGetUserInventoryPath = mGetUserInventoryPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-mGetUserInventoryPath = mGetUserInventoryPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetUserInventoryPath = mGetUserInventoryPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
+mGetUserInventoryPath = mGetUserInventoryPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1120,7 +1137,7 @@ mGetUserInventoryPath = mGetUserInventoryPath.Replace("{" + "id" + "}", KnetikCl
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUserInventoryStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUserInventoryStartTime, mGetUserInventoryPath, "Sending server request...");
@@ -1141,7 +1158,7 @@ mGetUserInventoryPath = mGetUserInventoryPath.Replace("{" + "id" + "}", KnetikCl
                 throw new KnetikException((int)response.StatusCode, "Error calling GetUserInventory: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetUserInventoryData = (UserInventoryResource) KnetikClient.Deserialize(response.Content, typeof(UserInventoryResource), response.Headers);
+            GetUserInventoryData = (UserInventoryResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(UserInventoryResource), response.Headers);
             KnetikLogger.LogResponse(mGetUserInventoryStartTime, mGetUserInventoryPath, string.Format("Response received successfully:\n{0}", GetUserInventoryData.ToString()));
 
             if (GetUserInventoryComplete != null)
@@ -1149,6 +1166,8 @@ mGetUserInventoryPath = mGetUserInventoryPath.Replace("{" + "id" + "}", KnetikCl
                 GetUserInventoryComplete(GetUserInventoryData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// List the log entries for this inventory entry 
         /// </summary>
@@ -1174,8 +1193,8 @@ mGetUserInventoryPath = mGetUserInventoryPath.Replace("{" + "id" + "}", KnetikCl
             {
                 mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{format}", "json");
             }
-            mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
+mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1185,16 +1204,16 @@ mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "id" + "}", Kn
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUserInventoryLogStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUserInventoryLogStartTime, mGetUserInventoryLogPath, "Sending server request...");
@@ -1215,7 +1234,7 @@ mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "id" + "}", Kn
                 throw new KnetikException((int)response.StatusCode, "Error calling GetUserInventoryLog: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetUserInventoryLogData = (PageResourceUserItemLogResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceUserItemLogResource), response.Headers);
+            GetUserInventoryLogData = (PageResourceUserItemLogResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceUserItemLogResource), response.Headers);
             KnetikLogger.LogResponse(mGetUserInventoryLogStartTime, mGetUserInventoryLogPath, string.Format("Response received successfully:\n{0}", GetUserInventoryLogData.ToString()));
 
             if (GetUserInventoryLogComplete != null)
@@ -1223,6 +1242,8 @@ mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "id" + "}", Kn
                 GetUserInventoryLogComplete(GetUserInventoryLogData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// List the user inventory entries for all users 
         /// </summary>
@@ -1251,46 +1272,46 @@ mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "id" + "}", Kn
 
             if (inactive != null)
             {
-                queryParams.Add("inactive", KnetikClient.ParameterToString(inactive));
+                queryParams.Add("inactive", KnetikClient.DefaultClient.ParameterToString(inactive));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (filterItemName != null)
             {
-                queryParams.Add("filter_item_name", KnetikClient.ParameterToString(filterItemName));
+                queryParams.Add("filter_item_name", KnetikClient.DefaultClient.ParameterToString(filterItemName));
             }
 
             if (filterItemId != null)
             {
-                queryParams.Add("filter_item_id", KnetikClient.ParameterToString(filterItemId));
+                queryParams.Add("filter_item_id", KnetikClient.DefaultClient.ParameterToString(filterItemId));
             }
 
             if (filterUsername != null)
             {
-                queryParams.Add("filter_username", KnetikClient.ParameterToString(filterUsername));
+                queryParams.Add("filter_username", KnetikClient.DefaultClient.ParameterToString(filterUsername));
             }
 
             if (filterGroup != null)
             {
-                queryParams.Add("filter_group", KnetikClient.ParameterToString(filterGroup));
+                queryParams.Add("filter_group", KnetikClient.DefaultClient.ParameterToString(filterGroup));
             }
 
             if (filterDate != null)
             {
-                queryParams.Add("filter_date", KnetikClient.ParameterToString(filterDate));
+                queryParams.Add("filter_date", KnetikClient.DefaultClient.ParameterToString(filterDate));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUsersInventoryStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUsersInventoryStartTime, mGetUsersInventoryPath, "Sending server request...");
@@ -1311,7 +1332,7 @@ mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "id" + "}", Kn
                 throw new KnetikException((int)response.StatusCode, "Error calling GetUsersInventory: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetUsersInventoryData = (PageResourceUserInventoryResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceUserInventoryResource), response.Headers);
+            GetUsersInventoryData = (PageResourceUserInventoryResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceUserInventoryResource), response.Headers);
             KnetikLogger.LogResponse(mGetUsersInventoryStartTime, mGetUsersInventoryPath, string.Format("Response received successfully:\n{0}", GetUsersInventoryData.ToString()));
 
             if (GetUsersInventoryComplete != null)
@@ -1319,6 +1340,8 @@ mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "id" + "}", Kn
                 GetUsersInventoryComplete(GetUsersInventoryData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Grant an entitlement 
         /// </summary>
@@ -1342,7 +1365,7 @@ mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "id" + "}", Kn
             {
                 mGrantUserEntitlementPath = mGrantUserEntitlementPath.Replace("{format}", "json");
             }
-            mGrantUserEntitlementPath = mGrantUserEntitlementPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+            mGrantUserEntitlementPath = mGrantUserEntitlementPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1350,10 +1373,10 @@ mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "id" + "}", Kn
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(grantRequest); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(grantRequest); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGrantUserEntitlementStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGrantUserEntitlementStartTime, mGrantUserEntitlementPath, "Sending server request...");
@@ -1380,6 +1403,8 @@ mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "id" + "}", Kn
                 GrantUserEntitlementComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Update an entitlement item 
         /// </summary>
@@ -1399,7 +1424,7 @@ mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "id" + "}", Kn
             {
                 mUpdateEntitlementItemPath = mUpdateEntitlementItemPath.Replace("{format}", "json");
             }
-            mUpdateEntitlementItemPath = mUpdateEntitlementItemPath.Replace("{" + "entitlement_id" + "}", KnetikClient.ParameterToString(entitlementId));
+            mUpdateEntitlementItemPath = mUpdateEntitlementItemPath.Replace("{" + "entitlement_id" + "}", KnetikClient.DefaultClient.ParameterToString(entitlementId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1409,13 +1434,13 @@ mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "id" + "}", Kn
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.ParameterToString(cascade));
+                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
             }
 
-            postBody = KnetikClient.Serialize(entitlementItem); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(entitlementItem); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateEntitlementItemStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateEntitlementItemStartTime, mUpdateEntitlementItemPath, "Sending server request...");
@@ -1442,6 +1467,8 @@ mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "id" + "}", Kn
                 UpdateEntitlementItemComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Update an entitlement template 
         /// </summary>
@@ -1460,7 +1487,7 @@ mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "id" + "}", Kn
             {
                 mUpdateEntitlementTemplatePath = mUpdateEntitlementTemplatePath.Replace("{format}", "json");
             }
-            mUpdateEntitlementTemplatePath = mUpdateEntitlementTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateEntitlementTemplatePath = mUpdateEntitlementTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1468,10 +1495,10 @@ mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "id" + "}", Kn
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(template); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(template); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateEntitlementTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateEntitlementTemplateStartTime, mUpdateEntitlementTemplatePath, "Sending server request...");
@@ -1492,7 +1519,7 @@ mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "id" + "}", Kn
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateEntitlementTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateEntitlementTemplateData = (ItemTemplateResource) KnetikClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
+            UpdateEntitlementTemplateData = (ItemTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
             KnetikLogger.LogResponse(mUpdateEntitlementTemplateStartTime, mUpdateEntitlementTemplatePath, string.Format("Response received successfully:\n{0}", UpdateEntitlementTemplateData.ToString()));
 
             if (UpdateEntitlementTemplateComplete != null)
@@ -1500,6 +1527,8 @@ mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "id" + "}", Kn
                 UpdateEntitlementTemplateComplete(UpdateEntitlementTemplateData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Set the behavior data for an inventory entry 
         /// </summary>
@@ -1524,8 +1553,8 @@ mGetUserInventoryLogPath = mGetUserInventoryLogPath.Replace("{" + "id" + "}", Kn
             {
                 mUpdateUserInventoryBehaviorDataPath = mUpdateUserInventoryBehaviorDataPath.Replace("{format}", "json");
             }
-            mUpdateUserInventoryBehaviorDataPath = mUpdateUserInventoryBehaviorDataPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-mUpdateUserInventoryBehaviorDataPath = mUpdateUserInventoryBehaviorDataPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateUserInventoryBehaviorDataPath = mUpdateUserInventoryBehaviorDataPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
+mUpdateUserInventoryBehaviorDataPath = mUpdateUserInventoryBehaviorDataPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1533,10 +1562,10 @@ mUpdateUserInventoryBehaviorDataPath = mUpdateUserInventoryBehaviorDataPath.Repl
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(data); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(data); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateUserInventoryBehaviorDataStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateUserInventoryBehaviorDataStartTime, mUpdateUserInventoryBehaviorDataPath, "Sending server request...");
@@ -1563,6 +1592,8 @@ mUpdateUserInventoryBehaviorDataPath = mUpdateUserInventoryBehaviorDataPath.Repl
                 UpdateUserInventoryBehaviorDataComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Set the expiration date Will change the current grace period for a subscription but not the bill date (possibly even ending before having the chance to re-bill)
         /// </summary>
@@ -1587,8 +1618,8 @@ mUpdateUserInventoryBehaviorDataPath = mUpdateUserInventoryBehaviorDataPath.Repl
             {
                 mUpdateUserInventoryExpiresPath = mUpdateUserInventoryExpiresPath.Replace("{format}", "json");
             }
-            mUpdateUserInventoryExpiresPath = mUpdateUserInventoryExpiresPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-mUpdateUserInventoryExpiresPath = mUpdateUserInventoryExpiresPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateUserInventoryExpiresPath = mUpdateUserInventoryExpiresPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
+mUpdateUserInventoryExpiresPath = mUpdateUserInventoryExpiresPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1596,10 +1627,10 @@ mUpdateUserInventoryExpiresPath = mUpdateUserInventoryExpiresPath.Replace("{" + 
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(timestamp); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(timestamp); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateUserInventoryExpiresStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateUserInventoryExpiresStartTime, mUpdateUserInventoryExpiresPath, "Sending server request...");
@@ -1626,6 +1657,8 @@ mUpdateUserInventoryExpiresPath = mUpdateUserInventoryExpiresPath.Replace("{" + 
                 UpdateUserInventoryExpiresComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Set the status for an inventory entry 
         /// </summary>
@@ -1650,8 +1683,8 @@ mUpdateUserInventoryExpiresPath = mUpdateUserInventoryExpiresPath.Replace("{" + 
             {
                 mUpdateUserInventoryStatusPath = mUpdateUserInventoryStatusPath.Replace("{format}", "json");
             }
-            mUpdateUserInventoryStatusPath = mUpdateUserInventoryStatusPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-mUpdateUserInventoryStatusPath = mUpdateUserInventoryStatusPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateUserInventoryStatusPath = mUpdateUserInventoryStatusPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
+mUpdateUserInventoryStatusPath = mUpdateUserInventoryStatusPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1659,10 +1692,10 @@ mUpdateUserInventoryStatusPath = mUpdateUserInventoryStatusPath.Replace("{" + "i
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(inventoryStatus); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(inventoryStatus); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateUserInventoryStatusStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateUserInventoryStatusStartTime, mUpdateUserInventoryStatusPath, "Sending server request...");
@@ -1689,6 +1722,8 @@ mUpdateUserInventoryStatusPath = mUpdateUserInventoryStatusPath.Replace("{" + "i
                 UpdateUserInventoryStatusComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Use an item 
         /// </summary>
@@ -1714,8 +1749,8 @@ mUpdateUserInventoryStatusPath = mUpdateUserInventoryStatusPath.Replace("{" + "i
             {
                 mUseUserEntitlementItemPath = mUseUserEntitlementItemPath.Replace("{format}", "json");
             }
-            mUseUserEntitlementItemPath = mUseUserEntitlementItemPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-mUseUserEntitlementItemPath = mUseUserEntitlementItemPath.Replace("{" + "item_id" + "}", KnetikClient.ParameterToString(itemId));
+            mUseUserEntitlementItemPath = mUseUserEntitlementItemPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
+mUseUserEntitlementItemPath = mUseUserEntitlementItemPath.Replace("{" + "item_id" + "}", KnetikClient.DefaultClient.ParameterToString(itemId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1725,16 +1760,16 @@ mUseUserEntitlementItemPath = mUseUserEntitlementItemPath.Replace("{" + "item_id
 
             if (sku != null)
             {
-                queryParams.Add("sku", KnetikClient.ParameterToString(sku));
+                queryParams.Add("sku", KnetikClient.DefaultClient.ParameterToString(sku));
             }
 
             if (info != null)
             {
-                queryParams.Add("info", KnetikClient.ParameterToString(info));
+                queryParams.Add("info", KnetikClient.DefaultClient.ParameterToString(info));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUseUserEntitlementItemStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUseUserEntitlementItemStartTime, mUseUserEntitlementItemPath, "Sending server request...");
@@ -1761,5 +1796,6 @@ mUseUserEntitlementItemPath = mUseUserEntitlementItemPath.Replace("{" + "item_id
                 UseUserEntitlementItemComplete();
             }
         }
+
     }
 }

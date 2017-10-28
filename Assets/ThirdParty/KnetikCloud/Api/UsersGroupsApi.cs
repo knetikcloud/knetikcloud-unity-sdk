@@ -156,7 +156,8 @@ namespace com.knetikcloud.Api
         /// List groups a user is in 
         /// </summary>
         /// <param name="userId">The id of the user</param>
-        void GetGroupsForUser(int? userId);
+        /// <param name="filterChildren">Whether to limit group list to children of groups only. If true, shows only groups with parents. If false, shows only groups with no parent.</param>
+        void GetGroupsForUser(int? userId, bool? filterChildren);
 
         /// <summary>
         /// List and search groups 
@@ -226,6 +227,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -398,39 +400,33 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public UsersGroupsApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mAddMemberToGroupCoroutine = new KnetikCoroutine(KnetikClient);
-            mAddMembersToGroupCoroutine = new KnetikCoroutine(KnetikClient);
-            mCreateGroupCoroutine = new KnetikCoroutine(KnetikClient);
-            mCreateGroupMemberTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mCreateGroupTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteGroupCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteGroupMemberTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteGroupTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetGroupCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetGroupMemberCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetGroupMemberTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetGroupMemberTemplatesCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetGroupMembersCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetGroupTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetGroupTemplatesCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetGroupsForUserCoroutine = new KnetikCoroutine(KnetikClient);
-            mListGroupsCoroutine = new KnetikCoroutine(KnetikClient);
-            mRemoveGroupMemberCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateGroupCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateGroupMemberPropertiesCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateGroupMemberProperties1Coroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateGroupMemberStatusCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateGroupMemberTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateGroupTemplateCoroutine = new KnetikCoroutine(KnetikClient);
+            mAddMemberToGroupCoroutine = new KnetikCoroutine();
+            mAddMembersToGroupCoroutine = new KnetikCoroutine();
+            mCreateGroupCoroutine = new KnetikCoroutine();
+            mCreateGroupMemberTemplateCoroutine = new KnetikCoroutine();
+            mCreateGroupTemplateCoroutine = new KnetikCoroutine();
+            mDeleteGroupCoroutine = new KnetikCoroutine();
+            mDeleteGroupMemberTemplateCoroutine = new KnetikCoroutine();
+            mDeleteGroupTemplateCoroutine = new KnetikCoroutine();
+            mGetGroupCoroutine = new KnetikCoroutine();
+            mGetGroupMemberCoroutine = new KnetikCoroutine();
+            mGetGroupMemberTemplateCoroutine = new KnetikCoroutine();
+            mGetGroupMemberTemplatesCoroutine = new KnetikCoroutine();
+            mGetGroupMembersCoroutine = new KnetikCoroutine();
+            mGetGroupTemplateCoroutine = new KnetikCoroutine();
+            mGetGroupTemplatesCoroutine = new KnetikCoroutine();
+            mGetGroupsForUserCoroutine = new KnetikCoroutine();
+            mListGroupsCoroutine = new KnetikCoroutine();
+            mRemoveGroupMemberCoroutine = new KnetikCoroutine();
+            mUpdateGroupCoroutine = new KnetikCoroutine();
+            mUpdateGroupMemberPropertiesCoroutine = new KnetikCoroutine();
+            mUpdateGroupMemberProperties1Coroutine = new KnetikCoroutine();
+            mUpdateGroupMemberStatusCoroutine = new KnetikCoroutine();
+            mUpdateGroupMemberTemplateCoroutine = new KnetikCoroutine();
+            mUpdateGroupTemplateCoroutine = new KnetikCoroutine();
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
+        /// <inheritdoc />
         /// <summary>
         /// Adds a new member to the group 
         /// </summary>
@@ -454,7 +450,7 @@ namespace com.knetikcloud.Api
             {
                 mAddMemberToGroupPath = mAddMemberToGroupPath.Replace("{format}", "json");
             }
-            mAddMemberToGroupPath = mAddMemberToGroupPath.Replace("{" + "unique_name" + "}", KnetikClient.ParameterToString(uniqueName));
+            mAddMemberToGroupPath = mAddMemberToGroupPath.Replace("{" + "unique_name" + "}", KnetikClient.DefaultClient.ParameterToString(uniqueName));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -462,10 +458,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(user); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(user); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddMemberToGroupStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddMemberToGroupStartTime, mAddMemberToGroupPath, "Sending server request...");
@@ -486,7 +482,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling AddMemberToGroup: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            AddMemberToGroupData = (GroupMemberResource) KnetikClient.Deserialize(response.Content, typeof(GroupMemberResource), response.Headers);
+            AddMemberToGroupData = (GroupMemberResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(GroupMemberResource), response.Headers);
             KnetikLogger.LogResponse(mAddMemberToGroupStartTime, mAddMemberToGroupPath, string.Format("Response received successfully:\n{0}", AddMemberToGroupData.ToString()));
 
             if (AddMemberToGroupComplete != null)
@@ -494,6 +490,8 @@ namespace com.knetikcloud.Api
                 AddMemberToGroupComplete(AddMemberToGroupData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Adds multiple members to the group 
         /// </summary>
@@ -517,7 +515,7 @@ namespace com.knetikcloud.Api
             {
                 mAddMembersToGroupPath = mAddMembersToGroupPath.Replace("{format}", "json");
             }
-            mAddMembersToGroupPath = mAddMembersToGroupPath.Replace("{" + "unique_name" + "}", KnetikClient.ParameterToString(uniqueName));
+            mAddMembersToGroupPath = mAddMembersToGroupPath.Replace("{" + "unique_name" + "}", KnetikClient.DefaultClient.ParameterToString(uniqueName));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -525,10 +523,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(users); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(users); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddMembersToGroupStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddMembersToGroupStartTime, mAddMembersToGroupPath, "Sending server request...");
@@ -549,7 +547,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling AddMembersToGroup: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            AddMembersToGroupData = (List<GroupMemberResource>) KnetikClient.Deserialize(response.Content, typeof(List<GroupMemberResource>), response.Headers);
+            AddMembersToGroupData = (List<GroupMemberResource>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<GroupMemberResource>), response.Headers);
             KnetikLogger.LogResponse(mAddMembersToGroupStartTime, mAddMembersToGroupPath, string.Format("Response received successfully:\n{0}", AddMembersToGroupData.ToString()));
 
             if (AddMembersToGroupComplete != null)
@@ -557,6 +555,8 @@ namespace com.knetikcloud.Api
                 AddMembersToGroupComplete(AddMembersToGroupData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Create a group 
         /// </summary>
@@ -576,10 +576,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(groupResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(groupResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateGroupStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateGroupStartTime, mCreateGroupPath, "Sending server request...");
@@ -600,7 +600,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateGroup: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateGroupData = (GroupResource) KnetikClient.Deserialize(response.Content, typeof(GroupResource), response.Headers);
+            CreateGroupData = (GroupResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(GroupResource), response.Headers);
             KnetikLogger.LogResponse(mCreateGroupStartTime, mCreateGroupPath, string.Format("Response received successfully:\n{0}", CreateGroupData.ToString()));
 
             if (CreateGroupComplete != null)
@@ -608,6 +608,8 @@ namespace com.knetikcloud.Api
                 CreateGroupComplete(CreateGroupData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Create an group member template GroupMember Templates define a type of group member and the properties they have
         /// </summary>
@@ -627,10 +629,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(groupMemberTemplateResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(groupMemberTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateGroupMemberTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateGroupMemberTemplateStartTime, mCreateGroupMemberTemplatePath, "Sending server request...");
@@ -651,7 +653,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateGroupMemberTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateGroupMemberTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            CreateGroupMemberTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
             KnetikLogger.LogResponse(mCreateGroupMemberTemplateStartTime, mCreateGroupMemberTemplatePath, string.Format("Response received successfully:\n{0}", CreateGroupMemberTemplateData.ToString()));
 
             if (CreateGroupMemberTemplateComplete != null)
@@ -659,6 +661,8 @@ namespace com.knetikcloud.Api
                 CreateGroupMemberTemplateComplete(CreateGroupMemberTemplateData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Create a group template Group Templates define a type of group and the properties they have
         /// </summary>
@@ -678,10 +682,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(groupTemplateResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(groupTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateGroupTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateGroupTemplateStartTime, mCreateGroupTemplatePath, "Sending server request...");
@@ -702,7 +706,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateGroupTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateGroupTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            CreateGroupTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
             KnetikLogger.LogResponse(mCreateGroupTemplateStartTime, mCreateGroupTemplatePath, string.Format("Response received successfully:\n{0}", CreateGroupTemplateData.ToString()));
 
             if (CreateGroupTemplateComplete != null)
@@ -710,6 +714,8 @@ namespace com.knetikcloud.Api
                 CreateGroupTemplateComplete(CreateGroupTemplateData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Removes a group from the system IF no resources are attached to it 
         /// </summary>
@@ -727,7 +733,7 @@ namespace com.knetikcloud.Api
             {
                 mDeleteGroupPath = mDeleteGroupPath.Replace("{format}", "json");
             }
-            mDeleteGroupPath = mDeleteGroupPath.Replace("{" + "unique_name" + "}", KnetikClient.ParameterToString(uniqueName));
+            mDeleteGroupPath = mDeleteGroupPath.Replace("{" + "unique_name" + "}", KnetikClient.DefaultClient.ParameterToString(uniqueName));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -736,7 +742,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteGroupStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteGroupStartTime, mDeleteGroupPath, "Sending server request...");
@@ -763,6 +769,8 @@ namespace com.knetikcloud.Api
                 DeleteGroupComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Delete an group member template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
         /// </summary>
@@ -781,7 +789,7 @@ namespace com.knetikcloud.Api
             {
                 mDeleteGroupMemberTemplatePath = mDeleteGroupMemberTemplatePath.Replace("{format}", "json");
             }
-            mDeleteGroupMemberTemplatePath = mDeleteGroupMemberTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteGroupMemberTemplatePath = mDeleteGroupMemberTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -791,11 +799,11 @@ namespace com.knetikcloud.Api
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.ParameterToString(cascade));
+                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteGroupMemberTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteGroupMemberTemplateStartTime, mDeleteGroupMemberTemplatePath, "Sending server request...");
@@ -822,6 +830,8 @@ namespace com.knetikcloud.Api
                 DeleteGroupMemberTemplateComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Delete a group template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
         /// </summary>
@@ -840,7 +850,7 @@ namespace com.knetikcloud.Api
             {
                 mDeleteGroupTemplatePath = mDeleteGroupTemplatePath.Replace("{format}", "json");
             }
-            mDeleteGroupTemplatePath = mDeleteGroupTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteGroupTemplatePath = mDeleteGroupTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -850,11 +860,11 @@ namespace com.knetikcloud.Api
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.ParameterToString(cascade));
+                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteGroupTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteGroupTemplateStartTime, mDeleteGroupTemplatePath, "Sending server request...");
@@ -881,6 +891,8 @@ namespace com.knetikcloud.Api
                 DeleteGroupTemplateComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Loads a specific group&#39;s details 
         /// </summary>
@@ -898,7 +910,7 @@ namespace com.knetikcloud.Api
             {
                 mGetGroupPath = mGetGroupPath.Replace("{format}", "json");
             }
-            mGetGroupPath = mGetGroupPath.Replace("{" + "unique_name" + "}", KnetikClient.ParameterToString(uniqueName));
+            mGetGroupPath = mGetGroupPath.Replace("{" + "unique_name" + "}", KnetikClient.DefaultClient.ParameterToString(uniqueName));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -907,7 +919,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetGroupStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetGroupStartTime, mGetGroupPath, "Sending server request...");
@@ -928,7 +940,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetGroup: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetGroupData = (GroupResource) KnetikClient.Deserialize(response.Content, typeof(GroupResource), response.Headers);
+            GetGroupData = (GroupResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(GroupResource), response.Headers);
             KnetikLogger.LogResponse(mGetGroupStartTime, mGetGroupPath, string.Format("Response received successfully:\n{0}", GetGroupData.ToString()));
 
             if (GetGroupComplete != null)
@@ -936,6 +948,8 @@ namespace com.knetikcloud.Api
                 GetGroupComplete(GetGroupData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Get a user from a group 
         /// </summary>
@@ -959,8 +973,8 @@ namespace com.knetikcloud.Api
             {
                 mGetGroupMemberPath = mGetGroupMemberPath.Replace("{format}", "json");
             }
-            mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "unique_name" + "}", KnetikClient.ParameterToString(uniqueName));
-mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+            mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "unique_name" + "}", KnetikClient.DefaultClient.ParameterToString(uniqueName));
+mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -969,7 +983,7 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetGroupMemberStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetGroupMemberStartTime, mGetGroupMemberPath, "Sending server request...");
@@ -990,7 +1004,7 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
                 throw new KnetikException((int)response.StatusCode, "Error calling GetGroupMember: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetGroupMemberData = (GroupMemberResource) KnetikClient.Deserialize(response.Content, typeof(GroupMemberResource), response.Headers);
+            GetGroupMemberData = (GroupMemberResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(GroupMemberResource), response.Headers);
             KnetikLogger.LogResponse(mGetGroupMemberStartTime, mGetGroupMemberPath, string.Format("Response received successfully:\n{0}", GetGroupMemberData.ToString()));
 
             if (GetGroupMemberComplete != null)
@@ -998,6 +1012,8 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
                 GetGroupMemberComplete(GetGroupMemberData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Get a single group member template 
         /// </summary>
@@ -1015,7 +1031,7 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
             {
                 mGetGroupMemberTemplatePath = mGetGroupMemberTemplatePath.Replace("{format}", "json");
             }
-            mGetGroupMemberTemplatePath = mGetGroupMemberTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetGroupMemberTemplatePath = mGetGroupMemberTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1024,7 +1040,7 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetGroupMemberTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetGroupMemberTemplateStartTime, mGetGroupMemberTemplatePath, "Sending server request...");
@@ -1045,7 +1061,7 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
                 throw new KnetikException((int)response.StatusCode, "Error calling GetGroupMemberTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetGroupMemberTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            GetGroupMemberTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
             KnetikLogger.LogResponse(mGetGroupMemberTemplateStartTime, mGetGroupMemberTemplatePath, string.Format("Response received successfully:\n{0}", GetGroupMemberTemplateData.ToString()));
 
             if (GetGroupMemberTemplateComplete != null)
@@ -1053,6 +1069,8 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
                 GetGroupMemberTemplateComplete(GetGroupMemberTemplateData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// List and search group member templates 
         /// </summary>
@@ -1076,21 +1094,21 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetGroupMemberTemplatesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetGroupMemberTemplatesStartTime, mGetGroupMemberTemplatesPath, "Sending server request...");
@@ -1111,7 +1129,7 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
                 throw new KnetikException((int)response.StatusCode, "Error calling GetGroupMemberTemplates: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetGroupMemberTemplatesData = (PageResourceTemplateResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceTemplateResource), response.Headers);
+            GetGroupMemberTemplatesData = (PageResourceTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceTemplateResource), response.Headers);
             KnetikLogger.LogResponse(mGetGroupMemberTemplatesStartTime, mGetGroupMemberTemplatesPath, string.Format("Response received successfully:\n{0}", GetGroupMemberTemplatesData.ToString()));
 
             if (GetGroupMemberTemplatesComplete != null)
@@ -1119,6 +1137,8 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
                 GetGroupMemberTemplatesComplete(GetGroupMemberTemplatesData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Lists members of the group 
         /// </summary>
@@ -1139,7 +1159,7 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
             {
                 mGetGroupMembersPath = mGetGroupMembersPath.Replace("{format}", "json");
             }
-            mGetGroupMembersPath = mGetGroupMembersPath.Replace("{" + "unique_name" + "}", KnetikClient.ParameterToString(uniqueName));
+            mGetGroupMembersPath = mGetGroupMembersPath.Replace("{" + "unique_name" + "}", KnetikClient.DefaultClient.ParameterToString(uniqueName));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1149,21 +1169,21 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetGroupMembersStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetGroupMembersStartTime, mGetGroupMembersPath, "Sending server request...");
@@ -1184,7 +1204,7 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
                 throw new KnetikException((int)response.StatusCode, "Error calling GetGroupMembers: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetGroupMembersData = (PageResourceGroupMemberResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceGroupMemberResource), response.Headers);
+            GetGroupMembersData = (PageResourceGroupMemberResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceGroupMemberResource), response.Headers);
             KnetikLogger.LogResponse(mGetGroupMembersStartTime, mGetGroupMembersPath, string.Format("Response received successfully:\n{0}", GetGroupMembersData.ToString()));
 
             if (GetGroupMembersComplete != null)
@@ -1192,6 +1212,8 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
                 GetGroupMembersComplete(GetGroupMembersData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Get a single group template 
         /// </summary>
@@ -1209,7 +1231,7 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
             {
                 mGetGroupTemplatePath = mGetGroupTemplatePath.Replace("{format}", "json");
             }
-            mGetGroupTemplatePath = mGetGroupTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetGroupTemplatePath = mGetGroupTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1218,7 +1240,7 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetGroupTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetGroupTemplateStartTime, mGetGroupTemplatePath, "Sending server request...");
@@ -1239,7 +1261,7 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
                 throw new KnetikException((int)response.StatusCode, "Error calling GetGroupTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetGroupTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            GetGroupTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
             KnetikLogger.LogResponse(mGetGroupTemplateStartTime, mGetGroupTemplatePath, string.Format("Response received successfully:\n{0}", GetGroupTemplateData.ToString()));
 
             if (GetGroupTemplateComplete != null)
@@ -1247,6 +1269,8 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
                 GetGroupTemplateComplete(GetGroupTemplateData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// List and search group templates 
         /// </summary>
@@ -1270,21 +1294,21 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetGroupTemplatesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetGroupTemplatesStartTime, mGetGroupTemplatesPath, "Sending server request...");
@@ -1305,7 +1329,7 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
                 throw new KnetikException((int)response.StatusCode, "Error calling GetGroupTemplates: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetGroupTemplatesData = (PageResourceTemplateResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceTemplateResource), response.Headers);
+            GetGroupTemplatesData = (PageResourceTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceTemplateResource), response.Headers);
             KnetikLogger.LogResponse(mGetGroupTemplatesStartTime, mGetGroupTemplatesPath, string.Format("Response received successfully:\n{0}", GetGroupTemplatesData.ToString()));
 
             if (GetGroupTemplatesComplete != null)
@@ -1313,11 +1337,14 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
                 GetGroupTemplatesComplete(GetGroupTemplatesData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// List groups a user is in 
         /// </summary>
         /// <param name="userId">The id of the user</param>
-        public void GetGroupsForUser(int? userId)
+        /// <param name="filterChildren">Whether to limit group list to children of groups only. If true, shows only groups with parents. If false, shows only groups with no parent.</param>
+        public void GetGroupsForUser(int? userId, bool? filterChildren)
         {
             // verify the required parameter 'userId' is set
             if (userId == null)
@@ -1330,7 +1357,7 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
             {
                 mGetGroupsForUserPath = mGetGroupsForUserPath.Replace("{format}", "json");
             }
-            mGetGroupsForUserPath = mGetGroupsForUserPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+            mGetGroupsForUserPath = mGetGroupsForUserPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1338,8 +1365,13 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
+            if (filterChildren != null)
+            {
+                queryParams.Add("filter_children", KnetikClient.DefaultClient.ParameterToString(filterChildren));
+            }
+
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetGroupsForUserStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetGroupsForUserStartTime, mGetGroupsForUserPath, "Sending server request...");
@@ -1360,7 +1392,7 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
                 throw new KnetikException((int)response.StatusCode, "Error calling GetGroupsForUser: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetGroupsForUserData = (List<string>) KnetikClient.Deserialize(response.Content, typeof(List<string>), response.Headers);
+            GetGroupsForUserData = (List<string>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<string>), response.Headers);
             KnetikLogger.LogResponse(mGetGroupsForUserStartTime, mGetGroupsForUserPath, string.Format("Response received successfully:\n{0}", GetGroupsForUserData.ToString()));
 
             if (GetGroupsForUserComplete != null)
@@ -1368,6 +1400,8 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
                 GetGroupsForUserComplete(GetGroupsForUserData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// List and search groups 
         /// </summary>
@@ -1397,51 +1431,51 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
 
             if (filterTemplate != null)
             {
-                queryParams.Add("filter_template", KnetikClient.ParameterToString(filterTemplate));
+                queryParams.Add("filter_template", KnetikClient.DefaultClient.ParameterToString(filterTemplate));
             }
 
             if (filterMemberCount != null)
             {
-                queryParams.Add("filter_member_count", KnetikClient.ParameterToString(filterMemberCount));
+                queryParams.Add("filter_member_count", KnetikClient.DefaultClient.ParameterToString(filterMemberCount));
             }
 
             if (filterName != null)
             {
-                queryParams.Add("filter_name", KnetikClient.ParameterToString(filterName));
+                queryParams.Add("filter_name", KnetikClient.DefaultClient.ParameterToString(filterName));
             }
 
             if (filterUniqueName != null)
             {
-                queryParams.Add("filter_unique_name", KnetikClient.ParameterToString(filterUniqueName));
+                queryParams.Add("filter_unique_name", KnetikClient.DefaultClient.ParameterToString(filterUniqueName));
             }
 
             if (filterParent != null)
             {
-                queryParams.Add("filter_parent", KnetikClient.ParameterToString(filterParent));
+                queryParams.Add("filter_parent", KnetikClient.DefaultClient.ParameterToString(filterParent));
             }
 
             if (filterStatus != null)
             {
-                queryParams.Add("filter_status", KnetikClient.ParameterToString(filterStatus));
+                queryParams.Add("filter_status", KnetikClient.DefaultClient.ParameterToString(filterStatus));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mListGroupsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mListGroupsStartTime, mListGroupsPath, "Sending server request...");
@@ -1462,7 +1496,7 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
                 throw new KnetikException((int)response.StatusCode, "Error calling ListGroups: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            ListGroupsData = (PageResourceGroupResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceGroupResource), response.Headers);
+            ListGroupsData = (PageResourceGroupResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceGroupResource), response.Headers);
             KnetikLogger.LogResponse(mListGroupsStartTime, mListGroupsPath, string.Format("Response received successfully:\n{0}", ListGroupsData.ToString()));
 
             if (ListGroupsComplete != null)
@@ -1470,6 +1504,8 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
                 ListGroupsComplete(ListGroupsData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Removes a user from a group 
         /// </summary>
@@ -1493,8 +1529,8 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
             {
                 mRemoveGroupMemberPath = mRemoveGroupMemberPath.Replace("{format}", "json");
             }
-            mRemoveGroupMemberPath = mRemoveGroupMemberPath.Replace("{" + "unique_name" + "}", KnetikClient.ParameterToString(uniqueName));
-mRemoveGroupMemberPath = mRemoveGroupMemberPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+            mRemoveGroupMemberPath = mRemoveGroupMemberPath.Replace("{" + "unique_name" + "}", KnetikClient.DefaultClient.ParameterToString(uniqueName));
+mRemoveGroupMemberPath = mRemoveGroupMemberPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1503,7 +1539,7 @@ mRemoveGroupMemberPath = mRemoveGroupMemberPath.Replace("{" + "user_id" + "}", K
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mRemoveGroupMemberStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mRemoveGroupMemberStartTime, mRemoveGroupMemberPath, "Sending server request...");
@@ -1530,6 +1566,8 @@ mRemoveGroupMemberPath = mRemoveGroupMemberPath.Replace("{" + "user_id" + "}", K
                 RemoveGroupMemberComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Update a group 
         /// </summary>
@@ -1548,7 +1586,7 @@ mRemoveGroupMemberPath = mRemoveGroupMemberPath.Replace("{" + "user_id" + "}", K
             {
                 mUpdateGroupPath = mUpdateGroupPath.Replace("{format}", "json");
             }
-            mUpdateGroupPath = mUpdateGroupPath.Replace("{" + "unique_name" + "}", KnetikClient.ParameterToString(uniqueName));
+            mUpdateGroupPath = mUpdateGroupPath.Replace("{" + "unique_name" + "}", KnetikClient.DefaultClient.ParameterToString(uniqueName));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1556,10 +1594,10 @@ mRemoveGroupMemberPath = mRemoveGroupMemberPath.Replace("{" + "user_id" + "}", K
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(groupResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(groupResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateGroupStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateGroupStartTime, mUpdateGroupPath, "Sending server request...");
@@ -1586,6 +1624,8 @@ mRemoveGroupMemberPath = mRemoveGroupMemberPath.Replace("{" + "user_id" + "}", K
                 UpdateGroupComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Change a user&#39;s order 
         /// </summary>
@@ -1615,8 +1655,8 @@ mRemoveGroupMemberPath = mRemoveGroupMemberPath.Replace("{" + "user_id" + "}", K
             {
                 mUpdateGroupMemberPropertiesPath = mUpdateGroupMemberPropertiesPath.Replace("{format}", "json");
             }
-            mUpdateGroupMemberPropertiesPath = mUpdateGroupMemberPropertiesPath.Replace("{" + "unique_name" + "}", KnetikClient.ParameterToString(uniqueName));
-mUpdateGroupMemberPropertiesPath = mUpdateGroupMemberPropertiesPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+            mUpdateGroupMemberPropertiesPath = mUpdateGroupMemberPropertiesPath.Replace("{" + "unique_name" + "}", KnetikClient.DefaultClient.ParameterToString(uniqueName));
+mUpdateGroupMemberPropertiesPath = mUpdateGroupMemberPropertiesPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1624,10 +1664,10 @@ mUpdateGroupMemberPropertiesPath = mUpdateGroupMemberPropertiesPath.Replace("{" 
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(order); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(order); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateGroupMemberPropertiesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateGroupMemberPropertiesStartTime, mUpdateGroupMemberPropertiesPath, "Sending server request...");
@@ -1654,6 +1694,8 @@ mUpdateGroupMemberPropertiesPath = mUpdateGroupMemberPropertiesPath.Replace("{" 
                 UpdateGroupMemberPropertiesComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Change a user&#39;s membership properties 
         /// </summary>
@@ -1683,8 +1725,8 @@ mUpdateGroupMemberPropertiesPath = mUpdateGroupMemberPropertiesPath.Replace("{" 
             {
                 mUpdateGroupMemberProperties1Path = mUpdateGroupMemberProperties1Path.Replace("{format}", "json");
             }
-            mUpdateGroupMemberProperties1Path = mUpdateGroupMemberProperties1Path.Replace("{" + "unique_name" + "}", KnetikClient.ParameterToString(uniqueName));
-mUpdateGroupMemberProperties1Path = mUpdateGroupMemberProperties1Path.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+            mUpdateGroupMemberProperties1Path = mUpdateGroupMemberProperties1Path.Replace("{" + "unique_name" + "}", KnetikClient.DefaultClient.ParameterToString(uniqueName));
+mUpdateGroupMemberProperties1Path = mUpdateGroupMemberProperties1Path.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1692,10 +1734,10 @@ mUpdateGroupMemberProperties1Path = mUpdateGroupMemberProperties1Path.Replace("{
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(properties); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(properties); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateGroupMemberProperties1StartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateGroupMemberProperties1StartTime, mUpdateGroupMemberProperties1Path, "Sending server request...");
@@ -1722,6 +1764,8 @@ mUpdateGroupMemberProperties1Path = mUpdateGroupMemberProperties1Path.Replace("{
                 UpdateGroupMemberProperties1Complete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Change a user&#39;s status 
         /// </summary>
@@ -1751,8 +1795,8 @@ mUpdateGroupMemberProperties1Path = mUpdateGroupMemberProperties1Path.Replace("{
             {
                 mUpdateGroupMemberStatusPath = mUpdateGroupMemberStatusPath.Replace("{format}", "json");
             }
-            mUpdateGroupMemberStatusPath = mUpdateGroupMemberStatusPath.Replace("{" + "unique_name" + "}", KnetikClient.ParameterToString(uniqueName));
-mUpdateGroupMemberStatusPath = mUpdateGroupMemberStatusPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+            mUpdateGroupMemberStatusPath = mUpdateGroupMemberStatusPath.Replace("{" + "unique_name" + "}", KnetikClient.DefaultClient.ParameterToString(uniqueName));
+mUpdateGroupMemberStatusPath = mUpdateGroupMemberStatusPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1760,10 +1804,10 @@ mUpdateGroupMemberStatusPath = mUpdateGroupMemberStatusPath.Replace("{" + "user_
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(status); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(status); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateGroupMemberStatusStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateGroupMemberStatusStartTime, mUpdateGroupMemberStatusPath, "Sending server request...");
@@ -1790,6 +1834,8 @@ mUpdateGroupMemberStatusPath = mUpdateGroupMemberStatusPath.Replace("{" + "user_
                 UpdateGroupMemberStatusComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Update an group member template 
         /// </summary>
@@ -1808,7 +1854,7 @@ mUpdateGroupMemberStatusPath = mUpdateGroupMemberStatusPath.Replace("{" + "user_
             {
                 mUpdateGroupMemberTemplatePath = mUpdateGroupMemberTemplatePath.Replace("{format}", "json");
             }
-            mUpdateGroupMemberTemplatePath = mUpdateGroupMemberTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateGroupMemberTemplatePath = mUpdateGroupMemberTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1816,10 +1862,10 @@ mUpdateGroupMemberStatusPath = mUpdateGroupMemberStatusPath.Replace("{" + "user_
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(groupMemberTemplateResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(groupMemberTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateGroupMemberTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateGroupMemberTemplateStartTime, mUpdateGroupMemberTemplatePath, "Sending server request...");
@@ -1840,7 +1886,7 @@ mUpdateGroupMemberStatusPath = mUpdateGroupMemberStatusPath.Replace("{" + "user_
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateGroupMemberTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateGroupMemberTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            UpdateGroupMemberTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
             KnetikLogger.LogResponse(mUpdateGroupMemberTemplateStartTime, mUpdateGroupMemberTemplatePath, string.Format("Response received successfully:\n{0}", UpdateGroupMemberTemplateData.ToString()));
 
             if (UpdateGroupMemberTemplateComplete != null)
@@ -1848,6 +1894,8 @@ mUpdateGroupMemberStatusPath = mUpdateGroupMemberStatusPath.Replace("{" + "user_
                 UpdateGroupMemberTemplateComplete(UpdateGroupMemberTemplateData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Update a group template 
         /// </summary>
@@ -1866,7 +1914,7 @@ mUpdateGroupMemberStatusPath = mUpdateGroupMemberStatusPath.Replace("{" + "user_
             {
                 mUpdateGroupTemplatePath = mUpdateGroupTemplatePath.Replace("{format}", "json");
             }
-            mUpdateGroupTemplatePath = mUpdateGroupTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateGroupTemplatePath = mUpdateGroupTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1874,10 +1922,10 @@ mUpdateGroupMemberStatusPath = mUpdateGroupMemberStatusPath.Replace("{" + "user_
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(groupTemplateResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(groupTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateGroupTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateGroupTemplateStartTime, mUpdateGroupTemplatePath, "Sending server request...");
@@ -1898,7 +1946,7 @@ mUpdateGroupMemberStatusPath = mUpdateGroupMemberStatusPath.Replace("{" + "user_
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateGroupTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateGroupTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            UpdateGroupTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
             KnetikLogger.LogResponse(mUpdateGroupTemplateStartTime, mUpdateGroupTemplatePath, string.Format("Response received successfully:\n{0}", UpdateGroupTemplateData.ToString()));
 
             if (UpdateGroupTemplateComplete != null)
@@ -1906,5 +1954,6 @@ mUpdateGroupMemberStatusPath = mUpdateGroupMemberStatusPath.Replace("{" + "user_
                 UpdateGroupTemplateComplete(UpdateGroupTemplateData);
             }
         }
+
     }
 }

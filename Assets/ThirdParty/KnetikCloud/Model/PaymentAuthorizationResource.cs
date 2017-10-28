@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,43 +19,44 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>Whether this authorization has been captured</value>
         [JsonProperty(PropertyName = "captured")]
-        public bool? Captured { get; set; }
+        public bool? Captured;
 
         /// <summary>
         /// The date this authorization was received, unix timestamp in seconds
         /// </summary>
         /// <value>The date this authorization was received, unix timestamp in seconds</value>
         [JsonProperty(PropertyName = "created")]
-        public long? Created { get; set; }
+        public long? Created;
 
         /// <summary>
         /// The details for this authorization. Format dependent on payment provider
         /// </summary>
         /// <value>The details for this authorization. Format dependent on payment provider</value>
         [JsonProperty(PropertyName = "details")]
-        public Object Details { get; set; }
+        public Object Details;
 
         /// <summary>
         /// The id of the authorization
         /// </summary>
         /// <value>The id of the authorization</value>
         [JsonProperty(PropertyName = "id")]
-        public int? Id { get; set; }
+        public int? Id;
 
         /// <summary>
         /// The invoice this authorization is intended to pay
         /// </summary>
         /// <value>The invoice this authorization is intended to pay</value>
         [JsonProperty(PropertyName = "invoice")]
-        public int? Invoice { get; set; }
+        public int? Invoice;
 
         /// <summary>
         /// The payment type (which provider) this payment is through
         /// </summary>
         /// <value>The payment type (which provider) this payment is through</value>
         [JsonProperty(PropertyName = "payment_type")]
-        public SimpleReferenceResourceint PaymentType { get; set; }
+        public SimpleReferenceResourceint PaymentType;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

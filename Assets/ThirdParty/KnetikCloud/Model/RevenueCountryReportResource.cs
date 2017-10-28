@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -15,20 +18,21 @@ namespace com.knetikcloud.Model
         /// Gets or Sets Country
         /// </summary>
         [JsonProperty(PropertyName = "country")]
-        public string Country { get; set; }
+        public string Country;
 
         /// <summary>
         /// Gets or Sets Revenue
         /// </summary>
         [JsonProperty(PropertyName = "revenue")]
-        public decimal? Revenue { get; set; }
+        public decimal? Revenue;
 
         /// <summary>
         /// Gets or Sets Volume
         /// </summary>
         [JsonProperty(PropertyName = "volume")]
-        public long? Volume { get; set; }
+        public long? Volume;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

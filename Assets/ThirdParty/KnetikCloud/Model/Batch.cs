@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,15 +19,16 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The list of batch requests</value>
         [JsonProperty(PropertyName = "batch")]
-        public List<BatchRequest> _Batch { get; set; }
+        public List<BatchRequest> _Batch;
 
         /// <summary>
         /// The amount of time before a request token is returned instead of the batch result.  Default is 60.  Range is 0-300
         /// </summary>
         /// <value>The amount of time before a request token is returned instead of the batch result.  Default is 60.  Range is 0-300</value>
         [JsonProperty(PropertyName = "timeout")]
-        public int? Timeout { get; set; }
+        public int? Timeout;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

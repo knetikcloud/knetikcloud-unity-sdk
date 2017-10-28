@@ -1,91 +1,180 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using com.knetikcloud.Api;
+using com.knetikcloud.Credentials;
+using com.knetikcloud.Events;
+using com.knetikcloud.Factory;
 using com.knetikcloud.Model;
 using com.knetikcloud.Utils;
 using Newtonsoft.Json;
 using RestSharp;
-using RestSharp.Extensions;
 using UnityEngine;
+using Object = System.Object;
 
 
 namespace com.knetikcloud.Client
 {
+    /// <inheritdoc />
     /// <summary>
     /// The Unity client that is responsible for making HTTP calls to the backend.
     /// </summary>
-    public class KnetikClient  : MonoBehaviour
+    public class KnetikClient : MonoBehaviour
     {
         private KnetikProjectSettings mProjectSettings;
-        private KnetikUserCredentials mUserCredentials;
         private readonly Dictionary<string, string> mDefaultHeaderMap = new Dictionary<string, string>();
-        private string mBasePath;
+        private static string mDateTimeFormat = IsoDatetimeFormat;
+
         private RestClient mRestClient;
         private AccessTokenApi mAccessTokenApi;
 
-        public const string GrantTypeClientCredentials = "client_credentials";
-        public const string GrantTypeUserPassword = "password";
-        public const string GrantTypeFacebook = "facebook";
-        public const string GrantTypeGoogle = "google";
-        public const string GrantTypeRefreshToken = "refresh_token";
+        private const string IsoDatetimeFormat = "o";
+
+        public enum ServerEnvironment
+        {
+            Staging,
+            Production,
+        }
+
+        /// <summary>
+        /// The default API client for making HTTP calls.
+        /// </summary>
+        public static KnetikClient DefaultClient { get; private set; }
 
         public OAuth2Resource AuthToken { get; private set; }
 
         /// <summary>
-        /// Gets or sets the base path.
+        /// Gets or sets the the date time format used when serializing in the KnetikClient
+        /// By default, it's set to ISO 8601 - "o", for others see:
+        /// https://msdn.microsoft.com/en-us/library/az4se3k1(v=vs.110).aspx
+        /// and https://msdn.microsoft.com/en-us/library/8kb3ddd4(v=vs.110).aspx
+        /// No validation is done to ensure that the string you're providing is valid
         /// </summary>
-        /// <value>The base path</value>
-        public string BasePath
+        /// <value>The DateTimeFormat string</value>
+        public static string DateTimeFormat
         {
             get
             {
-                return mBasePath;
+                return mDateTimeFormat;
             }
             set
             {
-                mBasePath = value;
-                mRestClient = new RestClient(mBasePath);
+                if (string.IsNullOrEmpty(value))
+                {
+                    // Never allow a blank or null string, go back to the default
+                    mDateTimeFormat = IsoDatetimeFormat;
+                    return;
+                }
+
+                // Caution, no validation when you choose date time format other than ISO 8601
+                // Take a look at the above links
+                mDateTimeFormat = value;
             }
         }
-    
+
         /// <summary>
-        /// Gets the RestClient.
+        /// Instantiate a Knetik Client.
         /// </summary>
-        /// <value>An instance of the RestClient</value>
-        public RestClient RestClient
+        /// <remarks>
+        /// Since this is a Mono Behaviour add this component to an object in your Unity scene.
+        /// </remarks>>
+        protected KnetikClient()
         {
-            get
+        }
+
+        /// <summary>
+        /// Authenticate with the server using user credentials
+        /// </summary>
+        public void AuthenticateWithUserCredentials(ServerEnvironment serverEnvironment, KnetikUserCredentials userCredentials)
+        {
+            if (userCredentials == null)
             {
-                return mRestClient;
+                KnetikLogger.LogError("The 'userCredentials' cannot be null!");
+                return;
+            }
+
+            if (!userCredentials.IsConfigured)
+            {
+                KnetikLogger.LogError("The user credentials are not configured properly.  Please set them up in the editor window!");
+                return;
+            }
+
+            InitializeRestClient(serverEnvironment);
+
+            try
+            {
+                // Get access token
+                mAccessTokenApi.GetOAuthToken(userCredentials.GrantType, mProjectSettings.ClientId, null, userCredentials.UserId, userCredentials.Password, null, null);
+            }
+            catch (KnetikException)
+            {
+                // Error is already logged
             }
         }
-    
+
         /// <summary>
-        /// Gets the default header.
+        /// Authenticate with the server using secret client credentials
         /// </summary>
-        public Dictionary<string, string> DefaultHeader
+        public void AuthenticateWithClientCredentials(ServerEnvironment serverEnvironment, KnetikClientCredentials clientCredentials)
         {
-            get { return mDefaultHeaderMap; }
+            if (clientCredentials == null)
+            {
+                KnetikLogger.LogError("The 'clientCredentials' cannot be null!");
+                return;
+            }
+
+            if (!clientCredentials.IsConfigured)
+            {
+                KnetikLogger.LogError("The client credentials are not configured properly.  Please set them up in the editor window!");
+                return;
+            }
+
+            InitializeRestClient(serverEnvironment);
+
+            try
+            {
+                // Get access token
+                mAccessTokenApi.GetOAuthToken(clientCredentials.GrantType, mProjectSettings.ClientId, clientCredentials.ClientSecret, null, null, null, null);
+            }
+            catch (KnetikException)
+            {
+                // Error is already logged
+            }
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="KnetikClient" /> class.
+        /// Authenticate with the server using either a Google or Facebook open auth token.
         /// </summary>
-        /// <param name="basePath">The base path.</param>
-        public KnetikClient(string basePath)
+        public void AuthenticateWithToken(ServerEnvironment serverEnvironment, KnetikTokenCredentials tokenCredentials)
         {
-            BasePath = basePath;
-            ServicePointManager.ServerCertificateValidationCallback = RemoteCertificateValidationCallback;
-        }
+            if (tokenCredentials == null)
+            {
+                KnetikLogger.LogError("The 'tokenCredentials' cannot be null!");
+                return;
+            }
 
-        public KnetikClient()
-        {
-            ServicePointManager.ServerCertificateValidationCallback = RemoteCertificateValidationCallback;
+            if (!tokenCredentials.IsConfigured)
+            {
+                KnetikLogger.LogError("The token credentials are not configured properly.  Please set the token from the auth provider correctly.");
+                return;
+            }
+
+            InitializeRestClient(serverEnvironment);
+
+            try
+            {
+                // Get access token
+                mAccessTokenApi.GetOAuthToken(tokenCredentials.GrantType, mProjectSettings.ClientId, null, null, null, tokenCredentials.Token, null);
+            }
+            catch (KnetikException)
+            {
+                // Error is already logged
+            }
         }
 
         /// <summary>
@@ -100,9 +189,15 @@ namespace com.knetikcloud.Client
         /// <param name="fileParams">File parameters.</param>
         /// <param name="authSettings">Authentication settings.</param>
         /// <returns>Object</returns>
-        public System.Object CallApi(string path, RestSharp.Method method, Dictionary<string, string> queryParams, string postBody,
-            Dictionary<string, string> headerParams, Dictionary<string, string> formParams, 
-            Dictionary<string, FileParameter> fileParams, string[] authSettings)
+        public Object CallApi(
+            string path,
+            Method method,
+            Dictionary<string, string> queryParams,
+            string postBody,
+            Dictionary<string, string> headerParams,
+            Dictionary<string, string> formParams, 
+            Dictionary<string, FileParameter> fileParams,
+            List<string> authSettings)
         {
             RestRequest request = new RestRequest(path, method);
    
@@ -143,48 +238,9 @@ namespace com.knetikcloud.Client
                 request.AddParameter("application/json", postBody, ParameterType.RequestBody);
             }
 
-            return (System.Object)RestClient.Execute(request);
+            return mRestClient.Execute(request);
         }
-    
-        /// <summary>
-        /// Add default header.
-        /// </summary>
-        /// <param name="key">Header field name.</param>
-        /// <param name="value">Header field value.</param>
-        /// <returns></returns>
-        public void AddDefaultHeader(string key, string value)
-        {
-            mDefaultHeaderMap.Add(key, value);
-        }
-    
-        /// <summary>
-        /// Escape string (url-encoded).
-        /// </summary>
-        /// <param name="str">string to be escaped.</param>
-        /// <returns>Escaped string.</returns>
-        public string EscapeString(string str)
-        {
-            return RestSharp.Contrib.HttpUtility.UrlEncode(str);
-        }
-    
-        /// <summary>
-        /// Create FileParameter based on Stream.
-        /// </summary>
-        /// <param name="parameterName">Parameter name.</param>
-        /// <param name="stream">Input stream.</param>
-        /// <returns>FileParameter.</returns>
-        public FileParameter ParameterToFile(string parameterName, Stream stream)
-        {
-            if (stream is FileStream)
-            {
-                return FileParameter.Create(parameterName, stream.ReadAsBytes(), Path.GetFileName(((FileStream)stream).Name));
-            }
-            else
-            {
-                return FileParameter.Create(parameterName, stream.ReadAsBytes(), "no_file_name_provided");
-            }
-        }
-    
+
         /// <summary>
         /// If parameter is DateTime, output in a formatted string (default ISO 8601), customizable with KnetikConfiguration.DateTime.
         /// If parameter is a list of string, join the list with ",".
@@ -200,7 +256,7 @@ namespace com.knetikcloud.Client
                 // Defaults to an ISO 8601, using the known as a Round-trip date/time pattern ("o")
                 // https://msdn.microsoft.com/en-us/library/az4se3k1(v=vs.110).aspx#Anchor_8
                 // For example: 2009-06-15T13:45:30.0000000
-                return ((DateTime)obj).ToString(KnetikConfiguration.DateTimeFormat);
+                return ((DateTime)obj).ToString(DateTimeFormat);
             }
             else if (obj is List<string>)
             {
@@ -211,7 +267,7 @@ namespace com.knetikcloud.Client
                 return Convert.ToString(obj);
             }
         }
-    
+
         /// <summary>
         /// Deserialize the JSON string into a proper object.
         /// </summary>
@@ -219,20 +275,18 @@ namespace com.knetikcloud.Client
         /// <param name="type">Object type.</param>
         /// <param name="headers">HTTP headers.</param>
         /// <returns>Object representation of the JSON string.</returns>
-        public object Deserialize(string content, Type type, IList<Parameter> headers=null)
+        public object Deserialize(string content, Type type, IList<Parameter> headers)
         {
-            if (type == typeof(System.Object)) // return an object
+            if (type == typeof(object)) // return an object
             {
                 return content;
             }
 
             if (type == typeof(Stream))
             {
-                string filePath = string.IsNullOrEmpty(KnetikConfiguration.TempFolderPath)
-                    ? Path.GetTempPath()
-                    : KnetikConfiguration.TempFolderPath;
+                string filePath = Application.temporaryCachePath;
+                string fileName = Path.Combine(filePath, Guid.NewGuid().ToString());
 
-                string fileName = filePath + Guid.NewGuid();
                 if (headers != null)
                 {
                     Regex regex = new Regex(@"Content-Disposition:.*filename=['""]?([^'""\s]+)['""]?$");
@@ -249,7 +303,7 @@ namespace com.knetikcloud.Client
 
             if (type.Name.StartsWith("System.Nullable`1[[System.DateTime")) // return a datetime object
             {
-                return DateTime.Parse(content,  null, System.Globalization.DateTimeStyles.RoundtripKind);
+                return DateTime.Parse(content,  null, DateTimeStyles.RoundtripKind);
             }
 
             if (type == typeof(string) || type.Name.StartsWith("System.Nullable")) // return primitive type
@@ -267,7 +321,7 @@ namespace com.knetikcloud.Client
                 throw new KnetikException(500, e.Message);
             }
         }
-    
+
         /// <summary>
         /// Serialize an object into JSON string.
         /// </summary>
@@ -277,196 +331,117 @@ namespace com.knetikcloud.Client
         {
             try
             {
-                return obj != null ? JsonConvert.SerializeObject(obj) : null;
+                return (obj != null) ? JsonConvert.SerializeObject(obj) : null;
             }
             catch (Exception e)
             {
                 throw new KnetikException(500, e.Message);
             }
         }
-    
-        /// <summary>
-        /// Get the API key with prefix.
-        /// </summary>
-        /// <param name="apiKeyIdentifier">API key identifier (authentication scheme).</param>
-        /// <returns>API key with prefix.</returns>
-        public string GetApiKeyWithPrefix(string apiKeyIdentifier)
-        {
-            string apiKeyValue = string.Empty;
-            KnetikConfiguration.ApiKey.TryGetValue(apiKeyIdentifier, out apiKeyValue);
 
-            string apiKeyPrefix = string.Empty;
-            if (KnetikConfiguration.ApiKeyPrefix.TryGetValue(apiKeyIdentifier, out apiKeyPrefix))
-            {
-                return apiKeyPrefix + " " + apiKeyValue;
-            }
-            else
-            {
-                return apiKeyValue;
-            }
-        }
-    
         /// <summary>
         /// Update parameters based on authentication.
         /// </summary>
         /// <param name="queryParams">Query parameters.</param>
         /// <param name="headerParams">Header parameters.</param>
         /// <param name="authSettings">Authentication settings.</param>
-        public void UpdateParamsForAuth(Dictionary<string, string> queryParams, Dictionary<string, string> headerParams, string[] authSettings)
+        public void UpdateParamsForAuth(Dictionary<string, string> queryParams, Dictionary<string, string> headerParams, List<string> authSettings)
         {
-            if (authSettings == null || authSettings.Length == 0)
+            if ((authSettings == null) || (authSettings.Count == 0))
             {
                 return;
             }
 
-            foreach (string auth in authSettings)
+            if (!authSettings.Contains("oauth2_client_credentials_grant") && !authSettings.Contains("oauth2_password_grant"))
             {
-                // determine which one to use
-                switch(auth)
-                {
-                    case "oauth2_client_credentials_grant":
-                        
-                        //TODO support oauth
-                        break;
-                    case "oauth2_password_grant":
-                        
-                        //TODO support oauth
-                        break;
-                    default:
-                        //TODO show warning about security definition not found
-                        break;
-                }
+                return;
             }
+
+            string authToken = string.Format("{0} {1}", mAccessTokenApi.GetOAuthTokenData.TokenType, mAccessTokenApi.GetOAuthTokenData.AccessToken);
+            headerParams.Add("authorization", authToken);
         }
- 
-        /// <summary>
-        /// Encode string in base64 format.
-        /// </summary>
-        /// <param name="text">string to be encoded.</param>
-        /// <returns>Encoded string.</returns>
-        public static string Base64Encode(string text)
-        {
-            byte[] textByte = System.Text.Encoding.UTF8.GetBytes(text);
-            return System.Convert.ToBase64String(textByte);
-        }
-    
+
         /// <summary>
         /// Dynamically cast the object into target type.
         /// </summary>
         /// <param name="fromObject">Object to be casted</param>
         /// <param name="toObject">Target type</param>
         /// <returns>Casted object</returns>
-        public static System.Object ConvertType(System.Object fromObject, Type toObject)
+        public static object ConvertType(object fromObject, Type toObject)
         {
             return Convert.ChangeType(fromObject, toObject);
         }
 
         private void Awake()
         {
-            KnetikConfiguration.DefaultClient = this;
+            KnetikFactory.Initialize();
+            ServicePointManager.ServerCertificateValidationCallback = RemoteCertificateValidationCallback;
 
             // Load project settings
             mProjectSettings = KnetikProjectSettings.Load();
-
-            // Load optional user credentials
-            mUserCredentials = KnetikUserCredentials.Load();
-        }
-
-        /// <summary>
-        /// Initialize the Knetik Cloud client when the corresponding game object is initialized
-        /// </summary>
-        private void OnEnable()
-        {
             if (mProjectSettings == null)
             {
                 KnetikLogger.LogError("Unable to load project settings - please set them up in the editor window!");
                 return;
             }
 
-            if (string.IsNullOrEmpty(mProjectSettings.BaseUrl))
+            if (!mProjectSettings.IsConfiguredProperly)
             {
-                KnetikLogger.LogError("You must set up the base URL in the editor window!");
+                KnetikLogger.LogError("The project settings are not setup correctly - please set them in the editor window!");
                 return;
             }
 
-            BasePath = mProjectSettings.BaseUrl;
+            DefaultClient = this;
+            KnetikGlobalEventSystem.Subscribe<KnetikClientReadyRequestEvent>(OnClientReadyRequest);
 
-            mAccessTokenApi = new AccessTokenApi();
-            mAccessTokenApi.GetOAuthTokenComplete += GetOAuthTokenComplete;
-
-            // Attempt to login
-            switch (mProjectSettings.GrantType)
-            {
-                case GrantTypeClientCredentials:
-                    GrantClientCredentials();
-                    break;
-
-                case GrantTypeUserPassword:
-                    GrantUserPassword();
-                    break;
-
-                case GrantTypeFacebook:
-                case GrantTypeGoogle:
-                case GrantTypeRefreshToken:
-                default:
-                    KnetikLogger.LogError(string.Format("Unrecognized 'grant_type' - please verify that you have selected either '{0}' or '{1}'.  '{2}', '{3}', and '{4}' are currently not supported by the default client.",
-                        GrantTypeClientCredentials, GrantTypeUserPassword, GrantTypeFacebook, GrantTypeGoogle, GrantTypeRefreshToken));
-                    break;
-            }
+            KnetikGlobalEventSystem.Publish(KnetikClientReadyResponseEvent.GetInstance(null, true));
         }
 
-        private void OnDisable()
+        private void OnDestroy()
         {
+            ServicePointManager.ServerCertificateValidationCallback = null;
+            KnetikGlobalEventSystem.Unsubscribe<KnetikClientReadyRequestEvent>(OnClientReadyRequest);
+
             mAccessTokenApi = null;
-        }
-
-        private void GrantClientCredentials()
-        {
-            if (string.IsNullOrEmpty(mProjectSettings.ClientSecret))
-            {
-                KnetikLogger.LogError("The 'client secret' is not configured properly - please set it in the editor window!");
-                return;
-            }
-
-            try
-            {
-                // Get access token
-                mAccessTokenApi.GetOAuthToken(mProjectSettings.GrantType, mProjectSettings.ClientId, mProjectSettings.ClientSecret, null, null, null, null);
-            }
-            catch (KnetikException)
-            {
-                // Error is already logged
-            }
-        }
-
-        private void GrantUserPassword()
-        {
-            if (string.IsNullOrEmpty(mUserCredentials.UserId) || string.IsNullOrEmpty(mUserCredentials.Password))
-            {
-                KnetikLogger.LogError("User credentials are not configured properly - please set them up in the editor window!");
-                return;
-            }
-
-            try
-            {
-                // Get access token
-                mAccessTokenApi.GetOAuthToken(mProjectSettings.GrantType, mProjectSettings.ClientId, null, mUserCredentials.UserId, mUserCredentials.Password, null, null);
-            }
-            catch (KnetikException)
-            {
-                // Error is already logged
-            }
+            DefaultClient = null;
         }
 
         private void GetOAuthTokenComplete(OAuth2Resource response)
         {
             AuthToken = response;
+            KnetikGlobalEventSystem.Publish(KnetikClientAuthenticatedEvent.GetInstance(AuthToken));
+        }
+
+        private static void OnClientReadyRequest(KnetikClientReadyRequestEvent e)
+        {
+            KnetikGlobalEventSystem.Publish(KnetikClientReadyResponseEvent.GetInstance(e.Requester, (DefaultClient != null)));
+        }
+
+        private void InitializeRestClient(ServerEnvironment serverEnvironment)
+        {
+            switch (serverEnvironment)
+            {
+                case ServerEnvironment.Staging:
+                    mRestClient = new RestClient(mProjectSettings.StagingUrl);
+                    break;
+
+                case ServerEnvironment.Production:
+                    mRestClient = new RestClient(mProjectSettings.ProductionUrl);
+                    break;
+
+                default:
+                    UnityEngine.Debug.Assert(false, "Add support for the new server environment type!");
+                    break;
+            }
+
+            mAccessTokenApi = new AccessTokenApi();
+            mAccessTokenApi.GetOAuthTokenComplete += GetOAuthTokenComplete;
         }
 
         /// <summary>
         /// Handle MONO's incomplete certificate support: http://www.mono-project.com/archived/usingtrustedrootsrespectfully/
         /// </summary>
-        private static bool RemoteCertificateValidationCallback(System.Object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+        private static bool RemoteCertificateValidationCallback(Object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {
             bool isOk = true;
 

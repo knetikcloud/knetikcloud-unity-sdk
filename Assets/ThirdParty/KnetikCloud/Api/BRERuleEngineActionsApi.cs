@@ -31,6 +31,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -50,16 +51,10 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public BRERuleEngineActionsApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mGetBREActionsCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetBREActionsCoroutine = new KnetikCoroutine();
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
+        /// <inheritdoc />
         /// <summary>
         /// Get a list of available actions 
         /// </summary>
@@ -84,26 +79,26 @@ namespace com.knetikcloud.Api
 
             if (filterCategory != null)
             {
-                queryParams.Add("filter_category", KnetikClient.ParameterToString(filterCategory));
+                queryParams.Add("filter_category", KnetikClient.DefaultClient.ParameterToString(filterCategory));
             }
 
             if (filterName != null)
             {
-                queryParams.Add("filter_name", KnetikClient.ParameterToString(filterName));
+                queryParams.Add("filter_name", KnetikClient.DefaultClient.ParameterToString(filterName));
             }
 
             if (filterTags != null)
             {
-                queryParams.Add("filter_tags", KnetikClient.ParameterToString(filterTags));
+                queryParams.Add("filter_tags", KnetikClient.DefaultClient.ParameterToString(filterTags));
             }
 
             if (filterSearch != null)
             {
-                queryParams.Add("filter_search", KnetikClient.ParameterToString(filterSearch));
+                queryParams.Add("filter_search", KnetikClient.DefaultClient.ParameterToString(filterSearch));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetBREActionsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetBREActionsStartTime, mGetBREActionsPath, "Sending server request...");
@@ -124,7 +119,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetBREActions: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetBREActionsData = (List<ActionResource>) KnetikClient.Deserialize(response.Content, typeof(List<ActionResource>), response.Headers);
+            GetBREActionsData = (List<ActionResource>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<ActionResource>), response.Headers);
             KnetikLogger.LogResponse(mGetBREActionsStartTime, mGetBREActionsPath, string.Format("Response received successfully:\n{0}", GetBREActionsData.ToString()));
 
             if (GetBREActionsComplete != null)
@@ -132,5 +127,6 @@ namespace com.knetikcloud.Api
                 GetBREActionsComplete(GetBREActionsData);
             }
         }
+
     }
 }

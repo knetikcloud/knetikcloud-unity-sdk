@@ -2,13 +2,17 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
+    [KnetikFactory ("list")]
     public class ListPropertyDefinitionResource : PropertyDefinitionResource
     {
         /// <summary>
@@ -16,22 +20,23 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>If provided, the maximum number of files in the group</value>
         [JsonProperty(PropertyName = "max_count")]
-        public int? MaxCount { get; set; }
+        public int? MaxCount;
 
         /// <summary>
         /// If provided, the minimum number of files in the group
         /// </summary>
         /// <value>If provided, the minimum number of files in the group</value>
         [JsonProperty(PropertyName = "min_count")]
-        public int? MinCount { get; set; }
+        public int? MinCount;
 
         /// <summary>
         /// If provided, a property definition for validating values within list
         /// </summary>
         /// <value>If provided, a property definition for validating values within list</value>
         [JsonProperty(PropertyName = "value_definition")]
-        public PropertyDefinitionResource ValueDefinition { get; set; }
+        public PropertyDefinitionResource ValueDefinition;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>
@@ -55,7 +60,7 @@ namespace com.knetikcloud.Model
         /// Get the JSON string presentation of the object
         /// </summary>
         /// <returns>JSON string presentation of the object</returns>
-        public  new string ToJson()
+        public new string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }

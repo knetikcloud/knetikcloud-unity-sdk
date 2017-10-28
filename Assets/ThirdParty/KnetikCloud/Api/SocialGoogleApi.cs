@@ -26,6 +26,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -44,16 +45,10 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public SocialGoogleApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mLinkAccounts1Coroutine = new KnetikCoroutine(KnetikClient);
+            mLinkAccounts1Coroutine = new KnetikCoroutine();
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
+        /// <inheritdoc />
         /// <summary>
         /// Link google account Links the current user account to a google account, using the acccess token from google. Can also be used to update the access token after it has expired.
         /// </summary>
@@ -73,10 +68,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(googleToken); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(googleToken); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mLinkAccounts1StartTime = DateTime.Now;
             KnetikLogger.LogRequest(mLinkAccounts1StartTime, mLinkAccounts1Path, "Sending server request...");
@@ -103,5 +98,6 @@ namespace com.knetikcloud.Api
                 LinkAccounts1Complete();
             }
         }
+
     }
 }

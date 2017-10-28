@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,36 +19,37 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The email address of the user</value>
         [JsonProperty(PropertyName = "email")]
-        public string Email { get; set; }
+        public string Email;
 
         /// <summary>
         /// The full name of the user
         /// </summary>
         /// <value>The full name of the user</value>
         [JsonProperty(PropertyName = "fullname")]
-        public string Fullname { get; set; }
+        public string Fullname;
 
         /// <summary>
         /// The user's score
         /// </summary>
         /// <value>The user's score</value>
         [JsonProperty(PropertyName = "score")]
-        public long? Score { get; set; }
+        public long? Score;
 
         /// <summary>
         /// The id of the user
         /// </summary>
         /// <value>The id of the user</value>
         [JsonProperty(PropertyName = "user_id")]
-        public int? UserId { get; set; }
+        public int? UserId;
 
         /// <summary>
         /// The username of the user
         /// </summary>
         /// <value>The username of the user</value>
         [JsonProperty(PropertyName = "username")]
-        public string Username { get; set; }
+        public string Username;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

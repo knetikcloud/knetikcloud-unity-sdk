@@ -131,6 +131,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -230,28 +231,22 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public CampaignsApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mAddChallengeToCampaignCoroutine = new KnetikCoroutine(KnetikClient);
-            mCreateCampaignCoroutine = new KnetikCoroutine(KnetikClient);
-            mCreateCampaignTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteCampaignCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteCampaignTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetCampaignCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetCampaignChallengesCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetCampaignTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetCampaignTemplatesCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetCampaignsCoroutine = new KnetikCoroutine(KnetikClient);
-            mRemoveChallengeFromCampaignCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateCampaignCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateCampaignTemplateCoroutine = new KnetikCoroutine(KnetikClient);
+            mAddChallengeToCampaignCoroutine = new KnetikCoroutine();
+            mCreateCampaignCoroutine = new KnetikCoroutine();
+            mCreateCampaignTemplateCoroutine = new KnetikCoroutine();
+            mDeleteCampaignCoroutine = new KnetikCoroutine();
+            mDeleteCampaignTemplateCoroutine = new KnetikCoroutine();
+            mGetCampaignCoroutine = new KnetikCoroutine();
+            mGetCampaignChallengesCoroutine = new KnetikCoroutine();
+            mGetCampaignTemplateCoroutine = new KnetikCoroutine();
+            mGetCampaignTemplatesCoroutine = new KnetikCoroutine();
+            mGetCampaignsCoroutine = new KnetikCoroutine();
+            mRemoveChallengeFromCampaignCoroutine = new KnetikCoroutine();
+            mUpdateCampaignCoroutine = new KnetikCoroutine();
+            mUpdateCampaignTemplateCoroutine = new KnetikCoroutine();
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
+        /// <inheritdoc />
         /// <summary>
         /// Add a challenge to a campaign 
         /// </summary>
@@ -270,7 +265,7 @@ namespace com.knetikcloud.Api
             {
                 mAddChallengeToCampaignPath = mAddChallengeToCampaignPath.Replace("{format}", "json");
             }
-            mAddChallengeToCampaignPath = mAddChallengeToCampaignPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mAddChallengeToCampaignPath = mAddChallengeToCampaignPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -278,10 +273,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(challengeId); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(challengeId); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddChallengeToCampaignStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddChallengeToCampaignStartTime, mAddChallengeToCampaignPath, "Sending server request...");
@@ -308,6 +303,8 @@ namespace com.knetikcloud.Api
                 AddChallengeToCampaignComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Create a campaign 
         /// </summary>
@@ -327,10 +324,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(campaignResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(campaignResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateCampaignStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateCampaignStartTime, mCreateCampaignPath, "Sending server request...");
@@ -351,7 +348,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateCampaign: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateCampaignData = (CampaignResource) KnetikClient.Deserialize(response.Content, typeof(CampaignResource), response.Headers);
+            CreateCampaignData = (CampaignResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CampaignResource), response.Headers);
             KnetikLogger.LogResponse(mCreateCampaignStartTime, mCreateCampaignPath, string.Format("Response received successfully:\n{0}", CreateCampaignData.ToString()));
 
             if (CreateCampaignComplete != null)
@@ -359,6 +356,8 @@ namespace com.knetikcloud.Api
                 CreateCampaignComplete(CreateCampaignData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Create a campaign template Campaign Templates define a type of campaign and the properties they have
         /// </summary>
@@ -378,10 +377,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(campaignTemplateResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(campaignTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateCampaignTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateCampaignTemplateStartTime, mCreateCampaignTemplatePath, "Sending server request...");
@@ -402,7 +401,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateCampaignTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateCampaignTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            CreateCampaignTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
             KnetikLogger.LogResponse(mCreateCampaignTemplateStartTime, mCreateCampaignTemplatePath, string.Format("Response received successfully:\n{0}", CreateCampaignTemplateData.ToString()));
 
             if (CreateCampaignTemplateComplete != null)
@@ -410,6 +409,8 @@ namespace com.knetikcloud.Api
                 CreateCampaignTemplateComplete(CreateCampaignTemplateData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Delete a campaign 
         /// </summary>
@@ -427,7 +428,7 @@ namespace com.knetikcloud.Api
             {
                 mDeleteCampaignPath = mDeleteCampaignPath.Replace("{format}", "json");
             }
-            mDeleteCampaignPath = mDeleteCampaignPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteCampaignPath = mDeleteCampaignPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -436,7 +437,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteCampaignStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteCampaignStartTime, mDeleteCampaignPath, "Sending server request...");
@@ -463,6 +464,8 @@ namespace com.knetikcloud.Api
                 DeleteCampaignComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Delete a campaign template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
         /// </summary>
@@ -481,7 +484,7 @@ namespace com.knetikcloud.Api
             {
                 mDeleteCampaignTemplatePath = mDeleteCampaignTemplatePath.Replace("{format}", "json");
             }
-            mDeleteCampaignTemplatePath = mDeleteCampaignTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteCampaignTemplatePath = mDeleteCampaignTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -491,11 +494,11 @@ namespace com.knetikcloud.Api
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.ParameterToString(cascade));
+                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteCampaignTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteCampaignTemplateStartTime, mDeleteCampaignTemplatePath, "Sending server request...");
@@ -522,6 +525,8 @@ namespace com.knetikcloud.Api
                 DeleteCampaignTemplateComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Returns a single campaign 
         /// </summary>
@@ -539,7 +544,7 @@ namespace com.knetikcloud.Api
             {
                 mGetCampaignPath = mGetCampaignPath.Replace("{format}", "json");
             }
-            mGetCampaignPath = mGetCampaignPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetCampaignPath = mGetCampaignPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -548,7 +553,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetCampaignStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCampaignStartTime, mGetCampaignPath, "Sending server request...");
@@ -569,7 +574,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetCampaign: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetCampaignData = (CampaignResource) KnetikClient.Deserialize(response.Content, typeof(CampaignResource), response.Headers);
+            GetCampaignData = (CampaignResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CampaignResource), response.Headers);
             KnetikLogger.LogResponse(mGetCampaignStartTime, mGetCampaignPath, string.Format("Response received successfully:\n{0}", GetCampaignData.ToString()));
 
             if (GetCampaignComplete != null)
@@ -577,6 +582,8 @@ namespace com.knetikcloud.Api
                 GetCampaignComplete(GetCampaignData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// List the challenges associated with a campaign 
         /// </summary>
@@ -599,7 +606,7 @@ namespace com.knetikcloud.Api
             {
                 mGetCampaignChallengesPath = mGetCampaignChallengesPath.Replace("{format}", "json");
             }
-            mGetCampaignChallengesPath = mGetCampaignChallengesPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetCampaignChallengesPath = mGetCampaignChallengesPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -609,31 +616,31 @@ namespace com.knetikcloud.Api
 
             if (filterStartDate != null)
             {
-                queryParams.Add("filter_start_date", KnetikClient.ParameterToString(filterStartDate));
+                queryParams.Add("filter_start_date", KnetikClient.DefaultClient.ParameterToString(filterStartDate));
             }
 
             if (filterEndDate != null)
             {
-                queryParams.Add("filter_end_date", KnetikClient.ParameterToString(filterEndDate));
+                queryParams.Add("filter_end_date", KnetikClient.DefaultClient.ParameterToString(filterEndDate));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetCampaignChallengesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCampaignChallengesStartTime, mGetCampaignChallengesPath, "Sending server request...");
@@ -654,7 +661,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetCampaignChallenges: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetCampaignChallengesData = (PageResourceChallengeResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceChallengeResource), response.Headers);
+            GetCampaignChallengesData = (PageResourceChallengeResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceChallengeResource), response.Headers);
             KnetikLogger.LogResponse(mGetCampaignChallengesStartTime, mGetCampaignChallengesPath, string.Format("Response received successfully:\n{0}", GetCampaignChallengesData.ToString()));
 
             if (GetCampaignChallengesComplete != null)
@@ -662,6 +669,8 @@ namespace com.knetikcloud.Api
                 GetCampaignChallengesComplete(GetCampaignChallengesData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Get a single campaign template 
         /// </summary>
@@ -679,7 +688,7 @@ namespace com.knetikcloud.Api
             {
                 mGetCampaignTemplatePath = mGetCampaignTemplatePath.Replace("{format}", "json");
             }
-            mGetCampaignTemplatePath = mGetCampaignTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetCampaignTemplatePath = mGetCampaignTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -688,7 +697,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetCampaignTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCampaignTemplateStartTime, mGetCampaignTemplatePath, "Sending server request...");
@@ -709,7 +718,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetCampaignTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetCampaignTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            GetCampaignTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
             KnetikLogger.LogResponse(mGetCampaignTemplateStartTime, mGetCampaignTemplatePath, string.Format("Response received successfully:\n{0}", GetCampaignTemplateData.ToString()));
 
             if (GetCampaignTemplateComplete != null)
@@ -717,6 +726,8 @@ namespace com.knetikcloud.Api
                 GetCampaignTemplateComplete(GetCampaignTemplateData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// List and search campaign templates 
         /// </summary>
@@ -740,21 +751,21 @@ namespace com.knetikcloud.Api
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetCampaignTemplatesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCampaignTemplatesStartTime, mGetCampaignTemplatesPath, "Sending server request...");
@@ -775,7 +786,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetCampaignTemplates: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetCampaignTemplatesData = (PageResourceTemplateResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceTemplateResource), response.Headers);
+            GetCampaignTemplatesData = (PageResourceTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceTemplateResource), response.Headers);
             KnetikLogger.LogResponse(mGetCampaignTemplatesStartTime, mGetCampaignTemplatesPath, string.Format("Response received successfully:\n{0}", GetCampaignTemplatesData.ToString()));
 
             if (GetCampaignTemplatesComplete != null)
@@ -783,6 +794,8 @@ namespace com.knetikcloud.Api
                 GetCampaignTemplatesComplete(GetCampaignTemplatesData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// List and search campaigns 
         /// </summary>
@@ -807,26 +820,26 @@ namespace com.knetikcloud.Api
 
             if (filterActive != null)
             {
-                queryParams.Add("filter_active", KnetikClient.ParameterToString(filterActive));
+                queryParams.Add("filter_active", KnetikClient.DefaultClient.ParameterToString(filterActive));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetCampaignsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCampaignsStartTime, mGetCampaignsPath, "Sending server request...");
@@ -847,7 +860,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetCampaigns: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetCampaignsData = (PageResourceCampaignResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceCampaignResource), response.Headers);
+            GetCampaignsData = (PageResourceCampaignResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceCampaignResource), response.Headers);
             KnetikLogger.LogResponse(mGetCampaignsStartTime, mGetCampaignsPath, string.Format("Response received successfully:\n{0}", GetCampaignsData.ToString()));
 
             if (GetCampaignsComplete != null)
@@ -855,6 +868,8 @@ namespace com.knetikcloud.Api
                 GetCampaignsComplete(GetCampaignsData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Remove a challenge from a campaign 
         /// </summary>
@@ -878,8 +893,8 @@ namespace com.knetikcloud.Api
             {
                 mRemoveChallengeFromCampaignPath = mRemoveChallengeFromCampaignPath.Replace("{format}", "json");
             }
-            mRemoveChallengeFromCampaignPath = mRemoveChallengeFromCampaignPath.Replace("{" + "campaign_id" + "}", KnetikClient.ParameterToString(campaignId));
-mRemoveChallengeFromCampaignPath = mRemoveChallengeFromCampaignPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mRemoveChallengeFromCampaignPath = mRemoveChallengeFromCampaignPath.Replace("{" + "campaign_id" + "}", KnetikClient.DefaultClient.ParameterToString(campaignId));
+mRemoveChallengeFromCampaignPath = mRemoveChallengeFromCampaignPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -888,7 +903,7 @@ mRemoveChallengeFromCampaignPath = mRemoveChallengeFromCampaignPath.Replace("{" 
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mRemoveChallengeFromCampaignStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mRemoveChallengeFromCampaignStartTime, mRemoveChallengeFromCampaignPath, "Sending server request...");
@@ -915,6 +930,8 @@ mRemoveChallengeFromCampaignPath = mRemoveChallengeFromCampaignPath.Replace("{" 
                 RemoveChallengeFromCampaignComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Update a campaign 
         /// </summary>
@@ -933,7 +950,7 @@ mRemoveChallengeFromCampaignPath = mRemoveChallengeFromCampaignPath.Replace("{" 
             {
                 mUpdateCampaignPath = mUpdateCampaignPath.Replace("{format}", "json");
             }
-            mUpdateCampaignPath = mUpdateCampaignPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateCampaignPath = mUpdateCampaignPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -941,10 +958,10 @@ mRemoveChallengeFromCampaignPath = mRemoveChallengeFromCampaignPath.Replace("{" 
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(campaignResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(campaignResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateCampaignStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateCampaignStartTime, mUpdateCampaignPath, "Sending server request...");
@@ -965,7 +982,7 @@ mRemoveChallengeFromCampaignPath = mRemoveChallengeFromCampaignPath.Replace("{" 
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateCampaign: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateCampaignData = (CampaignResource) KnetikClient.Deserialize(response.Content, typeof(CampaignResource), response.Headers);
+            UpdateCampaignData = (CampaignResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CampaignResource), response.Headers);
             KnetikLogger.LogResponse(mUpdateCampaignStartTime, mUpdateCampaignPath, string.Format("Response received successfully:\n{0}", UpdateCampaignData.ToString()));
 
             if (UpdateCampaignComplete != null)
@@ -973,6 +990,8 @@ mRemoveChallengeFromCampaignPath = mRemoveChallengeFromCampaignPath.Replace("{" 
                 UpdateCampaignComplete(UpdateCampaignData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Update an campaign template 
         /// </summary>
@@ -991,7 +1010,7 @@ mRemoveChallengeFromCampaignPath = mRemoveChallengeFromCampaignPath.Replace("{" 
             {
                 mUpdateCampaignTemplatePath = mUpdateCampaignTemplatePath.Replace("{format}", "json");
             }
-            mUpdateCampaignTemplatePath = mUpdateCampaignTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateCampaignTemplatePath = mUpdateCampaignTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -999,10 +1018,10 @@ mRemoveChallengeFromCampaignPath = mRemoveChallengeFromCampaignPath.Replace("{" 
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(campaignTemplateResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(campaignTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateCampaignTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateCampaignTemplateStartTime, mUpdateCampaignTemplatePath, "Sending server request...");
@@ -1023,7 +1042,7 @@ mRemoveChallengeFromCampaignPath = mRemoveChallengeFromCampaignPath.Replace("{" 
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateCampaignTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateCampaignTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            UpdateCampaignTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
             KnetikLogger.LogResponse(mUpdateCampaignTemplateStartTime, mUpdateCampaignTemplatePath, string.Format("Response received successfully:\n{0}", UpdateCampaignTemplateData.ToString()));
 
             if (UpdateCampaignTemplateComplete != null)
@@ -1031,5 +1050,6 @@ mRemoveChallengeFromCampaignPath = mRemoveChallengeFromCampaignPath.Replace("{" 
                 UpdateCampaignTemplateComplete(UpdateCampaignTemplateData);
             }
         }
+
     }
 }

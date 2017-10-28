@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,43 +19,44 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The context of that resource. Required when passed to /dispositions rather than context specific endpoint</value>
         [JsonProperty(PropertyName = "context")]
-        public string Context { get; set; }
+        public string Context;
 
         /// <summary>
         /// The context_id of that resource. Required when passed to /dispositions rather than context specific endpoint
         /// </summary>
         /// <value>The context_id of that resource. Required when passed to /dispositions rather than context specific endpoint</value>
         [JsonProperty(PropertyName = "context_id")]
-        public string ContextId { get; set; }
+        public string ContextId;
 
         /// <summary>
         /// The date/time this resource was created in seconds since unix epoch
         /// </summary>
         /// <value>The date/time this resource was created in seconds since unix epoch</value>
         [JsonProperty(PropertyName = "created_date")]
-        public long? CreatedDate { get; set; }
+        public long? CreatedDate;
 
         /// <summary>
         /// The unique ID for that resource
         /// </summary>
         /// <value>The unique ID for that resource</value>
         [JsonProperty(PropertyName = "id")]
-        public long? Id { get; set; }
+        public long? Id;
 
         /// <summary>
         /// The name of the disposition, 1-20 characters. (ex: like/dislike/favorite, etc)
         /// </summary>
         /// <value>The name of the disposition, 1-20 characters. (ex: like/dislike/favorite, etc)</value>
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name;
 
         /// <summary>
         /// The user
         /// </summary>
         /// <value>The user</value>
         [JsonProperty(PropertyName = "user")]
-        public SimpleUserResource User { get; set; }
+        public SimpleUserResource User;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

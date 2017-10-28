@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -15,56 +18,57 @@ namespace com.knetikcloud.Model
         /// Gets or Sets Content
         /// </summary>
         [JsonProperty(PropertyName = "content")]
-        public List<FlagReportResource> Content { get; set; }
+        public List<FlagReportResource> Content;
 
         /// <summary>
         /// Gets or Sets First
         /// </summary>
         [JsonProperty(PropertyName = "first")]
-        public bool? First { get; set; }
+        public bool? First;
 
         /// <summary>
         /// Gets or Sets Last
         /// </summary>
         [JsonProperty(PropertyName = "last")]
-        public bool? Last { get; set; }
+        public bool? Last;
 
         /// <summary>
         /// Gets or Sets Number
         /// </summary>
         [JsonProperty(PropertyName = "number")]
-        public int? Number { get; set; }
+        public int? Number;
 
         /// <summary>
         /// Gets or Sets NumberOfElements
         /// </summary>
         [JsonProperty(PropertyName = "number_of_elements")]
-        public int? NumberOfElements { get; set; }
+        public int? NumberOfElements;
 
         /// <summary>
         /// Gets or Sets Size
         /// </summary>
         [JsonProperty(PropertyName = "size")]
-        public int? Size { get; set; }
+        public int? Size;
 
         /// <summary>
         /// Gets or Sets Sort
         /// </summary>
         [JsonProperty(PropertyName = "sort")]
-        public List<Order> Sort { get; set; }
+        public List<Order> Sort;
 
         /// <summary>
         /// Gets or Sets TotalElements
         /// </summary>
         [JsonProperty(PropertyName = "total_elements")]
-        public long? TotalElements { get; set; }
+        public long? TotalElements;
 
         /// <summary>
         /// Gets or Sets TotalPages
         /// </summary>
         [JsonProperty(PropertyName = "total_pages")]
-        public int? TotalPages { get; set; }
+        public int? TotalPages;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

@@ -61,6 +61,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -107,20 +108,14 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public BRERuleEngineGlobalsApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mCreateBREGlobalCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteBREGlobalCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetBREGlobalCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetBREGlobalsCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateBREGlobalCoroutine = new KnetikCoroutine(KnetikClient);
+            mCreateBREGlobalCoroutine = new KnetikCoroutine();
+            mDeleteBREGlobalCoroutine = new KnetikCoroutine();
+            mGetBREGlobalCoroutine = new KnetikCoroutine();
+            mGetBREGlobalsCoroutine = new KnetikCoroutine();
+            mUpdateBREGlobalCoroutine = new KnetikCoroutine();
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
+        /// <inheritdoc />
         /// <summary>
         /// Create a global definition Once created you can then use in a custom rule. Note that global definitions cannot be modified or deleted if in use.
         /// </summary>
@@ -140,10 +135,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(breGlobalResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(breGlobalResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateBREGlobalStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateBREGlobalStartTime, mCreateBREGlobalPath, "Sending server request...");
@@ -164,7 +159,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateBREGlobal: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateBREGlobalData = (BreGlobalResource) KnetikClient.Deserialize(response.Content, typeof(BreGlobalResource), response.Headers);
+            CreateBREGlobalData = (BreGlobalResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(BreGlobalResource), response.Headers);
             KnetikLogger.LogResponse(mCreateBREGlobalStartTime, mCreateBREGlobalPath, string.Format("Response received successfully:\n{0}", CreateBREGlobalData.ToString()));
 
             if (CreateBREGlobalComplete != null)
@@ -172,6 +167,8 @@ namespace com.knetikcloud.Api
                 CreateBREGlobalComplete(CreateBREGlobalData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Delete a global May fail if there are existing rules against it. Cannot delete core globals
         /// </summary>
@@ -189,7 +186,7 @@ namespace com.knetikcloud.Api
             {
                 mDeleteBREGlobalPath = mDeleteBREGlobalPath.Replace("{format}", "json");
             }
-            mDeleteBREGlobalPath = mDeleteBREGlobalPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteBREGlobalPath = mDeleteBREGlobalPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -198,7 +195,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteBREGlobalStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteBREGlobalStartTime, mDeleteBREGlobalPath, "Sending server request...");
@@ -225,6 +222,8 @@ namespace com.knetikcloud.Api
                 DeleteBREGlobalComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Get a single global definition 
         /// </summary>
@@ -242,7 +241,7 @@ namespace com.knetikcloud.Api
             {
                 mGetBREGlobalPath = mGetBREGlobalPath.Replace("{format}", "json");
             }
-            mGetBREGlobalPath = mGetBREGlobalPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetBREGlobalPath = mGetBREGlobalPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -251,7 +250,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetBREGlobalStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetBREGlobalStartTime, mGetBREGlobalPath, "Sending server request...");
@@ -272,7 +271,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetBREGlobal: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetBREGlobalData = (BreGlobalResource) KnetikClient.Deserialize(response.Content, typeof(BreGlobalResource), response.Headers);
+            GetBREGlobalData = (BreGlobalResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(BreGlobalResource), response.Headers);
             KnetikLogger.LogResponse(mGetBREGlobalStartTime, mGetBREGlobalPath, string.Format("Response received successfully:\n{0}", GetBREGlobalData.ToString()));
 
             if (GetBREGlobalComplete != null)
@@ -280,6 +279,8 @@ namespace com.knetikcloud.Api
                 GetBREGlobalComplete(GetBREGlobalData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// List global definitions 
         /// </summary>
@@ -303,21 +304,21 @@ namespace com.knetikcloud.Api
 
             if (filterSystem != null)
             {
-                queryParams.Add("filter_system", KnetikClient.ParameterToString(filterSystem));
+                queryParams.Add("filter_system", KnetikClient.DefaultClient.ParameterToString(filterSystem));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetBREGlobalsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetBREGlobalsStartTime, mGetBREGlobalsPath, "Sending server request...");
@@ -338,7 +339,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetBREGlobals: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetBREGlobalsData = (PageResourceBreGlobalResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceBreGlobalResource), response.Headers);
+            GetBREGlobalsData = (PageResourceBreGlobalResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceBreGlobalResource), response.Headers);
             KnetikLogger.LogResponse(mGetBREGlobalsStartTime, mGetBREGlobalsPath, string.Format("Response received successfully:\n{0}", GetBREGlobalsData.ToString()));
 
             if (GetBREGlobalsComplete != null)
@@ -346,6 +347,8 @@ namespace com.knetikcloud.Api
                 GetBREGlobalsComplete(GetBREGlobalsData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Update a global definition May fail if new parameters mismatch requirements of existing rules. Cannot update core globals
         /// </summary>
@@ -364,7 +367,7 @@ namespace com.knetikcloud.Api
             {
                 mUpdateBREGlobalPath = mUpdateBREGlobalPath.Replace("{format}", "json");
             }
-            mUpdateBREGlobalPath = mUpdateBREGlobalPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateBREGlobalPath = mUpdateBREGlobalPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -372,10 +375,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(breGlobalResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(breGlobalResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateBREGlobalStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateBREGlobalStartTime, mUpdateBREGlobalPath, "Sending server request...");
@@ -396,7 +399,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateBREGlobal: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateBREGlobalData = (BreGlobalResource) KnetikClient.Deserialize(response.Content, typeof(BreGlobalResource), response.Headers);
+            UpdateBREGlobalData = (BreGlobalResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(BreGlobalResource), response.Headers);
             KnetikLogger.LogResponse(mUpdateBREGlobalStartTime, mUpdateBREGlobalPath, string.Format("Response received successfully:\n{0}", UpdateBREGlobalData.ToString()));
 
             if (UpdateBREGlobalComplete != null)
@@ -404,5 +407,6 @@ namespace com.knetikcloud.Api
                 UpdateBREGlobalComplete(UpdateBREGlobalData);
             }
         }
+
     }
 }

@@ -29,6 +29,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -48,16 +49,10 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public ReportingSubscriptionsApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mGetSubscriptionReportsCoroutine = new KnetikCoroutine(KnetikClient);
+            mGetSubscriptionReportsCoroutine = new KnetikCoroutine();
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
+        /// <inheritdoc />
         /// <summary>
         /// Get a list of available subscription reports in most recent first order 
         /// </summary>
@@ -80,16 +75,16 @@ namespace com.knetikcloud.Api
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetSubscriptionReportsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetSubscriptionReportsStartTime, mGetSubscriptionReportsPath, "Sending server request...");
@@ -110,7 +105,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetSubscriptionReports: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetSubscriptionReportsData = (PageResourceBillingReport) KnetikClient.Deserialize(response.Content, typeof(PageResourceBillingReport), response.Headers);
+            GetSubscriptionReportsData = (PageResourceBillingReport) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceBillingReport), response.Headers);
             KnetikLogger.LogResponse(mGetSubscriptionReportsStartTime, mGetSubscriptionReportsPath, string.Format("Response received successfully:\n{0}", GetSubscriptionReportsData.ToString()));
 
             if (GetSubscriptionReportsComplete != null)
@@ -118,5 +113,6 @@ namespace com.knetikcloud.Api
                 GetSubscriptionReportsComplete(GetSubscriptionReportsData);
             }
         }
+
     }
 }

@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,8 +19,9 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The guid of a cart to create a new invoice for</value>
         [JsonProperty(PropertyName = "cart_guid")]
-        public string CartGuid { get; set; }
+        public string CartGuid;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

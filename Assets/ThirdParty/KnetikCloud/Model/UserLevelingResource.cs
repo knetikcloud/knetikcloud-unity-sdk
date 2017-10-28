@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,57 +19,58 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The name of the last tier the user has qualified for</value>
         [JsonProperty(PropertyName = "last_tier_name")]
-        public string LastTierName { get; set; }
+        public string LastTierName;
 
         /// <summary>
         /// The progress level of the last tier the user has qualified for
         /// </summary>
         /// <value>The progress level of the last tier the user has qualified for</value>
         [JsonProperty(PropertyName = "last_tier_progress")]
-        public int? LastTierProgress { get; set; }
+        public int? LastTierProgress;
 
         /// <summary>
         /// The name of the level schema
         /// </summary>
         /// <value>The name of the level schema</value>
         [JsonProperty(PropertyName = "level_name")]
-        public string LevelName { get; set; }
+        public string LevelName;
 
         /// <summary>
         /// The name of the next tier the user can qualify for
         /// </summary>
         /// <value>The name of the next tier the user can qualify for</value>
         [JsonProperty(PropertyName = "next_tier_name")]
-        public string NextTierName { get; set; }
+        public string NextTierName;
 
         /// <summary>
         /// The progress needed to qualify for the next tier
         /// </summary>
         /// <value>The progress needed to qualify for the next tier</value>
         [JsonProperty(PropertyName = "next_tier_progress")]
-        public int? NextTierProgress { get; set; }
+        public int? NextTierProgress;
 
         /// <summary>
         /// The amount of progress the user has
         /// </summary>
         /// <value>The amount of progress the user has</value>
         [JsonProperty(PropertyName = "progress")]
-        public int? Progress { get; set; }
+        public int? Progress;
 
         /// <summary>
         /// The names of the tiers the user has qualified for
         /// </summary>
         /// <value>The names of the tiers the user has qualified for</value>
         [JsonProperty(PropertyName = "tier_names")]
-        public List<string> TierNames { get; set; }
+        public List<string> TierNames;
 
         /// <summary>
         /// The ID of the user
         /// </summary>
         /// <value>The ID of the user</value>
         [JsonProperty(PropertyName = "user_id")]
-        public int? UserId { get; set; }
+        public int? UserId;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

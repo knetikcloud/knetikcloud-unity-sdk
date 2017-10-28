@@ -2,27 +2,32 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
+    [KnetikFactory ("cache_clear")]
     public class CacheClearEvent : BroadcastableEvent
     {
         /// <summary>
         /// Gets or Sets CustomerSetup
         /// </summary>
         [JsonProperty(PropertyName = "customer_setup")]
-        public bool? CustomerSetup { get; set; }
+        public bool? CustomerSetup;
 
         /// <summary>
         /// Gets or Sets CustomerTeardown
         /// </summary>
         [JsonProperty(PropertyName = "customer_teardown")]
-        public bool? CustomerTeardown { get; set; }
+        public bool? CustomerTeardown;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>
@@ -50,7 +55,7 @@ namespace com.knetikcloud.Model
         /// Get the JSON string presentation of the object
         /// </summary>
         /// <returns>JSON string presentation of the object</returns>
-        public  new string ToJson()
+        public new string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }

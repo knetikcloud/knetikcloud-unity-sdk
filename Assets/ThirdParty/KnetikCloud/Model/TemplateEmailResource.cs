@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,29 +19,30 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>Address to attribute the outgoing message to. Optional if the config email.out_address is set.</value>
         [JsonProperty(PropertyName = "from")]
-        public string From { get; set; }
+        public string From;
 
         /// <summary>
         /// A list of user ids to send the message to.
         /// </summary>
         /// <value>A list of user ids to send the message to.</value>
         [JsonProperty(PropertyName = "recipients")]
-        public List<int?> Recipients { get; set; }
+        public List<int?> Recipients;
 
         /// <summary>
         /// The key for the template
         /// </summary>
         /// <value>The key for the template</value>
         [JsonProperty(PropertyName = "template_key")]
-        public string TemplateKey { get; set; }
+        public string TemplateKey;
 
         /// <summary>
         /// A list of variables to fill in the template
         /// </summary>
         /// <value>A list of variables to fill in the template</value>
         [JsonProperty(PropertyName = "template_vars")]
-        public List<KeyValuePairstringstring> TemplateVars { get; set; }
+        public List<KeyValuePairstringstring> TemplateVars;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

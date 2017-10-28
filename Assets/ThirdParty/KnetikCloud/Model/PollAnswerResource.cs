@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,22 +19,23 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The number of users that selected this answer</value>
         [JsonProperty(PropertyName = "count")]
-        public int? Count { get; set; }
+        public int? Count;
 
         /// <summary>
         /// The key to the answer (for code reference)
         /// </summary>
         /// <value>The key to the answer (for code reference)</value>
         [JsonProperty(PropertyName = "key")]
-        public string Key { get; set; }
+        public string Key;
 
         /// <summary>
         /// The text of the answer (for user display)
         /// </summary>
         /// <value>The text of the answer (for user display)</value>
         [JsonProperty(PropertyName = "text")]
-        public string Text { get; set; }
+        public string Text;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

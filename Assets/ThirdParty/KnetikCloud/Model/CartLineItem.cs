@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -15,110 +18,111 @@ namespace com.knetikcloud.Model
         /// Gets or Sets CurrencyCode
         /// </summary>
         [JsonProperty(PropertyName = "currency_code")]
-        public string CurrencyCode { get; set; }
+        public string CurrencyCode;
 
         /// <summary>
         /// Gets or Sets Description
         /// </summary>
         [JsonProperty(PropertyName = "description")]
-        public string Description { get; set; }
+        public string Description;
 
         /// <summary>
         /// Gets or Sets Discount
         /// </summary>
         [JsonProperty(PropertyName = "discount")]
-        public Discount Discount { get; set; }
+        public Discount Discount;
 
         /// <summary>
         /// Gets or Sets LineTotal
         /// </summary>
         [JsonProperty(PropertyName = "line_total")]
-        public decimal? LineTotal { get; set; }
+        public decimal? LineTotal;
 
         /// <summary>
         /// Gets or Sets Name
         /// </summary>
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name;
 
         /// <summary>
         /// Gets or Sets OriginalLineTotal
         /// </summary>
         [JsonProperty(PropertyName = "original_line_total")]
-        public decimal? OriginalLineTotal { get; set; }
+        public decimal? OriginalLineTotal;
 
         /// <summary>
         /// Gets or Sets OriginalUnitPrice
         /// </summary>
         [JsonProperty(PropertyName = "original_unit_price")]
-        public decimal? OriginalUnitPrice { get; set; }
+        public decimal? OriginalUnitPrice;
 
         /// <summary>
         /// Gets or Sets Qty
         /// </summary>
         [JsonProperty(PropertyName = "qty")]
-        public int? Qty { get; set; }
+        public int? Qty;
 
         /// <summary>
         /// Gets or Sets SaleName
         /// </summary>
         [JsonProperty(PropertyName = "sale_name")]
-        public string SaleName { get; set; }
+        public string SaleName;
 
         /// <summary>
         /// Gets or Sets Sku
         /// </summary>
         [JsonProperty(PropertyName = "sku")]
-        public string Sku { get; set; }
+        public string Sku;
 
         /// <summary>
         /// Gets or Sets SkuDescription
         /// </summary>
         [JsonProperty(PropertyName = "sku_description")]
-        public string SkuDescription { get; set; }
+        public string SkuDescription;
 
         /// <summary>
         /// Gets or Sets StoreItemId
         /// </summary>
         [JsonProperty(PropertyName = "store_item_id")]
-        public int? StoreItemId { get; set; }
+        public int? StoreItemId;
 
         /// <summary>
         /// Gets or Sets Tags
         /// </summary>
         [JsonProperty(PropertyName = "tags")]
-        public List<string> Tags { get; set; }
+        public List<string> Tags;
 
         /// <summary>
         /// Gets or Sets ThumbUrl
         /// </summary>
         [JsonProperty(PropertyName = "thumb_url")]
-        public string ThumbUrl { get; set; }
+        public string ThumbUrl;
 
         /// <summary>
         /// Gets or Sets UniqueKey
         /// </summary>
         [JsonProperty(PropertyName = "unique_key")]
-        public string UniqueKey { get; set; }
+        public string UniqueKey;
 
         /// <summary>
         /// Gets or Sets UnitPrice
         /// </summary>
         [JsonProperty(PropertyName = "unit_price")]
-        public decimal? UnitPrice { get; set; }
+        public decimal? UnitPrice;
 
         /// <summary>
         /// Gets or Sets VendorId
         /// </summary>
         [JsonProperty(PropertyName = "vendor_id")]
-        public int? VendorId { get; set; }
+        public int? VendorId;
 
         /// <summary>
         /// Gets or Sets VendorName
         /// </summary>
         [JsonProperty(PropertyName = "vendor_name")]
-        public string VendorName { get; set; }
+        public string VendorName;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

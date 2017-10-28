@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -15,83 +18,84 @@ namespace com.knetikcloud.Model
         /// Gets or Sets Address1
         /// </summary>
         [JsonProperty(PropertyName = "address1")]
-        public string Address1 { get; set; }
+        public string Address1;
 
         /// <summary>
         /// Gets or Sets Address2
         /// </summary>
         [JsonProperty(PropertyName = "address2")]
-        public string Address2 { get; set; }
+        public string Address2;
 
         /// <summary>
         /// Gets or Sets AddressCity
         /// </summary>
         [JsonProperty(PropertyName = "address_city")]
-        public string AddressCity { get; set; }
+        public string AddressCity;
 
         /// <summary>
         /// Gets or Sets AddressCountry
         /// </summary>
         [JsonProperty(PropertyName = "address_country")]
-        public string AddressCountry { get; set; }
+        public string AddressCountry;
 
         /// <summary>
         /// Gets or Sets AddressState
         /// </summary>
         [JsonProperty(PropertyName = "address_state")]
-        public string AddressState { get; set; }
+        public string AddressState;
 
         /// <summary>
         /// Gets or Sets AddressZip
         /// </summary>
         [JsonProperty(PropertyName = "address_zip")]
-        public string AddressZip { get; set; }
+        public string AddressZip;
 
         /// <summary>
         /// Last four digits of the credit card
         /// </summary>
         /// <value>Last four digits of the credit card</value>
         [JsonProperty(PropertyName = "card_last_four")]
-        public string CardLastFour { get; set; }
+        public string CardLastFour;
 
         /// <summary>
         /// Gets or Sets CreatedAt
         /// </summary>
         [JsonProperty(PropertyName = "created_at")]
-        public string CreatedAt { get; set; }
+        public string CreatedAt;
 
         /// <summary>
         /// Unique FattMerchant customer ID
         /// </summary>
         /// <value>Unique FattMerchant customer ID</value>
         [JsonProperty(PropertyName = "customer_id")]
-        public string CustomerId { get; set; }
+        public string CustomerId;
 
         /// <summary>
         /// Gets or Sets DeletedAt
         /// </summary>
         [JsonProperty(PropertyName = "deleted_at")]
-        public string DeletedAt { get; set; }
+        public string DeletedAt;
 
         /// <summary>
         /// Gets or Sets Id
         /// </summary>
         [JsonProperty(PropertyName = "id")]
-        public string Id { get; set; }
+        public string Id;
 
         /// <summary>
         /// Nickname given to the FattMerchant payment method
         /// </summary>
         /// <value>Nickname given to the FattMerchant payment method</value>
         [JsonProperty(PropertyName = "nickname")]
-        public string Nickname { get; set; }
+        public string Nickname;
 
         /// <summary>
         /// Gets or Sets UpdatedAt
         /// </summary>
         [JsonProperty(PropertyName = "updated_at")]
-        public string UpdatedAt { get; set; }
+        public string UpdatedAt;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

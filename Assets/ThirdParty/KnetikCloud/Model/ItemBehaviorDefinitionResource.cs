@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,22 +19,23 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The default version of the behavior</value>
         [JsonProperty(PropertyName = "behavior")]
-        public Behavior Behavior { get; set; }
+        public Behavior Behavior;
 
         /// <summary>
         /// Whether the behavior's values can be modified
         /// </summary>
         /// <value>Whether the behavior's values can be modified</value>
         [JsonProperty(PropertyName = "modifiable")]
-        public bool? Modifiable { get; set; }
+        public bool? Modifiable;
 
         /// <summary>
         /// Whether the behavior can be removed
         /// </summary>
         /// <value>Whether the behavior can be removed</value>
         [JsonProperty(PropertyName = "required")]
-        public bool? Required { get; set; }
+        public bool? Required;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

@@ -92,11 +92,13 @@ namespace com.knetikcloud.Api
         /// <param name="filterTag">Filter for users who have a given tag</param>
         /// <param name="filterGroup">Filter for users in a given group, by unique name</param>
         /// <param name="filterRole">Filter for users with a given role</param>
+        /// <param name="filterLastActivity">A comma separated string without spaces.  First value is the operator to search on, second value is the date, a unix timestamp in seconds.  Allowed operators: (GT, LT, EQ, GOE, LOE).</param>
+        /// <param name="filterIdList">A comma separated list of ids.</param>
         /// <param name="filterSearch">Filter for users whose display_name starts with the provided string, or username if display_name is null</param>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
-        void GetUsers(string filterDisplayname, string filterEmail, string filterFirstname, string filterFullname, string filterLastname, string filterUsername, string filterTag, string filterGroup, string filterRole, string filterSearch, int? size, int? page, string order);
+        void GetUsers(string filterDisplayname, string filterEmail, string filterFirstname, string filterFullname, string filterLastname, string filterUsername, string filterTag, string filterGroup, string filterRole, string filterLastActivity, string filterIdList, string filterSearch, int? size, int? page, string order);
 
         /// <summary>
         /// Choose a new password after a reset Finish resetting a user&#39;s password using the secret provided from the password-reset endpoint.  Password should be in plain text and will be encrypted on receipt. Use SSL for security.
@@ -153,6 +155,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -269,31 +272,25 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public UsersApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mAddUserTagCoroutine = new KnetikCoroutine(KnetikClient);
-            mCreateUserTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteUserTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetUserCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetUserTagsCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetUserTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetUserTemplatesCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetUsersCoroutine = new KnetikCoroutine(KnetikClient);
-            mPasswordResetCoroutine = new KnetikCoroutine(KnetikClient);
-            mRegisterUserCoroutine = new KnetikCoroutine(KnetikClient);
-            mRemoveUserTagCoroutine = new KnetikCoroutine(KnetikClient);
-            mSetPasswordCoroutine = new KnetikCoroutine(KnetikClient);
-            mStartPasswordResetCoroutine = new KnetikCoroutine(KnetikClient);
-            mSubmitPasswordResetCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateUserCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateUserTemplateCoroutine = new KnetikCoroutine(KnetikClient);
+            mAddUserTagCoroutine = new KnetikCoroutine();
+            mCreateUserTemplateCoroutine = new KnetikCoroutine();
+            mDeleteUserTemplateCoroutine = new KnetikCoroutine();
+            mGetUserCoroutine = new KnetikCoroutine();
+            mGetUserTagsCoroutine = new KnetikCoroutine();
+            mGetUserTemplateCoroutine = new KnetikCoroutine();
+            mGetUserTemplatesCoroutine = new KnetikCoroutine();
+            mGetUsersCoroutine = new KnetikCoroutine();
+            mPasswordResetCoroutine = new KnetikCoroutine();
+            mRegisterUserCoroutine = new KnetikCoroutine();
+            mRemoveUserTagCoroutine = new KnetikCoroutine();
+            mSetPasswordCoroutine = new KnetikCoroutine();
+            mStartPasswordResetCoroutine = new KnetikCoroutine();
+            mSubmitPasswordResetCoroutine = new KnetikCoroutine();
+            mUpdateUserCoroutine = new KnetikCoroutine();
+            mUpdateUserTemplateCoroutine = new KnetikCoroutine();
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
+        /// <inheritdoc />
         /// <summary>
         /// Add a tag to a user 
         /// </summary>
@@ -317,7 +314,7 @@ namespace com.knetikcloud.Api
             {
                 mAddUserTagPath = mAddUserTagPath.Replace("{format}", "json");
             }
-            mAddUserTagPath = mAddUserTagPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+            mAddUserTagPath = mAddUserTagPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -325,10 +322,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(tag); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(tag); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mAddUserTagStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mAddUserTagStartTime, mAddUserTagPath, "Sending server request...");
@@ -355,6 +352,8 @@ namespace com.knetikcloud.Api
                 AddUserTagComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Create a user template User Templates define a type of user and the properties they have
         /// </summary>
@@ -374,10 +373,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(userTemplateResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(userTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateUserTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateUserTemplateStartTime, mCreateUserTemplatePath, "Sending server request...");
@@ -398,7 +397,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateUserTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateUserTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            CreateUserTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
             KnetikLogger.LogResponse(mCreateUserTemplateStartTime, mCreateUserTemplatePath, string.Format("Response received successfully:\n{0}", CreateUserTemplateData.ToString()));
 
             if (CreateUserTemplateComplete != null)
@@ -406,6 +405,8 @@ namespace com.knetikcloud.Api
                 CreateUserTemplateComplete(CreateUserTemplateData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Delete a user template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
         /// </summary>
@@ -424,7 +425,7 @@ namespace com.knetikcloud.Api
             {
                 mDeleteUserTemplatePath = mDeleteUserTemplatePath.Replace("{format}", "json");
             }
-            mDeleteUserTemplatePath = mDeleteUserTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteUserTemplatePath = mDeleteUserTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -434,11 +435,11 @@ namespace com.knetikcloud.Api
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.ParameterToString(cascade));
+                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteUserTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteUserTemplateStartTime, mDeleteUserTemplatePath, "Sending server request...");
@@ -465,6 +466,8 @@ namespace com.knetikcloud.Api
                 DeleteUserTemplateComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Get a single user Additional private info is included as USERS_ADMIN
         /// </summary>
@@ -482,7 +485,7 @@ namespace com.knetikcloud.Api
             {
                 mGetUserPath = mGetUserPath.Replace("{format}", "json");
             }
-            mGetUserPath = mGetUserPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetUserPath = mGetUserPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -491,7 +494,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUserStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUserStartTime, mGetUserPath, "Sending server request...");
@@ -512,7 +515,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetUser: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetUserData = (UserResource) KnetikClient.Deserialize(response.Content, typeof(UserResource), response.Headers);
+            GetUserData = (UserResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(UserResource), response.Headers);
             KnetikLogger.LogResponse(mGetUserStartTime, mGetUserPath, string.Format("Response received successfully:\n{0}", GetUserData.ToString()));
 
             if (GetUserComplete != null)
@@ -520,6 +523,8 @@ namespace com.knetikcloud.Api
                 GetUserComplete(GetUserData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// List tags for a user 
         /// </summary>
@@ -537,7 +542,7 @@ namespace com.knetikcloud.Api
             {
                 mGetUserTagsPath = mGetUserTagsPath.Replace("{format}", "json");
             }
-            mGetUserTagsPath = mGetUserTagsPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+            mGetUserTagsPath = mGetUserTagsPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -546,7 +551,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUserTagsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUserTagsStartTime, mGetUserTagsPath, "Sending server request...");
@@ -567,7 +572,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetUserTags: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetUserTagsData = (List<string>) KnetikClient.Deserialize(response.Content, typeof(List<string>), response.Headers);
+            GetUserTagsData = (List<string>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<string>), response.Headers);
             KnetikLogger.LogResponse(mGetUserTagsStartTime, mGetUserTagsPath, string.Format("Response received successfully:\n{0}", GetUserTagsData.ToString()));
 
             if (GetUserTagsComplete != null)
@@ -575,6 +580,8 @@ namespace com.knetikcloud.Api
                 GetUserTagsComplete(GetUserTagsData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Get a single user template 
         /// </summary>
@@ -592,7 +599,7 @@ namespace com.knetikcloud.Api
             {
                 mGetUserTemplatePath = mGetUserTemplatePath.Replace("{format}", "json");
             }
-            mGetUserTemplatePath = mGetUserTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetUserTemplatePath = mGetUserTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -601,7 +608,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUserTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUserTemplateStartTime, mGetUserTemplatePath, "Sending server request...");
@@ -622,7 +629,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetUserTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetUserTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            GetUserTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
             KnetikLogger.LogResponse(mGetUserTemplateStartTime, mGetUserTemplatePath, string.Format("Response received successfully:\n{0}", GetUserTemplateData.ToString()));
 
             if (GetUserTemplateComplete != null)
@@ -630,6 +637,8 @@ namespace com.knetikcloud.Api
                 GetUserTemplateComplete(GetUserTemplateData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// List and search user templates 
         /// </summary>
@@ -653,21 +662,21 @@ namespace com.knetikcloud.Api
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetUserTemplatesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUserTemplatesStartTime, mGetUserTemplatesPath, "Sending server request...");
@@ -688,7 +697,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetUserTemplates: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetUserTemplatesData = (PageResourceTemplateResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceTemplateResource), response.Headers);
+            GetUserTemplatesData = (PageResourceTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceTemplateResource), response.Headers);
             KnetikLogger.LogResponse(mGetUserTemplatesStartTime, mGetUserTemplatesPath, string.Format("Response received successfully:\n{0}", GetUserTemplatesData.ToString()));
 
             if (GetUserTemplatesComplete != null)
@@ -696,6 +705,8 @@ namespace com.knetikcloud.Api
                 GetUserTemplatesComplete(GetUserTemplatesData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// List and search users Additional private info is included as USERS_ADMIN
         /// </summary>
@@ -708,11 +719,13 @@ namespace com.knetikcloud.Api
         /// <param name="filterTag">Filter for users who have a given tag</param>
         /// <param name="filterGroup">Filter for users in a given group, by unique name</param>
         /// <param name="filterRole">Filter for users with a given role</param>
+        /// <param name="filterLastActivity">A comma separated string without spaces.  First value is the operator to search on, second value is the date, a unix timestamp in seconds.  Allowed operators: (GT, LT, EQ, GOE, LOE).</param>
+        /// <param name="filterIdList">A comma separated list of ids.</param>
         /// <param name="filterSearch">Filter for users whose display_name starts with the provided string, or username if display_name is null</param>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
-        public void GetUsers(string filterDisplayname, string filterEmail, string filterFirstname, string filterFullname, string filterLastname, string filterUsername, string filterTag, string filterGroup, string filterRole, string filterSearch, int? size, int? page, string order)
+        public void GetUsers(string filterDisplayname, string filterEmail, string filterFirstname, string filterFullname, string filterLastname, string filterUsername, string filterTag, string filterGroup, string filterRole, string filterLastActivity, string filterIdList, string filterSearch, int? size, int? page, string order)
         {
             
             mGetUsersPath = "/users";
@@ -729,71 +742,81 @@ namespace com.knetikcloud.Api
 
             if (filterDisplayname != null)
             {
-                queryParams.Add("filter_displayname", KnetikClient.ParameterToString(filterDisplayname));
+                queryParams.Add("filter_displayname", KnetikClient.DefaultClient.ParameterToString(filterDisplayname));
             }
 
             if (filterEmail != null)
             {
-                queryParams.Add("filter_email", KnetikClient.ParameterToString(filterEmail));
+                queryParams.Add("filter_email", KnetikClient.DefaultClient.ParameterToString(filterEmail));
             }
 
             if (filterFirstname != null)
             {
-                queryParams.Add("filter_firstname", KnetikClient.ParameterToString(filterFirstname));
+                queryParams.Add("filter_firstname", KnetikClient.DefaultClient.ParameterToString(filterFirstname));
             }
 
             if (filterFullname != null)
             {
-                queryParams.Add("filter_fullname", KnetikClient.ParameterToString(filterFullname));
+                queryParams.Add("filter_fullname", KnetikClient.DefaultClient.ParameterToString(filterFullname));
             }
 
             if (filterLastname != null)
             {
-                queryParams.Add("filter_lastname", KnetikClient.ParameterToString(filterLastname));
+                queryParams.Add("filter_lastname", KnetikClient.DefaultClient.ParameterToString(filterLastname));
             }
 
             if (filterUsername != null)
             {
-                queryParams.Add("filter_username", KnetikClient.ParameterToString(filterUsername));
+                queryParams.Add("filter_username", KnetikClient.DefaultClient.ParameterToString(filterUsername));
             }
 
             if (filterTag != null)
             {
-                queryParams.Add("filter_tag", KnetikClient.ParameterToString(filterTag));
+                queryParams.Add("filter_tag", KnetikClient.DefaultClient.ParameterToString(filterTag));
             }
 
             if (filterGroup != null)
             {
-                queryParams.Add("filter_group", KnetikClient.ParameterToString(filterGroup));
+                queryParams.Add("filter_group", KnetikClient.DefaultClient.ParameterToString(filterGroup));
             }
 
             if (filterRole != null)
             {
-                queryParams.Add("filter_role", KnetikClient.ParameterToString(filterRole));
+                queryParams.Add("filter_role", KnetikClient.DefaultClient.ParameterToString(filterRole));
+            }
+
+            if (filterLastActivity != null)
+            {
+                queryParams.Add("filter_last_activity", KnetikClient.DefaultClient.ParameterToString(filterLastActivity));
+            }
+
+            if (filterIdList != null)
+            {
+                queryParams.Add("filter_id_list", KnetikClient.DefaultClient.ParameterToString(filterIdList));
             }
 
             if (filterSearch != null)
             {
-                queryParams.Add("filter_search", KnetikClient.ParameterToString(filterSearch));
+                queryParams.Add("filter_search", KnetikClient.DefaultClient.ParameterToString(filterSearch));
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetUsersStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetUsersStartTime, mGetUsersPath, "Sending server request...");
@@ -814,7 +837,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetUsers: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetUsersData = (PageResourceUserBaseResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceUserBaseResource), response.Headers);
+            GetUsersData = (PageResourceUserBaseResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceUserBaseResource), response.Headers);
             KnetikLogger.LogResponse(mGetUsersStartTime, mGetUsersPath, string.Format("Response received successfully:\n{0}", GetUsersData.ToString()));
 
             if (GetUsersComplete != null)
@@ -822,6 +845,8 @@ namespace com.knetikcloud.Api
                 GetUsersComplete(GetUsersData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Choose a new password after a reset Finish resetting a user&#39;s password using the secret provided from the password-reset endpoint.  Password should be in plain text and will be encrypted on receipt. Use SSL for security.
         /// </summary>
@@ -840,7 +865,7 @@ namespace com.knetikcloud.Api
             {
                 mPasswordResetPath = mPasswordResetPath.Replace("{format}", "json");
             }
-            mPasswordResetPath = mPasswordResetPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mPasswordResetPath = mPasswordResetPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -848,10 +873,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(newPasswordRequest); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(newPasswordRequest); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mPasswordResetStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mPasswordResetStartTime, mPasswordResetPath, "Sending server request...");
@@ -878,6 +903,8 @@ namespace com.knetikcloud.Api
                 PasswordResetComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Register a new user Password should be in plain text and will be encrypted on receipt. Use SSL for security
         /// </summary>
@@ -897,10 +924,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(userResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(userResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mRegisterUserStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mRegisterUserStartTime, mRegisterUserPath, "Sending server request...");
@@ -921,7 +948,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling RegisterUser: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            RegisterUserData = (UserResource) KnetikClient.Deserialize(response.Content, typeof(UserResource), response.Headers);
+            RegisterUserData = (UserResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(UserResource), response.Headers);
             KnetikLogger.LogResponse(mRegisterUserStartTime, mRegisterUserPath, string.Format("Response received successfully:\n{0}", RegisterUserData.ToString()));
 
             if (RegisterUserComplete != null)
@@ -929,6 +956,8 @@ namespace com.knetikcloud.Api
                 RegisterUserComplete(RegisterUserData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Remove a tag from a user 
         /// </summary>
@@ -952,8 +981,8 @@ namespace com.knetikcloud.Api
             {
                 mRemoveUserTagPath = mRemoveUserTagPath.Replace("{format}", "json");
             }
-            mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
-mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.ParameterToString(tag));
+            mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
+mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.DefaultClient.ParameterToString(tag));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -962,7 +991,7 @@ mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mRemoveUserTagStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mRemoveUserTagStartTime, mRemoveUserTagPath, "Sending server request...");
@@ -989,6 +1018,8 @@ mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.
                 RemoveUserTagComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Set a user&#39;s password Password should be in plain text and will be encrypted on receipt. Use SSL for security.
         /// </summary>
@@ -1007,7 +1038,7 @@ mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.
             {
                 mSetPasswordPath = mSetPasswordPath.Replace("{format}", "json");
             }
-            mSetPasswordPath = mSetPasswordPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mSetPasswordPath = mSetPasswordPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1015,10 +1046,10 @@ mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(password); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(password); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mSetPasswordStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSetPasswordStartTime, mSetPasswordPath, "Sending server request...");
@@ -1045,6 +1076,8 @@ mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.
                 SetPasswordComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Reset a user&#39;s password A reset code will be generated and a &#39;forgot_password&#39; BRE event will be fired with that code.  The default system rule will send an email to the selected user if an email service has been setup. You can modify that rule in BRE to send an SMS instead or any other type of notification as you see fit
         /// </summary>
@@ -1062,7 +1095,7 @@ mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.
             {
                 mStartPasswordResetPath = mStartPasswordResetPath.Replace("{format}", "json");
             }
-            mStartPasswordResetPath = mStartPasswordResetPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mStartPasswordResetPath = mStartPasswordResetPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1071,7 +1104,7 @@ mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mStartPasswordResetStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mStartPasswordResetStartTime, mStartPasswordResetPath, "Sending server request...");
@@ -1098,6 +1131,8 @@ mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.
                 StartPasswordResetComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Reset a user&#39;s password without user id A reset code will be generated and a &#39;forgot_password&#39; BRE event will be fired with that code.  The default system rule will send an email to the selected user if an email service has been setup. You can modify that rule in BRE to send an SMS instead or any other type of notification as you see fit.  Must submit their email, username, or mobile phone number
         /// </summary>
@@ -1117,10 +1152,10 @@ mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(passwordReset); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(passwordReset); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mSubmitPasswordResetStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mSubmitPasswordResetStartTime, mSubmitPasswordResetPath, "Sending server request...");
@@ -1147,6 +1182,8 @@ mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.
                 SubmitPasswordResetComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Update a user Password will not be edited on this endpoint, use password specific endpoints.
         /// </summary>
@@ -1165,7 +1202,7 @@ mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.
             {
                 mUpdateUserPath = mUpdateUserPath.Replace("{format}", "json");
             }
-            mUpdateUserPath = mUpdateUserPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateUserPath = mUpdateUserPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1173,10 +1210,10 @@ mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(userResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(userResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateUserStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateUserStartTime, mUpdateUserPath, "Sending server request...");
@@ -1203,6 +1240,8 @@ mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.
                 UpdateUserComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Update a user template 
         /// </summary>
@@ -1221,7 +1260,7 @@ mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.
             {
                 mUpdateUserTemplatePath = mUpdateUserTemplatePath.Replace("{format}", "json");
             }
-            mUpdateUserTemplatePath = mUpdateUserTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateUserTemplatePath = mUpdateUserTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -1229,10 +1268,10 @@ mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(userTemplateResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(userTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateUserTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateUserTemplateStartTime, mUpdateUserTemplatePath, "Sending server request...");
@@ -1253,7 +1292,7 @@ mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateUserTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateUserTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            UpdateUserTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
             KnetikLogger.LogResponse(mUpdateUserTemplateStartTime, mUpdateUserTemplatePath, string.Format("Response received successfully:\n{0}", UpdateUserTemplateData.ToString()));
 
             if (UpdateUserTemplateComplete != null)
@@ -1261,5 +1300,6 @@ mRemoveUserTagPath = mRemoveUserTagPath.Replace("{" + "tag" + "}", KnetikClient.
                 UpdateUserTemplateComplete(UpdateUserTemplateData);
             }
         }
+
     }
 }

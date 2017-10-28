@@ -2,13 +2,17 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
+    [KnetikFactory ("guest_playable")]
     public class GuestPlayable : Behavior
     {
         /// <summary>
@@ -16,15 +20,16 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>Whether guests are allowed to use items</value>
         [JsonProperty(PropertyName = "allowed")]
-        public bool? Allowed { get; set; }
+        public bool? Allowed;
 
         /// <summary>
         /// Whether guests are allowed on the leaderboard
         /// </summary>
         /// <value>Whether guests are allowed on the leaderboard</value>
         [JsonProperty(PropertyName = "leaderboard")]
-        public bool? Leaderboard { get; set; }
+        public bool? Leaderboard;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>
@@ -45,7 +50,7 @@ namespace com.knetikcloud.Model
         /// Get the JSON string presentation of the object
         /// </summary>
         /// <returns>JSON string presentation of the object</returns>
-        public  new string ToJson()
+        public new string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }

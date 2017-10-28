@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,22 +19,23 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>Whether this user is the 'host' of the occurrence and has increased access to settings/etc (default: false)</value>
         [JsonProperty(PropertyName = "host")]
-        public bool? Host { get; set; }
+        public bool? Host;
 
         /// <summary>
         /// The current status of the user in the occurrence (default: present)
         /// </summary>
         /// <value>The current status of the user in the occurrence (default: present)</value>
         [JsonProperty(PropertyName = "status")]
-        public string Status { get; set; }
+        public string Status;
 
         /// <summary>
         /// The user
         /// </summary>
         /// <value>The user</value>
         [JsonProperty(PropertyName = "user")]
-        public IdRef User { get; set; }
+        public IdRef User;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,36 +19,37 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The id of the challenge</value>
         [JsonProperty(PropertyName = "challenge_id")]
-        public long? ChallengeId { get; set; }
+        public long? ChallengeId;
 
         /// <summary>
         /// The end date in seconds
         /// </summary>
         /// <value>The end date in seconds</value>
         [JsonProperty(PropertyName = "end_date")]
-        public long? EndDate { get; set; }
+        public long? EndDate;
 
         /// <summary>
         /// The id of the challenge event
         /// </summary>
         /// <value>The id of the challenge event</value>
         [JsonProperty(PropertyName = "id")]
-        public long? Id { get; set; }
+        public long? Id;
 
         /// <summary>
         /// Indicate if the rewards have been given out already 
         /// </summary>
         /// <value>Indicate if the rewards have been given out already </value>
         [JsonProperty(PropertyName = "reward_status")]
-        public string RewardStatus { get; set; }
+        public string RewardStatus;
 
         /// <summary>
         /// The start date in seconds
         /// </summary>
         /// <value>The start date in seconds</value>
         [JsonProperty(PropertyName = "start_date")]
-        public long? StartDate { get; set; }
+        public long? StartDate;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

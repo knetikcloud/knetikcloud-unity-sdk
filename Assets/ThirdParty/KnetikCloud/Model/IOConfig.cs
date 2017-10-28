@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -15,26 +18,27 @@ namespace com.knetikcloud.Model
         /// Gets or Sets Customer
         /// </summary>
         [JsonProperty(PropertyName = "customer")]
-        public string Customer { get; set; }
+        public string Customer;
 
         /// <summary>
         /// Gets or Sets Enabled
         /// </summary>
         [JsonProperty(PropertyName = "enabled")]
-        public bool? Enabled { get; set; }
+        public bool? Enabled;
 
         /// <summary>
         /// Gets or Sets Environment
         /// </summary>
         [JsonProperty(PropertyName = "environment")]
-        public string Environment { get; set; }
+        public string Environment;
 
         /// <summary>
         /// Gets or Sets Product
         /// </summary>
         [JsonProperty(PropertyName = "product")]
-        public string Product { get; set; }
+        public string Product;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

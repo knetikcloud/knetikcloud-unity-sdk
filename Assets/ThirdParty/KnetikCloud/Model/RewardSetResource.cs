@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,71 +19,72 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The date/time this resource was created in seconds since unix epoch</value>
         [JsonProperty(PropertyName = "created_date")]
-        public long? CreatedDate { get; set; }
+        public long? CreatedDate;
 
         /// <summary>
         /// The currency to give as rewards
         /// </summary>
         /// <value>The currency to give as rewards</value>
         [JsonProperty(PropertyName = "currency_rewards")]
-        public List<RewardCurrencyResource> CurrencyRewards { get; set; }
+        public List<RewardCurrencyResource> CurrencyRewards;
 
         /// <summary>
         /// The assigned unique ID for this reward set
         /// </summary>
         /// <value>The assigned unique ID for this reward set</value>
         [JsonProperty(PropertyName = "id")]
-        public int? Id { get; set; }
+        public int? Id;
 
         /// <summary>
         /// The items to give as rewards
         /// </summary>
         /// <value>The items to give as rewards</value>
         [JsonProperty(PropertyName = "item_rewards")]
-        public List<RewardItemResource> ItemRewards { get; set; }
+        public List<RewardItemResource> ItemRewards;
 
         /// <summary>
         /// A longer describe the reward set, usually included in details
         /// </summary>
         /// <value>A longer describe the reward set, usually included in details</value>
         [JsonProperty(PropertyName = "long_description")]
-        public string LongDescription { get; set; }
+        public string LongDescription;
 
         /// <summary>
         /// The maximum placing that will receive a reward
         /// </summary>
         /// <value>The maximum placing that will receive a reward</value>
         [JsonProperty(PropertyName = "max_placing")]
-        public int? MaxPlacing { get; set; }
+        public int? MaxPlacing;
 
         /// <summary>
         /// The user friendly name for this reward set
         /// </summary>
         /// <value>The user friendly name for this reward set</value>
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name;
 
         /// <summary>
         /// A short paragraph to describe the reward set, usually included in listings.  Max 255 characters
         /// </summary>
         /// <value>A short paragraph to describe the reward set, usually included in listings.  Max 255 characters</value>
         [JsonProperty(PropertyName = "short_description")]
-        public string ShortDescription { get; set; }
+        public string ShortDescription;
 
         /// <summary>
         /// A provided unique key for this reward set
         /// </summary>
         /// <value>A provided unique key for this reward set</value>
         [JsonProperty(PropertyName = "unique_key")]
-        public string UniqueKey { get; set; }
+        public string UniqueKey;
 
         /// <summary>
         /// The date/time this resource was last updated in seconds since unix epoch
         /// </summary>
         /// <value>The date/time this resource was last updated in seconds since unix epoch</value>
         [JsonProperty(PropertyName = "updated_date")]
-        public long? UpdatedDate { get; set; }
+        public long? UpdatedDate;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

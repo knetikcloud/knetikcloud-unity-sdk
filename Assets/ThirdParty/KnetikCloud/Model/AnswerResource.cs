@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,22 +19,23 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The answer to the question. Different 'type' values indicate different structures as the answer may be test, image, etc. See information on additional properties for the list and their structures</value>
         [JsonProperty(PropertyName = "answer")]
-        public Property Answer { get; set; }
+        public Property Answer;
 
         /// <summary>
         /// Whether the answer is correct or not
         /// </summary>
         /// <value>Whether the answer is correct or not</value>
         [JsonProperty(PropertyName = "correct")]
-        public bool? Correct { get; set; }
+        public bool? Correct;
 
         /// <summary>
         /// The unique ID for that resource
         /// </summary>
         /// <value>The unique ID for that resource</value>
         [JsonProperty(PropertyName = "id")]
-        public string Id { get; set; }
+        public string Id;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

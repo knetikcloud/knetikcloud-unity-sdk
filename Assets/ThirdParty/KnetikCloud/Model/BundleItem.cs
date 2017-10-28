@@ -2,13 +2,17 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
+    [KnetikFactory ("bundle_item")]
     public class BundleItem : StoreItem
     {
         /// <summary>
@@ -16,8 +20,9 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The skus of items to be included in this bundle, and how they influence the bundle total price.  Must have at least one SKU</value>
         [JsonProperty(PropertyName = "bundled_skus")]
-        public List<BundledSku> BundledSkus { get; set; }
+        public List<BundledSku> BundledSkus;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>
@@ -57,7 +62,7 @@ namespace com.knetikcloud.Model
         /// Get the JSON string presentation of the object
         /// </summary>
         /// <returns>JSON string presentation of the object</returns>
-        public  new string ToJson()
+        public new string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }

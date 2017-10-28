@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,22 +19,23 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>Whether access to the system has been locked</value>
         [JsonProperty(PropertyName = "access_locked")]
-        public bool? AccessLocked { get; set; }
+        public bool? AccessLocked;
 
         /// <summary>
         /// A simple object of any schema for client side use and processing
         /// </summary>
         /// <value>A simple object of any schema for client side use and processing</value>
         [JsonProperty(PropertyName = "details")]
-        public Object Details { get; set; }
+        public Object Details;
 
         /// <summary>
         /// User displayable message about the maintenance
         /// </summary>
         /// <value>User displayable message about the maintenance</value>
         [JsonProperty(PropertyName = "message")]
-        public string Message { get; set; }
+        public string Message;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

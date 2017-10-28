@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,29 +19,30 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The unique ID for the setting</value>
         [JsonProperty(PropertyName = "key")]
-        public string Key { get; set; }
+        public string Key;
 
         /// <summary>
         /// The textual name of the setting
         /// </summary>
         /// <value>The textual name of the setting</value>
         [JsonProperty(PropertyName = "key_name")]
-        public string KeyName { get; set; }
+        public string KeyName;
 
         /// <summary>
         /// The unique ID for the option. Must match one of the options from this setting in the activity, if not part of a challenge
         /// </summary>
         /// <value>The unique ID for the option. Must match one of the options from this setting in the activity, if not part of a challenge</value>
         [JsonProperty(PropertyName = "value")]
-        public string Value { get; set; }
+        public string Value;
 
         /// <summary>
         /// The textual name of the option
         /// </summary>
         /// <value>The textual name of the option</value>
         [JsonProperty(PropertyName = "value_name")]
-        public string ValueName { get; set; }
+        public string ValueName;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

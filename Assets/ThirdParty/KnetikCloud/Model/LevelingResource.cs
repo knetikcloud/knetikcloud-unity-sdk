@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,50 +19,51 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>A map of additional properties, keyed on the property name.  Must match the names and types defined in the template for this item type</value>
         [JsonProperty(PropertyName = "additional_properties")]
-        public Dictionary<string, Property> AdditionalProperties { get; set; }
+        public Dictionary<string, Property> AdditionalProperties;
 
         /// <summary>
         /// The date the leveling schema was created
         /// </summary>
         /// <value>The date the leveling schema was created</value>
         [JsonProperty(PropertyName = "created_date")]
-        public long? CreatedDate { get; set; }
+        public long? CreatedDate;
 
         /// <summary>
         /// The description of the leveling schema
         /// </summary>
         /// <value>The description of the leveling schema</value>
         [JsonProperty(PropertyName = "description")]
-        public string Description { get; set; }
+        public string Description;
 
         /// <summary>
         /// The name of the leveling schema.  IMMUTABLE
         /// </summary>
         /// <value>The name of the leveling schema.  IMMUTABLE</value>
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name;
 
         /// <summary>
         /// A set of tiers that contain experience boundaries
         /// </summary>
         /// <value>A set of tiers that contain experience boundaries</value>
         [JsonProperty(PropertyName = "tiers")]
-        public List<TierResource> Tiers { get; set; }
+        public List<TierResource> Tiers;
 
         /// <summary>
         /// The name of an event that will add one progress to this level when fired
         /// </summary>
         /// <value>The name of an event that will add one progress to this level when fired</value>
         [JsonProperty(PropertyName = "trigger_event_name")]
-        public string TriggerEventName { get; set; }
+        public string TriggerEventName;
 
         /// <summary>
         /// The date the leveling schema was updated
         /// </summary>
         /// <value>The date the leveling schema was updated</value>
         [JsonProperty(PropertyName = "updated_date")]
-        public long? UpdatedDate { get; set; }
+        public long? UpdatedDate;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

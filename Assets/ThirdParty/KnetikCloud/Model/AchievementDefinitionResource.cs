@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,78 +19,79 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>A map of additional properties, keyed on the property name.  Must match the names and types defined in the template for this resource type</value>
         [JsonProperty(PropertyName = "additional_properties")]
-        public Dictionary<string, Property> AdditionalProperties { get; set; }
+        public Dictionary<string, Property> AdditionalProperties;
 
         /// <summary>
         /// The date/time this resource was created in seconds since unix epoch
         /// </summary>
         /// <value>The date/time this resource was created in seconds since unix epoch</value>
         [JsonProperty(PropertyName = "created_date")]
-        public long? CreatedDate { get; set; }
+        public long? CreatedDate;
 
         /// <summary>
         /// The description of the achievement. Must be at least 2 characters in length.
         /// </summary>
         /// <value>The description of the achievement. Must be at least 2 characters in length.</value>
         [JsonProperty(PropertyName = "description")]
-        public string Description { get; set; }
+        public string Description;
 
         /// <summary>
         /// Whether the achievement is hidden from the user
         /// </summary>
         /// <value>Whether the achievement is hidden from the user</value>
         [JsonProperty(PropertyName = "hidden")]
-        public bool? Hidden { get; set; }
+        public bool? Hidden;
 
         /// <summary>
         /// The name of the achievement. Must be at least 6 characters in length. IMMUTABLE
         /// </summary>
         /// <value>The name of the achievement. Must be at least 6 characters in length. IMMUTABLE</value>
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name;
 
         /// <summary>
         /// The required progress for the achievement definition
         /// </summary>
         /// <value>The required progress for the achievement definition</value>
         [JsonProperty(PropertyName = "required_progress")]
-        public int? RequiredProgress { get; set; }
+        public int? RequiredProgress;
 
         /// <summary>
         /// The id of the rule generated for this achievement
         /// </summary>
         /// <value>The id of the rule generated for this achievement</value>
         [JsonProperty(PropertyName = "rule_id")]
-        public string RuleId { get; set; }
+        public string RuleId;
 
         /// <summary>
         /// The tags for the achievement definition
         /// </summary>
         /// <value>The tags for the achievement definition</value>
         [JsonProperty(PropertyName = "tags")]
-        public List<string> Tags { get; set; }
+        public List<string> Tags;
 
         /// <summary>
         /// An achievement template this achievement is validated against (private). May be null and no validation of additional_properties will be done
         /// </summary>
         /// <value>An achievement template this achievement is validated against (private). May be null and no validation of additional_properties will be done</value>
         [JsonProperty(PropertyName = "template")]
-        public string Template { get; set; }
+        public string Template;
 
         /// <summary>
         /// The name of the trigger event associated with this achievement
         /// </summary>
         /// <value>The name of the trigger event associated with this achievement</value>
         [JsonProperty(PropertyName = "trigger_event_name")]
-        public string TriggerEventName { get; set; }
+        public string TriggerEventName;
 
         /// <summary>
         /// The date/time this resource was last updated in seconds since unix epoch
         /// </summary>
         /// <value>The date/time this resource was last updated in seconds since unix epoch</value>
         [JsonProperty(PropertyName = "updated_date")]
-        public long? UpdatedDate { get; set; }
+        public long? UpdatedDate;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

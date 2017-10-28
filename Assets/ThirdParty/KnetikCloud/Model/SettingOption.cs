@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,15 +19,16 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The textual name of the option: Ex: Hard (level 10)</value>
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name;
 
         /// <summary>
-        /// The unique ID for the option. Ex: 10
+        /// The value of the option. Ex: 10
         /// </summary>
-        /// <value>The unique ID for the option. Ex: 10</value>
+        /// <value>The value of the option. Ex: 10</value>
         [JsonProperty(PropertyName = "value")]
-        public string Value { get; set; }
+        public string Value;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

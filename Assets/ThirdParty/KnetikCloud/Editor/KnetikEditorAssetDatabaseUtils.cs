@@ -12,7 +12,7 @@ namespace com.knetikcloud.UnityEditor
         /// <summary>
         /// Creates the asset and any directories that are missing along its path.
         /// </summary>
-        public static void CreateAssetAndDirectories(UnityEngine.Object unityObject, string unityFilePath)
+        public static void CreateAssetAndDirectories(Object unityObject, string unityFilePath)
         {
             string pathDirectory = Path.GetDirectoryName(unityFilePath);
             CreateDirectoriesInPath(pathDirectory);

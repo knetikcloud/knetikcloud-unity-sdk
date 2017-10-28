@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,29 +19,30 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The child in the relationship</value>
         [JsonProperty(PropertyName = "child")]
-        public SimpleUserResource Child { get; set; }
+        public SimpleUserResource Child;
 
         /// <summary>
         /// Context about the relationship or its type
         /// </summary>
         /// <value>Context about the relationship or its type</value>
         [JsonProperty(PropertyName = "context")]
-        public string Context { get; set; }
+        public string Context;
 
         /// <summary>
         /// A generated unique id. Read-Only
         /// </summary>
         /// <value>A generated unique id. Read-Only</value>
         [JsonProperty(PropertyName = "id")]
-        public long? Id { get; set; }
+        public long? Id;
 
         /// <summary>
         /// The parent in the relationship
         /// </summary>
         /// <value>The parent in the relationship</value>
         [JsonProperty(PropertyName = "parent")]
-        public SimpleUserResource Parent { get; set; }
+        public SimpleUserResource Parent;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

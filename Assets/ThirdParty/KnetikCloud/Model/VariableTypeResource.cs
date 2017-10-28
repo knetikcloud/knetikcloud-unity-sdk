@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,22 +19,23 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The base class of the type</value>
         [JsonProperty(PropertyName = "base")]
-        public string _Base { get; set; }
+        public string _Base;
 
         /// <summary>
         /// Whether the type comes from a set of valid values that the system can provided (such as users)
         /// </summary>
         /// <value>Whether the type comes from a set of valid values that the system can provided (such as users)</value>
         [JsonProperty(PropertyName = "enumerable")]
-        public bool? Enumerable { get; set; }
+        public bool? Enumerable;
 
         /// <summary>
         /// The name of the variable type. Used as the unique id
         /// </summary>
         /// <value>The name of the variable type. Used as the unique id</value>
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

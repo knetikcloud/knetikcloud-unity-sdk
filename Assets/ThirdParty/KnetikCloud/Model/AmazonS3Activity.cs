@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,57 +19,58 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>S3 action (i.e., 'PUT') associated with the activity</value>
         [JsonProperty(PropertyName = "action")]
-        public string Action { get; set; }
+        public string Action;
 
         /// <summary>
         /// URL for accessing the resource. Will use a CDN if configured, or direct to S3 if not
         /// </summary>
         /// <value>URL for accessing the resource. Will use a CDN if configured, or direct to S3 if not</value>
         [JsonProperty(PropertyName = "cdn_url")]
-        public string CdnUrl { get; set; }
+        public string CdnUrl;
 
         /// <summary>
         /// Date the resource was created in S3
         /// </summary>
         /// <value>Date the resource was created in S3</value>
         [JsonProperty(PropertyName = "created_date")]
-        public long? CreatedDate { get; set; }
+        public long? CreatedDate;
 
         /// <summary>
         /// Name of the file being processed as a resource in S3
         /// </summary>
         /// <value>Name of the file being processed as a resource in S3</value>
         [JsonProperty(PropertyName = "filename")]
-        public string Filename { get; set; }
+        public string Filename;
 
         /// <summary>
         /// Unique id of the S3 activity
         /// </summary>
         /// <value>Unique id of the S3 activity</value>
         [JsonProperty(PropertyName = "id")]
-        public long? Id { get; set; }
+        public long? Id;
 
         /// <summary>
         /// S3 object key for the resource
         /// </summary>
         /// <value>S3 object key for the resource</value>
         [JsonProperty(PropertyName = "object_key")]
-        public string ObjectKey { get; set; }
+        public string ObjectKey;
 
         /// <summary>
         /// URL that one can PUT the file to, to upload it to S3
         /// </summary>
         /// <value>URL that one can PUT the file to, to upload it to S3</value>
         [JsonProperty(PropertyName = "url")]
-        public string Url { get; set; }
+        public string Url;
 
         /// <summary>
         /// The id of the user that created this S3 activity
         /// </summary>
         /// <value>The id of the user that created this S3 activity</value>
         [JsonProperty(PropertyName = "user_id")]
-        public int? UserId { get; set; }
+        public int? UserId;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

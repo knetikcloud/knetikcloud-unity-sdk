@@ -95,6 +95,7 @@ namespace com.knetikcloud.Api
 
     }
   
+    /// <inheritdoc />
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -168,24 +169,18 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public StoreShippingApi()
         {
-            KnetikClient = KnetikConfiguration.DefaultClient;
-            mCreateShippingItemCoroutine = new KnetikCoroutine(KnetikClient);
-            mCreateShippingTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteShippingItemCoroutine = new KnetikCoroutine(KnetikClient);
-            mDeleteShippingTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetShippingItemCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetShippingTemplateCoroutine = new KnetikCoroutine(KnetikClient);
-            mGetShippingTemplatesCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateShippingItemCoroutine = new KnetikCoroutine(KnetikClient);
-            mUpdateShippingTemplateCoroutine = new KnetikCoroutine(KnetikClient);
+            mCreateShippingItemCoroutine = new KnetikCoroutine();
+            mCreateShippingTemplateCoroutine = new KnetikCoroutine();
+            mDeleteShippingItemCoroutine = new KnetikCoroutine();
+            mDeleteShippingTemplateCoroutine = new KnetikCoroutine();
+            mGetShippingItemCoroutine = new KnetikCoroutine();
+            mGetShippingTemplateCoroutine = new KnetikCoroutine();
+            mGetShippingTemplatesCoroutine = new KnetikCoroutine();
+            mUpdateShippingItemCoroutine = new KnetikCoroutine();
+            mUpdateShippingTemplateCoroutine = new KnetikCoroutine();
         }
     
-        /// <summary>
-        /// Gets the Knetik client.
-        /// </summary>
-        /// <value>An instance of the KnetikClient</value>
-        public KnetikClient KnetikClient { get; private set; }
-
+        /// <inheritdoc />
         /// <summary>
         /// Create a shipping item A shipping item represents a shipping option and cost. SKUs have to be unique in the entire store.
         /// </summary>
@@ -208,13 +203,13 @@ namespace com.knetikcloud.Api
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.ParameterToString(cascade));
+                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
             }
 
-            postBody = KnetikClient.Serialize(shippingItem); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(shippingItem); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateShippingItemStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateShippingItemStartTime, mCreateShippingItemPath, "Sending server request...");
@@ -235,7 +230,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateShippingItem: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateShippingItemData = (ShippingItem) KnetikClient.Deserialize(response.Content, typeof(ShippingItem), response.Headers);
+            CreateShippingItemData = (ShippingItem) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ShippingItem), response.Headers);
             KnetikLogger.LogResponse(mCreateShippingItemStartTime, mCreateShippingItemPath, string.Format("Response received successfully:\n{0}", CreateShippingItemData.ToString()));
 
             if (CreateShippingItemComplete != null)
@@ -243,6 +238,8 @@ namespace com.knetikcloud.Api
                 CreateShippingItemComplete(CreateShippingItemData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Create a shipping template Shipping Templates define a type of shipping and the properties they have.
         /// </summary>
@@ -262,10 +259,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(shippingTemplateResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(shippingTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateShippingTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateShippingTemplateStartTime, mCreateShippingTemplatePath, "Sending server request...");
@@ -286,7 +283,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling CreateShippingTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            CreateShippingTemplateData = (ItemTemplateResource) KnetikClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
+            CreateShippingTemplateData = (ItemTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
             KnetikLogger.LogResponse(mCreateShippingTemplateStartTime, mCreateShippingTemplatePath, string.Format("Response received successfully:\n{0}", CreateShippingTemplateData.ToString()));
 
             if (CreateShippingTemplateComplete != null)
@@ -294,6 +291,8 @@ namespace com.knetikcloud.Api
                 CreateShippingTemplateComplete(CreateShippingTemplateData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Delete a shipping item 
         /// </summary>
@@ -311,7 +310,7 @@ namespace com.knetikcloud.Api
             {
                 mDeleteShippingItemPath = mDeleteShippingItemPath.Replace("{format}", "json");
             }
-            mDeleteShippingItemPath = mDeleteShippingItemPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteShippingItemPath = mDeleteShippingItemPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -320,7 +319,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteShippingItemStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteShippingItemStartTime, mDeleteShippingItemPath, "Sending server request...");
@@ -347,6 +346,8 @@ namespace com.knetikcloud.Api
                 DeleteShippingItemComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Delete a shipping template 
         /// </summary>
@@ -365,7 +366,7 @@ namespace com.knetikcloud.Api
             {
                 mDeleteShippingTemplatePath = mDeleteShippingTemplatePath.Replace("{format}", "json");
             }
-            mDeleteShippingTemplatePath = mDeleteShippingTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mDeleteShippingTemplatePath = mDeleteShippingTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -375,11 +376,11 @@ namespace com.knetikcloud.Api
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.ParameterToString(cascade));
+                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mDeleteShippingTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mDeleteShippingTemplateStartTime, mDeleteShippingTemplatePath, "Sending server request...");
@@ -406,6 +407,8 @@ namespace com.knetikcloud.Api
                 DeleteShippingTemplateComplete();
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Get a single shipping item 
         /// </summary>
@@ -423,7 +426,7 @@ namespace com.knetikcloud.Api
             {
                 mGetShippingItemPath = mGetShippingItemPath.Replace("{format}", "json");
             }
-            mGetShippingItemPath = mGetShippingItemPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetShippingItemPath = mGetShippingItemPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -432,7 +435,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  };
+            List<string> authSettings = new List<string> {  };
 
             mGetShippingItemStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetShippingItemStartTime, mGetShippingItemPath, "Sending server request...");
@@ -453,7 +456,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetShippingItem: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetShippingItemData = (ShippingItem) KnetikClient.Deserialize(response.Content, typeof(ShippingItem), response.Headers);
+            GetShippingItemData = (ShippingItem) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ShippingItem), response.Headers);
             KnetikLogger.LogResponse(mGetShippingItemStartTime, mGetShippingItemPath, string.Format("Response received successfully:\n{0}", GetShippingItemData.ToString()));
 
             if (GetShippingItemComplete != null)
@@ -461,6 +464,8 @@ namespace com.knetikcloud.Api
                 GetShippingItemComplete(GetShippingItemData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Get a single shipping template Shipping Templates define a type of shipping and the properties they have.
         /// </summary>
@@ -478,7 +483,7 @@ namespace com.knetikcloud.Api
             {
                 mGetShippingTemplatePath = mGetShippingTemplatePath.Replace("{format}", "json");
             }
-            mGetShippingTemplatePath = mGetShippingTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mGetShippingTemplatePath = mGetShippingTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -487,7 +492,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetShippingTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetShippingTemplateStartTime, mGetShippingTemplatePath, "Sending server request...");
@@ -508,7 +513,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetShippingTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetShippingTemplateData = (ItemTemplateResource) KnetikClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
+            GetShippingTemplateData = (ItemTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
             KnetikLogger.LogResponse(mGetShippingTemplateStartTime, mGetShippingTemplatePath, string.Format("Response received successfully:\n{0}", GetShippingTemplateData.ToString()));
 
             if (GetShippingTemplateComplete != null)
@@ -516,6 +521,8 @@ namespace com.knetikcloud.Api
                 GetShippingTemplateComplete(GetShippingTemplateData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// List and search shipping templates 
         /// </summary>
@@ -539,21 +546,21 @@ namespace com.knetikcloud.Api
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.ParameterToString(size));
+                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.ParameterToString(page));
+                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.ParameterToString(order));
+                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
             }
 
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetShippingTemplatesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetShippingTemplatesStartTime, mGetShippingTemplatesPath, "Sending server request...");
@@ -574,7 +581,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling GetShippingTemplates: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            GetShippingTemplatesData = (PageResourceItemTemplateResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceItemTemplateResource), response.Headers);
+            GetShippingTemplatesData = (PageResourceItemTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceItemTemplateResource), response.Headers);
             KnetikLogger.LogResponse(mGetShippingTemplatesStartTime, mGetShippingTemplatesPath, string.Format("Response received successfully:\n{0}", GetShippingTemplatesData.ToString()));
 
             if (GetShippingTemplatesComplete != null)
@@ -582,6 +589,8 @@ namespace com.knetikcloud.Api
                 GetShippingTemplatesComplete(GetShippingTemplatesData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Update a shipping item 
         /// </summary>
@@ -601,7 +610,7 @@ namespace com.knetikcloud.Api
             {
                 mUpdateShippingItemPath = mUpdateShippingItemPath.Replace("{format}", "json");
             }
-            mUpdateShippingItemPath = mUpdateShippingItemPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateShippingItemPath = mUpdateShippingItemPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -611,13 +620,13 @@ namespace com.knetikcloud.Api
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.ParameterToString(cascade));
+                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
             }
 
-            postBody = KnetikClient.Serialize(shippingItem); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(shippingItem); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateShippingItemStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateShippingItemStartTime, mUpdateShippingItemPath, "Sending server request...");
@@ -638,7 +647,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateShippingItem: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateShippingItemData = (ShippingItem) KnetikClient.Deserialize(response.Content, typeof(ShippingItem), response.Headers);
+            UpdateShippingItemData = (ShippingItem) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ShippingItem), response.Headers);
             KnetikLogger.LogResponse(mUpdateShippingItemStartTime, mUpdateShippingItemPath, string.Format("Response received successfully:\n{0}", UpdateShippingItemData.ToString()));
 
             if (UpdateShippingItemComplete != null)
@@ -646,6 +655,8 @@ namespace com.knetikcloud.Api
                 UpdateShippingItemComplete(UpdateShippingItemData);
             }
         }
+
+        /// <inheritdoc />
         /// <summary>
         /// Update a shipping template 
         /// </summary>
@@ -664,7 +675,7 @@ namespace com.knetikcloud.Api
             {
                 mUpdateShippingTemplatePath = mUpdateShippingTemplatePath.Replace("{format}", "json");
             }
-            mUpdateShippingTemplatePath = mUpdateShippingTemplatePath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+            mUpdateShippingTemplatePath = mUpdateShippingTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
 
             Dictionary<string, string> queryParams = new Dictionary<string, string>();
             Dictionary<string, string> headerParams = new Dictionary<string, string>();
@@ -672,10 +683,10 @@ namespace com.knetikcloud.Api
             Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
             string postBody = null;
 
-            postBody = KnetikClient.Serialize(shippingTemplateResource); // http body (model) parameter
+            postBody = KnetikClient.DefaultClient.Serialize(shippingTemplateResource); // http body (model) parameter
  
             // authentication setting, if any
-            string[] authSettings = new string[] {  "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mUpdateShippingTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mUpdateShippingTemplateStartTime, mUpdateShippingTemplatePath, "Sending server request...");
@@ -696,7 +707,7 @@ namespace com.knetikcloud.Api
                 throw new KnetikException((int)response.StatusCode, "Error calling UpdateShippingTemplate: " + response.ErrorMessage, response.ErrorMessage);
             }
 
-            UpdateShippingTemplateData = (ItemTemplateResource) KnetikClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
+            UpdateShippingTemplateData = (ItemTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
             KnetikLogger.LogResponse(mUpdateShippingTemplateStartTime, mUpdateShippingTemplatePath, string.Format("Response received successfully:\n{0}", UpdateShippingTemplateData.ToString()));
 
             if (UpdateShippingTemplateComplete != null)
@@ -704,5 +715,6 @@ namespace com.knetikcloud.Api
                 UpdateShippingTemplateComplete(UpdateShippingTemplateData);
             }
         }
+
     }
 }

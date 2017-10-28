@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,63 +19,64 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The end date of the forward log entry</value>
         [JsonProperty(PropertyName = "end_date")]
-        public long? EndDate { get; set; }
+        public long? EndDate;
 
         /// <summary>
         /// Gets or Sets ErrorMsg
         /// </summary>
         [JsonProperty(PropertyName = "error_msg")]
-        public string ErrorMsg { get; set; }
+        public string ErrorMsg;
 
         /// <summary>
         /// The http status code the forward log entry
         /// </summary>
         /// <value>The http status code the forward log entry</value>
         [JsonProperty(PropertyName = "http_status_code")]
-        public int? HttpStatusCode { get; set; }
+        public int? HttpStatusCode;
 
         /// <summary>
         /// The id of the forward log entry
         /// </summary>
         /// <value>The id of the forward log entry</value>
         [JsonProperty(PropertyName = "id")]
-        public string Id { get; set; }
+        public string Id;
 
         /// <summary>
         /// The payload of the forward log entry
         /// </summary>
         /// <value>The payload of the forward log entry</value>
         [JsonProperty(PropertyName = "payload")]
-        public Object Payload { get; set; }
+        public Object Payload;
 
         /// <summary>
         /// The response string of the forward log entry
         /// </summary>
         /// <value>The response string of the forward log entry</value>
         [JsonProperty(PropertyName = "response")]
-        public string Response { get; set; }
+        public string Response;
 
         /// <summary>
         /// The retry count of the forward log entry
         /// </summary>
         /// <value>The retry count of the forward log entry</value>
         [JsonProperty(PropertyName = "retry_count")]
-        public int? RetryCount { get; set; }
+        public int? RetryCount;
 
         /// <summary>
         /// The start date of the forward log entry
         /// </summary>
         /// <value>The start date of the forward log entry</value>
         [JsonProperty(PropertyName = "start_date")]
-        public long? StartDate { get; set; }
+        public long? StartDate;
 
         /// <summary>
         /// The endpoint url of the forward log entry
         /// </summary>
         /// <value>The endpoint url of the forward log entry</value>
         [JsonProperty(PropertyName = "url")]
-        public string Url { get; set; }
+        public string Url;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

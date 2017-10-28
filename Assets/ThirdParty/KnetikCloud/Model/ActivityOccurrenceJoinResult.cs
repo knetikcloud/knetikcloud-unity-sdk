@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using com.knetikcloud.Attributes;
+using com.knetikcloud.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -16,29 +19,30 @@ namespace com.knetikcloud.Model
         /// </summary>
         /// <value>The details on the entitlement object needed to enter the occurrence (if any)</value>
         [JsonProperty(PropertyName = "entitlement")]
-        public ActivityEntitlementResource Entitlement { get; set; }
+        public ActivityEntitlementResource Entitlement;
 
         /// <summary>
         /// Zero if the user was/could be added to the occurrence. Jsapi error code indicating the reason of the failure otherwise
         /// </summary>
         /// <value>Zero if the user was/could be added to the occurrence. Jsapi error code indicating the reason of the failure otherwise</value>
         [JsonProperty(PropertyName = "error_code")]
-        public int? ErrorCode { get; set; }
+        public int? ErrorCode;
 
         /// <summary>
         /// An error message if failure
         /// </summary>
         /// <value>An error message if failure</value>
         [JsonProperty(PropertyName = "message")]
-        public string Message { get; set; }
+        public string Message;
 
         /// <summary>
         /// The user's id
         /// </summary>
         /// <value>The user's id</value>
         [JsonProperty(PropertyName = "user_id")]
-        public long? UserId { get; set; }
+        public long? UserId;
 
+        /// <inheritdoc />
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>
