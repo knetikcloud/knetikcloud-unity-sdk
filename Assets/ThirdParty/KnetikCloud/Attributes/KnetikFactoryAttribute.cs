@@ -15,6 +15,11 @@ namespace com.knetikcloud.Attributes
 
         public KnetikFactoryAttribute(string key)
         {
+            if (string.IsNullOrEmpty(key))
+            {
+                throw new ArgumentException("KnetikFactoryAttribute cannot be empty or null!", "key");
+            }
+
             Key = key;
         }
     }
