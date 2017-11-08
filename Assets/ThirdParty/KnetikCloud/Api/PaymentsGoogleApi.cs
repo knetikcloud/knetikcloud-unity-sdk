@@ -74,7 +74,7 @@ namespace com.knetikcloud.Api
             postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
  
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mHandleGooglePaymentStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mHandleGooglePaymentStartTime, mHandleGooglePaymentPath, "Sending server request...");

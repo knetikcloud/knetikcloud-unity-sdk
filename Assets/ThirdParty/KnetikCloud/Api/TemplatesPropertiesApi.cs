@@ -93,7 +93,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetTemplatePropertyTypeStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetTemplatePropertyTypeStartTime, mGetTemplatePropertyTypePath, "Sending server request...");
@@ -143,7 +143,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetTemplatePropertyTypesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetTemplatePropertyTypesStartTime, mGetTemplatePropertyTypesPath, "Sending server request...");

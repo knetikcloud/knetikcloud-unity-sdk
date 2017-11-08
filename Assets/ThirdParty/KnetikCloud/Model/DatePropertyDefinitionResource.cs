@@ -13,6 +13,7 @@ namespace com.knetikcloud.Model
     /// 
     /// </summary>
     [KnetikFactory ("date")]
+    
     public class DatePropertyDefinitionResource : PropertyDefinitionResource
     {
         /// <summary>

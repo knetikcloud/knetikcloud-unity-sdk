@@ -13,6 +13,7 @@ namespace com.knetikcloud.Model
     /// 
     /// </summary>
     [KnetikFactory ("spendable")]
+    
     public class Spendable : Behavior
     {
         /// <summary>

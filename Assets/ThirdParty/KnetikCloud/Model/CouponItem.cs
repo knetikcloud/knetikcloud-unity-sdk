@@ -13,6 +13,7 @@ namespace com.knetikcloud.Model
     /// 
     /// </summary>
     [KnetikFactory ("coupon_item")]
+    
     public class CouponItem : StoreItem
     {
         /// <summary>

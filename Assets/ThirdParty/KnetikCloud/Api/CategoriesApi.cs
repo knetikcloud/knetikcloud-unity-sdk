@@ -487,7 +487,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetCategoriesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCategoriesStartTime, mGetCategoriesPath, "Sending server request...");
@@ -544,7 +544,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetCategoryStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCategoryStartTime, mGetCategoryPath, "Sending server request...");
@@ -731,7 +731,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetTagsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetTagsStartTime, mGetTagsPath, "Sending server request...");

@@ -12,6 +12,7 @@ namespace com.knetikcloud.Model
     /// <summary>
     /// 
     /// </summary>
+    
     [JsonConverter(typeof(KnetikJsonConverter<Property>))]
     public class Property
     {

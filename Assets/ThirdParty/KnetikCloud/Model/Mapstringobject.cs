@@ -12,7 +12,9 @@ namespace com.knetikcloud.Model
     /// <summary>
     /// 
     /// </summary>
-    public class Mapstringobject : Dictionary<string, object>
+    
+    
+    public class Mapstringobject : Dictionary<String, Object>
     {
         /// <inheritdoc />
         /// <summary>

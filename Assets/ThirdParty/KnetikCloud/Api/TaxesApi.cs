@@ -475,7 +475,7 @@ mDeleteStateTaxPath = mDeleteStateTaxPath.Replace("{" + "state_code" + "}", Knet
             string postBody = null;
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetCountryTaxStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCountryTaxStartTime, mGetCountryTaxPath, "Sending server request...");
@@ -543,7 +543,7 @@ mDeleteStateTaxPath = mDeleteStateTaxPath.Replace("{" + "state_code" + "}", Knet
             }
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetCountryTaxesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCountryTaxesStartTime, mGetCountryTaxesPath, "Sending server request...");
@@ -607,7 +607,7 @@ mGetStateTaxPath = mGetStateTaxPath.Replace("{" + "state_code" + "}", KnetikClie
             string postBody = null;
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetStateTaxStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetStateTaxStartTime, mGetStateTaxPath, "Sending server request...");
@@ -675,7 +675,7 @@ mGetStateTaxPath = mGetStateTaxPath.Replace("{" + "state_code" + "}", KnetikClie
             }
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetStateTaxesForCountriesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetStateTaxesForCountriesStartTime, mGetStateTaxesForCountriesPath, "Sending server request...");
@@ -750,7 +750,7 @@ mGetStateTaxPath = mGetStateTaxPath.Replace("{" + "state_code" + "}", KnetikClie
             }
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetStateTaxesForCountryStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetStateTaxesForCountryStartTime, mGetStateTaxesForCountryPath, "Sending server request...");

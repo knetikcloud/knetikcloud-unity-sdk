@@ -13,6 +13,7 @@ namespace com.knetikcloud.Model
     /// 
     /// </summary>
     [KnetikFactory ("formatted_text")]
+    
     public class FormattedTextPropertyDefinitionResource : PropertyDefinitionResource
     {
         /// <summary>

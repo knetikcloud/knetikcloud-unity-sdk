@@ -13,6 +13,7 @@ namespace com.knetikcloud.Model
     /// 
     /// </summary>
     [KnetikFactory ("new_customer")]
+    
     public class NewCustomerEvent : BroadcastableEvent
     {
         /// <summary>

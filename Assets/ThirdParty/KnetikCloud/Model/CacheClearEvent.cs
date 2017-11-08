@@ -13,6 +13,7 @@ namespace com.knetikcloud.Model
     /// 
     /// </summary>
     [KnetikFactory ("cache_clear")]
+    
     public class CacheClearEvent : BroadcastableEvent
     {
         /// <summary>

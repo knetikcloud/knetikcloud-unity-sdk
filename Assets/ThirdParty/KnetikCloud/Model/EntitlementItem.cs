@@ -13,6 +13,7 @@ namespace com.knetikcloud.Model
     /// 
     /// </summary>
     [KnetikFactory ("entitlement")]
+    
     public class EntitlementItem : Item
     {
         /// <inheritdoc />

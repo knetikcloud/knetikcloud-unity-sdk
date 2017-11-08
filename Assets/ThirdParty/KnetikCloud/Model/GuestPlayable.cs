@@ -13,6 +13,7 @@ namespace com.knetikcloud.Model
     /// 
     /// </summary>
     [KnetikFactory ("guest_playable")]
+    
     public class GuestPlayable : Behavior
     {
         /// <summary>

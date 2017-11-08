@@ -13,6 +13,7 @@ namespace com.knetikcloud.Model
     /// 
     /// </summary>
     [KnetikFactory ("map")]
+    
     public class MapProperty : Property
     {
         /// <summary>

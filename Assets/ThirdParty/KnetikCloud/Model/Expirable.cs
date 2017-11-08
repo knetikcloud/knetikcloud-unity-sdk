@@ -13,6 +13,7 @@ namespace com.knetikcloud.Model
     /// 
     /// </summary>
     [KnetikFactory ("expirable")]
+    
     public class Expirable : Behavior
     {
         /// <summary>

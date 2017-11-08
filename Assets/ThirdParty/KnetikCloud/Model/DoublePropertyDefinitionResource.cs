@@ -13,6 +13,7 @@ namespace com.knetikcloud.Model
     /// 
     /// </summary>
     [KnetikFactory ("double")]
+    
     public class DoublePropertyDefinitionResource : PropertyDefinitionResource
     {
         /// <summary>

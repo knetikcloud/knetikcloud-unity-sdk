@@ -919,7 +919,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetGroupStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetGroupStartTime, mGetGroupPath, "Sending server request...");
@@ -983,7 +983,7 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
             string postBody = null;
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetGroupMemberStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetGroupMemberStartTime, mGetGroupMemberPath, "Sending server request...");
@@ -1183,7 +1183,7 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
             }
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetGroupMembersStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetGroupMembersStartTime, mGetGroupMembersPath, "Sending server request...");
@@ -1371,7 +1371,7 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
             }
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetGroupsForUserStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetGroupsForUserStartTime, mGetGroupsForUserPath, "Sending server request...");
@@ -1475,7 +1475,7 @@ mGetGroupMemberPath = mGetGroupMemberPath.Replace("{" + "user_id" + "}", KnetikC
             }
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mListGroupsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mListGroupsStartTime, mListGroupsPath, "Sending server request...");

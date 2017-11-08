@@ -13,6 +13,7 @@ namespace com.knetikcloud.Model
     /// 
     /// </summary>
     [KnetikFactory ("remove_customer")]
+    
     public class RemoveCustomerEvent : BroadcastableEvent
     {
         /// <summary>

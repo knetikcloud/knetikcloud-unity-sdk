@@ -435,7 +435,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetBundleItemStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetBundleItemStartTime, mGetBundleItemPath, "Sending server request...");
@@ -492,7 +492,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetBundleTemplateStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetBundleTemplateStartTime, mGetBundleTemplatePath, "Sending server request...");
@@ -560,7 +560,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetBundleTemplatesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetBundleTemplatesStartTime, mGetBundleTemplatesPath, "Sending server request...");

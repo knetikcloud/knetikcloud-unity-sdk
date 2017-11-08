@@ -13,6 +13,7 @@ namespace com.knetikcloud.Model
     /// 
     /// </summary>
     [KnetikFactory ("log_level")]
+    
     public class LogLevelEvent : BroadcastableEvent
     {
         /// <summary>

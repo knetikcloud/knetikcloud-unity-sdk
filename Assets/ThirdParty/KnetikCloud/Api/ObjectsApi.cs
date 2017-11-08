@@ -476,7 +476,7 @@ mGetObjectItemPath = mGetObjectItemPath.Replace("{" + "object_id" + "}", KnetikC
             string postBody = null;
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetObjectItemStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetObjectItemStartTime, mGetObjectItemPath, "Sending server request...");
@@ -551,7 +551,7 @@ mGetObjectItemPath = mGetObjectItemPath.Replace("{" + "object_id" + "}", KnetikC
             }
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetObjectItemsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetObjectItemsStartTime, mGetObjectItemsPath, "Sending server request...");

@@ -450,7 +450,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetArtistStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetArtistStartTime, mGetArtistPath, "Sending server request...");
@@ -649,7 +649,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetArtistsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetArtistsStartTime, mGetArtistsPath, "Sending server request...");

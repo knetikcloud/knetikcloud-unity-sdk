@@ -12,6 +12,8 @@ namespace com.knetikcloud.Model
     /// <summary>
     /// A request to reset a user&#39;s password by using a known user property
     /// </summary>
+    
+    
     public class PasswordResetRequest
     {
         /// <summary>

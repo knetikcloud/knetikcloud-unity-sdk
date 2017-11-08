@@ -13,6 +13,7 @@ namespace com.knetikcloud.Model
     /// 
     /// </summary>
     [KnetikFactory ("integer")]
+    
     public class IntegerProperty : Property
     {
         /// <summary>

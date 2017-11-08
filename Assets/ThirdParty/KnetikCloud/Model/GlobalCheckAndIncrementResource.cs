@@ -12,6 +12,8 @@ namespace com.knetikcloud.Model
     /// <summary>
     /// Expressions are instructions for the rule engine to resolve certain values. For example instead of &#x60;user 1&#x60; it&#39;d state &#x60;user provided by the event&#x60;. Full list and definitions available at GET /bre/expressions.
     /// </summary>
+    
+    
     public class GlobalCheckAndIncrementResource
     {
         /// <summary>
