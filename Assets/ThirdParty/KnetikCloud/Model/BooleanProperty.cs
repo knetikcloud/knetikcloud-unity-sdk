@@ -13,6 +13,7 @@ namespace com.knetikcloud.Model
     /// 
     /// </summary>
     [KnetikFactory ("boolean")]
+    
     public class BooleanProperty : Property
     {
         /// <summary>

@@ -13,6 +13,7 @@ namespace com.knetikcloud.Model
     /// 
     /// </summary>
     [KnetikFactory ("video")]
+    
     public class VideoPropertyDefinitionResource : PropertyDefinitionResource
     {
         /// <summary>

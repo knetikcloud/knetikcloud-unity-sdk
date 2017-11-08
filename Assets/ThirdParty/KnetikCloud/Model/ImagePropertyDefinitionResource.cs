@@ -13,6 +13,7 @@ namespace com.knetikcloud.Model
     /// 
     /// </summary>
     [KnetikFactory ("image")]
+    
     public class ImagePropertyDefinitionResource : PropertyDefinitionResource
     {
         /// <summary>

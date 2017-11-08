@@ -437,7 +437,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mCreateCartStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mCreateCartStartTime, mCreateCartPath, "Sending server request...");

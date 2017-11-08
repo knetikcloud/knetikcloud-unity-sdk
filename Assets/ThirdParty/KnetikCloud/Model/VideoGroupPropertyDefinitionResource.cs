@@ -13,6 +13,7 @@ namespace com.knetikcloud.Model
     /// 
     /// </summary>
     [KnetikFactory ("video_group")]
+    
     public class VideoGroupPropertyDefinitionResource : FileGroupPropertyDefinitionResource
     {
         /// <summary>

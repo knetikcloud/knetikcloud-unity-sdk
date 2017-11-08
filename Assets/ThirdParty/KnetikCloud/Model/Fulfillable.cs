@@ -13,6 +13,7 @@ namespace com.knetikcloud.Model
     /// 
     /// </summary>
     [KnetikFactory ("fulfillable")]
+    
     public class Fulfillable : Behavior
     {
         /// <summary>

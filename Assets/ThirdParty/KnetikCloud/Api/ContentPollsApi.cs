@@ -541,7 +541,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetPollStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetPollStartTime, mGetPollPath, "Sending server request...");
@@ -809,7 +809,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetPollsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetPollsStartTime, mGetPollsPath, "Sending server request...");

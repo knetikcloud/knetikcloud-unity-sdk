@@ -116,7 +116,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetCountriesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCountriesStartTime, mGetCountriesPath, "Sending server request...");
@@ -166,7 +166,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetCountryByGeoLocationStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCountryByGeoLocationStartTime, mGetCountryByGeoLocationPath, "Sending server request...");
@@ -223,7 +223,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetCountryStatesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCountryStatesStartTime, mGetCountryStatesPath, "Sending server request...");
@@ -273,7 +273,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetCurrencyByGeoLocationStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCurrencyByGeoLocationStartTime, mGetCurrencyByGeoLocationPath, "Sending server request...");

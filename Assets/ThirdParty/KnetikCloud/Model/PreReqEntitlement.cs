@@ -13,6 +13,7 @@ namespace com.knetikcloud.Model
     /// 
     /// </summary>
     [KnetikFactory ("pre_req_entitlement")]
+    
     public class PreReqEntitlement : Behavior
     {
         /// <summary>

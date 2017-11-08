@@ -12,6 +12,8 @@ namespace com.knetikcloud.Model
     /// <summary>
     /// 
     /// </summary>
+    
+    
     public class PageResourceTemplateResource
     {
         /// <summary>

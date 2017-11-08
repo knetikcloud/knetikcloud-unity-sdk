@@ -13,6 +13,7 @@ namespace com.knetikcloud.Model
     /// 
     /// </summary>
     [KnetikFactory ("audio")]
+    
     public class AudioPropertyDefinitionResource : PropertyDefinitionResource
     {
         /// <summary>

@@ -769,7 +769,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
             string postBody = null;
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetEntitlementItemStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetEntitlementItemStartTime, mGetEntitlementItemPath, "Sending server request...");
@@ -843,7 +843,7 @@ mCheckUserEntitlementItemPath = mCheckUserEntitlementItemPath.Replace("{" + "ite
             }
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetEntitlementItemsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetEntitlementItemsStartTime, mGetEntitlementItemsPath, "Sending server request...");

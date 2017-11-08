@@ -13,6 +13,7 @@ namespace com.knetikcloud.Model
     /// 
     /// </summary>
     [KnetikFactory ("consumable")]
+    
     public class Consumable : Behavior
     {
         /// <summary>

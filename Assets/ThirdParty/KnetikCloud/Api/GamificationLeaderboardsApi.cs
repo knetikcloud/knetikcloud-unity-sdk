@@ -140,7 +140,7 @@ mGetLeaderboardPath = mGetLeaderboardPath.Replace("{" + "context_id" + "}", Knet
             }
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetLeaderboardStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetLeaderboardStartTime, mGetLeaderboardPath, "Sending server request...");
@@ -211,7 +211,7 @@ mGetLeaderboardRankPath = mGetLeaderboardRankPath.Replace("{" + "id" + "}", Knet
             string postBody = null;
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetLeaderboardRankStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetLeaderboardRankStartTime, mGetLeaderboardRankPath, "Sending server request...");
@@ -261,7 +261,7 @@ mGetLeaderboardRankPath = mGetLeaderboardRankPath.Replace("{" + "id" + "}", Knet
             string postBody = null;
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetLeaderboardStrategiesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetLeaderboardStrategiesStartTime, mGetLeaderboardStrategiesPath, "Sending server request...");

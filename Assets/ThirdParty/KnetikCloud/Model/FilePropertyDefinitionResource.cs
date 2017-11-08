@@ -13,6 +13,7 @@ namespace com.knetikcloud.Model
     /// 
     /// </summary>
     [KnetikFactory ("file")]
+    
     public class FilePropertyDefinitionResource : PropertyDefinitionResource
     {
         /// <summary>

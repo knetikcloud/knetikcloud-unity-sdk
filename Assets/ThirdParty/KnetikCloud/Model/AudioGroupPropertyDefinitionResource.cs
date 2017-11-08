@@ -13,6 +13,7 @@ namespace com.knetikcloud.Model
     /// 
     /// </summary>
     [KnetikFactory ("audio_group")]
+    
     public class AudioGroupPropertyDefinitionResource : FileGroupPropertyDefinitionResource
     {
         /// <summary>

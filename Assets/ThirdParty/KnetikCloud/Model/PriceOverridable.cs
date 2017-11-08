@@ -13,6 +13,7 @@ namespace com.knetikcloud.Model
     /// 
     /// </summary>
     [KnetikFactory ("price_overridable")]
+    
     public class PriceOverridable : Behavior
     {
         /// <summary>

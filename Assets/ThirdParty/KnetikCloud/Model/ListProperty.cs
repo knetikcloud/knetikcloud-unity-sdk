@@ -13,6 +13,7 @@ namespace com.knetikcloud.Model
     /// 
     /// </summary>
     [KnetikFactory ("list")]
+    
     public class ListProperty : Property
     {
         /// <summary>

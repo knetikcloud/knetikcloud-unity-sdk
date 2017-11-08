@@ -12,6 +12,8 @@ namespace com.knetikcloud.Model
     /// <summary>
     /// The definition of an activity parameters: ex: difficulty level
     /// </summary>
+    
+    
     public class AvailableSettingResource
     {
         /// <summary>

@@ -248,7 +248,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetConfigStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetConfigStartTime, mGetConfigPath, "Sending server request...");
@@ -322,7 +322,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetConfigsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetConfigsStartTime, mGetConfigsPath, "Sending server request...");

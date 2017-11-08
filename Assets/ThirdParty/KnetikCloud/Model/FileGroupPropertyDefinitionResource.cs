@@ -13,6 +13,7 @@ namespace com.knetikcloud.Model
     /// 
     /// </summary>
     [KnetikFactory ("file_group")]
+    
     public class FileGroupPropertyDefinitionResource : PropertyDefinitionResource
     {
         /// <summary>

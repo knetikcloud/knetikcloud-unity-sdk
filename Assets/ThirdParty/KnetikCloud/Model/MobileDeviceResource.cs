@@ -13,6 +13,7 @@ namespace com.knetikcloud.Model
     /// 
     /// </summary>
     [KnetikFactory ("mobile_device")]
+    
     public class MobileDeviceResource : DeviceResource
     {
         /// <summary>

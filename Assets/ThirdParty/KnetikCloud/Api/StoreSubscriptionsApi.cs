@@ -462,7 +462,7 @@ mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}",
             string postBody = null;
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetSubscriptionStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetSubscriptionStartTime, mGetSubscriptionPath, "Sending server request...");
@@ -655,7 +655,7 @@ mDeleteSubscriptionPath = mDeleteSubscriptionPath.Replace("{" + "plan_id" + "}",
             }
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetSubscriptionsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetSubscriptionsStartTime, mGetSubscriptionsPath, "Sending server request...");

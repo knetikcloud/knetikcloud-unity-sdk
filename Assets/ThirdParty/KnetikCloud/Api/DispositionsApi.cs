@@ -252,7 +252,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetDispositionStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetDispositionStartTime, mGetDispositionPath, "Sending server request...");

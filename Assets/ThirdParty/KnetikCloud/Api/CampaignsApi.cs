@@ -553,7 +553,7 @@ namespace com.knetikcloud.Api
             string postBody = null;
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetCampaignStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCampaignStartTime, mGetCampaignPath, "Sending server request...");
@@ -640,7 +640,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetCampaignChallengesStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCampaignChallengesStartTime, mGetCampaignChallengesPath, "Sending server request...");
@@ -839,7 +839,7 @@ namespace com.knetikcloud.Api
             }
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetCampaignsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetCampaignsStartTime, mGetCampaignsPath, "Sending server request...");

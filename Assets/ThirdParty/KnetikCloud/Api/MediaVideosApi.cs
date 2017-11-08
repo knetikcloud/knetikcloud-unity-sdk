@@ -1287,7 +1287,7 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
             }
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetVideoCommentsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetVideoCommentsStartTime, mGetVideoCommentsPath, "Sending server request...");
@@ -1356,7 +1356,7 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
             }
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetVideoDispositionsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetVideoDispositionsStartTime, mGetVideoDispositionsPath, "Sending server request...");
@@ -1425,7 +1425,7 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
             }
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetVideoRelationshipsStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetVideoRelationshipsStartTime, mGetVideoRelationshipsPath, "Sending server request...");
@@ -1565,7 +1565,7 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
             }
 
             // authentication setting, if any
-            List<string> authSettings = new List<string> {  };
+            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
 
             mGetVideosStartTime = DateTime.Now;
             KnetikLogger.LogRequest(mGetVideosStartTime, mGetVideosPath, "Sending server request...");

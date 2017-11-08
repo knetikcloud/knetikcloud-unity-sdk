@@ -13,6 +13,7 @@ namespace com.knetikcloud.Model
     /// 
     /// </summary>
     [KnetikFactory ("limited_gettable")]
+    
     public class LimitedGettable : Behavior
     {
         /// <summary>

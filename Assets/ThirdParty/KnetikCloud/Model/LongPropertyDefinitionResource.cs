@@ -13,6 +13,7 @@ namespace com.knetikcloud.Model
     /// 
     /// </summary>
     [KnetikFactory ("long")]
+    
     public class LongPropertyDefinitionResource : PropertyDefinitionResource
     {
         /// <summary>

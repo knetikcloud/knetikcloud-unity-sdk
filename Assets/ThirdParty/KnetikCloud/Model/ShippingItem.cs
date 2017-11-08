@@ -13,6 +13,7 @@ namespace com.knetikcloud.Model
     /// 
     /// </summary>
     [KnetikFactory ("shipping_item")]
+    
     public class ShippingItem : StoreItem
     {
         /// <summary>

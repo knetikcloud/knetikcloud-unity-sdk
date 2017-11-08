@@ -12,6 +12,8 @@ namespace com.knetikcloud.Model
     /// <summary>
     /// A occurrence of an activity (the actual game for example). Used to track scores, participants, and provide settings
     /// </summary>
+    
+    
     public class ActivityOccurrenceResource
     {
         /// <summary>

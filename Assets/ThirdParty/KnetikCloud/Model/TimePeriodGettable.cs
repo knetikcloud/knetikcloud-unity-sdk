@@ -13,6 +13,7 @@ namespace com.knetikcloud.Model
     /// 
     /// </summary>
     [KnetikFactory ("time_period_gettable")]
+    
     public class TimePeriodGettable : Behavior
     {
         /// <summary>

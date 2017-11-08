@@ -12,6 +12,8 @@ namespace com.knetikcloud.Model
     /// <summary>
     /// Represents an activity that can be parameterized and tracked through metrics (scores, etc)
     /// </summary>
+    
+    
     public class ActivityResource
     {
         /// <summary>
