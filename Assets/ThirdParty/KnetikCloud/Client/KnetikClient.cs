@@ -189,7 +189,7 @@ namespace com.knetikcloud.Client
         /// <param name="fileParams">File parameters.</param>
         /// <param name="authSettings">Authentication settings.</param>
         /// <returns>Object</returns>
-        public Object CallApi(
+        public object CallApi(
             string path,
             Method method,
             Dictionary<string, string> queryParams,

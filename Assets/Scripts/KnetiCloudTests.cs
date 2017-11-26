@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using com.knetikcloud.Api;
+﻿using com.knetikcloud.Api;
 using com.knetikcloud.Client;
 using com.knetikcloud.Credentials;
 using com.knetikcloud.Events;
@@ -10,7 +9,7 @@ using UnityEngine;
 
 namespace KnetikTests
 {
-    public class KnetiApiTests : MonoBehaviour
+    public class KnetiCloudTests : MonoBehaviour
     {
         #region Mono Behaviours
         private void Awake()
