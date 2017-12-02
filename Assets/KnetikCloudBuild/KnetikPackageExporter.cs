@@ -17,7 +17,7 @@ namespace KnetikCloudBuild
 
             string[] pathsToExport =
             {
-                "Assets/Plugin",
+                "Assets/Plugins",
                 "Assets/ThirdParty/KnetikCloud"
             };
 
