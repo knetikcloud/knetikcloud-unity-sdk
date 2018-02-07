@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,24 +18,13 @@ namespace com.knetikcloud.Api
     {
         LevelingResource CreateLevelData { get; }
 
-        LevelingResource GetLevelData { get; }
-
-        List<BreTriggerResource> GetLevelTriggersData { get; }
-
-        PageResourceLevelingResource GetLevelsData { get; }
-
-        UserLevelingResource GetUserLevelData { get; }
-
-        PageResourceUserLevelingResource GetUserLevelsData { get; }
-
-        LevelingResource UpdateLevelData { get; }
-
-        
         /// <summary>
         /// Create a level schema 
         /// </summary>
         /// <param name="level">The level schema definition</param>
         void CreateLevel(LevelingResource level);
+
+        
 
         /// <summary>
         /// Delete a level 
@@ -44,16 +32,22 @@ namespace com.knetikcloud.Api
         /// <param name="name">The level schema name</param>
         void DeleteLevel(string name);
 
+        LevelingResource GetLevelData { get; }
+
         /// <summary>
         /// Retrieve a level 
         /// </summary>
         /// <param name="name">The level schema name</param>
         void GetLevel(string name);
 
+        List<BreTriggerResource> GetLevelTriggersData { get; }
+
         /// <summary>
         /// Get the list of triggers that can be used to trigger a leveling progress update 
         /// </summary>
         void GetLevelTriggers();
+
+        PageResourceLevelingResource GetLevelsData { get; }
 
         /// <summary>
         /// List and search levels Get a list of levels schemas with optional filtering
@@ -64,12 +58,16 @@ namespace com.knetikcloud.Api
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
         void GetLevels(string filterName, int? size, int? page, string order);
 
+        UserLevelingResource GetUserLevelData { get; }
+
         /// <summary>
         /// Get a user&#39;s progress for a given level schema 
         /// </summary>
         /// <param name="userId">The id of the user or &#39;me&#39;</param>
         /// <param name="name">The level schema name</param>
         void GetUserLevel(string userId, string name);
+
+        PageResourceUserLevelingResource GetUserLevelsData { get; }
 
         /// <summary>
         /// Get a user&#39;s progress for all level schemas Filtering and sorting is based on the LevelingResource object, not the UserLevelingResource that is returned here.
@@ -81,6 +79,8 @@ namespace com.knetikcloud.Api
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
         void GetUserLevels(string userId, string filterName, int? size, int? page, string order);
 
+        
+
         /// <summary>
         /// Update or create a leveling progress record for a user If no progress record yet exists for the user, it will be created. Otherwise the provided value will be added to it. May be negative. If progress meets or exceeds the level&#39;s max_value it will be marked as earned and a BRE event will be triggered for the &lt;code&gt;BreAchievementEarnedTrigger&lt;/code&gt;.
         /// </summary>
@@ -89,6 +89,8 @@ namespace com.knetikcloud.Api
         /// <param name="progress">The amount of progress to add</param>
         void IncrementProgress(int? userId, string name, IntWrapper progress);
 
+        
+
         /// <summary>
         /// Set leveling progress for a user If no progress record yet exists for the user, it will be created. Otherwise it will be updated to the provided value. If progress meets or exceeds the level&#39;s max_value it will be marked as earned and a BRE event will be triggered for the &lt;code&gt;BreAchievementEarnedTrigger&lt;/code&gt;.
         /// </summary>
@@ -96,6 +98,8 @@ namespace com.knetikcloud.Api
         /// <param name="name">The level schema name</param>
         /// <param name="progress">The new progress amount</param>
         void SetProgress(int? userId, string name, IntWrapper progress);
+
+        LevelingResource UpdateLevelData { get; }
 
         /// <summary>
         /// Update a level 
@@ -112,72 +116,64 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class GamificationLevelingApi : IGamificationLevelingApi
     {
-        private readonly KnetikCoroutine mCreateLevelCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mCreateLevelResponseContext;
         private DateTime mCreateLevelStartTime;
-        private string mCreateLevelPath;
-        private readonly KnetikCoroutine mDeleteLevelCoroutine;
+        private readonly KnetikResponseContext mDeleteLevelResponseContext;
         private DateTime mDeleteLevelStartTime;
-        private string mDeleteLevelPath;
-        private readonly KnetikCoroutine mGetLevelCoroutine;
+        private readonly KnetikResponseContext mGetLevelResponseContext;
         private DateTime mGetLevelStartTime;
-        private string mGetLevelPath;
-        private readonly KnetikCoroutine mGetLevelTriggersCoroutine;
+        private readonly KnetikResponseContext mGetLevelTriggersResponseContext;
         private DateTime mGetLevelTriggersStartTime;
-        private string mGetLevelTriggersPath;
-        private readonly KnetikCoroutine mGetLevelsCoroutine;
+        private readonly KnetikResponseContext mGetLevelsResponseContext;
         private DateTime mGetLevelsStartTime;
-        private string mGetLevelsPath;
-        private readonly KnetikCoroutine mGetUserLevelCoroutine;
+        private readonly KnetikResponseContext mGetUserLevelResponseContext;
         private DateTime mGetUserLevelStartTime;
-        private string mGetUserLevelPath;
-        private readonly KnetikCoroutine mGetUserLevelsCoroutine;
+        private readonly KnetikResponseContext mGetUserLevelsResponseContext;
         private DateTime mGetUserLevelsStartTime;
-        private string mGetUserLevelsPath;
-        private readonly KnetikCoroutine mIncrementProgressCoroutine;
+        private readonly KnetikResponseContext mIncrementProgressResponseContext;
         private DateTime mIncrementProgressStartTime;
-        private string mIncrementProgressPath;
-        private readonly KnetikCoroutine mSetProgressCoroutine;
+        private readonly KnetikResponseContext mSetProgressResponseContext;
         private DateTime mSetProgressStartTime;
-        private string mSetProgressPath;
-        private readonly KnetikCoroutine mUpdateLevelCoroutine;
+        private readonly KnetikResponseContext mUpdateLevelResponseContext;
         private DateTime mUpdateLevelStartTime;
-        private string mUpdateLevelPath;
 
         public LevelingResource CreateLevelData { get; private set; }
-        public delegate void CreateLevelCompleteDelegate(LevelingResource response);
+        public delegate void CreateLevelCompleteDelegate(long responseCode, LevelingResource response);
         public CreateLevelCompleteDelegate CreateLevelComplete;
 
-        public delegate void DeleteLevelCompleteDelegate();
+        public delegate void DeleteLevelCompleteDelegate(long responseCode);
         public DeleteLevelCompleteDelegate DeleteLevelComplete;
 
         public LevelingResource GetLevelData { get; private set; }
-        public delegate void GetLevelCompleteDelegate(LevelingResource response);
+        public delegate void GetLevelCompleteDelegate(long responseCode, LevelingResource response);
         public GetLevelCompleteDelegate GetLevelComplete;
 
         public List<BreTriggerResource> GetLevelTriggersData { get; private set; }
-        public delegate void GetLevelTriggersCompleteDelegate(List<BreTriggerResource> response);
+        public delegate void GetLevelTriggersCompleteDelegate(long responseCode, List<BreTriggerResource> response);
         public GetLevelTriggersCompleteDelegate GetLevelTriggersComplete;
 
         public PageResourceLevelingResource GetLevelsData { get; private set; }
-        public delegate void GetLevelsCompleteDelegate(PageResourceLevelingResource response);
+        public delegate void GetLevelsCompleteDelegate(long responseCode, PageResourceLevelingResource response);
         public GetLevelsCompleteDelegate GetLevelsComplete;
 
         public UserLevelingResource GetUserLevelData { get; private set; }
-        public delegate void GetUserLevelCompleteDelegate(UserLevelingResource response);
+        public delegate void GetUserLevelCompleteDelegate(long responseCode, UserLevelingResource response);
         public GetUserLevelCompleteDelegate GetUserLevelComplete;
 
         public PageResourceUserLevelingResource GetUserLevelsData { get; private set; }
-        public delegate void GetUserLevelsCompleteDelegate(PageResourceUserLevelingResource response);
+        public delegate void GetUserLevelsCompleteDelegate(long responseCode, PageResourceUserLevelingResource response);
         public GetUserLevelsCompleteDelegate GetUserLevelsComplete;
 
-        public delegate void IncrementProgressCompleteDelegate();
+        public delegate void IncrementProgressCompleteDelegate(long responseCode);
         public IncrementProgressCompleteDelegate IncrementProgressComplete;
 
-        public delegate void SetProgressCompleteDelegate();
+        public delegate void SetProgressCompleteDelegate(long responseCode);
         public SetProgressCompleteDelegate SetProgressComplete;
 
         public LevelingResource UpdateLevelData { get; private set; }
-        public delegate void UpdateLevelCompleteDelegate(LevelingResource response);
+        public delegate void UpdateLevelCompleteDelegate(long responseCode, LevelingResource response);
         public UpdateLevelCompleteDelegate UpdateLevelComplete;
 
         /// <summary>
@@ -186,16 +182,26 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public GamificationLevelingApi()
         {
-            mCreateLevelCoroutine = new KnetikCoroutine();
-            mDeleteLevelCoroutine = new KnetikCoroutine();
-            mGetLevelCoroutine = new KnetikCoroutine();
-            mGetLevelTriggersCoroutine = new KnetikCoroutine();
-            mGetLevelsCoroutine = new KnetikCoroutine();
-            mGetUserLevelCoroutine = new KnetikCoroutine();
-            mGetUserLevelsCoroutine = new KnetikCoroutine();
-            mIncrementProgressCoroutine = new KnetikCoroutine();
-            mSetProgressCoroutine = new KnetikCoroutine();
-            mUpdateLevelCoroutine = new KnetikCoroutine();
+            mCreateLevelResponseContext = new KnetikResponseContext();
+            mCreateLevelResponseContext.ResponseReceived += OnCreateLevelResponse;
+            mDeleteLevelResponseContext = new KnetikResponseContext();
+            mDeleteLevelResponseContext.ResponseReceived += OnDeleteLevelResponse;
+            mGetLevelResponseContext = new KnetikResponseContext();
+            mGetLevelResponseContext.ResponseReceived += OnGetLevelResponse;
+            mGetLevelTriggersResponseContext = new KnetikResponseContext();
+            mGetLevelTriggersResponseContext.ResponseReceived += OnGetLevelTriggersResponse;
+            mGetLevelsResponseContext = new KnetikResponseContext();
+            mGetLevelsResponseContext.ResponseReceived += OnGetLevelsResponse;
+            mGetUserLevelResponseContext = new KnetikResponseContext();
+            mGetUserLevelResponseContext.ResponseReceived += OnGetUserLevelResponse;
+            mGetUserLevelsResponseContext = new KnetikResponseContext();
+            mGetUserLevelsResponseContext.ResponseReceived += OnGetUserLevelsResponse;
+            mIncrementProgressResponseContext = new KnetikResponseContext();
+            mIncrementProgressResponseContext.ResponseReceived += OnIncrementProgressResponse;
+            mSetProgressResponseContext = new KnetikResponseContext();
+            mSetProgressResponseContext.ResponseReceived += OnSetProgressResponse;
+            mUpdateLevelResponseContext = new KnetikResponseContext();
+            mUpdateLevelResponseContext.ResponseReceived += OnUpdateLevelResponse;
         }
     
         /// <inheritdoc />
@@ -206,48 +212,47 @@ namespace com.knetikcloud.Api
         public void CreateLevel(LevelingResource level)
         {
             
-            mCreateLevelPath = "/leveling";
-            if (!string.IsNullOrEmpty(mCreateLevelPath))
+            mWebCallEvent.WebPath = "/leveling";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mCreateLevelPath = mCreateLevelPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(level); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(level); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mCreateLevelStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mCreateLevelStartTime, mCreateLevelPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mCreateLevelCoroutine.ResponseReceived += CreateLevelCallback;
-            mCreateLevelCoroutine.Start(mCreateLevelPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mCreateLevelStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreateLevelResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreateLevelStartTime, "CreateLevel", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void CreateLevelCallback(IRestResponse response)
+        private void OnCreateLevelResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateLevel: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateLevel: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling CreateLevel: " + response.Error);
             }
 
-            CreateLevelData = (LevelingResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(LevelingResource), response.Headers);
-            KnetikLogger.LogResponse(mCreateLevelStartTime, mCreateLevelPath, string.Format("Response received successfully:\n{0}", CreateLevelData.ToString()));
+            CreateLevelData = (LevelingResource) KnetikClient.Deserialize(response.Content, typeof(LevelingResource), response.Headers);
+            KnetikLogger.LogResponse(mCreateLevelStartTime, "CreateLevel", string.Format("Response received successfully:\n{0}", CreateLevelData));
 
             if (CreateLevelComplete != null)
             {
-                CreateLevelComplete(CreateLevelData);
+                CreateLevelComplete(response.ResponseCode, CreateLevelData);
             }
         }
 
@@ -264,45 +269,44 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'name' when calling DeleteLevel");
             }
             
-            mDeleteLevelPath = "/leveling/{name}";
-            if (!string.IsNullOrEmpty(mDeleteLevelPath))
+            mWebCallEvent.WebPath = "/leveling/{name}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteLevelPath = mDeleteLevelPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteLevelPath = mDeleteLevelPath.Replace("{" + "name" + "}", KnetikClient.DefaultClient.ParameterToString(name));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "name" + "}", KnetikClient.ParameterToString(name));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteLevelStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteLevelStartTime, mDeleteLevelPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteLevelCoroutine.ResponseReceived += DeleteLevelCallback;
-            mDeleteLevelCoroutine.Start(mDeleteLevelPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteLevelStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteLevelResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteLevelStartTime, "DeleteLevel", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteLevelCallback(IRestResponse response)
+        private void OnDeleteLevelResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteLevel: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteLevel: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteLevel: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteLevelStartTime, mDeleteLevelPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteLevelStartTime, "DeleteLevel", "Response received successfully.");
             if (DeleteLevelComplete != null)
             {
-                DeleteLevelComplete();
+                DeleteLevelComplete(response.ResponseCode);
             }
         }
 
@@ -319,47 +323,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'name' when calling GetLevel");
             }
             
-            mGetLevelPath = "/leveling/{name}";
-            if (!string.IsNullOrEmpty(mGetLevelPath))
+            mWebCallEvent.WebPath = "/leveling/{name}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetLevelPath = mGetLevelPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetLevelPath = mGetLevelPath.Replace("{" + "name" + "}", KnetikClient.DefaultClient.ParameterToString(name));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "name" + "}", KnetikClient.ParameterToString(name));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetLevelStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetLevelStartTime, mGetLevelPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetLevelCoroutine.ResponseReceived += GetLevelCallback;
-            mGetLevelCoroutine.Start(mGetLevelPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetLevelStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetLevelResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetLevelStartTime, "GetLevel", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetLevelCallback(IRestResponse response)
+        private void OnGetLevelResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetLevel: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetLevel: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetLevel: " + response.Error);
             }
 
-            GetLevelData = (LevelingResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(LevelingResource), response.Headers);
-            KnetikLogger.LogResponse(mGetLevelStartTime, mGetLevelPath, string.Format("Response received successfully:\n{0}", GetLevelData.ToString()));
+            GetLevelData = (LevelingResource) KnetikClient.Deserialize(response.Content, typeof(LevelingResource), response.Headers);
+            KnetikLogger.LogResponse(mGetLevelStartTime, "GetLevel", string.Format("Response received successfully:\n{0}", GetLevelData));
 
             if (GetLevelComplete != null)
             {
-                GetLevelComplete(GetLevelData);
+                GetLevelComplete(response.ResponseCode, GetLevelData);
             }
         }
 
@@ -370,46 +373,45 @@ namespace com.knetikcloud.Api
         public void GetLevelTriggers()
         {
             
-            mGetLevelTriggersPath = "/leveling/triggers";
-            if (!string.IsNullOrEmpty(mGetLevelTriggersPath))
+            mWebCallEvent.WebPath = "/leveling/triggers";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetLevelTriggersPath = mGetLevelTriggersPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetLevelTriggersStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetLevelTriggersStartTime, mGetLevelTriggersPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetLevelTriggersCoroutine.ResponseReceived += GetLevelTriggersCallback;
-            mGetLevelTriggersCoroutine.Start(mGetLevelTriggersPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetLevelTriggersStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetLevelTriggersResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetLevelTriggersStartTime, "GetLevelTriggers", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetLevelTriggersCallback(IRestResponse response)
+        private void OnGetLevelTriggersResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetLevelTriggers: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetLevelTriggers: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetLevelTriggers: " + response.Error);
             }
 
-            GetLevelTriggersData = (List<BreTriggerResource>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<BreTriggerResource>), response.Headers);
-            KnetikLogger.LogResponse(mGetLevelTriggersStartTime, mGetLevelTriggersPath, string.Format("Response received successfully:\n{0}", GetLevelTriggersData.ToString()));
+            GetLevelTriggersData = (List<BreTriggerResource>) KnetikClient.Deserialize(response.Content, typeof(List<BreTriggerResource>), response.Headers);
+            KnetikLogger.LogResponse(mGetLevelTriggersStartTime, "GetLevelTriggers", string.Format("Response received successfully:\n{0}", GetLevelTriggersData));
 
             if (GetLevelTriggersComplete != null)
             {
-                GetLevelTriggersComplete(GetLevelTriggersData);
+                GetLevelTriggersComplete(response.ResponseCode, GetLevelTriggersData);
             }
         }
 
@@ -424,66 +426,65 @@ namespace com.knetikcloud.Api
         public void GetLevels(string filterName, int? size, int? page, string order)
         {
             
-            mGetLevelsPath = "/leveling";
-            if (!string.IsNullOrEmpty(mGetLevelsPath))
+            mWebCallEvent.WebPath = "/leveling";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetLevelsPath = mGetLevelsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (filterName != null)
             {
-                queryParams.Add("filter_name", KnetikClient.DefaultClient.ParameterToString(filterName));
+                mWebCallEvent.QueryParams["filter_name"] = KnetikClient.ParameterToString(filterName);
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetLevelsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetLevelsStartTime, mGetLevelsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetLevelsCoroutine.ResponseReceived += GetLevelsCallback;
-            mGetLevelsCoroutine.Start(mGetLevelsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetLevelsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetLevelsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetLevelsStartTime, "GetLevels", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetLevelsCallback(IRestResponse response)
+        private void OnGetLevelsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetLevels: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetLevels: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetLevels: " + response.Error);
             }
 
-            GetLevelsData = (PageResourceLevelingResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceLevelingResource), response.Headers);
-            KnetikLogger.LogResponse(mGetLevelsStartTime, mGetLevelsPath, string.Format("Response received successfully:\n{0}", GetLevelsData.ToString()));
+            GetLevelsData = (PageResourceLevelingResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceLevelingResource), response.Headers);
+            KnetikLogger.LogResponse(mGetLevelsStartTime, "GetLevels", string.Format("Response received successfully:\n{0}", GetLevelsData));
 
             if (GetLevelsComplete != null)
             {
-                GetLevelsComplete(GetLevelsData);
+                GetLevelsComplete(response.ResponseCode, GetLevelsData);
             }
         }
 
@@ -506,48 +507,47 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'name' when calling GetUserLevel");
             }
             
-            mGetUserLevelPath = "/users/{user_id}/leveling/{name}";
-            if (!string.IsNullOrEmpty(mGetUserLevelPath))
+            mWebCallEvent.WebPath = "/users/{user_id}/leveling/{name}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetUserLevelPath = mGetUserLevelPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetUserLevelPath = mGetUserLevelPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
-mGetUserLevelPath = mGetUserLevelPath.Replace("{" + "name" + "}", KnetikClient.DefaultClient.ParameterToString(name));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "name" + "}", KnetikClient.ParameterToString(name));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetUserLevelStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetUserLevelStartTime, mGetUserLevelPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetUserLevelCoroutine.ResponseReceived += GetUserLevelCallback;
-            mGetUserLevelCoroutine.Start(mGetUserLevelPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetUserLevelStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetUserLevelResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetUserLevelStartTime, "GetUserLevel", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetUserLevelCallback(IRestResponse response)
+        private void OnGetUserLevelResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUserLevel: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUserLevel: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetUserLevel: " + response.Error);
             }
 
-            GetUserLevelData = (UserLevelingResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(UserLevelingResource), response.Headers);
-            KnetikLogger.LogResponse(mGetUserLevelStartTime, mGetUserLevelPath, string.Format("Response received successfully:\n{0}", GetUserLevelData.ToString()));
+            GetUserLevelData = (UserLevelingResource) KnetikClient.Deserialize(response.Content, typeof(UserLevelingResource), response.Headers);
+            KnetikLogger.LogResponse(mGetUserLevelStartTime, "GetUserLevel", string.Format("Response received successfully:\n{0}", GetUserLevelData));
 
             if (GetUserLevelComplete != null)
             {
-                GetUserLevelComplete(GetUserLevelData);
+                GetUserLevelComplete(response.ResponseCode, GetUserLevelData);
             }
         }
 
@@ -568,67 +568,66 @@ mGetUserLevelPath = mGetUserLevelPath.Replace("{" + "name" + "}", KnetikClient.D
                 throw new KnetikException(400, "Missing required parameter 'userId' when calling GetUserLevels");
             }
             
-            mGetUserLevelsPath = "/users/{user_id}/leveling";
-            if (!string.IsNullOrEmpty(mGetUserLevelsPath))
+            mWebCallEvent.WebPath = "/users/{user_id}/leveling";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetUserLevelsPath = mGetUserLevelsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetUserLevelsPath = mGetUserLevelsPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (filterName != null)
             {
-                queryParams.Add("filter_name", KnetikClient.DefaultClient.ParameterToString(filterName));
+                mWebCallEvent.QueryParams["filter_name"] = KnetikClient.ParameterToString(filterName);
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetUserLevelsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetUserLevelsStartTime, mGetUserLevelsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetUserLevelsCoroutine.ResponseReceived += GetUserLevelsCallback;
-            mGetUserLevelsCoroutine.Start(mGetUserLevelsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetUserLevelsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetUserLevelsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetUserLevelsStartTime, "GetUserLevels", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetUserLevelsCallback(IRestResponse response)
+        private void OnGetUserLevelsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUserLevels: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUserLevels: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetUserLevels: " + response.Error);
             }
 
-            GetUserLevelsData = (PageResourceUserLevelingResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceUserLevelingResource), response.Headers);
-            KnetikLogger.LogResponse(mGetUserLevelsStartTime, mGetUserLevelsPath, string.Format("Response received successfully:\n{0}", GetUserLevelsData.ToString()));
+            GetUserLevelsData = (PageResourceUserLevelingResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceUserLevelingResource), response.Headers);
+            KnetikLogger.LogResponse(mGetUserLevelsStartTime, "GetUserLevels", string.Format("Response received successfully:\n{0}", GetUserLevelsData));
 
             if (GetUserLevelsComplete != null)
             {
-                GetUserLevelsComplete(GetUserLevelsData);
+                GetUserLevelsComplete(response.ResponseCode, GetUserLevelsData);
             }
         }
 
@@ -652,48 +651,47 @@ mGetUserLevelPath = mGetUserLevelPath.Replace("{" + "name" + "}", KnetikClient.D
                 throw new KnetikException(400, "Missing required parameter 'name' when calling IncrementProgress");
             }
             
-            mIncrementProgressPath = "/users/{user_id}/leveling/{name}/progress";
-            if (!string.IsNullOrEmpty(mIncrementProgressPath))
+            mWebCallEvent.WebPath = "/users/{user_id}/leveling/{name}/progress";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mIncrementProgressPath = mIncrementProgressPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mIncrementProgressPath = mIncrementProgressPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
-mIncrementProgressPath = mIncrementProgressPath.Replace("{" + "name" + "}", KnetikClient.DefaultClient.ParameterToString(name));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "name" + "}", KnetikClient.ParameterToString(name));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(progress); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(progress); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mIncrementProgressStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mIncrementProgressStartTime, mIncrementProgressPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mIncrementProgressCoroutine.ResponseReceived += IncrementProgressCallback;
-            mIncrementProgressCoroutine.Start(mIncrementProgressPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mIncrementProgressStartTime = DateTime.Now;
+            mWebCallEvent.Context = mIncrementProgressResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mIncrementProgressStartTime, "IncrementProgress", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void IncrementProgressCallback(IRestResponse response)
+        private void OnIncrementProgressResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling IncrementProgress: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling IncrementProgress: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling IncrementProgress: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mIncrementProgressStartTime, mIncrementProgressPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mIncrementProgressStartTime, "IncrementProgress", "Response received successfully.");
             if (IncrementProgressComplete != null)
             {
-                IncrementProgressComplete();
+                IncrementProgressComplete(response.ResponseCode);
             }
         }
 
@@ -717,48 +715,47 @@ mIncrementProgressPath = mIncrementProgressPath.Replace("{" + "name" + "}", Knet
                 throw new KnetikException(400, "Missing required parameter 'name' when calling SetProgress");
             }
             
-            mSetProgressPath = "/users/{user_id}/leveling/{name}/progress";
-            if (!string.IsNullOrEmpty(mSetProgressPath))
+            mWebCallEvent.WebPath = "/users/{user_id}/leveling/{name}/progress";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mSetProgressPath = mSetProgressPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mSetProgressPath = mSetProgressPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
-mSetProgressPath = mSetProgressPath.Replace("{" + "name" + "}", KnetikClient.DefaultClient.ParameterToString(name));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "name" + "}", KnetikClient.ParameterToString(name));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(progress); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(progress); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mSetProgressStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mSetProgressStartTime, mSetProgressPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mSetProgressCoroutine.ResponseReceived += SetProgressCallback;
-            mSetProgressCoroutine.Start(mSetProgressPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mSetProgressStartTime = DateTime.Now;
+            mWebCallEvent.Context = mSetProgressResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mSetProgressStartTime, "SetProgress", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void SetProgressCallback(IRestResponse response)
+        private void OnSetProgressResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling SetProgress: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling SetProgress: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling SetProgress: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mSetProgressStartTime, mSetProgressPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mSetProgressStartTime, "SetProgress", "Response received successfully.");
             if (SetProgressComplete != null)
             {
-                SetProgressComplete();
+                SetProgressComplete(response.ResponseCode);
             }
         }
 
@@ -776,49 +773,48 @@ mSetProgressPath = mSetProgressPath.Replace("{" + "name" + "}", KnetikClient.Def
                 throw new KnetikException(400, "Missing required parameter 'name' when calling UpdateLevel");
             }
             
-            mUpdateLevelPath = "/leveling/{name}";
-            if (!string.IsNullOrEmpty(mUpdateLevelPath))
+            mWebCallEvent.WebPath = "/leveling/{name}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateLevelPath = mUpdateLevelPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateLevelPath = mUpdateLevelPath.Replace("{" + "name" + "}", KnetikClient.DefaultClient.ParameterToString(name));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "name" + "}", KnetikClient.ParameterToString(name));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(newLevel); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(newLevel); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateLevelStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateLevelStartTime, mUpdateLevelPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateLevelCoroutine.ResponseReceived += UpdateLevelCallback;
-            mUpdateLevelCoroutine.Start(mUpdateLevelPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateLevelStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateLevelResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateLevelStartTime, "UpdateLevel", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateLevelCallback(IRestResponse response)
+        private void OnUpdateLevelResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateLevel: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateLevel: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateLevel: " + response.Error);
             }
 
-            UpdateLevelData = (LevelingResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(LevelingResource), response.Headers);
-            KnetikLogger.LogResponse(mUpdateLevelStartTime, mUpdateLevelPath, string.Format("Response received successfully:\n{0}", UpdateLevelData.ToString()));
+            UpdateLevelData = (LevelingResource) KnetikClient.Deserialize(response.Content, typeof(LevelingResource), response.Headers);
+            KnetikLogger.LogResponse(mUpdateLevelStartTime, "UpdateLevel", string.Format("Response received successfully:\n{0}", UpdateLevelData));
 
             if (UpdateLevelComplete != null)
             {
-                UpdateLevelComplete(UpdateLevelData);
+                UpdateLevelComplete(response.ResponseCode, UpdateLevelData);
             }
         }
 

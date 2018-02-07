@@ -2,8 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using com.knetikcloud.Attributes;
-using com.knetikcloud.Serialization;
+using KnetikUnity.Attributes;
+using KnetikUnity.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -24,25 +24,25 @@ namespace com.knetikcloud.Model
         public Dictionary<string, Property> AdditionalProperties;
 
         /// <summary>
-        /// The url of the user's avatar image
+        /// The group. Id is the unique name
         /// </summary>
-        /// <value>The url of the user's avatar image</value>
-        [JsonProperty(PropertyName = "avatar_url")]
-        public string AvatarUrl;
+        /// <value>The group. Id is the unique name</value>
+        [JsonProperty(PropertyName = "group")]
+        public SimpleGroupResource Group;
 
         /// <summary>
-        /// The public username of the user
+        /// Whether this membership is explicit (the user was added directly to the group) or implicit (the user was added only to one or more child groups)
         /// </summary>
-        /// <value>The public username of the user</value>
-        [JsonProperty(PropertyName = "display_name")]
-        public string DisplayName;
+        /// <value>Whether this membership is explicit (the user was added directly to the group) or implicit (the user was added only to one or more child groups)</value>
+        [JsonProperty(PropertyName = "implicit")]
+        public bool? _Implicit;
 
         /// <summary>
-        /// The id of the user
+        /// The id of the membership entry
         /// </summary>
-        /// <value>The id of the user</value>
-        [JsonProperty(PropertyName = "id")]
-        public int? Id;
+        /// <value>The id of the membership entry</value>
+        [JsonProperty(PropertyName = "membership_id")]
+        public long? MembershipId;
 
         /// <summary>
         /// The position of the member in the group if applicable. Read notes for details
@@ -66,11 +66,11 @@ namespace com.knetikcloud.Model
         public string Template;
 
         /// <summary>
-        /// The username of the user
+        /// The user
         /// </summary>
-        /// <value>The username of the user</value>
-        [JsonProperty(PropertyName = "username")]
-        public string Username;
+        /// <value>The user</value>
+        [JsonProperty(PropertyName = "user")]
+        public SimpleUserResource User;
 
         /// <inheritdoc />
         /// <summary>
@@ -82,13 +82,13 @@ namespace com.knetikcloud.Model
             StringBuilder sb = new StringBuilder();
             sb.Append("class GroupMemberResource {\n");
             sb.Append("  AdditionalProperties: ").Append(AdditionalProperties).Append("\n");
-            sb.Append("  AvatarUrl: ").Append(AvatarUrl).Append("\n");
-            sb.Append("  DisplayName: ").Append(DisplayName).Append("\n");
-            sb.Append("  Id: ").Append(Id).Append("\n");
+            sb.Append("  Group: ").Append(Group).Append("\n");
+            sb.Append("  _Implicit: ").Append(_Implicit).Append("\n");
+            sb.Append("  MembershipId: ").Append(MembershipId).Append("\n");
             sb.Append("  Order: ").Append(Order).Append("\n");
             sb.Append("  Status: ").Append(Status).Append("\n");
             sb.Append("  Template: ").Append(Template).Append("\n");
-            sb.Append("  Username: ").Append(Username).Append("\n");
+            sb.Append("  User: ").Append(User).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }

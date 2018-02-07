@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -17,29 +16,8 @@ namespace com.knetikcloud.Api
     /// </summary>
     public interface IMediaVideosApi
     {
-        VideoResource AddVideoData { get; }
-
-        CommentResource AddVideoCommentData { get; }
-
-        FlagResource AddVideoFlagData { get; }
-
-        VideoRelationshipResource AddVideoRelationshipsData { get; }
-
-        DispositionResource CreateVideoDispositionData { get; }
-
-        PageResourceVideoResource GetUserVideosData { get; }
-
-        VideoResource GetVideoData { get; }
-
-        PageResourceCommentResource GetVideoCommentsData { get; }
-
-        PageResourceDispositionResource GetVideoDispositionsData { get; }
-
-        PageResourceVideoRelationshipResource GetVideoRelationshipsData { get; }
-
-        PageResourceVideoResource GetVideosData { get; }
-
         
+
         /// <summary>
         /// Adds a user to a video&#39;s whitelist Whitelisted users can view video regardless of privacy setting.
         /// </summary>
@@ -47,11 +25,15 @@ namespace com.knetikcloud.Api
         /// <param name="userId">The user id</param>
         void AddUserToVideoWhitelist(long? id, IntWrapper userId);
 
+        VideoResource AddVideoData { get; }
+
         /// <summary>
         /// Adds a new video in the system 
         /// </summary>
         /// <param name="videoResource">The video object</param>
         void AddVideo(VideoResource videoResource);
+
+        CommentResource AddVideoCommentData { get; }
 
         /// <summary>
         /// Add a new video comment 
@@ -60,12 +42,16 @@ namespace com.knetikcloud.Api
         /// <param name="commentResource">The comment object</param>
         void AddVideoComment(int? videoId, CommentResource commentResource);
 
+        
+
         /// <summary>
         /// Adds a contributor to a video 
         /// </summary>
         /// <param name="videoId">The video id</param>
         /// <param name="contributionResource">The contribution object</param>
         void AddVideoContributor(long? videoId, ContributionResource contributionResource);
+
+        FlagResource AddVideoFlagData { get; }
 
         /// <summary>
         /// Add a new flag 
@@ -74,12 +60,16 @@ namespace com.knetikcloud.Api
         /// <param name="reason">The flag reason</param>
         void AddVideoFlag(long? videoId, StringWrapper reason);
 
+        VideoRelationshipResource AddVideoRelationshipsData { get; }
+
         /// <summary>
         /// Adds one or more existing videos as related to this one 
         /// </summary>
         /// <param name="videoId">The video id</param>
         /// <param name="videoRelationshipResource">The video relationship object </param>
         void AddVideoRelationships(long? videoId, VideoRelationshipResource videoRelationshipResource);
+
+        DispositionResource CreateVideoDispositionData { get; }
 
         /// <summary>
         /// Create a video disposition 
@@ -88,11 +78,23 @@ namespace com.knetikcloud.Api
         /// <param name="dispositionResource">The disposition object</param>
         void CreateVideoDisposition(int? videoId, DispositionResource dispositionResource);
 
+        TemplateResource CreateVideoTemplateData { get; }
+
+        /// <summary>
+        /// Create a video template Video Templates define a type of video and the properties they have
+        /// </summary>
+        /// <param name="videoTemplateResource">The video template resource object</param>
+        void CreateVideoTemplate(TemplateResource videoTemplateResource);
+
+        
+
         /// <summary>
         /// Deletes a video from the system if no resources are attached to it 
         /// </summary>
         /// <param name="id">The video id</param>
         void DeleteVideo(long? id);
+
+        
 
         /// <summary>
         /// Delete a video comment 
@@ -101,11 +103,15 @@ namespace com.knetikcloud.Api
         /// <param name="id">The comment id</param>
         void DeleteVideoComment(long? videoId, long? id);
 
+        
+
         /// <summary>
         /// Delete a video disposition 
         /// </summary>
         /// <param name="dispositionId">The disposition id</param>
         void DeleteVideoDisposition(long? dispositionId);
+
+        
 
         /// <summary>
         /// Delete a flag 
@@ -113,12 +119,25 @@ namespace com.knetikcloud.Api
         /// <param name="videoId">The video id</param>
         void DeleteVideoFlag(long? videoId);
 
+        
+
         /// <summary>
         /// Delete a video&#39;s relationship 
         /// </summary>
         /// <param name="videoId">The video id</param>
         /// <param name="id">The relationship id</param>
         void DeleteVideoRelationship(long? videoId, long? id);
+
+        
+
+        /// <summary>
+        /// Delete a video template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
+        /// </summary>
+        /// <param name="id">The id of the template</param>
+        /// <param name="cascade">The value needed to delete used templates</param>
+        void DeleteVideoTemplate(string id, string cascade);
+
+        PageResourceVideoResource GetUserVideosData { get; }
 
         /// <summary>
         /// Get user videos 
@@ -129,11 +148,15 @@ namespace com.knetikcloud.Api
         /// <param name="page">The number of the page returned, starting with 1</param>
         void GetUserVideos(int? userId, bool? excludeFlagged, int? size, int? page);
 
+        VideoResource GetVideoData { get; }
+
         /// <summary>
         /// Loads a specific video details 
         /// </summary>
         /// <param name="id">The video id</param>
         void GetVideo(long? id);
+
+        PageResourceCommentResource GetVideoCommentsData { get; }
 
         /// <summary>
         /// Returns a page of comments for a video 
@@ -143,6 +166,8 @@ namespace com.knetikcloud.Api
         /// <param name="page">The number of the page returned, starting with 1</param>
         void GetVideoComments(int? videoId, int? size, int? page);
 
+        PageResourceDispositionResource GetVideoDispositionsData { get; }
+
         /// <summary>
         /// Returns a page of dispositions for a video 
         /// </summary>
@@ -151,6 +176,8 @@ namespace com.knetikcloud.Api
         /// <param name="page">The number of the page returned, starting with 1</param>
         void GetVideoDispositions(int? videoId, int? size, int? page);
 
+        PageResourceVideoRelationshipResource GetVideoRelationshipsData { get; }
+
         /// <summary>
         /// Returns a page of video relationships 
         /// </summary>
@@ -158,6 +185,26 @@ namespace com.knetikcloud.Api
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
         void GetVideoRelationships(long? videoId, int? size, int? page);
+
+        TemplateResource GetVideoTemplateData { get; }
+
+        /// <summary>
+        /// Get a single video template 
+        /// </summary>
+        /// <param name="id">The id of the template</param>
+        void GetVideoTemplate(string id);
+
+        PageResourceTemplateResource GetVideoTemplatesData { get; }
+
+        /// <summary>
+        /// List and search video templates 
+        /// </summary>
+        /// <param name="size">The number of objects returned per page</param>
+        /// <param name="page">The number of the page returned, starting with 1</param>
+        /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
+        void GetVideoTemplates(int? size, int? page, string order);
+
+        PageResourceVideoResource GetVideosData { get; }
 
         /// <summary>
         /// Search videos using the documented filters 
@@ -179,12 +226,16 @@ namespace com.knetikcloud.Api
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
         void GetVideos(bool? excludeFlagged, int? filterVideosByUploader, string filterCategory, string filterTagset, string filterVideosByName, int? filterVideosByContributor, int? filterVideosByAuthor, bool? filterHasAuthor, bool? filterHasUploader, string filterRelatedTo, bool? filterFriends, string filterDisposition, int? size, int? page, string order);
 
+        
+
         /// <summary>
         /// Removes a user from a video&#39;s whitelist Remove the user with the id given in the path from the whitelist of users that can view this video regardless of privacy setting.
         /// </summary>
         /// <param name="videoId">The video id</param>
         /// <param name="id">The user id</param>
         void RemoveUserFromVideoWhitelist(long? videoId, int? id);
+
+        
 
         /// <summary>
         /// Removes a contributor from a video 
@@ -193,12 +244,16 @@ namespace com.knetikcloud.Api
         /// <param name="id">The contributor id</param>
         void RemoveVideoContributor(long? videoId, int? id);
 
+        
+
         /// <summary>
         /// Modifies a video&#39;s details 
         /// </summary>
         /// <param name="id">The video id</param>
         /// <param name="videoResource">The video object</param>
         void UpdateVideo(long? id, VideoResource videoResource);
+
+        
 
         /// <summary>
         /// Update a video comment 
@@ -208,6 +263,8 @@ namespace com.knetikcloud.Api
         /// <param name="content">The comment content</param>
         void UpdateVideoComment(long? videoId, long? id, StringWrapper content);
 
+        
+
         /// <summary>
         /// Update a video&#39;s relationship details 
         /// </summary>
@@ -215,6 +272,17 @@ namespace com.knetikcloud.Api
         /// <param name="relationshipId">The relationship id</param>
         /// <param name="details">The video relationship details</param>
         void UpdateVideoRelationship(long? videoId, long? relationshipId, StringWrapper details);
+
+        TemplateResource UpdateVideoTemplateData { get; }
+
+        /// <summary>
+        /// Update a video template 
+        /// </summary>
+        /// <param name="id">The id of the template</param>
+        /// <param name="videoTemplateResource">The video template resource object</param>
+        void UpdateVideoTemplate(string id, TemplateResource videoTemplateResource);
+
+        
 
         /// <summary>
         /// Increment a video&#39;s view count 
@@ -230,160 +298,167 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class MediaVideosApi : IMediaVideosApi
     {
-        private readonly KnetikCoroutine mAddUserToVideoWhitelistCoroutine;
-        private DateTime mAddUserToVideoWhitelistStartTime;
-        private string mAddUserToVideoWhitelistPath;
-        private readonly KnetikCoroutine mAddVideoCoroutine;
-        private DateTime mAddVideoStartTime;
-        private string mAddVideoPath;
-        private readonly KnetikCoroutine mAddVideoCommentCoroutine;
-        private DateTime mAddVideoCommentStartTime;
-        private string mAddVideoCommentPath;
-        private readonly KnetikCoroutine mAddVideoContributorCoroutine;
-        private DateTime mAddVideoContributorStartTime;
-        private string mAddVideoContributorPath;
-        private readonly KnetikCoroutine mAddVideoFlagCoroutine;
-        private DateTime mAddVideoFlagStartTime;
-        private string mAddVideoFlagPath;
-        private readonly KnetikCoroutine mAddVideoRelationshipsCoroutine;
-        private DateTime mAddVideoRelationshipsStartTime;
-        private string mAddVideoRelationshipsPath;
-        private readonly KnetikCoroutine mCreateVideoDispositionCoroutine;
-        private DateTime mCreateVideoDispositionStartTime;
-        private string mCreateVideoDispositionPath;
-        private readonly KnetikCoroutine mDeleteVideoCoroutine;
-        private DateTime mDeleteVideoStartTime;
-        private string mDeleteVideoPath;
-        private readonly KnetikCoroutine mDeleteVideoCommentCoroutine;
-        private DateTime mDeleteVideoCommentStartTime;
-        private string mDeleteVideoCommentPath;
-        private readonly KnetikCoroutine mDeleteVideoDispositionCoroutine;
-        private DateTime mDeleteVideoDispositionStartTime;
-        private string mDeleteVideoDispositionPath;
-        private readonly KnetikCoroutine mDeleteVideoFlagCoroutine;
-        private DateTime mDeleteVideoFlagStartTime;
-        private string mDeleteVideoFlagPath;
-        private readonly KnetikCoroutine mDeleteVideoRelationshipCoroutine;
-        private DateTime mDeleteVideoRelationshipStartTime;
-        private string mDeleteVideoRelationshipPath;
-        private readonly KnetikCoroutine mGetUserVideosCoroutine;
-        private DateTime mGetUserVideosStartTime;
-        private string mGetUserVideosPath;
-        private readonly KnetikCoroutine mGetVideoCoroutine;
-        private DateTime mGetVideoStartTime;
-        private string mGetVideoPath;
-        private readonly KnetikCoroutine mGetVideoCommentsCoroutine;
-        private DateTime mGetVideoCommentsStartTime;
-        private string mGetVideoCommentsPath;
-        private readonly KnetikCoroutine mGetVideoDispositionsCoroutine;
-        private DateTime mGetVideoDispositionsStartTime;
-        private string mGetVideoDispositionsPath;
-        private readonly KnetikCoroutine mGetVideoRelationshipsCoroutine;
-        private DateTime mGetVideoRelationshipsStartTime;
-        private string mGetVideoRelationshipsPath;
-        private readonly KnetikCoroutine mGetVideosCoroutine;
-        private DateTime mGetVideosStartTime;
-        private string mGetVideosPath;
-        private readonly KnetikCoroutine mRemoveUserFromVideoWhitelistCoroutine;
-        private DateTime mRemoveUserFromVideoWhitelistStartTime;
-        private string mRemoveUserFromVideoWhitelistPath;
-        private readonly KnetikCoroutine mRemoveVideoContributorCoroutine;
-        private DateTime mRemoveVideoContributorStartTime;
-        private string mRemoveVideoContributorPath;
-        private readonly KnetikCoroutine mUpdateVideoCoroutine;
-        private DateTime mUpdateVideoStartTime;
-        private string mUpdateVideoPath;
-        private readonly KnetikCoroutine mUpdateVideoCommentCoroutine;
-        private DateTime mUpdateVideoCommentStartTime;
-        private string mUpdateVideoCommentPath;
-        private readonly KnetikCoroutine mUpdateVideoRelationshipCoroutine;
-        private DateTime mUpdateVideoRelationshipStartTime;
-        private string mUpdateVideoRelationshipPath;
-        private readonly KnetikCoroutine mViewVideoCoroutine;
-        private DateTime mViewVideoStartTime;
-        private string mViewVideoPath;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
 
-        public delegate void AddUserToVideoWhitelistCompleteDelegate();
+        private readonly KnetikResponseContext mAddUserToVideoWhitelistResponseContext;
+        private DateTime mAddUserToVideoWhitelistStartTime;
+        private readonly KnetikResponseContext mAddVideoResponseContext;
+        private DateTime mAddVideoStartTime;
+        private readonly KnetikResponseContext mAddVideoCommentResponseContext;
+        private DateTime mAddVideoCommentStartTime;
+        private readonly KnetikResponseContext mAddVideoContributorResponseContext;
+        private DateTime mAddVideoContributorStartTime;
+        private readonly KnetikResponseContext mAddVideoFlagResponseContext;
+        private DateTime mAddVideoFlagStartTime;
+        private readonly KnetikResponseContext mAddVideoRelationshipsResponseContext;
+        private DateTime mAddVideoRelationshipsStartTime;
+        private readonly KnetikResponseContext mCreateVideoDispositionResponseContext;
+        private DateTime mCreateVideoDispositionStartTime;
+        private readonly KnetikResponseContext mCreateVideoTemplateResponseContext;
+        private DateTime mCreateVideoTemplateStartTime;
+        private readonly KnetikResponseContext mDeleteVideoResponseContext;
+        private DateTime mDeleteVideoStartTime;
+        private readonly KnetikResponseContext mDeleteVideoCommentResponseContext;
+        private DateTime mDeleteVideoCommentStartTime;
+        private readonly KnetikResponseContext mDeleteVideoDispositionResponseContext;
+        private DateTime mDeleteVideoDispositionStartTime;
+        private readonly KnetikResponseContext mDeleteVideoFlagResponseContext;
+        private DateTime mDeleteVideoFlagStartTime;
+        private readonly KnetikResponseContext mDeleteVideoRelationshipResponseContext;
+        private DateTime mDeleteVideoRelationshipStartTime;
+        private readonly KnetikResponseContext mDeleteVideoTemplateResponseContext;
+        private DateTime mDeleteVideoTemplateStartTime;
+        private readonly KnetikResponseContext mGetUserVideosResponseContext;
+        private DateTime mGetUserVideosStartTime;
+        private readonly KnetikResponseContext mGetVideoResponseContext;
+        private DateTime mGetVideoStartTime;
+        private readonly KnetikResponseContext mGetVideoCommentsResponseContext;
+        private DateTime mGetVideoCommentsStartTime;
+        private readonly KnetikResponseContext mGetVideoDispositionsResponseContext;
+        private DateTime mGetVideoDispositionsStartTime;
+        private readonly KnetikResponseContext mGetVideoRelationshipsResponseContext;
+        private DateTime mGetVideoRelationshipsStartTime;
+        private readonly KnetikResponseContext mGetVideoTemplateResponseContext;
+        private DateTime mGetVideoTemplateStartTime;
+        private readonly KnetikResponseContext mGetVideoTemplatesResponseContext;
+        private DateTime mGetVideoTemplatesStartTime;
+        private readonly KnetikResponseContext mGetVideosResponseContext;
+        private DateTime mGetVideosStartTime;
+        private readonly KnetikResponseContext mRemoveUserFromVideoWhitelistResponseContext;
+        private DateTime mRemoveUserFromVideoWhitelistStartTime;
+        private readonly KnetikResponseContext mRemoveVideoContributorResponseContext;
+        private DateTime mRemoveVideoContributorStartTime;
+        private readonly KnetikResponseContext mUpdateVideoResponseContext;
+        private DateTime mUpdateVideoStartTime;
+        private readonly KnetikResponseContext mUpdateVideoCommentResponseContext;
+        private DateTime mUpdateVideoCommentStartTime;
+        private readonly KnetikResponseContext mUpdateVideoRelationshipResponseContext;
+        private DateTime mUpdateVideoRelationshipStartTime;
+        private readonly KnetikResponseContext mUpdateVideoTemplateResponseContext;
+        private DateTime mUpdateVideoTemplateStartTime;
+        private readonly KnetikResponseContext mViewVideoResponseContext;
+        private DateTime mViewVideoStartTime;
+
+        public delegate void AddUserToVideoWhitelistCompleteDelegate(long responseCode);
         public AddUserToVideoWhitelistCompleteDelegate AddUserToVideoWhitelistComplete;
 
         public VideoResource AddVideoData { get; private set; }
-        public delegate void AddVideoCompleteDelegate(VideoResource response);
+        public delegate void AddVideoCompleteDelegate(long responseCode, VideoResource response);
         public AddVideoCompleteDelegate AddVideoComplete;
 
         public CommentResource AddVideoCommentData { get; private set; }
-        public delegate void AddVideoCommentCompleteDelegate(CommentResource response);
+        public delegate void AddVideoCommentCompleteDelegate(long responseCode, CommentResource response);
         public AddVideoCommentCompleteDelegate AddVideoCommentComplete;
 
-        public delegate void AddVideoContributorCompleteDelegate();
+        public delegate void AddVideoContributorCompleteDelegate(long responseCode);
         public AddVideoContributorCompleteDelegate AddVideoContributorComplete;
 
         public FlagResource AddVideoFlagData { get; private set; }
-        public delegate void AddVideoFlagCompleteDelegate(FlagResource response);
+        public delegate void AddVideoFlagCompleteDelegate(long responseCode, FlagResource response);
         public AddVideoFlagCompleteDelegate AddVideoFlagComplete;
 
         public VideoRelationshipResource AddVideoRelationshipsData { get; private set; }
-        public delegate void AddVideoRelationshipsCompleteDelegate(VideoRelationshipResource response);
+        public delegate void AddVideoRelationshipsCompleteDelegate(long responseCode, VideoRelationshipResource response);
         public AddVideoRelationshipsCompleteDelegate AddVideoRelationshipsComplete;
 
         public DispositionResource CreateVideoDispositionData { get; private set; }
-        public delegate void CreateVideoDispositionCompleteDelegate(DispositionResource response);
+        public delegate void CreateVideoDispositionCompleteDelegate(long responseCode, DispositionResource response);
         public CreateVideoDispositionCompleteDelegate CreateVideoDispositionComplete;
 
-        public delegate void DeleteVideoCompleteDelegate();
+        public TemplateResource CreateVideoTemplateData { get; private set; }
+        public delegate void CreateVideoTemplateCompleteDelegate(long responseCode, TemplateResource response);
+        public CreateVideoTemplateCompleteDelegate CreateVideoTemplateComplete;
+
+        public delegate void DeleteVideoCompleteDelegate(long responseCode);
         public DeleteVideoCompleteDelegate DeleteVideoComplete;
 
-        public delegate void DeleteVideoCommentCompleteDelegate();
+        public delegate void DeleteVideoCommentCompleteDelegate(long responseCode);
         public DeleteVideoCommentCompleteDelegate DeleteVideoCommentComplete;
 
-        public delegate void DeleteVideoDispositionCompleteDelegate();
+        public delegate void DeleteVideoDispositionCompleteDelegate(long responseCode);
         public DeleteVideoDispositionCompleteDelegate DeleteVideoDispositionComplete;
 
-        public delegate void DeleteVideoFlagCompleteDelegate();
+        public delegate void DeleteVideoFlagCompleteDelegate(long responseCode);
         public DeleteVideoFlagCompleteDelegate DeleteVideoFlagComplete;
 
-        public delegate void DeleteVideoRelationshipCompleteDelegate();
+        public delegate void DeleteVideoRelationshipCompleteDelegate(long responseCode);
         public DeleteVideoRelationshipCompleteDelegate DeleteVideoRelationshipComplete;
 
+        public delegate void DeleteVideoTemplateCompleteDelegate(long responseCode);
+        public DeleteVideoTemplateCompleteDelegate DeleteVideoTemplateComplete;
+
         public PageResourceVideoResource GetUserVideosData { get; private set; }
-        public delegate void GetUserVideosCompleteDelegate(PageResourceVideoResource response);
+        public delegate void GetUserVideosCompleteDelegate(long responseCode, PageResourceVideoResource response);
         public GetUserVideosCompleteDelegate GetUserVideosComplete;
 
         public VideoResource GetVideoData { get; private set; }
-        public delegate void GetVideoCompleteDelegate(VideoResource response);
+        public delegate void GetVideoCompleteDelegate(long responseCode, VideoResource response);
         public GetVideoCompleteDelegate GetVideoComplete;
 
         public PageResourceCommentResource GetVideoCommentsData { get; private set; }
-        public delegate void GetVideoCommentsCompleteDelegate(PageResourceCommentResource response);
+        public delegate void GetVideoCommentsCompleteDelegate(long responseCode, PageResourceCommentResource response);
         public GetVideoCommentsCompleteDelegate GetVideoCommentsComplete;
 
         public PageResourceDispositionResource GetVideoDispositionsData { get; private set; }
-        public delegate void GetVideoDispositionsCompleteDelegate(PageResourceDispositionResource response);
+        public delegate void GetVideoDispositionsCompleteDelegate(long responseCode, PageResourceDispositionResource response);
         public GetVideoDispositionsCompleteDelegate GetVideoDispositionsComplete;
 
         public PageResourceVideoRelationshipResource GetVideoRelationshipsData { get; private set; }
-        public delegate void GetVideoRelationshipsCompleteDelegate(PageResourceVideoRelationshipResource response);
+        public delegate void GetVideoRelationshipsCompleteDelegate(long responseCode, PageResourceVideoRelationshipResource response);
         public GetVideoRelationshipsCompleteDelegate GetVideoRelationshipsComplete;
 
+        public TemplateResource GetVideoTemplateData { get; private set; }
+        public delegate void GetVideoTemplateCompleteDelegate(long responseCode, TemplateResource response);
+        public GetVideoTemplateCompleteDelegate GetVideoTemplateComplete;
+
+        public PageResourceTemplateResource GetVideoTemplatesData { get; private set; }
+        public delegate void GetVideoTemplatesCompleteDelegate(long responseCode, PageResourceTemplateResource response);
+        public GetVideoTemplatesCompleteDelegate GetVideoTemplatesComplete;
+
         public PageResourceVideoResource GetVideosData { get; private set; }
-        public delegate void GetVideosCompleteDelegate(PageResourceVideoResource response);
+        public delegate void GetVideosCompleteDelegate(long responseCode, PageResourceVideoResource response);
         public GetVideosCompleteDelegate GetVideosComplete;
 
-        public delegate void RemoveUserFromVideoWhitelistCompleteDelegate();
+        public delegate void RemoveUserFromVideoWhitelistCompleteDelegate(long responseCode);
         public RemoveUserFromVideoWhitelistCompleteDelegate RemoveUserFromVideoWhitelistComplete;
 
-        public delegate void RemoveVideoContributorCompleteDelegate();
+        public delegate void RemoveVideoContributorCompleteDelegate(long responseCode);
         public RemoveVideoContributorCompleteDelegate RemoveVideoContributorComplete;
 
-        public delegate void UpdateVideoCompleteDelegate();
+        public delegate void UpdateVideoCompleteDelegate(long responseCode);
         public UpdateVideoCompleteDelegate UpdateVideoComplete;
 
-        public delegate void UpdateVideoCommentCompleteDelegate();
+        public delegate void UpdateVideoCommentCompleteDelegate(long responseCode);
         public UpdateVideoCommentCompleteDelegate UpdateVideoCommentComplete;
 
-        public delegate void UpdateVideoRelationshipCompleteDelegate();
+        public delegate void UpdateVideoRelationshipCompleteDelegate(long responseCode);
         public UpdateVideoRelationshipCompleteDelegate UpdateVideoRelationshipComplete;
 
-        public delegate void ViewVideoCompleteDelegate();
+        public TemplateResource UpdateVideoTemplateData { get; private set; }
+        public delegate void UpdateVideoTemplateCompleteDelegate(long responseCode, TemplateResource response);
+        public UpdateVideoTemplateCompleteDelegate UpdateVideoTemplateComplete;
+
+        public delegate void ViewVideoCompleteDelegate(long responseCode);
         public ViewVideoCompleteDelegate ViewVideoComplete;
 
         /// <summary>
@@ -392,30 +467,64 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public MediaVideosApi()
         {
-            mAddUserToVideoWhitelistCoroutine = new KnetikCoroutine();
-            mAddVideoCoroutine = new KnetikCoroutine();
-            mAddVideoCommentCoroutine = new KnetikCoroutine();
-            mAddVideoContributorCoroutine = new KnetikCoroutine();
-            mAddVideoFlagCoroutine = new KnetikCoroutine();
-            mAddVideoRelationshipsCoroutine = new KnetikCoroutine();
-            mCreateVideoDispositionCoroutine = new KnetikCoroutine();
-            mDeleteVideoCoroutine = new KnetikCoroutine();
-            mDeleteVideoCommentCoroutine = new KnetikCoroutine();
-            mDeleteVideoDispositionCoroutine = new KnetikCoroutine();
-            mDeleteVideoFlagCoroutine = new KnetikCoroutine();
-            mDeleteVideoRelationshipCoroutine = new KnetikCoroutine();
-            mGetUserVideosCoroutine = new KnetikCoroutine();
-            mGetVideoCoroutine = new KnetikCoroutine();
-            mGetVideoCommentsCoroutine = new KnetikCoroutine();
-            mGetVideoDispositionsCoroutine = new KnetikCoroutine();
-            mGetVideoRelationshipsCoroutine = new KnetikCoroutine();
-            mGetVideosCoroutine = new KnetikCoroutine();
-            mRemoveUserFromVideoWhitelistCoroutine = new KnetikCoroutine();
-            mRemoveVideoContributorCoroutine = new KnetikCoroutine();
-            mUpdateVideoCoroutine = new KnetikCoroutine();
-            mUpdateVideoCommentCoroutine = new KnetikCoroutine();
-            mUpdateVideoRelationshipCoroutine = new KnetikCoroutine();
-            mViewVideoCoroutine = new KnetikCoroutine();
+            mAddUserToVideoWhitelistResponseContext = new KnetikResponseContext();
+            mAddUserToVideoWhitelistResponseContext.ResponseReceived += OnAddUserToVideoWhitelistResponse;
+            mAddVideoResponseContext = new KnetikResponseContext();
+            mAddVideoResponseContext.ResponseReceived += OnAddVideoResponse;
+            mAddVideoCommentResponseContext = new KnetikResponseContext();
+            mAddVideoCommentResponseContext.ResponseReceived += OnAddVideoCommentResponse;
+            mAddVideoContributorResponseContext = new KnetikResponseContext();
+            mAddVideoContributorResponseContext.ResponseReceived += OnAddVideoContributorResponse;
+            mAddVideoFlagResponseContext = new KnetikResponseContext();
+            mAddVideoFlagResponseContext.ResponseReceived += OnAddVideoFlagResponse;
+            mAddVideoRelationshipsResponseContext = new KnetikResponseContext();
+            mAddVideoRelationshipsResponseContext.ResponseReceived += OnAddVideoRelationshipsResponse;
+            mCreateVideoDispositionResponseContext = new KnetikResponseContext();
+            mCreateVideoDispositionResponseContext.ResponseReceived += OnCreateVideoDispositionResponse;
+            mCreateVideoTemplateResponseContext = new KnetikResponseContext();
+            mCreateVideoTemplateResponseContext.ResponseReceived += OnCreateVideoTemplateResponse;
+            mDeleteVideoResponseContext = new KnetikResponseContext();
+            mDeleteVideoResponseContext.ResponseReceived += OnDeleteVideoResponse;
+            mDeleteVideoCommentResponseContext = new KnetikResponseContext();
+            mDeleteVideoCommentResponseContext.ResponseReceived += OnDeleteVideoCommentResponse;
+            mDeleteVideoDispositionResponseContext = new KnetikResponseContext();
+            mDeleteVideoDispositionResponseContext.ResponseReceived += OnDeleteVideoDispositionResponse;
+            mDeleteVideoFlagResponseContext = new KnetikResponseContext();
+            mDeleteVideoFlagResponseContext.ResponseReceived += OnDeleteVideoFlagResponse;
+            mDeleteVideoRelationshipResponseContext = new KnetikResponseContext();
+            mDeleteVideoRelationshipResponseContext.ResponseReceived += OnDeleteVideoRelationshipResponse;
+            mDeleteVideoTemplateResponseContext = new KnetikResponseContext();
+            mDeleteVideoTemplateResponseContext.ResponseReceived += OnDeleteVideoTemplateResponse;
+            mGetUserVideosResponseContext = new KnetikResponseContext();
+            mGetUserVideosResponseContext.ResponseReceived += OnGetUserVideosResponse;
+            mGetVideoResponseContext = new KnetikResponseContext();
+            mGetVideoResponseContext.ResponseReceived += OnGetVideoResponse;
+            mGetVideoCommentsResponseContext = new KnetikResponseContext();
+            mGetVideoCommentsResponseContext.ResponseReceived += OnGetVideoCommentsResponse;
+            mGetVideoDispositionsResponseContext = new KnetikResponseContext();
+            mGetVideoDispositionsResponseContext.ResponseReceived += OnGetVideoDispositionsResponse;
+            mGetVideoRelationshipsResponseContext = new KnetikResponseContext();
+            mGetVideoRelationshipsResponseContext.ResponseReceived += OnGetVideoRelationshipsResponse;
+            mGetVideoTemplateResponseContext = new KnetikResponseContext();
+            mGetVideoTemplateResponseContext.ResponseReceived += OnGetVideoTemplateResponse;
+            mGetVideoTemplatesResponseContext = new KnetikResponseContext();
+            mGetVideoTemplatesResponseContext.ResponseReceived += OnGetVideoTemplatesResponse;
+            mGetVideosResponseContext = new KnetikResponseContext();
+            mGetVideosResponseContext.ResponseReceived += OnGetVideosResponse;
+            mRemoveUserFromVideoWhitelistResponseContext = new KnetikResponseContext();
+            mRemoveUserFromVideoWhitelistResponseContext.ResponseReceived += OnRemoveUserFromVideoWhitelistResponse;
+            mRemoveVideoContributorResponseContext = new KnetikResponseContext();
+            mRemoveVideoContributorResponseContext.ResponseReceived += OnRemoveVideoContributorResponse;
+            mUpdateVideoResponseContext = new KnetikResponseContext();
+            mUpdateVideoResponseContext.ResponseReceived += OnUpdateVideoResponse;
+            mUpdateVideoCommentResponseContext = new KnetikResponseContext();
+            mUpdateVideoCommentResponseContext.ResponseReceived += OnUpdateVideoCommentResponse;
+            mUpdateVideoRelationshipResponseContext = new KnetikResponseContext();
+            mUpdateVideoRelationshipResponseContext.ResponseReceived += OnUpdateVideoRelationshipResponse;
+            mUpdateVideoTemplateResponseContext = new KnetikResponseContext();
+            mUpdateVideoTemplateResponseContext.ResponseReceived += OnUpdateVideoTemplateResponse;
+            mViewVideoResponseContext = new KnetikResponseContext();
+            mViewVideoResponseContext.ResponseReceived += OnViewVideoResponse;
         }
     
         /// <inheritdoc />
@@ -432,47 +541,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling AddUserToVideoWhitelist");
             }
             
-            mAddUserToVideoWhitelistPath = "/media/videos/{id}/whitelist";
-            if (!string.IsNullOrEmpty(mAddUserToVideoWhitelistPath))
+            mWebCallEvent.WebPath = "/media/videos/{id}/whitelist";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mAddUserToVideoWhitelistPath = mAddUserToVideoWhitelistPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mAddUserToVideoWhitelistPath = mAddUserToVideoWhitelistPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(userId); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(userId); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mAddUserToVideoWhitelistStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mAddUserToVideoWhitelistStartTime, mAddUserToVideoWhitelistPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mAddUserToVideoWhitelistCoroutine.ResponseReceived += AddUserToVideoWhitelistCallback;
-            mAddUserToVideoWhitelistCoroutine.Start(mAddUserToVideoWhitelistPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mAddUserToVideoWhitelistStartTime = DateTime.Now;
+            mWebCallEvent.Context = mAddUserToVideoWhitelistResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mAddUserToVideoWhitelistStartTime, "AddUserToVideoWhitelist", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void AddUserToVideoWhitelistCallback(IRestResponse response)
+        private void OnAddUserToVideoWhitelistResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling AddUserToVideoWhitelist: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling AddUserToVideoWhitelist: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling AddUserToVideoWhitelist: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mAddUserToVideoWhitelistStartTime, mAddUserToVideoWhitelistPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mAddUserToVideoWhitelistStartTime, "AddUserToVideoWhitelist", "Response received successfully.");
             if (AddUserToVideoWhitelistComplete != null)
             {
-                AddUserToVideoWhitelistComplete();
+                AddUserToVideoWhitelistComplete(response.ResponseCode);
             }
         }
 
@@ -484,48 +592,47 @@ namespace com.knetikcloud.Api
         public void AddVideo(VideoResource videoResource)
         {
             
-            mAddVideoPath = "/media/videos";
-            if (!string.IsNullOrEmpty(mAddVideoPath))
+            mWebCallEvent.WebPath = "/media/videos";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mAddVideoPath = mAddVideoPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(videoResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(videoResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mAddVideoStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mAddVideoStartTime, mAddVideoPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mAddVideoCoroutine.ResponseReceived += AddVideoCallback;
-            mAddVideoCoroutine.Start(mAddVideoPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mAddVideoStartTime = DateTime.Now;
+            mWebCallEvent.Context = mAddVideoResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mAddVideoStartTime, "AddVideo", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void AddVideoCallback(IRestResponse response)
+        private void OnAddVideoResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling AddVideo: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling AddVideo: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling AddVideo: " + response.Error);
             }
 
-            AddVideoData = (VideoResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(VideoResource), response.Headers);
-            KnetikLogger.LogResponse(mAddVideoStartTime, mAddVideoPath, string.Format("Response received successfully:\n{0}", AddVideoData.ToString()));
+            AddVideoData = (VideoResource) KnetikClient.Deserialize(response.Content, typeof(VideoResource), response.Headers);
+            KnetikLogger.LogResponse(mAddVideoStartTime, "AddVideo", string.Format("Response received successfully:\n{0}", AddVideoData));
 
             if (AddVideoComplete != null)
             {
-                AddVideoComplete(AddVideoData);
+                AddVideoComplete(response.ResponseCode, AddVideoData);
             }
         }
 
@@ -543,49 +650,48 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'videoId' when calling AddVideoComment");
             }
             
-            mAddVideoCommentPath = "/media/videos/{video_id}/comments";
-            if (!string.IsNullOrEmpty(mAddVideoCommentPath))
+            mWebCallEvent.WebPath = "/media/videos/{video_id}/comments";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mAddVideoCommentPath = mAddVideoCommentPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mAddVideoCommentPath = mAddVideoCommentPath.Replace("{" + "video_id" + "}", KnetikClient.DefaultClient.ParameterToString(videoId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "video_id" + "}", KnetikClient.ParameterToString(videoId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(commentResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(commentResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mAddVideoCommentStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mAddVideoCommentStartTime, mAddVideoCommentPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mAddVideoCommentCoroutine.ResponseReceived += AddVideoCommentCallback;
-            mAddVideoCommentCoroutine.Start(mAddVideoCommentPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mAddVideoCommentStartTime = DateTime.Now;
+            mWebCallEvent.Context = mAddVideoCommentResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mAddVideoCommentStartTime, "AddVideoComment", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void AddVideoCommentCallback(IRestResponse response)
+        private void OnAddVideoCommentResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling AddVideoComment: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling AddVideoComment: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling AddVideoComment: " + response.Error);
             }
 
-            AddVideoCommentData = (CommentResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CommentResource), response.Headers);
-            KnetikLogger.LogResponse(mAddVideoCommentStartTime, mAddVideoCommentPath, string.Format("Response received successfully:\n{0}", AddVideoCommentData.ToString()));
+            AddVideoCommentData = (CommentResource) KnetikClient.Deserialize(response.Content, typeof(CommentResource), response.Headers);
+            KnetikLogger.LogResponse(mAddVideoCommentStartTime, "AddVideoComment", string.Format("Response received successfully:\n{0}", AddVideoCommentData));
 
             if (AddVideoCommentComplete != null)
             {
-                AddVideoCommentComplete(AddVideoCommentData);
+                AddVideoCommentComplete(response.ResponseCode, AddVideoCommentData);
             }
         }
 
@@ -603,47 +709,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'videoId' when calling AddVideoContributor");
             }
             
-            mAddVideoContributorPath = "/media/videos/{video_id}/contributors";
-            if (!string.IsNullOrEmpty(mAddVideoContributorPath))
+            mWebCallEvent.WebPath = "/media/videos/{video_id}/contributors";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mAddVideoContributorPath = mAddVideoContributorPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mAddVideoContributorPath = mAddVideoContributorPath.Replace("{" + "video_id" + "}", KnetikClient.DefaultClient.ParameterToString(videoId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "video_id" + "}", KnetikClient.ParameterToString(videoId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(contributionResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(contributionResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mAddVideoContributorStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mAddVideoContributorStartTime, mAddVideoContributorPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mAddVideoContributorCoroutine.ResponseReceived += AddVideoContributorCallback;
-            mAddVideoContributorCoroutine.Start(mAddVideoContributorPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mAddVideoContributorStartTime = DateTime.Now;
+            mWebCallEvent.Context = mAddVideoContributorResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mAddVideoContributorStartTime, "AddVideoContributor", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void AddVideoContributorCallback(IRestResponse response)
+        private void OnAddVideoContributorResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling AddVideoContributor: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling AddVideoContributor: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling AddVideoContributor: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mAddVideoContributorStartTime, mAddVideoContributorPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mAddVideoContributorStartTime, "AddVideoContributor", "Response received successfully.");
             if (AddVideoContributorComplete != null)
             {
-                AddVideoContributorComplete();
+                AddVideoContributorComplete(response.ResponseCode);
             }
         }
 
@@ -661,49 +766,48 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'videoId' when calling AddVideoFlag");
             }
             
-            mAddVideoFlagPath = "/media/videos/{video_id}/moderation";
-            if (!string.IsNullOrEmpty(mAddVideoFlagPath))
+            mWebCallEvent.WebPath = "/media/videos/{video_id}/moderation";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mAddVideoFlagPath = mAddVideoFlagPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mAddVideoFlagPath = mAddVideoFlagPath.Replace("{" + "video_id" + "}", KnetikClient.DefaultClient.ParameterToString(videoId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "video_id" + "}", KnetikClient.ParameterToString(videoId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(reason); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(reason); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mAddVideoFlagStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mAddVideoFlagStartTime, mAddVideoFlagPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mAddVideoFlagCoroutine.ResponseReceived += AddVideoFlagCallback;
-            mAddVideoFlagCoroutine.Start(mAddVideoFlagPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mAddVideoFlagStartTime = DateTime.Now;
+            mWebCallEvent.Context = mAddVideoFlagResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mAddVideoFlagStartTime, "AddVideoFlag", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void AddVideoFlagCallback(IRestResponse response)
+        private void OnAddVideoFlagResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling AddVideoFlag: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling AddVideoFlag: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling AddVideoFlag: " + response.Error);
             }
 
-            AddVideoFlagData = (FlagResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(FlagResource), response.Headers);
-            KnetikLogger.LogResponse(mAddVideoFlagStartTime, mAddVideoFlagPath, string.Format("Response received successfully:\n{0}", AddVideoFlagData.ToString()));
+            AddVideoFlagData = (FlagResource) KnetikClient.Deserialize(response.Content, typeof(FlagResource), response.Headers);
+            KnetikLogger.LogResponse(mAddVideoFlagStartTime, "AddVideoFlag", string.Format("Response received successfully:\n{0}", AddVideoFlagData));
 
             if (AddVideoFlagComplete != null)
             {
-                AddVideoFlagComplete(AddVideoFlagData);
+                AddVideoFlagComplete(response.ResponseCode, AddVideoFlagData);
             }
         }
 
@@ -721,49 +825,48 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'videoId' when calling AddVideoRelationships");
             }
             
-            mAddVideoRelationshipsPath = "/media/videos/{video_id}/related";
-            if (!string.IsNullOrEmpty(mAddVideoRelationshipsPath))
+            mWebCallEvent.WebPath = "/media/videos/{video_id}/related";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mAddVideoRelationshipsPath = mAddVideoRelationshipsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mAddVideoRelationshipsPath = mAddVideoRelationshipsPath.Replace("{" + "video_id" + "}", KnetikClient.DefaultClient.ParameterToString(videoId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "video_id" + "}", KnetikClient.ParameterToString(videoId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(videoRelationshipResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(videoRelationshipResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mAddVideoRelationshipsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mAddVideoRelationshipsStartTime, mAddVideoRelationshipsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mAddVideoRelationshipsCoroutine.ResponseReceived += AddVideoRelationshipsCallback;
-            mAddVideoRelationshipsCoroutine.Start(mAddVideoRelationshipsPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mAddVideoRelationshipsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mAddVideoRelationshipsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mAddVideoRelationshipsStartTime, "AddVideoRelationships", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void AddVideoRelationshipsCallback(IRestResponse response)
+        private void OnAddVideoRelationshipsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling AddVideoRelationships: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling AddVideoRelationships: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling AddVideoRelationships: " + response.Error);
             }
 
-            AddVideoRelationshipsData = (VideoRelationshipResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(VideoRelationshipResource), response.Headers);
-            KnetikLogger.LogResponse(mAddVideoRelationshipsStartTime, mAddVideoRelationshipsPath, string.Format("Response received successfully:\n{0}", AddVideoRelationshipsData.ToString()));
+            AddVideoRelationshipsData = (VideoRelationshipResource) KnetikClient.Deserialize(response.Content, typeof(VideoRelationshipResource), response.Headers);
+            KnetikLogger.LogResponse(mAddVideoRelationshipsStartTime, "AddVideoRelationships", string.Format("Response received successfully:\n{0}", AddVideoRelationshipsData));
 
             if (AddVideoRelationshipsComplete != null)
             {
-                AddVideoRelationshipsComplete(AddVideoRelationshipsData);
+                AddVideoRelationshipsComplete(response.ResponseCode, AddVideoRelationshipsData);
             }
         }
 
@@ -781,49 +884,100 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'videoId' when calling CreateVideoDisposition");
             }
             
-            mCreateVideoDispositionPath = "/media/videos/{video_id}/dispositions";
-            if (!string.IsNullOrEmpty(mCreateVideoDispositionPath))
+            mWebCallEvent.WebPath = "/media/videos/{video_id}/dispositions";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mCreateVideoDispositionPath = mCreateVideoDispositionPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mCreateVideoDispositionPath = mCreateVideoDispositionPath.Replace("{" + "video_id" + "}", KnetikClient.DefaultClient.ParameterToString(videoId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "video_id" + "}", KnetikClient.ParameterToString(videoId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(dispositionResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(dispositionResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mCreateVideoDispositionStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mCreateVideoDispositionStartTime, mCreateVideoDispositionPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mCreateVideoDispositionCoroutine.ResponseReceived += CreateVideoDispositionCallback;
-            mCreateVideoDispositionCoroutine.Start(mCreateVideoDispositionPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mCreateVideoDispositionStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreateVideoDispositionResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreateVideoDispositionStartTime, "CreateVideoDisposition", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void CreateVideoDispositionCallback(IRestResponse response)
+        private void OnCreateVideoDispositionResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateVideoDisposition: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateVideoDisposition: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling CreateVideoDisposition: " + response.Error);
             }
 
-            CreateVideoDispositionData = (DispositionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(DispositionResource), response.Headers);
-            KnetikLogger.LogResponse(mCreateVideoDispositionStartTime, mCreateVideoDispositionPath, string.Format("Response received successfully:\n{0}", CreateVideoDispositionData.ToString()));
+            CreateVideoDispositionData = (DispositionResource) KnetikClient.Deserialize(response.Content, typeof(DispositionResource), response.Headers);
+            KnetikLogger.LogResponse(mCreateVideoDispositionStartTime, "CreateVideoDisposition", string.Format("Response received successfully:\n{0}", CreateVideoDispositionData));
 
             if (CreateVideoDispositionComplete != null)
             {
-                CreateVideoDispositionComplete(CreateVideoDispositionData);
+                CreateVideoDispositionComplete(response.ResponseCode, CreateVideoDispositionData);
+            }
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Create a video template Video Templates define a type of video and the properties they have
+        /// </summary>
+        /// <param name="videoTemplateResource">The video template resource object</param>
+        public void CreateVideoTemplate(TemplateResource videoTemplateResource)
+        {
+            
+            mWebCallEvent.WebPath = "/media/videos/templates";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
+            {
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
+            }
+            
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
+
+            mWebCallEvent.PostBody = KnetikClient.Serialize(videoTemplateResource); // http body (model) parameter
+ 
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
+
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
+
+            // make the HTTP request
+            mCreateVideoTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreateVideoTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreateVideoTemplateStartTime, "CreateVideoTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
+        }
+
+        private void OnCreateVideoTemplateResponse(KnetikRestResponse response)
+        {
+            if (!string.IsNullOrEmpty(response.Error))
+            {
+                throw new KnetikException("Error calling CreateVideoTemplate: " + response.Error);
+            }
+
+            CreateVideoTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mCreateVideoTemplateStartTime, "CreateVideoTemplate", string.Format("Response received successfully:\n{0}", CreateVideoTemplateData));
+
+            if (CreateVideoTemplateComplete != null)
+            {
+                CreateVideoTemplateComplete(response.ResponseCode, CreateVideoTemplateData);
             }
         }
 
@@ -840,45 +994,44 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeleteVideo");
             }
             
-            mDeleteVideoPath = "/media/videos/{id}";
-            if (!string.IsNullOrEmpty(mDeleteVideoPath))
+            mWebCallEvent.WebPath = "/media/videos/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteVideoPath = mDeleteVideoPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteVideoPath = mDeleteVideoPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteVideoStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteVideoStartTime, mDeleteVideoPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteVideoCoroutine.ResponseReceived += DeleteVideoCallback;
-            mDeleteVideoCoroutine.Start(mDeleteVideoPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteVideoStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteVideoResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteVideoStartTime, "DeleteVideo", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteVideoCallback(IRestResponse response)
+        private void OnDeleteVideoResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteVideo: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteVideo: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteVideo: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteVideoStartTime, mDeleteVideoPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteVideoStartTime, "DeleteVideo", "Response received successfully.");
             if (DeleteVideoComplete != null)
             {
-                DeleteVideoComplete();
+                DeleteVideoComplete(response.ResponseCode);
             }
         }
 
@@ -901,46 +1054,45 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeleteVideoComment");
             }
             
-            mDeleteVideoCommentPath = "/media/videos/{video_id}/comments/{id}";
-            if (!string.IsNullOrEmpty(mDeleteVideoCommentPath))
+            mWebCallEvent.WebPath = "/media/videos/{video_id}/comments/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteVideoCommentPath = mDeleteVideoCommentPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteVideoCommentPath = mDeleteVideoCommentPath.Replace("{" + "video_id" + "}", KnetikClient.DefaultClient.ParameterToString(videoId));
-mDeleteVideoCommentPath = mDeleteVideoCommentPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "video_id" + "}", KnetikClient.ParameterToString(videoId));
+mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteVideoCommentStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteVideoCommentStartTime, mDeleteVideoCommentPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteVideoCommentCoroutine.ResponseReceived += DeleteVideoCommentCallback;
-            mDeleteVideoCommentCoroutine.Start(mDeleteVideoCommentPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteVideoCommentStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteVideoCommentResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteVideoCommentStartTime, "DeleteVideoComment", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteVideoCommentCallback(IRestResponse response)
+        private void OnDeleteVideoCommentResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteVideoComment: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteVideoComment: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteVideoComment: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteVideoCommentStartTime, mDeleteVideoCommentPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteVideoCommentStartTime, "DeleteVideoComment", "Response received successfully.");
             if (DeleteVideoCommentComplete != null)
             {
-                DeleteVideoCommentComplete();
+                DeleteVideoCommentComplete(response.ResponseCode);
             }
         }
 
@@ -957,45 +1109,44 @@ mDeleteVideoCommentPath = mDeleteVideoCommentPath.Replace("{" + "id" + "}", Knet
                 throw new KnetikException(400, "Missing required parameter 'dispositionId' when calling DeleteVideoDisposition");
             }
             
-            mDeleteVideoDispositionPath = "/media/videos/{video_id}/dispositions/{disposition_id}";
-            if (!string.IsNullOrEmpty(mDeleteVideoDispositionPath))
+            mWebCallEvent.WebPath = "/media/videos/{video_id}/dispositions/{disposition_id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteVideoDispositionPath = mDeleteVideoDispositionPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteVideoDispositionPath = mDeleteVideoDispositionPath.Replace("{" + "disposition_id" + "}", KnetikClient.DefaultClient.ParameterToString(dispositionId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "disposition_id" + "}", KnetikClient.ParameterToString(dispositionId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteVideoDispositionStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteVideoDispositionStartTime, mDeleteVideoDispositionPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteVideoDispositionCoroutine.ResponseReceived += DeleteVideoDispositionCallback;
-            mDeleteVideoDispositionCoroutine.Start(mDeleteVideoDispositionPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteVideoDispositionStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteVideoDispositionResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteVideoDispositionStartTime, "DeleteVideoDisposition", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteVideoDispositionCallback(IRestResponse response)
+        private void OnDeleteVideoDispositionResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteVideoDisposition: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteVideoDisposition: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteVideoDisposition: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteVideoDispositionStartTime, mDeleteVideoDispositionPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteVideoDispositionStartTime, "DeleteVideoDisposition", "Response received successfully.");
             if (DeleteVideoDispositionComplete != null)
             {
-                DeleteVideoDispositionComplete();
+                DeleteVideoDispositionComplete(response.ResponseCode);
             }
         }
 
@@ -1012,45 +1163,44 @@ mDeleteVideoCommentPath = mDeleteVideoCommentPath.Replace("{" + "id" + "}", Knet
                 throw new KnetikException(400, "Missing required parameter 'videoId' when calling DeleteVideoFlag");
             }
             
-            mDeleteVideoFlagPath = "/media/videos/{video_id}/moderation";
-            if (!string.IsNullOrEmpty(mDeleteVideoFlagPath))
+            mWebCallEvent.WebPath = "/media/videos/{video_id}/moderation";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteVideoFlagPath = mDeleteVideoFlagPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteVideoFlagPath = mDeleteVideoFlagPath.Replace("{" + "video_id" + "}", KnetikClient.DefaultClient.ParameterToString(videoId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "video_id" + "}", KnetikClient.ParameterToString(videoId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteVideoFlagStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteVideoFlagStartTime, mDeleteVideoFlagPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteVideoFlagCoroutine.ResponseReceived += DeleteVideoFlagCallback;
-            mDeleteVideoFlagCoroutine.Start(mDeleteVideoFlagPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteVideoFlagStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteVideoFlagResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteVideoFlagStartTime, "DeleteVideoFlag", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteVideoFlagCallback(IRestResponse response)
+        private void OnDeleteVideoFlagResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteVideoFlag: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteVideoFlag: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteVideoFlag: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteVideoFlagStartTime, mDeleteVideoFlagPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteVideoFlagStartTime, "DeleteVideoFlag", "Response received successfully.");
             if (DeleteVideoFlagComplete != null)
             {
-                DeleteVideoFlagComplete();
+                DeleteVideoFlagComplete(response.ResponseCode);
             }
         }
 
@@ -1073,46 +1223,105 @@ mDeleteVideoCommentPath = mDeleteVideoCommentPath.Replace("{" + "id" + "}", Knet
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeleteVideoRelationship");
             }
             
-            mDeleteVideoRelationshipPath = "/media/videos/{video_id}/related/{id}";
-            if (!string.IsNullOrEmpty(mDeleteVideoRelationshipPath))
+            mWebCallEvent.WebPath = "/media/videos/{video_id}/related/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "video_id" + "}", KnetikClient.DefaultClient.ParameterToString(videoId));
-mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "video_id" + "}", KnetikClient.ParameterToString(videoId));
+mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteVideoRelationshipStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteVideoRelationshipStartTime, mDeleteVideoRelationshipPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteVideoRelationshipCoroutine.ResponseReceived += DeleteVideoRelationshipCallback;
-            mDeleteVideoRelationshipCoroutine.Start(mDeleteVideoRelationshipPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteVideoRelationshipStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteVideoRelationshipResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteVideoRelationshipStartTime, "DeleteVideoRelationship", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteVideoRelationshipCallback(IRestResponse response)
+        private void OnDeleteVideoRelationshipResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteVideoRelationship: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteVideoRelationship: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteVideoRelationship: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteVideoRelationshipStartTime, mDeleteVideoRelationshipPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteVideoRelationshipStartTime, "DeleteVideoRelationship", "Response received successfully.");
             if (DeleteVideoRelationshipComplete != null)
             {
-                DeleteVideoRelationshipComplete();
+                DeleteVideoRelationshipComplete(response.ResponseCode);
+            }
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Delete a video template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
+        /// </summary>
+        /// <param name="id">The id of the template</param>
+        /// <param name="cascade">The value needed to delete used templates</param>
+        public void DeleteVideoTemplate(string id, string cascade)
+        {
+            // verify the required parameter 'id' is set
+            if (id == null)
+            {
+                throw new KnetikException(400, "Missing required parameter 'id' when calling DeleteVideoTemplate");
+            }
+            
+            mWebCallEvent.WebPath = "/media/videos/templates/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
+            {
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
+            }
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
+
+            if (cascade != null)
+            {
+                mWebCallEvent.QueryParams["cascade"] = KnetikClient.ParameterToString(cascade);
+            }
+
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
+
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
+
+            // make the HTTP request
+            mDeleteVideoTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteVideoTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteVideoTemplateStartTime, "DeleteVideoTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
+        }
+
+        private void OnDeleteVideoTemplateResponse(KnetikRestResponse response)
+        {
+            if (!string.IsNullOrEmpty(response.Error))
+            {
+                throw new KnetikException("Error calling DeleteVideoTemplate: " + response.Error);
+            }
+
+            KnetikLogger.LogResponse(mDeleteVideoTemplateStartTime, "DeleteVideoTemplate", "Response received successfully.");
+            if (DeleteVideoTemplateComplete != null)
+            {
+                DeleteVideoTemplateComplete(response.ResponseCode);
             }
         }
 
@@ -1132,62 +1341,61 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
                 throw new KnetikException(400, "Missing required parameter 'userId' when calling GetUserVideos");
             }
             
-            mGetUserVideosPath = "/users/{user_id}/videos";
-            if (!string.IsNullOrEmpty(mGetUserVideosPath))
+            mWebCallEvent.WebPath = "/users/{user_id}/videos";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetUserVideosPath = mGetUserVideosPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetUserVideosPath = mGetUserVideosPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (excludeFlagged != null)
             {
-                queryParams.Add("exclude_flagged", KnetikClient.DefaultClient.ParameterToString(excludeFlagged));
+                mWebCallEvent.QueryParams["exclude_flagged"] = KnetikClient.ParameterToString(excludeFlagged);
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetUserVideosStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetUserVideosStartTime, mGetUserVideosPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetUserVideosCoroutine.ResponseReceived += GetUserVideosCallback;
-            mGetUserVideosCoroutine.Start(mGetUserVideosPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetUserVideosStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetUserVideosResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetUserVideosStartTime, "GetUserVideos", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetUserVideosCallback(IRestResponse response)
+        private void OnGetUserVideosResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUserVideos: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUserVideos: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetUserVideos: " + response.Error);
             }
 
-            GetUserVideosData = (PageResourceVideoResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceVideoResource), response.Headers);
-            KnetikLogger.LogResponse(mGetUserVideosStartTime, mGetUserVideosPath, string.Format("Response received successfully:\n{0}", GetUserVideosData.ToString()));
+            GetUserVideosData = (PageResourceVideoResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceVideoResource), response.Headers);
+            KnetikLogger.LogResponse(mGetUserVideosStartTime, "GetUserVideos", string.Format("Response received successfully:\n{0}", GetUserVideosData));
 
             if (GetUserVideosComplete != null)
             {
-                GetUserVideosComplete(GetUserVideosData);
+                GetUserVideosComplete(response.ResponseCode, GetUserVideosData);
             }
         }
 
@@ -1204,47 +1412,46 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetVideo");
             }
             
-            mGetVideoPath = "/media/videos/{id}";
-            if (!string.IsNullOrEmpty(mGetVideoPath))
+            mWebCallEvent.WebPath = "/media/videos/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetVideoPath = mGetVideoPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetVideoPath = mGetVideoPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetVideoStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetVideoStartTime, mGetVideoPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetVideoCoroutine.ResponseReceived += GetVideoCallback;
-            mGetVideoCoroutine.Start(mGetVideoPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetVideoStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetVideoResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetVideoStartTime, "GetVideo", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetVideoCallback(IRestResponse response)
+        private void OnGetVideoResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetVideo: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetVideo: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetVideo: " + response.Error);
             }
 
-            GetVideoData = (VideoResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(VideoResource), response.Headers);
-            KnetikLogger.LogResponse(mGetVideoStartTime, mGetVideoPath, string.Format("Response received successfully:\n{0}", GetVideoData.ToString()));
+            GetVideoData = (VideoResource) KnetikClient.Deserialize(response.Content, typeof(VideoResource), response.Headers);
+            KnetikLogger.LogResponse(mGetVideoStartTime, "GetVideo", string.Format("Response received successfully:\n{0}", GetVideoData));
 
             if (GetVideoComplete != null)
             {
-                GetVideoComplete(GetVideoData);
+                GetVideoComplete(response.ResponseCode, GetVideoData);
             }
         }
 
@@ -1263,57 +1470,56 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
                 throw new KnetikException(400, "Missing required parameter 'videoId' when calling GetVideoComments");
             }
             
-            mGetVideoCommentsPath = "/media/videos/{video_id}/comments";
-            if (!string.IsNullOrEmpty(mGetVideoCommentsPath))
+            mWebCallEvent.WebPath = "/media/videos/{video_id}/comments";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetVideoCommentsPath = mGetVideoCommentsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetVideoCommentsPath = mGetVideoCommentsPath.Replace("{" + "video_id" + "}", KnetikClient.DefaultClient.ParameterToString(videoId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "video_id" + "}", KnetikClient.ParameterToString(videoId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetVideoCommentsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetVideoCommentsStartTime, mGetVideoCommentsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetVideoCommentsCoroutine.ResponseReceived += GetVideoCommentsCallback;
-            mGetVideoCommentsCoroutine.Start(mGetVideoCommentsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetVideoCommentsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetVideoCommentsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetVideoCommentsStartTime, "GetVideoComments", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetVideoCommentsCallback(IRestResponse response)
+        private void OnGetVideoCommentsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetVideoComments: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetVideoComments: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetVideoComments: " + response.Error);
             }
 
-            GetVideoCommentsData = (PageResourceCommentResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceCommentResource), response.Headers);
-            KnetikLogger.LogResponse(mGetVideoCommentsStartTime, mGetVideoCommentsPath, string.Format("Response received successfully:\n{0}", GetVideoCommentsData.ToString()));
+            GetVideoCommentsData = (PageResourceCommentResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceCommentResource), response.Headers);
+            KnetikLogger.LogResponse(mGetVideoCommentsStartTime, "GetVideoComments", string.Format("Response received successfully:\n{0}", GetVideoCommentsData));
 
             if (GetVideoCommentsComplete != null)
             {
-                GetVideoCommentsComplete(GetVideoCommentsData);
+                GetVideoCommentsComplete(response.ResponseCode, GetVideoCommentsData);
             }
         }
 
@@ -1332,57 +1538,56 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
                 throw new KnetikException(400, "Missing required parameter 'videoId' when calling GetVideoDispositions");
             }
             
-            mGetVideoDispositionsPath = "/media/videos/{video_id}/dispositions";
-            if (!string.IsNullOrEmpty(mGetVideoDispositionsPath))
+            mWebCallEvent.WebPath = "/media/videos/{video_id}/dispositions";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetVideoDispositionsPath = mGetVideoDispositionsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetVideoDispositionsPath = mGetVideoDispositionsPath.Replace("{" + "video_id" + "}", KnetikClient.DefaultClient.ParameterToString(videoId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "video_id" + "}", KnetikClient.ParameterToString(videoId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetVideoDispositionsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetVideoDispositionsStartTime, mGetVideoDispositionsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetVideoDispositionsCoroutine.ResponseReceived += GetVideoDispositionsCallback;
-            mGetVideoDispositionsCoroutine.Start(mGetVideoDispositionsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetVideoDispositionsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetVideoDispositionsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetVideoDispositionsStartTime, "GetVideoDispositions", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetVideoDispositionsCallback(IRestResponse response)
+        private void OnGetVideoDispositionsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetVideoDispositions: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetVideoDispositions: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetVideoDispositions: " + response.Error);
             }
 
-            GetVideoDispositionsData = (PageResourceDispositionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceDispositionResource), response.Headers);
-            KnetikLogger.LogResponse(mGetVideoDispositionsStartTime, mGetVideoDispositionsPath, string.Format("Response received successfully:\n{0}", GetVideoDispositionsData.ToString()));
+            GetVideoDispositionsData = (PageResourceDispositionResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceDispositionResource), response.Headers);
+            KnetikLogger.LogResponse(mGetVideoDispositionsStartTime, "GetVideoDispositions", string.Format("Response received successfully:\n{0}", GetVideoDispositionsData));
 
             if (GetVideoDispositionsComplete != null)
             {
-                GetVideoDispositionsComplete(GetVideoDispositionsData);
+                GetVideoDispositionsComplete(response.ResponseCode, GetVideoDispositionsData);
             }
         }
 
@@ -1401,57 +1606,179 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
                 throw new KnetikException(400, "Missing required parameter 'videoId' when calling GetVideoRelationships");
             }
             
-            mGetVideoRelationshipsPath = "/media/videos/{video_id}/related";
-            if (!string.IsNullOrEmpty(mGetVideoRelationshipsPath))
+            mWebCallEvent.WebPath = "/media/videos/{video_id}/related";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetVideoRelationshipsPath = mGetVideoRelationshipsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetVideoRelationshipsPath = mGetVideoRelationshipsPath.Replace("{" + "video_id" + "}", KnetikClient.DefaultClient.ParameterToString(videoId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "video_id" + "}", KnetikClient.ParameterToString(videoId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetVideoRelationshipsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetVideoRelationshipsStartTime, mGetVideoRelationshipsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetVideoRelationshipsCoroutine.ResponseReceived += GetVideoRelationshipsCallback;
-            mGetVideoRelationshipsCoroutine.Start(mGetVideoRelationshipsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetVideoRelationshipsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetVideoRelationshipsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetVideoRelationshipsStartTime, "GetVideoRelationships", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetVideoRelationshipsCallback(IRestResponse response)
+        private void OnGetVideoRelationshipsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetVideoRelationships: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetVideoRelationships: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetVideoRelationships: " + response.Error);
             }
 
-            GetVideoRelationshipsData = (PageResourceVideoRelationshipResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceVideoRelationshipResource), response.Headers);
-            KnetikLogger.LogResponse(mGetVideoRelationshipsStartTime, mGetVideoRelationshipsPath, string.Format("Response received successfully:\n{0}", GetVideoRelationshipsData.ToString()));
+            GetVideoRelationshipsData = (PageResourceVideoRelationshipResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceVideoRelationshipResource), response.Headers);
+            KnetikLogger.LogResponse(mGetVideoRelationshipsStartTime, "GetVideoRelationships", string.Format("Response received successfully:\n{0}", GetVideoRelationshipsData));
 
             if (GetVideoRelationshipsComplete != null)
             {
-                GetVideoRelationshipsComplete(GetVideoRelationshipsData);
+                GetVideoRelationshipsComplete(response.ResponseCode, GetVideoRelationshipsData);
+            }
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Get a single video template 
+        /// </summary>
+        /// <param name="id">The id of the template</param>
+        public void GetVideoTemplate(string id)
+        {
+            // verify the required parameter 'id' is set
+            if (id == null)
+            {
+                throw new KnetikException(400, "Missing required parameter 'id' when calling GetVideoTemplate");
+            }
+            
+            mWebCallEvent.WebPath = "/media/videos/templates/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
+            {
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
+            }
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
+
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
+
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
+
+            // make the HTTP request
+            mGetVideoTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetVideoTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetVideoTemplateStartTime, "GetVideoTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
+        }
+
+        private void OnGetVideoTemplateResponse(KnetikRestResponse response)
+        {
+            if (!string.IsNullOrEmpty(response.Error))
+            {
+                throw new KnetikException("Error calling GetVideoTemplate: " + response.Error);
+            }
+
+            GetVideoTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mGetVideoTemplateStartTime, "GetVideoTemplate", string.Format("Response received successfully:\n{0}", GetVideoTemplateData));
+
+            if (GetVideoTemplateComplete != null)
+            {
+                GetVideoTemplateComplete(response.ResponseCode, GetVideoTemplateData);
+            }
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// List and search video templates 
+        /// </summary>
+        /// <param name="size">The number of objects returned per page</param>
+        /// <param name="page">The number of the page returned, starting with 1</param>
+        /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
+        public void GetVideoTemplates(int? size, int? page, string order)
+        {
+            
+            mWebCallEvent.WebPath = "/media/videos/templates";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
+            {
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
+            }
+            
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
+
+            if (size != null)
+            {
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
+            }
+
+            if (page != null)
+            {
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
+            }
+
+            if (order != null)
+            {
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
+            }
+
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
+
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
+
+            // make the HTTP request
+            mGetVideoTemplatesStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetVideoTemplatesResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetVideoTemplatesStartTime, "GetVideoTemplates", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
+        }
+
+        private void OnGetVideoTemplatesResponse(KnetikRestResponse response)
+        {
+            if (!string.IsNullOrEmpty(response.Error))
+            {
+                throw new KnetikException("Error calling GetVideoTemplates: " + response.Error);
+            }
+
+            GetVideoTemplatesData = (PageResourceTemplateResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceTemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mGetVideoTemplatesStartTime, "GetVideoTemplates", string.Format("Response received successfully:\n{0}", GetVideoTemplatesData));
+
+            if (GetVideoTemplatesComplete != null)
+            {
+                GetVideoTemplatesComplete(response.ResponseCode, GetVideoTemplatesData);
             }
         }
 
@@ -1477,121 +1804,120 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
         public void GetVideos(bool? excludeFlagged, int? filterVideosByUploader, string filterCategory, string filterTagset, string filterVideosByName, int? filterVideosByContributor, int? filterVideosByAuthor, bool? filterHasAuthor, bool? filterHasUploader, string filterRelatedTo, bool? filterFriends, string filterDisposition, int? size, int? page, string order)
         {
             
-            mGetVideosPath = "/media/videos";
-            if (!string.IsNullOrEmpty(mGetVideosPath))
+            mWebCallEvent.WebPath = "/media/videos";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetVideosPath = mGetVideosPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (excludeFlagged != null)
             {
-                queryParams.Add("exclude_flagged", KnetikClient.DefaultClient.ParameterToString(excludeFlagged));
+                mWebCallEvent.QueryParams["exclude_flagged"] = KnetikClient.ParameterToString(excludeFlagged);
             }
 
             if (filterVideosByUploader != null)
             {
-                queryParams.Add("filter_videos_by_uploader", KnetikClient.DefaultClient.ParameterToString(filterVideosByUploader));
+                mWebCallEvent.QueryParams["filter_videos_by_uploader"] = KnetikClient.ParameterToString(filterVideosByUploader);
             }
 
             if (filterCategory != null)
             {
-                queryParams.Add("filter_category", KnetikClient.DefaultClient.ParameterToString(filterCategory));
+                mWebCallEvent.QueryParams["filter_category"] = KnetikClient.ParameterToString(filterCategory);
             }
 
             if (filterTagset != null)
             {
-                queryParams.Add("filter_tagset", KnetikClient.DefaultClient.ParameterToString(filterTagset));
+                mWebCallEvent.QueryParams["filter_tagset"] = KnetikClient.ParameterToString(filterTagset);
             }
 
             if (filterVideosByName != null)
             {
-                queryParams.Add("filter_videos_by_name", KnetikClient.DefaultClient.ParameterToString(filterVideosByName));
+                mWebCallEvent.QueryParams["filter_videos_by_name"] = KnetikClient.ParameterToString(filterVideosByName);
             }
 
             if (filterVideosByContributor != null)
             {
-                queryParams.Add("filter_videos_by_contributor", KnetikClient.DefaultClient.ParameterToString(filterVideosByContributor));
+                mWebCallEvent.QueryParams["filter_videos_by_contributor"] = KnetikClient.ParameterToString(filterVideosByContributor);
             }
 
             if (filterVideosByAuthor != null)
             {
-                queryParams.Add("filter_videos_by_author", KnetikClient.DefaultClient.ParameterToString(filterVideosByAuthor));
+                mWebCallEvent.QueryParams["filter_videos_by_author"] = KnetikClient.ParameterToString(filterVideosByAuthor);
             }
 
             if (filterHasAuthor != null)
             {
-                queryParams.Add("filter_has_author", KnetikClient.DefaultClient.ParameterToString(filterHasAuthor));
+                mWebCallEvent.QueryParams["filter_has_author"] = KnetikClient.ParameterToString(filterHasAuthor);
             }
 
             if (filterHasUploader != null)
             {
-                queryParams.Add("filter_has_uploader", KnetikClient.DefaultClient.ParameterToString(filterHasUploader));
+                mWebCallEvent.QueryParams["filter_has_uploader"] = KnetikClient.ParameterToString(filterHasUploader);
             }
 
             if (filterRelatedTo != null)
             {
-                queryParams.Add("filter_related_to", KnetikClient.DefaultClient.ParameterToString(filterRelatedTo));
+                mWebCallEvent.QueryParams["filter_related_to"] = KnetikClient.ParameterToString(filterRelatedTo);
             }
 
             if (filterFriends != null)
             {
-                queryParams.Add("filter_friends", KnetikClient.DefaultClient.ParameterToString(filterFriends));
+                mWebCallEvent.QueryParams["filter_friends"] = KnetikClient.ParameterToString(filterFriends);
             }
 
             if (filterDisposition != null)
             {
-                queryParams.Add("filter_disposition", KnetikClient.DefaultClient.ParameterToString(filterDisposition));
+                mWebCallEvent.QueryParams["filter_disposition"] = KnetikClient.ParameterToString(filterDisposition);
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetVideosStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetVideosStartTime, mGetVideosPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetVideosCoroutine.ResponseReceived += GetVideosCallback;
-            mGetVideosCoroutine.Start(mGetVideosPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetVideosStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetVideosResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetVideosStartTime, "GetVideos", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetVideosCallback(IRestResponse response)
+        private void OnGetVideosResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetVideos: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetVideos: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetVideos: " + response.Error);
             }
 
-            GetVideosData = (PageResourceVideoResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceVideoResource), response.Headers);
-            KnetikLogger.LogResponse(mGetVideosStartTime, mGetVideosPath, string.Format("Response received successfully:\n{0}", GetVideosData.ToString()));
+            GetVideosData = (PageResourceVideoResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceVideoResource), response.Headers);
+            KnetikLogger.LogResponse(mGetVideosStartTime, "GetVideos", string.Format("Response received successfully:\n{0}", GetVideosData));
 
             if (GetVideosComplete != null)
             {
-                GetVideosComplete(GetVideosData);
+                GetVideosComplete(response.ResponseCode, GetVideosData);
             }
         }
 
@@ -1614,46 +1940,45 @@ mDeleteVideoRelationshipPath = mDeleteVideoRelationshipPath.Replace("{" + "id" +
                 throw new KnetikException(400, "Missing required parameter 'id' when calling RemoveUserFromVideoWhitelist");
             }
             
-            mRemoveUserFromVideoWhitelistPath = "/media/videos/{video_id}/whitelist/{id}";
-            if (!string.IsNullOrEmpty(mRemoveUserFromVideoWhitelistPath))
+            mWebCallEvent.WebPath = "/media/videos/{video_id}/whitelist/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mRemoveUserFromVideoWhitelistPath = mRemoveUserFromVideoWhitelistPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mRemoveUserFromVideoWhitelistPath = mRemoveUserFromVideoWhitelistPath.Replace("{" + "video_id" + "}", KnetikClient.DefaultClient.ParameterToString(videoId));
-mRemoveUserFromVideoWhitelistPath = mRemoveUserFromVideoWhitelistPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "video_id" + "}", KnetikClient.ParameterToString(videoId));
+mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mRemoveUserFromVideoWhitelistStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mRemoveUserFromVideoWhitelistStartTime, mRemoveUserFromVideoWhitelistPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mRemoveUserFromVideoWhitelistCoroutine.ResponseReceived += RemoveUserFromVideoWhitelistCallback;
-            mRemoveUserFromVideoWhitelistCoroutine.Start(mRemoveUserFromVideoWhitelistPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mRemoveUserFromVideoWhitelistStartTime = DateTime.Now;
+            mWebCallEvent.Context = mRemoveUserFromVideoWhitelistResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mRemoveUserFromVideoWhitelistStartTime, "RemoveUserFromVideoWhitelist", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void RemoveUserFromVideoWhitelistCallback(IRestResponse response)
+        private void OnRemoveUserFromVideoWhitelistResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling RemoveUserFromVideoWhitelist: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling RemoveUserFromVideoWhitelist: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling RemoveUserFromVideoWhitelist: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mRemoveUserFromVideoWhitelistStartTime, mRemoveUserFromVideoWhitelistPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mRemoveUserFromVideoWhitelistStartTime, "RemoveUserFromVideoWhitelist", "Response received successfully.");
             if (RemoveUserFromVideoWhitelistComplete != null)
             {
-                RemoveUserFromVideoWhitelistComplete();
+                RemoveUserFromVideoWhitelistComplete(response.ResponseCode);
             }
         }
 
@@ -1676,46 +2001,45 @@ mRemoveUserFromVideoWhitelistPath = mRemoveUserFromVideoWhitelistPath.Replace("{
                 throw new KnetikException(400, "Missing required parameter 'id' when calling RemoveVideoContributor");
             }
             
-            mRemoveVideoContributorPath = "/media/videos/{video_id}/contributors/{id}";
-            if (!string.IsNullOrEmpty(mRemoveVideoContributorPath))
+            mWebCallEvent.WebPath = "/media/videos/{video_id}/contributors/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mRemoveVideoContributorPath = mRemoveVideoContributorPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mRemoveVideoContributorPath = mRemoveVideoContributorPath.Replace("{" + "video_id" + "}", KnetikClient.DefaultClient.ParameterToString(videoId));
-mRemoveVideoContributorPath = mRemoveVideoContributorPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "video_id" + "}", KnetikClient.ParameterToString(videoId));
+mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mRemoveVideoContributorStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mRemoveVideoContributorStartTime, mRemoveVideoContributorPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mRemoveVideoContributorCoroutine.ResponseReceived += RemoveVideoContributorCallback;
-            mRemoveVideoContributorCoroutine.Start(mRemoveVideoContributorPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mRemoveVideoContributorStartTime = DateTime.Now;
+            mWebCallEvent.Context = mRemoveVideoContributorResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mRemoveVideoContributorStartTime, "RemoveVideoContributor", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void RemoveVideoContributorCallback(IRestResponse response)
+        private void OnRemoveVideoContributorResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling RemoveVideoContributor: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling RemoveVideoContributor: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling RemoveVideoContributor: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mRemoveVideoContributorStartTime, mRemoveVideoContributorPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mRemoveVideoContributorStartTime, "RemoveVideoContributor", "Response received successfully.");
             if (RemoveVideoContributorComplete != null)
             {
-                RemoveVideoContributorComplete();
+                RemoveVideoContributorComplete(response.ResponseCode);
             }
         }
 
@@ -1733,47 +2057,46 @@ mRemoveVideoContributorPath = mRemoveVideoContributorPath.Replace("{" + "id" + "
                 throw new KnetikException(400, "Missing required parameter 'id' when calling UpdateVideo");
             }
             
-            mUpdateVideoPath = "/media/videos/{id}";
-            if (!string.IsNullOrEmpty(mUpdateVideoPath))
+            mWebCallEvent.WebPath = "/media/videos/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateVideoPath = mUpdateVideoPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateVideoPath = mUpdateVideoPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(videoResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(videoResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateVideoStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateVideoStartTime, mUpdateVideoPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateVideoCoroutine.ResponseReceived += UpdateVideoCallback;
-            mUpdateVideoCoroutine.Start(mUpdateVideoPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateVideoStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateVideoResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateVideoStartTime, "UpdateVideo", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateVideoCallback(IRestResponse response)
+        private void OnUpdateVideoResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateVideo: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateVideo: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateVideo: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mUpdateVideoStartTime, mUpdateVideoPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mUpdateVideoStartTime, "UpdateVideo", "Response received successfully.");
             if (UpdateVideoComplete != null)
             {
-                UpdateVideoComplete();
+                UpdateVideoComplete(response.ResponseCode);
             }
         }
 
@@ -1797,48 +2120,47 @@ mRemoveVideoContributorPath = mRemoveVideoContributorPath.Replace("{" + "id" + "
                 throw new KnetikException(400, "Missing required parameter 'id' when calling UpdateVideoComment");
             }
             
-            mUpdateVideoCommentPath = "/media/videos/{video_id}/comments/{id}/content";
-            if (!string.IsNullOrEmpty(mUpdateVideoCommentPath))
+            mWebCallEvent.WebPath = "/media/videos/{video_id}/comments/{id}/content";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateVideoCommentPath = mUpdateVideoCommentPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateVideoCommentPath = mUpdateVideoCommentPath.Replace("{" + "video_id" + "}", KnetikClient.DefaultClient.ParameterToString(videoId));
-mUpdateVideoCommentPath = mUpdateVideoCommentPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "video_id" + "}", KnetikClient.ParameterToString(videoId));
+mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(content); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(content); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateVideoCommentStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateVideoCommentStartTime, mUpdateVideoCommentPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateVideoCommentCoroutine.ResponseReceived += UpdateVideoCommentCallback;
-            mUpdateVideoCommentCoroutine.Start(mUpdateVideoCommentPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateVideoCommentStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateVideoCommentResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateVideoCommentStartTime, "UpdateVideoComment", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateVideoCommentCallback(IRestResponse response)
+        private void OnUpdateVideoCommentResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateVideoComment: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateVideoComment: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateVideoComment: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mUpdateVideoCommentStartTime, mUpdateVideoCommentPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mUpdateVideoCommentStartTime, "UpdateVideoComment", "Response received successfully.");
             if (UpdateVideoCommentComplete != null)
             {
-                UpdateVideoCommentComplete();
+                UpdateVideoCommentComplete(response.ResponseCode);
             }
         }
 
@@ -1862,48 +2184,106 @@ mUpdateVideoCommentPath = mUpdateVideoCommentPath.Replace("{" + "id" + "}", Knet
                 throw new KnetikException(400, "Missing required parameter 'relationshipId' when calling UpdateVideoRelationship");
             }
             
-            mUpdateVideoRelationshipPath = "/media/videos/{video_id}/related/{id}/relationship_details";
-            if (!string.IsNullOrEmpty(mUpdateVideoRelationshipPath))
+            mWebCallEvent.WebPath = "/media/videos/{video_id}/related/{id}/relationship_details";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateVideoRelationshipPath = mUpdateVideoRelationshipPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateVideoRelationshipPath = mUpdateVideoRelationshipPath.Replace("{" + "video_id" + "}", KnetikClient.DefaultClient.ParameterToString(videoId));
-mUpdateVideoRelationshipPath = mUpdateVideoRelationshipPath.Replace("{" + "relationship_id" + "}", KnetikClient.DefaultClient.ParameterToString(relationshipId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "video_id" + "}", KnetikClient.ParameterToString(videoId));
+mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "relationship_id" + "}", KnetikClient.ParameterToString(relationshipId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(details); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(details); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateVideoRelationshipStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateVideoRelationshipStartTime, mUpdateVideoRelationshipPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateVideoRelationshipCoroutine.ResponseReceived += UpdateVideoRelationshipCallback;
-            mUpdateVideoRelationshipCoroutine.Start(mUpdateVideoRelationshipPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateVideoRelationshipStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateVideoRelationshipResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateVideoRelationshipStartTime, "UpdateVideoRelationship", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateVideoRelationshipCallback(IRestResponse response)
+        private void OnUpdateVideoRelationshipResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateVideoRelationship: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateVideoRelationship: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateVideoRelationship: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mUpdateVideoRelationshipStartTime, mUpdateVideoRelationshipPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mUpdateVideoRelationshipStartTime, "UpdateVideoRelationship", "Response received successfully.");
             if (UpdateVideoRelationshipComplete != null)
             {
-                UpdateVideoRelationshipComplete();
+                UpdateVideoRelationshipComplete(response.ResponseCode);
+            }
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Update a video template 
+        /// </summary>
+        /// <param name="id">The id of the template</param>
+        /// <param name="videoTemplateResource">The video template resource object</param>
+        public void UpdateVideoTemplate(string id, TemplateResource videoTemplateResource)
+        {
+            // verify the required parameter 'id' is set
+            if (id == null)
+            {
+                throw new KnetikException(400, "Missing required parameter 'id' when calling UpdateVideoTemplate");
+            }
+            
+            mWebCallEvent.WebPath = "/media/videos/templates/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
+            {
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
+            }
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
+
+            mWebCallEvent.PostBody = KnetikClient.Serialize(videoTemplateResource); // http body (model) parameter
+ 
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
+
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
+
+            // make the HTTP request
+            mUpdateVideoTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateVideoTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateVideoTemplateStartTime, "UpdateVideoTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
+        }
+
+        private void OnUpdateVideoTemplateResponse(KnetikRestResponse response)
+        {
+            if (!string.IsNullOrEmpty(response.Error))
+            {
+                throw new KnetikException("Error calling UpdateVideoTemplate: " + response.Error);
+            }
+
+            UpdateVideoTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mUpdateVideoTemplateStartTime, "UpdateVideoTemplate", string.Format("Response received successfully:\n{0}", UpdateVideoTemplateData));
+
+            if (UpdateVideoTemplateComplete != null)
+            {
+                UpdateVideoTemplateComplete(response.ResponseCode, UpdateVideoTemplateData);
             }
         }
 
@@ -1920,45 +2300,44 @@ mUpdateVideoRelationshipPath = mUpdateVideoRelationshipPath.Replace("{" + "relat
                 throw new KnetikException(400, "Missing required parameter 'id' when calling ViewVideo");
             }
             
-            mViewVideoPath = "/media/videos/{id}/views";
-            if (!string.IsNullOrEmpty(mViewVideoPath))
+            mWebCallEvent.WebPath = "/media/videos/{id}/views";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mViewVideoPath = mViewVideoPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mViewVideoPath = mViewVideoPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mViewVideoStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mViewVideoStartTime, mViewVideoPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mViewVideoCoroutine.ResponseReceived += ViewVideoCallback;
-            mViewVideoCoroutine.Start(mViewVideoPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mViewVideoStartTime = DateTime.Now;
+            mWebCallEvent.Context = mViewVideoResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mViewVideoStartTime, "ViewVideo", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void ViewVideoCallback(IRestResponse response)
+        private void OnViewVideoResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling ViewVideo: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling ViewVideo: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling ViewVideo: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mViewVideoStartTime, mViewVideoPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mViewVideoStartTime, "ViewVideo", "Response received successfully.");
             if (ViewVideoComplete != null)
             {
-                ViewVideoComplete();
+                ViewVideoComplete(response.ResponseCode);
             }
         }
 

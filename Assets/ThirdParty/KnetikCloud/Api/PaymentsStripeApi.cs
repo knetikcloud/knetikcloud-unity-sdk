@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,12 +18,13 @@ namespace com.knetikcloud.Api
     {
         PaymentMethodResource CreateStripePaymentMethodData { get; }
 
-        
         /// <summary>
         /// Create a Stripe payment method for a user Obtain a token from Stripe, following their examples and documentation. Stores customer information and creates a payment method that can be used to pay invoices through the payments endpoints. Ensure that Stripe itself has been configured with the webhook so that invoices are marked paid.
         /// </summary>
         /// <param name="request">The request to create a Stripe customer with payment info</param>
         void CreateStripePaymentMethod(StripeCreatePaymentMethod request);
+
+        
 
         /// <summary>
         /// Pay with a single use token Obtain a token from Stripe, following their examples and documentation. Pays an invoice without creating a payment method. Ensure that Stripe itself has been configured with the webhook so that invoices are marked paid.
@@ -40,18 +40,18 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class PaymentsStripeApi : IPaymentsStripeApi
     {
-        private readonly KnetikCoroutine mCreateStripePaymentMethodCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mCreateStripePaymentMethodResponseContext;
         private DateTime mCreateStripePaymentMethodStartTime;
-        private string mCreateStripePaymentMethodPath;
-        private readonly KnetikCoroutine mPayStripeInvoiceCoroutine;
+        private readonly KnetikResponseContext mPayStripeInvoiceResponseContext;
         private DateTime mPayStripeInvoiceStartTime;
-        private string mPayStripeInvoicePath;
 
         public PaymentMethodResource CreateStripePaymentMethodData { get; private set; }
-        public delegate void CreateStripePaymentMethodCompleteDelegate(PaymentMethodResource response);
+        public delegate void CreateStripePaymentMethodCompleteDelegate(long responseCode, PaymentMethodResource response);
         public CreateStripePaymentMethodCompleteDelegate CreateStripePaymentMethodComplete;
 
-        public delegate void PayStripeInvoiceCompleteDelegate();
+        public delegate void PayStripeInvoiceCompleteDelegate(long responseCode);
         public PayStripeInvoiceCompleteDelegate PayStripeInvoiceComplete;
 
         /// <summary>
@@ -60,8 +60,10 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public PaymentsStripeApi()
         {
-            mCreateStripePaymentMethodCoroutine = new KnetikCoroutine();
-            mPayStripeInvoiceCoroutine = new KnetikCoroutine();
+            mCreateStripePaymentMethodResponseContext = new KnetikResponseContext();
+            mCreateStripePaymentMethodResponseContext.ResponseReceived += OnCreateStripePaymentMethodResponse;
+            mPayStripeInvoiceResponseContext = new KnetikResponseContext();
+            mPayStripeInvoiceResponseContext.ResponseReceived += OnPayStripeInvoiceResponse;
         }
     
         /// <inheritdoc />
@@ -72,48 +74,47 @@ namespace com.knetikcloud.Api
         public void CreateStripePaymentMethod(StripeCreatePaymentMethod request)
         {
             
-            mCreateStripePaymentMethodPath = "/payment/provider/stripe/payment-methods";
-            if (!string.IsNullOrEmpty(mCreateStripePaymentMethodPath))
+            mWebCallEvent.WebPath = "/payment/provider/stripe/payment-methods";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mCreateStripePaymentMethodPath = mCreateStripePaymentMethodPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(request); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mCreateStripePaymentMethodStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mCreateStripePaymentMethodStartTime, mCreateStripePaymentMethodPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mCreateStripePaymentMethodCoroutine.ResponseReceived += CreateStripePaymentMethodCallback;
-            mCreateStripePaymentMethodCoroutine.Start(mCreateStripePaymentMethodPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mCreateStripePaymentMethodStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreateStripePaymentMethodResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreateStripePaymentMethodStartTime, "CreateStripePaymentMethod", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void CreateStripePaymentMethodCallback(IRestResponse response)
+        private void OnCreateStripePaymentMethodResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateStripePaymentMethod: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateStripePaymentMethod: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling CreateStripePaymentMethod: " + response.Error);
             }
 
-            CreateStripePaymentMethodData = (PaymentMethodResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PaymentMethodResource), response.Headers);
-            KnetikLogger.LogResponse(mCreateStripePaymentMethodStartTime, mCreateStripePaymentMethodPath, string.Format("Response received successfully:\n{0}", CreateStripePaymentMethodData.ToString()));
+            CreateStripePaymentMethodData = (PaymentMethodResource) KnetikClient.Deserialize(response.Content, typeof(PaymentMethodResource), response.Headers);
+            KnetikLogger.LogResponse(mCreateStripePaymentMethodStartTime, "CreateStripePaymentMethod", string.Format("Response received successfully:\n{0}", CreateStripePaymentMethodData));
 
             if (CreateStripePaymentMethodComplete != null)
             {
-                CreateStripePaymentMethodComplete(CreateStripePaymentMethodData);
+                CreateStripePaymentMethodComplete(response.ResponseCode, CreateStripePaymentMethodData);
             }
         }
 
@@ -125,46 +126,45 @@ namespace com.knetikcloud.Api
         public void PayStripeInvoice(StripePaymentRequest request)
         {
             
-            mPayStripeInvoicePath = "/payment/provider/stripe/payments";
-            if (!string.IsNullOrEmpty(mPayStripeInvoicePath))
+            mWebCallEvent.WebPath = "/payment/provider/stripe/payments";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mPayStripeInvoicePath = mPayStripeInvoicePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(request); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mPayStripeInvoiceStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mPayStripeInvoiceStartTime, mPayStripeInvoicePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mPayStripeInvoiceCoroutine.ResponseReceived += PayStripeInvoiceCallback;
-            mPayStripeInvoiceCoroutine.Start(mPayStripeInvoicePath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mPayStripeInvoiceStartTime = DateTime.Now;
+            mWebCallEvent.Context = mPayStripeInvoiceResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mPayStripeInvoiceStartTime, "PayStripeInvoice", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void PayStripeInvoiceCallback(IRestResponse response)
+        private void OnPayStripeInvoiceResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling PayStripeInvoice: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling PayStripeInvoice: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling PayStripeInvoice: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mPayStripeInvoiceStartTime, mPayStripeInvoicePath, "Response received successfully.");
+            KnetikLogger.LogResponse(mPayStripeInvoiceStartTime, "PayStripeInvoice", "Response received successfully.");
             if (PayStripeInvoiceComplete != null)
             {
-                PayStripeInvoiceComplete();
+                PayStripeInvoiceComplete(response.ResponseCode);
             }
         }
 

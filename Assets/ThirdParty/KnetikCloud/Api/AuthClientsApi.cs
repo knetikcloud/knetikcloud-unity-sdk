@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,20 +18,13 @@ namespace com.knetikcloud.Api
     {
         ClientResource CreateClientData { get; }
 
-        ClientResource GetClientData { get; }
-
-        List<GrantTypeResource> GetClientGrantTypesData { get; }
-
-        PageResourceClientResource GetClientsData { get; }
-
-        ClientResource UpdateClientData { get; }
-
-        
         /// <summary>
         /// Create a new client 
         /// </summary>
         /// <param name="clientResource">The client resource object</param>
         void CreateClient(ClientResource clientResource);
+
+        
 
         /// <summary>
         /// Delete a client 
@@ -40,16 +32,22 @@ namespace com.knetikcloud.Api
         /// <param name="clientKey">The key of the client</param>
         void DeleteClient(string clientKey);
 
+        ClientResource GetClientData { get; }
+
         /// <summary>
         /// Get a single client 
         /// </summary>
         /// <param name="clientKey">The key of the client</param>
         void GetClient(string clientKey);
 
+        List<GrantTypeResource> GetClientGrantTypesData { get; }
+
         /// <summary>
         /// List available client grant types 
         /// </summary>
         void GetClientGrantTypes();
+
+        PageResourceClientResource GetClientsData { get; }
 
         /// <summary>
         /// List and search clients 
@@ -59,6 +57,8 @@ namespace com.knetikcloud.Api
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
         void GetClients(int? size, int? page, string order);
 
+        
+
         /// <summary>
         /// Set grant types for a client 
         /// </summary>
@@ -66,12 +66,16 @@ namespace com.knetikcloud.Api
         /// <param name="grantList">A list of unique grant types</param>
         void SetClientGrantTypes(string clientKey, List<string> grantList);
 
+        
+
         /// <summary>
         /// Set redirect uris for a client 
         /// </summary>
         /// <param name="clientKey">The key of the client</param>
         /// <param name="redirectList">A list of unique redirect uris</param>
         void SetClientRedirectUris(string clientKey, List<string> redirectList);
+
+        ClientResource UpdateClientData { get; }
 
         /// <summary>
         /// Update a client 
@@ -88,58 +92,52 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class AuthClientsApi : IAuthClientsApi
     {
-        private readonly KnetikCoroutine mCreateClientCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mCreateClientResponseContext;
         private DateTime mCreateClientStartTime;
-        private string mCreateClientPath;
-        private readonly KnetikCoroutine mDeleteClientCoroutine;
+        private readonly KnetikResponseContext mDeleteClientResponseContext;
         private DateTime mDeleteClientStartTime;
-        private string mDeleteClientPath;
-        private readonly KnetikCoroutine mGetClientCoroutine;
+        private readonly KnetikResponseContext mGetClientResponseContext;
         private DateTime mGetClientStartTime;
-        private string mGetClientPath;
-        private readonly KnetikCoroutine mGetClientGrantTypesCoroutine;
+        private readonly KnetikResponseContext mGetClientGrantTypesResponseContext;
         private DateTime mGetClientGrantTypesStartTime;
-        private string mGetClientGrantTypesPath;
-        private readonly KnetikCoroutine mGetClientsCoroutine;
+        private readonly KnetikResponseContext mGetClientsResponseContext;
         private DateTime mGetClientsStartTime;
-        private string mGetClientsPath;
-        private readonly KnetikCoroutine mSetClientGrantTypesCoroutine;
+        private readonly KnetikResponseContext mSetClientGrantTypesResponseContext;
         private DateTime mSetClientGrantTypesStartTime;
-        private string mSetClientGrantTypesPath;
-        private readonly KnetikCoroutine mSetClientRedirectUrisCoroutine;
+        private readonly KnetikResponseContext mSetClientRedirectUrisResponseContext;
         private DateTime mSetClientRedirectUrisStartTime;
-        private string mSetClientRedirectUrisPath;
-        private readonly KnetikCoroutine mUpdateClientCoroutine;
+        private readonly KnetikResponseContext mUpdateClientResponseContext;
         private DateTime mUpdateClientStartTime;
-        private string mUpdateClientPath;
 
         public ClientResource CreateClientData { get; private set; }
-        public delegate void CreateClientCompleteDelegate(ClientResource response);
+        public delegate void CreateClientCompleteDelegate(long responseCode, ClientResource response);
         public CreateClientCompleteDelegate CreateClientComplete;
 
-        public delegate void DeleteClientCompleteDelegate();
+        public delegate void DeleteClientCompleteDelegate(long responseCode);
         public DeleteClientCompleteDelegate DeleteClientComplete;
 
         public ClientResource GetClientData { get; private set; }
-        public delegate void GetClientCompleteDelegate(ClientResource response);
+        public delegate void GetClientCompleteDelegate(long responseCode, ClientResource response);
         public GetClientCompleteDelegate GetClientComplete;
 
         public List<GrantTypeResource> GetClientGrantTypesData { get; private set; }
-        public delegate void GetClientGrantTypesCompleteDelegate(List<GrantTypeResource> response);
+        public delegate void GetClientGrantTypesCompleteDelegate(long responseCode, List<GrantTypeResource> response);
         public GetClientGrantTypesCompleteDelegate GetClientGrantTypesComplete;
 
         public PageResourceClientResource GetClientsData { get; private set; }
-        public delegate void GetClientsCompleteDelegate(PageResourceClientResource response);
+        public delegate void GetClientsCompleteDelegate(long responseCode, PageResourceClientResource response);
         public GetClientsCompleteDelegate GetClientsComplete;
 
-        public delegate void SetClientGrantTypesCompleteDelegate();
+        public delegate void SetClientGrantTypesCompleteDelegate(long responseCode);
         public SetClientGrantTypesCompleteDelegate SetClientGrantTypesComplete;
 
-        public delegate void SetClientRedirectUrisCompleteDelegate();
+        public delegate void SetClientRedirectUrisCompleteDelegate(long responseCode);
         public SetClientRedirectUrisCompleteDelegate SetClientRedirectUrisComplete;
 
         public ClientResource UpdateClientData { get; private set; }
-        public delegate void UpdateClientCompleteDelegate(ClientResource response);
+        public delegate void UpdateClientCompleteDelegate(long responseCode, ClientResource response);
         public UpdateClientCompleteDelegate UpdateClientComplete;
 
         /// <summary>
@@ -148,14 +146,22 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public AuthClientsApi()
         {
-            mCreateClientCoroutine = new KnetikCoroutine();
-            mDeleteClientCoroutine = new KnetikCoroutine();
-            mGetClientCoroutine = new KnetikCoroutine();
-            mGetClientGrantTypesCoroutine = new KnetikCoroutine();
-            mGetClientsCoroutine = new KnetikCoroutine();
-            mSetClientGrantTypesCoroutine = new KnetikCoroutine();
-            mSetClientRedirectUrisCoroutine = new KnetikCoroutine();
-            mUpdateClientCoroutine = new KnetikCoroutine();
+            mCreateClientResponseContext = new KnetikResponseContext();
+            mCreateClientResponseContext.ResponseReceived += OnCreateClientResponse;
+            mDeleteClientResponseContext = new KnetikResponseContext();
+            mDeleteClientResponseContext.ResponseReceived += OnDeleteClientResponse;
+            mGetClientResponseContext = new KnetikResponseContext();
+            mGetClientResponseContext.ResponseReceived += OnGetClientResponse;
+            mGetClientGrantTypesResponseContext = new KnetikResponseContext();
+            mGetClientGrantTypesResponseContext.ResponseReceived += OnGetClientGrantTypesResponse;
+            mGetClientsResponseContext = new KnetikResponseContext();
+            mGetClientsResponseContext.ResponseReceived += OnGetClientsResponse;
+            mSetClientGrantTypesResponseContext = new KnetikResponseContext();
+            mSetClientGrantTypesResponseContext.ResponseReceived += OnSetClientGrantTypesResponse;
+            mSetClientRedirectUrisResponseContext = new KnetikResponseContext();
+            mSetClientRedirectUrisResponseContext.ResponseReceived += OnSetClientRedirectUrisResponse;
+            mUpdateClientResponseContext = new KnetikResponseContext();
+            mUpdateClientResponseContext.ResponseReceived += OnUpdateClientResponse;
         }
     
         /// <inheritdoc />
@@ -166,48 +172,47 @@ namespace com.knetikcloud.Api
         public void CreateClient(ClientResource clientResource)
         {
             
-            mCreateClientPath = "/auth/clients";
-            if (!string.IsNullOrEmpty(mCreateClientPath))
+            mWebCallEvent.WebPath = "/auth/clients";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mCreateClientPath = mCreateClientPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(clientResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(clientResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mCreateClientStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mCreateClientStartTime, mCreateClientPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mCreateClientCoroutine.ResponseReceived += CreateClientCallback;
-            mCreateClientCoroutine.Start(mCreateClientPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mCreateClientStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreateClientResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreateClientStartTime, "CreateClient", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void CreateClientCallback(IRestResponse response)
+        private void OnCreateClientResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateClient: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateClient: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling CreateClient: " + response.Error);
             }
 
-            CreateClientData = (ClientResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ClientResource), response.Headers);
-            KnetikLogger.LogResponse(mCreateClientStartTime, mCreateClientPath, string.Format("Response received successfully:\n{0}", CreateClientData.ToString()));
+            CreateClientData = (ClientResource) KnetikClient.Deserialize(response.Content, typeof(ClientResource), response.Headers);
+            KnetikLogger.LogResponse(mCreateClientStartTime, "CreateClient", string.Format("Response received successfully:\n{0}", CreateClientData));
 
             if (CreateClientComplete != null)
             {
-                CreateClientComplete(CreateClientData);
+                CreateClientComplete(response.ResponseCode, CreateClientData);
             }
         }
 
@@ -224,45 +229,44 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'clientKey' when calling DeleteClient");
             }
             
-            mDeleteClientPath = "/auth/clients/{client_key}";
-            if (!string.IsNullOrEmpty(mDeleteClientPath))
+            mWebCallEvent.WebPath = "/auth/clients/{client_key}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteClientPath = mDeleteClientPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteClientPath = mDeleteClientPath.Replace("{" + "client_key" + "}", KnetikClient.DefaultClient.ParameterToString(clientKey));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "client_key" + "}", KnetikClient.ParameterToString(clientKey));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteClientStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteClientStartTime, mDeleteClientPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteClientCoroutine.ResponseReceived += DeleteClientCallback;
-            mDeleteClientCoroutine.Start(mDeleteClientPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteClientStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteClientResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteClientStartTime, "DeleteClient", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteClientCallback(IRestResponse response)
+        private void OnDeleteClientResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteClient: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteClient: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteClient: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteClientStartTime, mDeleteClientPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteClientStartTime, "DeleteClient", "Response received successfully.");
             if (DeleteClientComplete != null)
             {
-                DeleteClientComplete();
+                DeleteClientComplete(response.ResponseCode);
             }
         }
 
@@ -279,47 +283,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'clientKey' when calling GetClient");
             }
             
-            mGetClientPath = "/auth/clients/{client_key}";
-            if (!string.IsNullOrEmpty(mGetClientPath))
+            mWebCallEvent.WebPath = "/auth/clients/{client_key}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetClientPath = mGetClientPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetClientPath = mGetClientPath.Replace("{" + "client_key" + "}", KnetikClient.DefaultClient.ParameterToString(clientKey));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "client_key" + "}", KnetikClient.ParameterToString(clientKey));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetClientStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetClientStartTime, mGetClientPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetClientCoroutine.ResponseReceived += GetClientCallback;
-            mGetClientCoroutine.Start(mGetClientPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetClientStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetClientResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetClientStartTime, "GetClient", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetClientCallback(IRestResponse response)
+        private void OnGetClientResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetClient: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetClient: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetClient: " + response.Error);
             }
 
-            GetClientData = (ClientResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ClientResource), response.Headers);
-            KnetikLogger.LogResponse(mGetClientStartTime, mGetClientPath, string.Format("Response received successfully:\n{0}", GetClientData.ToString()));
+            GetClientData = (ClientResource) KnetikClient.Deserialize(response.Content, typeof(ClientResource), response.Headers);
+            KnetikLogger.LogResponse(mGetClientStartTime, "GetClient", string.Format("Response received successfully:\n{0}", GetClientData));
 
             if (GetClientComplete != null)
             {
-                GetClientComplete(GetClientData);
+                GetClientComplete(response.ResponseCode, GetClientData);
             }
         }
 
@@ -330,46 +333,45 @@ namespace com.knetikcloud.Api
         public void GetClientGrantTypes()
         {
             
-            mGetClientGrantTypesPath = "/auth/clients/grant-types";
-            if (!string.IsNullOrEmpty(mGetClientGrantTypesPath))
+            mWebCallEvent.WebPath = "/auth/clients/grant-types";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetClientGrantTypesPath = mGetClientGrantTypesPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetClientGrantTypesStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetClientGrantTypesStartTime, mGetClientGrantTypesPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetClientGrantTypesCoroutine.ResponseReceived += GetClientGrantTypesCallback;
-            mGetClientGrantTypesCoroutine.Start(mGetClientGrantTypesPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetClientGrantTypesStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetClientGrantTypesResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetClientGrantTypesStartTime, "GetClientGrantTypes", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetClientGrantTypesCallback(IRestResponse response)
+        private void OnGetClientGrantTypesResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetClientGrantTypes: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetClientGrantTypes: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetClientGrantTypes: " + response.Error);
             }
 
-            GetClientGrantTypesData = (List<GrantTypeResource>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<GrantTypeResource>), response.Headers);
-            KnetikLogger.LogResponse(mGetClientGrantTypesStartTime, mGetClientGrantTypesPath, string.Format("Response received successfully:\n{0}", GetClientGrantTypesData.ToString()));
+            GetClientGrantTypesData = (List<GrantTypeResource>) KnetikClient.Deserialize(response.Content, typeof(List<GrantTypeResource>), response.Headers);
+            KnetikLogger.LogResponse(mGetClientGrantTypesStartTime, "GetClientGrantTypes", string.Format("Response received successfully:\n{0}", GetClientGrantTypesData));
 
             if (GetClientGrantTypesComplete != null)
             {
-                GetClientGrantTypesComplete(GetClientGrantTypesData);
+                GetClientGrantTypesComplete(response.ResponseCode, GetClientGrantTypesData);
             }
         }
 
@@ -383,61 +385,60 @@ namespace com.knetikcloud.Api
         public void GetClients(int? size, int? page, string order)
         {
             
-            mGetClientsPath = "/auth/clients";
-            if (!string.IsNullOrEmpty(mGetClientsPath))
+            mWebCallEvent.WebPath = "/auth/clients";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetClientsPath = mGetClientsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetClientsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetClientsStartTime, mGetClientsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetClientsCoroutine.ResponseReceived += GetClientsCallback;
-            mGetClientsCoroutine.Start(mGetClientsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetClientsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetClientsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetClientsStartTime, "GetClients", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetClientsCallback(IRestResponse response)
+        private void OnGetClientsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetClients: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetClients: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetClients: " + response.Error);
             }
 
-            GetClientsData = (PageResourceClientResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceClientResource), response.Headers);
-            KnetikLogger.LogResponse(mGetClientsStartTime, mGetClientsPath, string.Format("Response received successfully:\n{0}", GetClientsData.ToString()));
+            GetClientsData = (PageResourceClientResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceClientResource), response.Headers);
+            KnetikLogger.LogResponse(mGetClientsStartTime, "GetClients", string.Format("Response received successfully:\n{0}", GetClientsData));
 
             if (GetClientsComplete != null)
             {
-                GetClientsComplete(GetClientsData);
+                GetClientsComplete(response.ResponseCode, GetClientsData);
             }
         }
 
@@ -455,47 +456,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'clientKey' when calling SetClientGrantTypes");
             }
             
-            mSetClientGrantTypesPath = "/auth/clients/{client_key}/grant-types";
-            if (!string.IsNullOrEmpty(mSetClientGrantTypesPath))
+            mWebCallEvent.WebPath = "/auth/clients/{client_key}/grant-types";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mSetClientGrantTypesPath = mSetClientGrantTypesPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mSetClientGrantTypesPath = mSetClientGrantTypesPath.Replace("{" + "client_key" + "}", KnetikClient.DefaultClient.ParameterToString(clientKey));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "client_key" + "}", KnetikClient.ParameterToString(clientKey));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(grantList); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(grantList); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mSetClientGrantTypesStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mSetClientGrantTypesStartTime, mSetClientGrantTypesPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mSetClientGrantTypesCoroutine.ResponseReceived += SetClientGrantTypesCallback;
-            mSetClientGrantTypesCoroutine.Start(mSetClientGrantTypesPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mSetClientGrantTypesStartTime = DateTime.Now;
+            mWebCallEvent.Context = mSetClientGrantTypesResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mSetClientGrantTypesStartTime, "SetClientGrantTypes", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void SetClientGrantTypesCallback(IRestResponse response)
+        private void OnSetClientGrantTypesResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling SetClientGrantTypes: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling SetClientGrantTypes: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling SetClientGrantTypes: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mSetClientGrantTypesStartTime, mSetClientGrantTypesPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mSetClientGrantTypesStartTime, "SetClientGrantTypes", "Response received successfully.");
             if (SetClientGrantTypesComplete != null)
             {
-                SetClientGrantTypesComplete();
+                SetClientGrantTypesComplete(response.ResponseCode);
             }
         }
 
@@ -513,47 +513,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'clientKey' when calling SetClientRedirectUris");
             }
             
-            mSetClientRedirectUrisPath = "/auth/clients/{client_key}/redirect-uris";
-            if (!string.IsNullOrEmpty(mSetClientRedirectUrisPath))
+            mWebCallEvent.WebPath = "/auth/clients/{client_key}/redirect-uris";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mSetClientRedirectUrisPath = mSetClientRedirectUrisPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mSetClientRedirectUrisPath = mSetClientRedirectUrisPath.Replace("{" + "client_key" + "}", KnetikClient.DefaultClient.ParameterToString(clientKey));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "client_key" + "}", KnetikClient.ParameterToString(clientKey));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(redirectList); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(redirectList); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mSetClientRedirectUrisStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mSetClientRedirectUrisStartTime, mSetClientRedirectUrisPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mSetClientRedirectUrisCoroutine.ResponseReceived += SetClientRedirectUrisCallback;
-            mSetClientRedirectUrisCoroutine.Start(mSetClientRedirectUrisPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mSetClientRedirectUrisStartTime = DateTime.Now;
+            mWebCallEvent.Context = mSetClientRedirectUrisResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mSetClientRedirectUrisStartTime, "SetClientRedirectUris", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void SetClientRedirectUrisCallback(IRestResponse response)
+        private void OnSetClientRedirectUrisResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling SetClientRedirectUris: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling SetClientRedirectUris: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling SetClientRedirectUris: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mSetClientRedirectUrisStartTime, mSetClientRedirectUrisPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mSetClientRedirectUrisStartTime, "SetClientRedirectUris", "Response received successfully.");
             if (SetClientRedirectUrisComplete != null)
             {
-                SetClientRedirectUrisComplete();
+                SetClientRedirectUrisComplete(response.ResponseCode);
             }
         }
 
@@ -571,49 +570,48 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'clientKey' when calling UpdateClient");
             }
             
-            mUpdateClientPath = "/auth/clients/{client_key}";
-            if (!string.IsNullOrEmpty(mUpdateClientPath))
+            mWebCallEvent.WebPath = "/auth/clients/{client_key}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateClientPath = mUpdateClientPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateClientPath = mUpdateClientPath.Replace("{" + "client_key" + "}", KnetikClient.DefaultClient.ParameterToString(clientKey));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "client_key" + "}", KnetikClient.ParameterToString(clientKey));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(clientResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(clientResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateClientStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateClientStartTime, mUpdateClientPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateClientCoroutine.ResponseReceived += UpdateClientCallback;
-            mUpdateClientCoroutine.Start(mUpdateClientPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateClientStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateClientResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateClientStartTime, "UpdateClient", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateClientCallback(IRestResponse response)
+        private void OnUpdateClientResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateClient: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateClient: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateClient: " + response.Error);
             }
 
-            UpdateClientData = (ClientResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ClientResource), response.Headers);
-            KnetikLogger.LogResponse(mUpdateClientStartTime, mUpdateClientPath, string.Format("Response received successfully:\n{0}", UpdateClientData.ToString()));
+            UpdateClientData = (ClientResource) KnetikClient.Deserialize(response.Content, typeof(ClientResource), response.Headers);
+            KnetikLogger.LogResponse(mUpdateClientStartTime, "UpdateClient", string.Format("Response received successfully:\n{0}", UpdateClientData));
 
             if (UpdateClientComplete != null)
             {
-                UpdateClientComplete(UpdateClientData);
+                UpdateClientComplete(response.ResponseCode, UpdateClientData);
             }
         }
 

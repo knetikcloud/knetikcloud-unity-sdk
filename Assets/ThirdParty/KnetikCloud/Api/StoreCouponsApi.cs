@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,21 +18,6 @@ namespace com.knetikcloud.Api
     {
         CouponItem CreateCouponItemData { get; }
 
-        ItemTemplateResource CreateCouponTemplateData { get; }
-
-        CouponItem GetCouponItemData { get; }
-
-        CouponItem GetCouponItemBySkuData { get; }
-
-        ItemTemplateResource GetCouponTemplateData { get; }
-
-        PageResourceItemTemplateResource GetCouponTemplatesData { get; }
-
-        CouponItem UpdateCouponItemData { get; }
-
-        ItemTemplateResource UpdateCouponTemplateData { get; }
-
-        
         /// <summary>
         /// Create a coupon item SKUs have to be unique in the entire store.
         /// </summary>
@@ -41,17 +25,23 @@ namespace com.knetikcloud.Api
         /// <param name="couponItem">The coupon item object</param>
         void CreateCouponItem(bool? cascade, CouponItem couponItem);
 
+        ItemTemplateResource CreateCouponTemplateData { get; }
+
         /// <summary>
         /// Create a coupon template Coupon Templates define a type of coupon and the properties they have.
         /// </summary>
         /// <param name="couponTemplateResource">The new coupon template</param>
         void CreateCouponTemplate(ItemTemplateResource couponTemplateResource);
 
+        
+
         /// <summary>
         /// Delete a coupon item 
         /// </summary>
         /// <param name="id">The id of the coupon</param>
         void DeleteCouponItem(int? id);
+
+        
 
         /// <summary>
         /// Delete a coupon template 
@@ -60,11 +50,15 @@ namespace com.knetikcloud.Api
         /// <param name="cascade">force deleting the template if it&#39;s attached to other objects, cascade &#x3D; detach</param>
         void DeleteCouponTemplate(string id, string cascade);
 
+        CouponItem GetCouponItemData { get; }
+
         /// <summary>
         /// Get a single coupon item 
         /// </summary>
         /// <param name="id">The id of the coupon</param>
         void GetCouponItem(int? id);
+
+        CouponItem GetCouponItemBySkuData { get; }
 
         /// <summary>
         /// Get a coupon by sku 
@@ -72,11 +66,15 @@ namespace com.knetikcloud.Api
         /// <param name="sku">A sku of the coupon</param>
         void GetCouponItemBySku(string sku);
 
+        ItemTemplateResource GetCouponTemplateData { get; }
+
         /// <summary>
         /// Get a single coupon template Coupon Templates define a type of coupon and the properties they have.
         /// </summary>
         /// <param name="id">The id of the template</param>
         void GetCouponTemplate(string id);
+
+        PageResourceItemTemplateResource GetCouponTemplatesData { get; }
 
         /// <summary>
         /// List and search coupon templates 
@@ -86,6 +84,8 @@ namespace com.knetikcloud.Api
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
         void GetCouponTemplates(int? size, int? page, string order);
 
+        CouponItem UpdateCouponItemData { get; }
+
         /// <summary>
         /// Update a coupon item 
         /// </summary>
@@ -93,6 +93,8 @@ namespace com.knetikcloud.Api
         /// <param name="cascade">Whether to cascade group changes, such as in the limited gettable behavior. A 400 error will return otherwise if the group is already in use with different values.</param>
         /// <param name="couponItem">The coupon item object</param>
         void UpdateCouponItem(int? id, bool? cascade, CouponItem couponItem);
+
+        ItemTemplateResource UpdateCouponTemplateData { get; }
 
         /// <summary>
         /// Update a coupon template 
@@ -109,73 +111,65 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class StoreCouponsApi : IStoreCouponsApi
     {
-        private readonly KnetikCoroutine mCreateCouponItemCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mCreateCouponItemResponseContext;
         private DateTime mCreateCouponItemStartTime;
-        private string mCreateCouponItemPath;
-        private readonly KnetikCoroutine mCreateCouponTemplateCoroutine;
+        private readonly KnetikResponseContext mCreateCouponTemplateResponseContext;
         private DateTime mCreateCouponTemplateStartTime;
-        private string mCreateCouponTemplatePath;
-        private readonly KnetikCoroutine mDeleteCouponItemCoroutine;
+        private readonly KnetikResponseContext mDeleteCouponItemResponseContext;
         private DateTime mDeleteCouponItemStartTime;
-        private string mDeleteCouponItemPath;
-        private readonly KnetikCoroutine mDeleteCouponTemplateCoroutine;
+        private readonly KnetikResponseContext mDeleteCouponTemplateResponseContext;
         private DateTime mDeleteCouponTemplateStartTime;
-        private string mDeleteCouponTemplatePath;
-        private readonly KnetikCoroutine mGetCouponItemCoroutine;
+        private readonly KnetikResponseContext mGetCouponItemResponseContext;
         private DateTime mGetCouponItemStartTime;
-        private string mGetCouponItemPath;
-        private readonly KnetikCoroutine mGetCouponItemBySkuCoroutine;
+        private readonly KnetikResponseContext mGetCouponItemBySkuResponseContext;
         private DateTime mGetCouponItemBySkuStartTime;
-        private string mGetCouponItemBySkuPath;
-        private readonly KnetikCoroutine mGetCouponTemplateCoroutine;
+        private readonly KnetikResponseContext mGetCouponTemplateResponseContext;
         private DateTime mGetCouponTemplateStartTime;
-        private string mGetCouponTemplatePath;
-        private readonly KnetikCoroutine mGetCouponTemplatesCoroutine;
+        private readonly KnetikResponseContext mGetCouponTemplatesResponseContext;
         private DateTime mGetCouponTemplatesStartTime;
-        private string mGetCouponTemplatesPath;
-        private readonly KnetikCoroutine mUpdateCouponItemCoroutine;
+        private readonly KnetikResponseContext mUpdateCouponItemResponseContext;
         private DateTime mUpdateCouponItemStartTime;
-        private string mUpdateCouponItemPath;
-        private readonly KnetikCoroutine mUpdateCouponTemplateCoroutine;
+        private readonly KnetikResponseContext mUpdateCouponTemplateResponseContext;
         private DateTime mUpdateCouponTemplateStartTime;
-        private string mUpdateCouponTemplatePath;
 
         public CouponItem CreateCouponItemData { get; private set; }
-        public delegate void CreateCouponItemCompleteDelegate(CouponItem response);
+        public delegate void CreateCouponItemCompleteDelegate(long responseCode, CouponItem response);
         public CreateCouponItemCompleteDelegate CreateCouponItemComplete;
 
         public ItemTemplateResource CreateCouponTemplateData { get; private set; }
-        public delegate void CreateCouponTemplateCompleteDelegate(ItemTemplateResource response);
+        public delegate void CreateCouponTemplateCompleteDelegate(long responseCode, ItemTemplateResource response);
         public CreateCouponTemplateCompleteDelegate CreateCouponTemplateComplete;
 
-        public delegate void DeleteCouponItemCompleteDelegate();
+        public delegate void DeleteCouponItemCompleteDelegate(long responseCode);
         public DeleteCouponItemCompleteDelegate DeleteCouponItemComplete;
 
-        public delegate void DeleteCouponTemplateCompleteDelegate();
+        public delegate void DeleteCouponTemplateCompleteDelegate(long responseCode);
         public DeleteCouponTemplateCompleteDelegate DeleteCouponTemplateComplete;
 
         public CouponItem GetCouponItemData { get; private set; }
-        public delegate void GetCouponItemCompleteDelegate(CouponItem response);
+        public delegate void GetCouponItemCompleteDelegate(long responseCode, CouponItem response);
         public GetCouponItemCompleteDelegate GetCouponItemComplete;
 
         public CouponItem GetCouponItemBySkuData { get; private set; }
-        public delegate void GetCouponItemBySkuCompleteDelegate(CouponItem response);
+        public delegate void GetCouponItemBySkuCompleteDelegate(long responseCode, CouponItem response);
         public GetCouponItemBySkuCompleteDelegate GetCouponItemBySkuComplete;
 
         public ItemTemplateResource GetCouponTemplateData { get; private set; }
-        public delegate void GetCouponTemplateCompleteDelegate(ItemTemplateResource response);
+        public delegate void GetCouponTemplateCompleteDelegate(long responseCode, ItemTemplateResource response);
         public GetCouponTemplateCompleteDelegate GetCouponTemplateComplete;
 
         public PageResourceItemTemplateResource GetCouponTemplatesData { get; private set; }
-        public delegate void GetCouponTemplatesCompleteDelegate(PageResourceItemTemplateResource response);
+        public delegate void GetCouponTemplatesCompleteDelegate(long responseCode, PageResourceItemTemplateResource response);
         public GetCouponTemplatesCompleteDelegate GetCouponTemplatesComplete;
 
         public CouponItem UpdateCouponItemData { get; private set; }
-        public delegate void UpdateCouponItemCompleteDelegate(CouponItem response);
+        public delegate void UpdateCouponItemCompleteDelegate(long responseCode, CouponItem response);
         public UpdateCouponItemCompleteDelegate UpdateCouponItemComplete;
 
         public ItemTemplateResource UpdateCouponTemplateData { get; private set; }
-        public delegate void UpdateCouponTemplateCompleteDelegate(ItemTemplateResource response);
+        public delegate void UpdateCouponTemplateCompleteDelegate(long responseCode, ItemTemplateResource response);
         public UpdateCouponTemplateCompleteDelegate UpdateCouponTemplateComplete;
 
         /// <summary>
@@ -184,16 +178,26 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public StoreCouponsApi()
         {
-            mCreateCouponItemCoroutine = new KnetikCoroutine();
-            mCreateCouponTemplateCoroutine = new KnetikCoroutine();
-            mDeleteCouponItemCoroutine = new KnetikCoroutine();
-            mDeleteCouponTemplateCoroutine = new KnetikCoroutine();
-            mGetCouponItemCoroutine = new KnetikCoroutine();
-            mGetCouponItemBySkuCoroutine = new KnetikCoroutine();
-            mGetCouponTemplateCoroutine = new KnetikCoroutine();
-            mGetCouponTemplatesCoroutine = new KnetikCoroutine();
-            mUpdateCouponItemCoroutine = new KnetikCoroutine();
-            mUpdateCouponTemplateCoroutine = new KnetikCoroutine();
+            mCreateCouponItemResponseContext = new KnetikResponseContext();
+            mCreateCouponItemResponseContext.ResponseReceived += OnCreateCouponItemResponse;
+            mCreateCouponTemplateResponseContext = new KnetikResponseContext();
+            mCreateCouponTemplateResponseContext.ResponseReceived += OnCreateCouponTemplateResponse;
+            mDeleteCouponItemResponseContext = new KnetikResponseContext();
+            mDeleteCouponItemResponseContext.ResponseReceived += OnDeleteCouponItemResponse;
+            mDeleteCouponTemplateResponseContext = new KnetikResponseContext();
+            mDeleteCouponTemplateResponseContext.ResponseReceived += OnDeleteCouponTemplateResponse;
+            mGetCouponItemResponseContext = new KnetikResponseContext();
+            mGetCouponItemResponseContext.ResponseReceived += OnGetCouponItemResponse;
+            mGetCouponItemBySkuResponseContext = new KnetikResponseContext();
+            mGetCouponItemBySkuResponseContext.ResponseReceived += OnGetCouponItemBySkuResponse;
+            mGetCouponTemplateResponseContext = new KnetikResponseContext();
+            mGetCouponTemplateResponseContext.ResponseReceived += OnGetCouponTemplateResponse;
+            mGetCouponTemplatesResponseContext = new KnetikResponseContext();
+            mGetCouponTemplatesResponseContext.ResponseReceived += OnGetCouponTemplatesResponse;
+            mUpdateCouponItemResponseContext = new KnetikResponseContext();
+            mUpdateCouponItemResponseContext.ResponseReceived += OnUpdateCouponItemResponse;
+            mUpdateCouponTemplateResponseContext = new KnetikResponseContext();
+            mUpdateCouponTemplateResponseContext.ResponseReceived += OnUpdateCouponTemplateResponse;
         }
     
         /// <inheritdoc />
@@ -205,53 +209,52 @@ namespace com.knetikcloud.Api
         public void CreateCouponItem(bool? cascade, CouponItem couponItem)
         {
             
-            mCreateCouponItemPath = "/store/coupons";
-            if (!string.IsNullOrEmpty(mCreateCouponItemPath))
+            mWebCallEvent.WebPath = "/store/coupons";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mCreateCouponItemPath = mCreateCouponItemPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
+                mWebCallEvent.QueryParams["cascade"] = KnetikClient.ParameterToString(cascade);
             }
 
-            postBody = KnetikClient.DefaultClient.Serialize(couponItem); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(couponItem); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mCreateCouponItemStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mCreateCouponItemStartTime, mCreateCouponItemPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mCreateCouponItemCoroutine.ResponseReceived += CreateCouponItemCallback;
-            mCreateCouponItemCoroutine.Start(mCreateCouponItemPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mCreateCouponItemStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreateCouponItemResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreateCouponItemStartTime, "CreateCouponItem", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void CreateCouponItemCallback(IRestResponse response)
+        private void OnCreateCouponItemResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateCouponItem: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateCouponItem: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling CreateCouponItem: " + response.Error);
             }
 
-            CreateCouponItemData = (CouponItem) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CouponItem), response.Headers);
-            KnetikLogger.LogResponse(mCreateCouponItemStartTime, mCreateCouponItemPath, string.Format("Response received successfully:\n{0}", CreateCouponItemData.ToString()));
+            CreateCouponItemData = (CouponItem) KnetikClient.Deserialize(response.Content, typeof(CouponItem), response.Headers);
+            KnetikLogger.LogResponse(mCreateCouponItemStartTime, "CreateCouponItem", string.Format("Response received successfully:\n{0}", CreateCouponItemData));
 
             if (CreateCouponItemComplete != null)
             {
-                CreateCouponItemComplete(CreateCouponItemData);
+                CreateCouponItemComplete(response.ResponseCode, CreateCouponItemData);
             }
         }
 
@@ -263,48 +266,47 @@ namespace com.knetikcloud.Api
         public void CreateCouponTemplate(ItemTemplateResource couponTemplateResource)
         {
             
-            mCreateCouponTemplatePath = "/store/coupons/templates";
-            if (!string.IsNullOrEmpty(mCreateCouponTemplatePath))
+            mWebCallEvent.WebPath = "/store/coupons/templates";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mCreateCouponTemplatePath = mCreateCouponTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(couponTemplateResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(couponTemplateResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mCreateCouponTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mCreateCouponTemplateStartTime, mCreateCouponTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mCreateCouponTemplateCoroutine.ResponseReceived += CreateCouponTemplateCallback;
-            mCreateCouponTemplateCoroutine.Start(mCreateCouponTemplatePath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mCreateCouponTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreateCouponTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreateCouponTemplateStartTime, "CreateCouponTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void CreateCouponTemplateCallback(IRestResponse response)
+        private void OnCreateCouponTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateCouponTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateCouponTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling CreateCouponTemplate: " + response.Error);
             }
 
-            CreateCouponTemplateData = (ItemTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mCreateCouponTemplateStartTime, mCreateCouponTemplatePath, string.Format("Response received successfully:\n{0}", CreateCouponTemplateData.ToString()));
+            CreateCouponTemplateData = (ItemTemplateResource) KnetikClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mCreateCouponTemplateStartTime, "CreateCouponTemplate", string.Format("Response received successfully:\n{0}", CreateCouponTemplateData));
 
             if (CreateCouponTemplateComplete != null)
             {
-                CreateCouponTemplateComplete(CreateCouponTemplateData);
+                CreateCouponTemplateComplete(response.ResponseCode, CreateCouponTemplateData);
             }
         }
 
@@ -321,45 +323,44 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeleteCouponItem");
             }
             
-            mDeleteCouponItemPath = "/store/coupons/{id}";
-            if (!string.IsNullOrEmpty(mDeleteCouponItemPath))
+            mWebCallEvent.WebPath = "/store/coupons/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteCouponItemPath = mDeleteCouponItemPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteCouponItemPath = mDeleteCouponItemPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteCouponItemStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteCouponItemStartTime, mDeleteCouponItemPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteCouponItemCoroutine.ResponseReceived += DeleteCouponItemCallback;
-            mDeleteCouponItemCoroutine.Start(mDeleteCouponItemPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteCouponItemStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteCouponItemResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteCouponItemStartTime, "DeleteCouponItem", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteCouponItemCallback(IRestResponse response)
+        private void OnDeleteCouponItemResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteCouponItem: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteCouponItem: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteCouponItem: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteCouponItemStartTime, mDeleteCouponItemPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteCouponItemStartTime, "DeleteCouponItem", "Response received successfully.");
             if (DeleteCouponItemComplete != null)
             {
-                DeleteCouponItemComplete();
+                DeleteCouponItemComplete(response.ResponseCode);
             }
         }
 
@@ -377,50 +378,49 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeleteCouponTemplate");
             }
             
-            mDeleteCouponTemplatePath = "/store/coupons/templates/{id}";
-            if (!string.IsNullOrEmpty(mDeleteCouponTemplatePath))
+            mWebCallEvent.WebPath = "/store/coupons/templates/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteCouponTemplatePath = mDeleteCouponTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteCouponTemplatePath = mDeleteCouponTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
+                mWebCallEvent.QueryParams["cascade"] = KnetikClient.ParameterToString(cascade);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteCouponTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteCouponTemplateStartTime, mDeleteCouponTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteCouponTemplateCoroutine.ResponseReceived += DeleteCouponTemplateCallback;
-            mDeleteCouponTemplateCoroutine.Start(mDeleteCouponTemplatePath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteCouponTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteCouponTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteCouponTemplateStartTime, "DeleteCouponTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteCouponTemplateCallback(IRestResponse response)
+        private void OnDeleteCouponTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteCouponTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteCouponTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteCouponTemplate: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteCouponTemplateStartTime, mDeleteCouponTemplatePath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteCouponTemplateStartTime, "DeleteCouponTemplate", "Response received successfully.");
             if (DeleteCouponTemplateComplete != null)
             {
-                DeleteCouponTemplateComplete();
+                DeleteCouponTemplateComplete(response.ResponseCode);
             }
         }
 
@@ -437,47 +437,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetCouponItem");
             }
             
-            mGetCouponItemPath = "/store/coupons/{id}";
-            if (!string.IsNullOrEmpty(mGetCouponItemPath))
+            mWebCallEvent.WebPath = "/store/coupons/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetCouponItemPath = mGetCouponItemPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetCouponItemPath = mGetCouponItemPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetCouponItemStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetCouponItemStartTime, mGetCouponItemPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetCouponItemCoroutine.ResponseReceived += GetCouponItemCallback;
-            mGetCouponItemCoroutine.Start(mGetCouponItemPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetCouponItemStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetCouponItemResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetCouponItemStartTime, "GetCouponItem", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetCouponItemCallback(IRestResponse response)
+        private void OnGetCouponItemResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCouponItem: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCouponItem: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetCouponItem: " + response.Error);
             }
 
-            GetCouponItemData = (CouponItem) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CouponItem), response.Headers);
-            KnetikLogger.LogResponse(mGetCouponItemStartTime, mGetCouponItemPath, string.Format("Response received successfully:\n{0}", GetCouponItemData.ToString()));
+            GetCouponItemData = (CouponItem) KnetikClient.Deserialize(response.Content, typeof(CouponItem), response.Headers);
+            KnetikLogger.LogResponse(mGetCouponItemStartTime, "GetCouponItem", string.Format("Response received successfully:\n{0}", GetCouponItemData));
 
             if (GetCouponItemComplete != null)
             {
-                GetCouponItemComplete(GetCouponItemData);
+                GetCouponItemComplete(response.ResponseCode, GetCouponItemData);
             }
         }
 
@@ -494,47 +493,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'sku' when calling GetCouponItemBySku");
             }
             
-            mGetCouponItemBySkuPath = "/store/coupons/skus/{sku}";
-            if (!string.IsNullOrEmpty(mGetCouponItemBySkuPath))
+            mWebCallEvent.WebPath = "/store/coupons/skus/{sku}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetCouponItemBySkuPath = mGetCouponItemBySkuPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetCouponItemBySkuPath = mGetCouponItemBySkuPath.Replace("{" + "sku" + "}", KnetikClient.DefaultClient.ParameterToString(sku));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "sku" + "}", KnetikClient.ParameterToString(sku));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetCouponItemBySkuStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetCouponItemBySkuStartTime, mGetCouponItemBySkuPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetCouponItemBySkuCoroutine.ResponseReceived += GetCouponItemBySkuCallback;
-            mGetCouponItemBySkuCoroutine.Start(mGetCouponItemBySkuPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetCouponItemBySkuStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetCouponItemBySkuResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetCouponItemBySkuStartTime, "GetCouponItemBySku", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetCouponItemBySkuCallback(IRestResponse response)
+        private void OnGetCouponItemBySkuResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCouponItemBySku: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCouponItemBySku: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetCouponItemBySku: " + response.Error);
             }
 
-            GetCouponItemBySkuData = (CouponItem) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CouponItem), response.Headers);
-            KnetikLogger.LogResponse(mGetCouponItemBySkuStartTime, mGetCouponItemBySkuPath, string.Format("Response received successfully:\n{0}", GetCouponItemBySkuData.ToString()));
+            GetCouponItemBySkuData = (CouponItem) KnetikClient.Deserialize(response.Content, typeof(CouponItem), response.Headers);
+            KnetikLogger.LogResponse(mGetCouponItemBySkuStartTime, "GetCouponItemBySku", string.Format("Response received successfully:\n{0}", GetCouponItemBySkuData));
 
             if (GetCouponItemBySkuComplete != null)
             {
-                GetCouponItemBySkuComplete(GetCouponItemBySkuData);
+                GetCouponItemBySkuComplete(response.ResponseCode, GetCouponItemBySkuData);
             }
         }
 
@@ -551,47 +549,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetCouponTemplate");
             }
             
-            mGetCouponTemplatePath = "/store/coupons/templates/{id}";
-            if (!string.IsNullOrEmpty(mGetCouponTemplatePath))
+            mWebCallEvent.WebPath = "/store/coupons/templates/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetCouponTemplatePath = mGetCouponTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetCouponTemplatePath = mGetCouponTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetCouponTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetCouponTemplateStartTime, mGetCouponTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetCouponTemplateCoroutine.ResponseReceived += GetCouponTemplateCallback;
-            mGetCouponTemplateCoroutine.Start(mGetCouponTemplatePath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetCouponTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetCouponTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetCouponTemplateStartTime, "GetCouponTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetCouponTemplateCallback(IRestResponse response)
+        private void OnGetCouponTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCouponTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCouponTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetCouponTemplate: " + response.Error);
             }
 
-            GetCouponTemplateData = (ItemTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mGetCouponTemplateStartTime, mGetCouponTemplatePath, string.Format("Response received successfully:\n{0}", GetCouponTemplateData.ToString()));
+            GetCouponTemplateData = (ItemTemplateResource) KnetikClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mGetCouponTemplateStartTime, "GetCouponTemplate", string.Format("Response received successfully:\n{0}", GetCouponTemplateData));
 
             if (GetCouponTemplateComplete != null)
             {
-                GetCouponTemplateComplete(GetCouponTemplateData);
+                GetCouponTemplateComplete(response.ResponseCode, GetCouponTemplateData);
             }
         }
 
@@ -605,61 +602,60 @@ namespace com.knetikcloud.Api
         public void GetCouponTemplates(int? size, int? page, string order)
         {
             
-            mGetCouponTemplatesPath = "/store/coupons/templates";
-            if (!string.IsNullOrEmpty(mGetCouponTemplatesPath))
+            mWebCallEvent.WebPath = "/store/coupons/templates";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetCouponTemplatesPath = mGetCouponTemplatesPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetCouponTemplatesStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetCouponTemplatesStartTime, mGetCouponTemplatesPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetCouponTemplatesCoroutine.ResponseReceived += GetCouponTemplatesCallback;
-            mGetCouponTemplatesCoroutine.Start(mGetCouponTemplatesPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetCouponTemplatesStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetCouponTemplatesResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetCouponTemplatesStartTime, "GetCouponTemplates", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetCouponTemplatesCallback(IRestResponse response)
+        private void OnGetCouponTemplatesResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCouponTemplates: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCouponTemplates: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetCouponTemplates: " + response.Error);
             }
 
-            GetCouponTemplatesData = (PageResourceItemTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceItemTemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mGetCouponTemplatesStartTime, mGetCouponTemplatesPath, string.Format("Response received successfully:\n{0}", GetCouponTemplatesData.ToString()));
+            GetCouponTemplatesData = (PageResourceItemTemplateResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceItemTemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mGetCouponTemplatesStartTime, "GetCouponTemplates", string.Format("Response received successfully:\n{0}", GetCouponTemplatesData));
 
             if (GetCouponTemplatesComplete != null)
             {
-                GetCouponTemplatesComplete(GetCouponTemplatesData);
+                GetCouponTemplatesComplete(response.ResponseCode, GetCouponTemplatesData);
             }
         }
 
@@ -678,54 +674,53 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling UpdateCouponItem");
             }
             
-            mUpdateCouponItemPath = "/store/coupons/{id}";
-            if (!string.IsNullOrEmpty(mUpdateCouponItemPath))
+            mWebCallEvent.WebPath = "/store/coupons/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateCouponItemPath = mUpdateCouponItemPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateCouponItemPath = mUpdateCouponItemPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
+                mWebCallEvent.QueryParams["cascade"] = KnetikClient.ParameterToString(cascade);
             }
 
-            postBody = KnetikClient.DefaultClient.Serialize(couponItem); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(couponItem); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateCouponItemStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateCouponItemStartTime, mUpdateCouponItemPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateCouponItemCoroutine.ResponseReceived += UpdateCouponItemCallback;
-            mUpdateCouponItemCoroutine.Start(mUpdateCouponItemPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateCouponItemStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateCouponItemResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateCouponItemStartTime, "UpdateCouponItem", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateCouponItemCallback(IRestResponse response)
+        private void OnUpdateCouponItemResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateCouponItem: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateCouponItem: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateCouponItem: " + response.Error);
             }
 
-            UpdateCouponItemData = (CouponItem) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CouponItem), response.Headers);
-            KnetikLogger.LogResponse(mUpdateCouponItemStartTime, mUpdateCouponItemPath, string.Format("Response received successfully:\n{0}", UpdateCouponItemData.ToString()));
+            UpdateCouponItemData = (CouponItem) KnetikClient.Deserialize(response.Content, typeof(CouponItem), response.Headers);
+            KnetikLogger.LogResponse(mUpdateCouponItemStartTime, "UpdateCouponItem", string.Format("Response received successfully:\n{0}", UpdateCouponItemData));
 
             if (UpdateCouponItemComplete != null)
             {
-                UpdateCouponItemComplete(UpdateCouponItemData);
+                UpdateCouponItemComplete(response.ResponseCode, UpdateCouponItemData);
             }
         }
 
@@ -743,49 +738,48 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling UpdateCouponTemplate");
             }
             
-            mUpdateCouponTemplatePath = "/store/coupons/templates/{id}";
-            if (!string.IsNullOrEmpty(mUpdateCouponTemplatePath))
+            mWebCallEvent.WebPath = "/store/coupons/templates/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateCouponTemplatePath = mUpdateCouponTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateCouponTemplatePath = mUpdateCouponTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(couponTemplateResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(couponTemplateResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateCouponTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateCouponTemplateStartTime, mUpdateCouponTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateCouponTemplateCoroutine.ResponseReceived += UpdateCouponTemplateCallback;
-            mUpdateCouponTemplateCoroutine.Start(mUpdateCouponTemplatePath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateCouponTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateCouponTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateCouponTemplateStartTime, "UpdateCouponTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateCouponTemplateCallback(IRestResponse response)
+        private void OnUpdateCouponTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateCouponTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateCouponTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateCouponTemplate: " + response.Error);
             }
 
-            UpdateCouponTemplateData = (ItemTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mUpdateCouponTemplateStartTime, mUpdateCouponTemplatePath, string.Format("Response received successfully:\n{0}", UpdateCouponTemplateData.ToString()));
+            UpdateCouponTemplateData = (ItemTemplateResource) KnetikClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mUpdateCouponTemplateStartTime, "UpdateCouponTemplate", string.Format("Response received successfully:\n{0}", UpdateCouponTemplateData));
 
             if (UpdateCouponTemplateComplete != null)
             {
-                UpdateCouponTemplateComplete(UpdateCouponTemplateData);
+                UpdateCouponTemplateComplete(response.ResponseCode, UpdateCouponTemplateData);
             }
         }
 

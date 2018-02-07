@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,16 +18,13 @@ namespace com.knetikcloud.Api
     {
         CurrencyResource CreateCurrencyData { get; }
 
-        PageResourceCurrencyResource GetCurrenciesData { get; }
-
-        CurrencyResource GetCurrencyData { get; }
-
-        
         /// <summary>
         /// Create a currency 
         /// </summary>
         /// <param name="currency">The currency object</param>
         void CreateCurrency(CurrencyResource currency);
+
+        
 
         /// <summary>
         /// Delete a currency 
@@ -36,21 +32,28 @@ namespace com.knetikcloud.Api
         /// <param name="code">The currency code</param>
         void DeleteCurrency(string code);
 
+        PageResourceCurrencyResource GetCurrenciesData { get; }
+
         /// <summary>
         /// List and search currencies 
         /// </summary>
+        /// <param name="filterDefault">Filter for the one currency that is set as default (true), or all that are not (false)</param>
         /// <param name="filterEnabledCurrencies">Filter for alternate currencies setup explicitely in system config</param>
         /// <param name="filterType">Filter currencies by type.  Allowable values: (&#39;virtual&#39;, &#39;real&#39;)</param>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
-        void GetCurrencies(bool? filterEnabledCurrencies, string filterType, int? size, int? page, string order);
+        void GetCurrencies(bool? filterDefault, bool? filterEnabledCurrencies, string filterType, int? size, int? page, string order);
+
+        CurrencyResource GetCurrencyData { get; }
 
         /// <summary>
         /// Get a single currency 
         /// </summary>
         /// <param name="code">The currency code</param>
         void GetCurrency(string code);
+
+        
 
         /// <summary>
         /// Update a currency 
@@ -67,38 +70,35 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class CurrenciesApi : ICurrenciesApi
     {
-        private readonly KnetikCoroutine mCreateCurrencyCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mCreateCurrencyResponseContext;
         private DateTime mCreateCurrencyStartTime;
-        private string mCreateCurrencyPath;
-        private readonly KnetikCoroutine mDeleteCurrencyCoroutine;
+        private readonly KnetikResponseContext mDeleteCurrencyResponseContext;
         private DateTime mDeleteCurrencyStartTime;
-        private string mDeleteCurrencyPath;
-        private readonly KnetikCoroutine mGetCurrenciesCoroutine;
+        private readonly KnetikResponseContext mGetCurrenciesResponseContext;
         private DateTime mGetCurrenciesStartTime;
-        private string mGetCurrenciesPath;
-        private readonly KnetikCoroutine mGetCurrencyCoroutine;
+        private readonly KnetikResponseContext mGetCurrencyResponseContext;
         private DateTime mGetCurrencyStartTime;
-        private string mGetCurrencyPath;
-        private readonly KnetikCoroutine mUpdateCurrencyCoroutine;
+        private readonly KnetikResponseContext mUpdateCurrencyResponseContext;
         private DateTime mUpdateCurrencyStartTime;
-        private string mUpdateCurrencyPath;
 
         public CurrencyResource CreateCurrencyData { get; private set; }
-        public delegate void CreateCurrencyCompleteDelegate(CurrencyResource response);
+        public delegate void CreateCurrencyCompleteDelegate(long responseCode, CurrencyResource response);
         public CreateCurrencyCompleteDelegate CreateCurrencyComplete;
 
-        public delegate void DeleteCurrencyCompleteDelegate();
+        public delegate void DeleteCurrencyCompleteDelegate(long responseCode);
         public DeleteCurrencyCompleteDelegate DeleteCurrencyComplete;
 
         public PageResourceCurrencyResource GetCurrenciesData { get; private set; }
-        public delegate void GetCurrenciesCompleteDelegate(PageResourceCurrencyResource response);
+        public delegate void GetCurrenciesCompleteDelegate(long responseCode, PageResourceCurrencyResource response);
         public GetCurrenciesCompleteDelegate GetCurrenciesComplete;
 
         public CurrencyResource GetCurrencyData { get; private set; }
-        public delegate void GetCurrencyCompleteDelegate(CurrencyResource response);
+        public delegate void GetCurrencyCompleteDelegate(long responseCode, CurrencyResource response);
         public GetCurrencyCompleteDelegate GetCurrencyComplete;
 
-        public delegate void UpdateCurrencyCompleteDelegate();
+        public delegate void UpdateCurrencyCompleteDelegate(long responseCode);
         public UpdateCurrencyCompleteDelegate UpdateCurrencyComplete;
 
         /// <summary>
@@ -107,11 +107,16 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public CurrenciesApi()
         {
-            mCreateCurrencyCoroutine = new KnetikCoroutine();
-            mDeleteCurrencyCoroutine = new KnetikCoroutine();
-            mGetCurrenciesCoroutine = new KnetikCoroutine();
-            mGetCurrencyCoroutine = new KnetikCoroutine();
-            mUpdateCurrencyCoroutine = new KnetikCoroutine();
+            mCreateCurrencyResponseContext = new KnetikResponseContext();
+            mCreateCurrencyResponseContext.ResponseReceived += OnCreateCurrencyResponse;
+            mDeleteCurrencyResponseContext = new KnetikResponseContext();
+            mDeleteCurrencyResponseContext.ResponseReceived += OnDeleteCurrencyResponse;
+            mGetCurrenciesResponseContext = new KnetikResponseContext();
+            mGetCurrenciesResponseContext.ResponseReceived += OnGetCurrenciesResponse;
+            mGetCurrencyResponseContext = new KnetikResponseContext();
+            mGetCurrencyResponseContext.ResponseReceived += OnGetCurrencyResponse;
+            mUpdateCurrencyResponseContext = new KnetikResponseContext();
+            mUpdateCurrencyResponseContext.ResponseReceived += OnUpdateCurrencyResponse;
         }
     
         /// <inheritdoc />
@@ -122,48 +127,47 @@ namespace com.knetikcloud.Api
         public void CreateCurrency(CurrencyResource currency)
         {
             
-            mCreateCurrencyPath = "/currencies";
-            if (!string.IsNullOrEmpty(mCreateCurrencyPath))
+            mWebCallEvent.WebPath = "/currencies";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mCreateCurrencyPath = mCreateCurrencyPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(currency); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(currency); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mCreateCurrencyStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mCreateCurrencyStartTime, mCreateCurrencyPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mCreateCurrencyCoroutine.ResponseReceived += CreateCurrencyCallback;
-            mCreateCurrencyCoroutine.Start(mCreateCurrencyPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mCreateCurrencyStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreateCurrencyResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreateCurrencyStartTime, "CreateCurrency", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void CreateCurrencyCallback(IRestResponse response)
+        private void OnCreateCurrencyResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateCurrency: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateCurrency: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling CreateCurrency: " + response.Error);
             }
 
-            CreateCurrencyData = (CurrencyResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CurrencyResource), response.Headers);
-            KnetikLogger.LogResponse(mCreateCurrencyStartTime, mCreateCurrencyPath, string.Format("Response received successfully:\n{0}", CreateCurrencyData.ToString()));
+            CreateCurrencyData = (CurrencyResource) KnetikClient.Deserialize(response.Content, typeof(CurrencyResource), response.Headers);
+            KnetikLogger.LogResponse(mCreateCurrencyStartTime, "CreateCurrency", string.Format("Response received successfully:\n{0}", CreateCurrencyData));
 
             if (CreateCurrencyComplete != null)
             {
-                CreateCurrencyComplete(CreateCurrencyData);
+                CreateCurrencyComplete(response.ResponseCode, CreateCurrencyData);
             }
         }
 
@@ -180,45 +184,44 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'code' when calling DeleteCurrency");
             }
             
-            mDeleteCurrencyPath = "/currencies/{code}";
-            if (!string.IsNullOrEmpty(mDeleteCurrencyPath))
+            mWebCallEvent.WebPath = "/currencies/{code}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteCurrencyPath = mDeleteCurrencyPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteCurrencyPath = mDeleteCurrencyPath.Replace("{" + "code" + "}", KnetikClient.DefaultClient.ParameterToString(code));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "code" + "}", KnetikClient.ParameterToString(code));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteCurrencyStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteCurrencyStartTime, mDeleteCurrencyPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteCurrencyCoroutine.ResponseReceived += DeleteCurrencyCallback;
-            mDeleteCurrencyCoroutine.Start(mDeleteCurrencyPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteCurrencyStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteCurrencyResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteCurrencyStartTime, "DeleteCurrency", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteCurrencyCallback(IRestResponse response)
+        private void OnDeleteCurrencyResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteCurrency: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteCurrency: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteCurrency: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteCurrencyStartTime, mDeleteCurrencyPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteCurrencyStartTime, "DeleteCurrency", "Response received successfully.");
             if (DeleteCurrencyComplete != null)
             {
-                DeleteCurrencyComplete();
+                DeleteCurrencyComplete(response.ResponseCode);
             }
         }
 
@@ -226,79 +229,84 @@ namespace com.knetikcloud.Api
         /// <summary>
         /// List and search currencies 
         /// </summary>
+        /// <param name="filterDefault">Filter for the one currency that is set as default (true), or all that are not (false)</param>
         /// <param name="filterEnabledCurrencies">Filter for alternate currencies setup explicitely in system config</param>
         /// <param name="filterType">Filter currencies by type.  Allowable values: (&#39;virtual&#39;, &#39;real&#39;)</param>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
-        public void GetCurrencies(bool? filterEnabledCurrencies, string filterType, int? size, int? page, string order)
+        public void GetCurrencies(bool? filterDefault, bool? filterEnabledCurrencies, string filterType, int? size, int? page, string order)
         {
             
-            mGetCurrenciesPath = "/currencies";
-            if (!string.IsNullOrEmpty(mGetCurrenciesPath))
+            mWebCallEvent.WebPath = "/currencies";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetCurrenciesPath = mGetCurrenciesPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
+
+            if (filterDefault != null)
+            {
+                mWebCallEvent.QueryParams["filter_default"] = KnetikClient.ParameterToString(filterDefault);
+            }
 
             if (filterEnabledCurrencies != null)
             {
-                queryParams.Add("filter_enabled_currencies", KnetikClient.DefaultClient.ParameterToString(filterEnabledCurrencies));
+                mWebCallEvent.QueryParams["filter_enabled_currencies"] = KnetikClient.ParameterToString(filterEnabledCurrencies);
             }
 
             if (filterType != null)
             {
-                queryParams.Add("filter_type", KnetikClient.DefaultClient.ParameterToString(filterType));
+                mWebCallEvent.QueryParams["filter_type"] = KnetikClient.ParameterToString(filterType);
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetCurrenciesStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetCurrenciesStartTime, mGetCurrenciesPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetCurrenciesCoroutine.ResponseReceived += GetCurrenciesCallback;
-            mGetCurrenciesCoroutine.Start(mGetCurrenciesPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetCurrenciesStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetCurrenciesResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetCurrenciesStartTime, "GetCurrencies", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetCurrenciesCallback(IRestResponse response)
+        private void OnGetCurrenciesResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCurrencies: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCurrencies: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetCurrencies: " + response.Error);
             }
 
-            GetCurrenciesData = (PageResourceCurrencyResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceCurrencyResource), response.Headers);
-            KnetikLogger.LogResponse(mGetCurrenciesStartTime, mGetCurrenciesPath, string.Format("Response received successfully:\n{0}", GetCurrenciesData.ToString()));
+            GetCurrenciesData = (PageResourceCurrencyResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceCurrencyResource), response.Headers);
+            KnetikLogger.LogResponse(mGetCurrenciesStartTime, "GetCurrencies", string.Format("Response received successfully:\n{0}", GetCurrenciesData));
 
             if (GetCurrenciesComplete != null)
             {
-                GetCurrenciesComplete(GetCurrenciesData);
+                GetCurrenciesComplete(response.ResponseCode, GetCurrenciesData);
             }
         }
 
@@ -315,47 +323,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'code' when calling GetCurrency");
             }
             
-            mGetCurrencyPath = "/currencies/{code}";
-            if (!string.IsNullOrEmpty(mGetCurrencyPath))
+            mWebCallEvent.WebPath = "/currencies/{code}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetCurrencyPath = mGetCurrencyPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetCurrencyPath = mGetCurrencyPath.Replace("{" + "code" + "}", KnetikClient.DefaultClient.ParameterToString(code));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "code" + "}", KnetikClient.ParameterToString(code));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetCurrencyStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetCurrencyStartTime, mGetCurrencyPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetCurrencyCoroutine.ResponseReceived += GetCurrencyCallback;
-            mGetCurrencyCoroutine.Start(mGetCurrencyPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetCurrencyStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetCurrencyResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetCurrencyStartTime, "GetCurrency", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetCurrencyCallback(IRestResponse response)
+        private void OnGetCurrencyResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCurrency: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCurrency: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetCurrency: " + response.Error);
             }
 
-            GetCurrencyData = (CurrencyResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CurrencyResource), response.Headers);
-            KnetikLogger.LogResponse(mGetCurrencyStartTime, mGetCurrencyPath, string.Format("Response received successfully:\n{0}", GetCurrencyData.ToString()));
+            GetCurrencyData = (CurrencyResource) KnetikClient.Deserialize(response.Content, typeof(CurrencyResource), response.Headers);
+            KnetikLogger.LogResponse(mGetCurrencyStartTime, "GetCurrency", string.Format("Response received successfully:\n{0}", GetCurrencyData));
 
             if (GetCurrencyComplete != null)
             {
-                GetCurrencyComplete(GetCurrencyData);
+                GetCurrencyComplete(response.ResponseCode, GetCurrencyData);
             }
         }
 
@@ -373,47 +380,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'code' when calling UpdateCurrency");
             }
             
-            mUpdateCurrencyPath = "/currencies/{code}";
-            if (!string.IsNullOrEmpty(mUpdateCurrencyPath))
+            mWebCallEvent.WebPath = "/currencies/{code}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateCurrencyPath = mUpdateCurrencyPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateCurrencyPath = mUpdateCurrencyPath.Replace("{" + "code" + "}", KnetikClient.DefaultClient.ParameterToString(code));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "code" + "}", KnetikClient.ParameterToString(code));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(currency); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(currency); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateCurrencyStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateCurrencyStartTime, mUpdateCurrencyPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateCurrencyCoroutine.ResponseReceived += UpdateCurrencyCallback;
-            mUpdateCurrencyCoroutine.Start(mUpdateCurrencyPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateCurrencyStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateCurrencyResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateCurrencyStartTime, "UpdateCurrency", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateCurrencyCallback(IRestResponse response)
+        private void OnUpdateCurrencyResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateCurrency: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateCurrency: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateCurrency: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mUpdateCurrencyStartTime, mUpdateCurrencyPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mUpdateCurrencyStartTime, "UpdateCurrency", "Response received successfully.");
             if (UpdateCurrencyComplete != null)
             {
-                UpdateCurrencyComplete();
+                UpdateCurrencyComplete(response.ResponseCode);
             }
         }
 

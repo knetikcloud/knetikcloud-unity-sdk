@@ -2,8 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using com.knetikcloud.Attributes;
-using com.knetikcloud.Serialization;
+using KnetikUnity.Attributes;
+using KnetikUnity.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model

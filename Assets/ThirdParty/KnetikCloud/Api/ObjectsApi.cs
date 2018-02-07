@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,19 +18,6 @@ namespace com.knetikcloud.Api
     {
         ObjectResource CreateObjectItemData { get; }
 
-        ItemTemplateResource CreateObjectTemplateData { get; }
-
-        ObjectResource GetObjectItemData { get; }
-
-        PageResourceObjectResource GetObjectItemsData { get; }
-
-        ItemTemplateResource GetObjectTemplateData { get; }
-
-        PageResourceItemTemplateResource GetObjectTemplatesData { get; }
-
-        ItemTemplateResource UpdateObjectTemplateData { get; }
-
-        
         /// <summary>
         /// Create an object 
         /// </summary>
@@ -40,11 +26,15 @@ namespace com.knetikcloud.Api
         /// <param name="objectItem">The object item object</param>
         void CreateObjectItem(string templateId, bool? cascade, ObjectResource objectItem);
 
+        ItemTemplateResource CreateObjectTemplateData { get; }
+
         /// <summary>
         /// Create an object template Object templates define a type of entitlement and the properties they have
         /// </summary>
         /// <param name="template">The entitlement template to be created</param>
         void CreateObjectTemplate(ItemTemplateResource template);
+
+        
 
         /// <summary>
         /// Delete an object 
@@ -53,6 +43,8 @@ namespace com.knetikcloud.Api
         /// <param name="objectId">The id of the object</param>
         void DeleteObjectItem(string templateId, int? objectId);
 
+        
+
         /// <summary>
         /// Delete an entitlement template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
         /// </summary>
@@ -60,12 +52,16 @@ namespace com.knetikcloud.Api
         /// <param name="cascade">The value needed to delete used templates</param>
         void DeleteObjectTemplate(string id, string cascade);
 
+        ObjectResource GetObjectItemData { get; }
+
         /// <summary>
         /// Get a single object 
         /// </summary>
         /// <param name="templateId">The id of the template this object is part of</param>
         /// <param name="objectId">The id of the object</param>
         void GetObjectItem(string templateId, int? objectId);
+
+        PageResourceObjectResource GetObjectItemsData { get; }
 
         /// <summary>
         /// List and search objects 
@@ -76,11 +72,15 @@ namespace com.knetikcloud.Api
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
         void GetObjectItems(string templateId, int? size, int? page, string order);
 
+        ItemTemplateResource GetObjectTemplateData { get; }
+
         /// <summary>
         /// Get a single entitlement template 
         /// </summary>
         /// <param name="id">The id of the template</param>
         void GetObjectTemplate(string id);
+
+        PageResourceItemTemplateResource GetObjectTemplatesData { get; }
 
         /// <summary>
         /// List and search entitlement templates 
@@ -90,14 +90,18 @@ namespace com.knetikcloud.Api
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
         void GetObjectTemplates(int? size, int? page, string order);
 
+        
+
         /// <summary>
         /// Update an object 
         /// </summary>
         /// <param name="templateId">The id of the template this object is part of</param>
-        /// <param name="entitlementId">The id of the entitlement</param>
+        /// <param name="objectId">The id of the object</param>
         /// <param name="cascade">Whether to cascade group changes, such as in the limited gettable behavior. A 400 error will return otherwise if the group is already in use with different values.</param>
         /// <param name="objectItem">The object item object</param>
-        void UpdateObjectItem(string templateId, int? entitlementId, bool? cascade, EntitlementItem objectItem);
+        void UpdateObjectItem(string templateId, int? objectId, bool? cascade, ObjectResource objectItem);
+
+        ItemTemplateResource UpdateObjectTemplateData { get; }
 
         /// <summary>
         /// Update an entitlement template 
@@ -114,72 +118,64 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class ObjectsApi : IObjectsApi
     {
-        private readonly KnetikCoroutine mCreateObjectItemCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mCreateObjectItemResponseContext;
         private DateTime mCreateObjectItemStartTime;
-        private string mCreateObjectItemPath;
-        private readonly KnetikCoroutine mCreateObjectTemplateCoroutine;
+        private readonly KnetikResponseContext mCreateObjectTemplateResponseContext;
         private DateTime mCreateObjectTemplateStartTime;
-        private string mCreateObjectTemplatePath;
-        private readonly KnetikCoroutine mDeleteObjectItemCoroutine;
+        private readonly KnetikResponseContext mDeleteObjectItemResponseContext;
         private DateTime mDeleteObjectItemStartTime;
-        private string mDeleteObjectItemPath;
-        private readonly KnetikCoroutine mDeleteObjectTemplateCoroutine;
+        private readonly KnetikResponseContext mDeleteObjectTemplateResponseContext;
         private DateTime mDeleteObjectTemplateStartTime;
-        private string mDeleteObjectTemplatePath;
-        private readonly KnetikCoroutine mGetObjectItemCoroutine;
+        private readonly KnetikResponseContext mGetObjectItemResponseContext;
         private DateTime mGetObjectItemStartTime;
-        private string mGetObjectItemPath;
-        private readonly KnetikCoroutine mGetObjectItemsCoroutine;
+        private readonly KnetikResponseContext mGetObjectItemsResponseContext;
         private DateTime mGetObjectItemsStartTime;
-        private string mGetObjectItemsPath;
-        private readonly KnetikCoroutine mGetObjectTemplateCoroutine;
+        private readonly KnetikResponseContext mGetObjectTemplateResponseContext;
         private DateTime mGetObjectTemplateStartTime;
-        private string mGetObjectTemplatePath;
-        private readonly KnetikCoroutine mGetObjectTemplatesCoroutine;
+        private readonly KnetikResponseContext mGetObjectTemplatesResponseContext;
         private DateTime mGetObjectTemplatesStartTime;
-        private string mGetObjectTemplatesPath;
-        private readonly KnetikCoroutine mUpdateObjectItemCoroutine;
+        private readonly KnetikResponseContext mUpdateObjectItemResponseContext;
         private DateTime mUpdateObjectItemStartTime;
-        private string mUpdateObjectItemPath;
-        private readonly KnetikCoroutine mUpdateObjectTemplateCoroutine;
+        private readonly KnetikResponseContext mUpdateObjectTemplateResponseContext;
         private DateTime mUpdateObjectTemplateStartTime;
-        private string mUpdateObjectTemplatePath;
 
         public ObjectResource CreateObjectItemData { get; private set; }
-        public delegate void CreateObjectItemCompleteDelegate(ObjectResource response);
+        public delegate void CreateObjectItemCompleteDelegate(long responseCode, ObjectResource response);
         public CreateObjectItemCompleteDelegate CreateObjectItemComplete;
 
         public ItemTemplateResource CreateObjectTemplateData { get; private set; }
-        public delegate void CreateObjectTemplateCompleteDelegate(ItemTemplateResource response);
+        public delegate void CreateObjectTemplateCompleteDelegate(long responseCode, ItemTemplateResource response);
         public CreateObjectTemplateCompleteDelegate CreateObjectTemplateComplete;
 
-        public delegate void DeleteObjectItemCompleteDelegate();
+        public delegate void DeleteObjectItemCompleteDelegate(long responseCode);
         public DeleteObjectItemCompleteDelegate DeleteObjectItemComplete;
 
-        public delegate void DeleteObjectTemplateCompleteDelegate();
+        public delegate void DeleteObjectTemplateCompleteDelegate(long responseCode);
         public DeleteObjectTemplateCompleteDelegate DeleteObjectTemplateComplete;
 
         public ObjectResource GetObjectItemData { get; private set; }
-        public delegate void GetObjectItemCompleteDelegate(ObjectResource response);
+        public delegate void GetObjectItemCompleteDelegate(long responseCode, ObjectResource response);
         public GetObjectItemCompleteDelegate GetObjectItemComplete;
 
         public PageResourceObjectResource GetObjectItemsData { get; private set; }
-        public delegate void GetObjectItemsCompleteDelegate(PageResourceObjectResource response);
+        public delegate void GetObjectItemsCompleteDelegate(long responseCode, PageResourceObjectResource response);
         public GetObjectItemsCompleteDelegate GetObjectItemsComplete;
 
         public ItemTemplateResource GetObjectTemplateData { get; private set; }
-        public delegate void GetObjectTemplateCompleteDelegate(ItemTemplateResource response);
+        public delegate void GetObjectTemplateCompleteDelegate(long responseCode, ItemTemplateResource response);
         public GetObjectTemplateCompleteDelegate GetObjectTemplateComplete;
 
         public PageResourceItemTemplateResource GetObjectTemplatesData { get; private set; }
-        public delegate void GetObjectTemplatesCompleteDelegate(PageResourceItemTemplateResource response);
+        public delegate void GetObjectTemplatesCompleteDelegate(long responseCode, PageResourceItemTemplateResource response);
         public GetObjectTemplatesCompleteDelegate GetObjectTemplatesComplete;
 
-        public delegate void UpdateObjectItemCompleteDelegate();
+        public delegate void UpdateObjectItemCompleteDelegate(long responseCode);
         public UpdateObjectItemCompleteDelegate UpdateObjectItemComplete;
 
         public ItemTemplateResource UpdateObjectTemplateData { get; private set; }
-        public delegate void UpdateObjectTemplateCompleteDelegate(ItemTemplateResource response);
+        public delegate void UpdateObjectTemplateCompleteDelegate(long responseCode, ItemTemplateResource response);
         public UpdateObjectTemplateCompleteDelegate UpdateObjectTemplateComplete;
 
         /// <summary>
@@ -188,16 +184,26 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public ObjectsApi()
         {
-            mCreateObjectItemCoroutine = new KnetikCoroutine();
-            mCreateObjectTemplateCoroutine = new KnetikCoroutine();
-            mDeleteObjectItemCoroutine = new KnetikCoroutine();
-            mDeleteObjectTemplateCoroutine = new KnetikCoroutine();
-            mGetObjectItemCoroutine = new KnetikCoroutine();
-            mGetObjectItemsCoroutine = new KnetikCoroutine();
-            mGetObjectTemplateCoroutine = new KnetikCoroutine();
-            mGetObjectTemplatesCoroutine = new KnetikCoroutine();
-            mUpdateObjectItemCoroutine = new KnetikCoroutine();
-            mUpdateObjectTemplateCoroutine = new KnetikCoroutine();
+            mCreateObjectItemResponseContext = new KnetikResponseContext();
+            mCreateObjectItemResponseContext.ResponseReceived += OnCreateObjectItemResponse;
+            mCreateObjectTemplateResponseContext = new KnetikResponseContext();
+            mCreateObjectTemplateResponseContext.ResponseReceived += OnCreateObjectTemplateResponse;
+            mDeleteObjectItemResponseContext = new KnetikResponseContext();
+            mDeleteObjectItemResponseContext.ResponseReceived += OnDeleteObjectItemResponse;
+            mDeleteObjectTemplateResponseContext = new KnetikResponseContext();
+            mDeleteObjectTemplateResponseContext.ResponseReceived += OnDeleteObjectTemplateResponse;
+            mGetObjectItemResponseContext = new KnetikResponseContext();
+            mGetObjectItemResponseContext.ResponseReceived += OnGetObjectItemResponse;
+            mGetObjectItemsResponseContext = new KnetikResponseContext();
+            mGetObjectItemsResponseContext.ResponseReceived += OnGetObjectItemsResponse;
+            mGetObjectTemplateResponseContext = new KnetikResponseContext();
+            mGetObjectTemplateResponseContext.ResponseReceived += OnGetObjectTemplateResponse;
+            mGetObjectTemplatesResponseContext = new KnetikResponseContext();
+            mGetObjectTemplatesResponseContext.ResponseReceived += OnGetObjectTemplatesResponse;
+            mUpdateObjectItemResponseContext = new KnetikResponseContext();
+            mUpdateObjectItemResponseContext.ResponseReceived += OnUpdateObjectItemResponse;
+            mUpdateObjectTemplateResponseContext = new KnetikResponseContext();
+            mUpdateObjectTemplateResponseContext.ResponseReceived += OnUpdateObjectTemplateResponse;
         }
     
         /// <inheritdoc />
@@ -215,54 +221,53 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'templateId' when calling CreateObjectItem");
             }
             
-            mCreateObjectItemPath = "/objects/{template_id}";
-            if (!string.IsNullOrEmpty(mCreateObjectItemPath))
+            mWebCallEvent.WebPath = "/objects/{template_id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mCreateObjectItemPath = mCreateObjectItemPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mCreateObjectItemPath = mCreateObjectItemPath.Replace("{" + "template_id" + "}", KnetikClient.DefaultClient.ParameterToString(templateId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "template_id" + "}", KnetikClient.ParameterToString(templateId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
+                mWebCallEvent.QueryParams["cascade"] = KnetikClient.ParameterToString(cascade);
             }
 
-            postBody = KnetikClient.DefaultClient.Serialize(objectItem); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(objectItem); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mCreateObjectItemStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mCreateObjectItemStartTime, mCreateObjectItemPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mCreateObjectItemCoroutine.ResponseReceived += CreateObjectItemCallback;
-            mCreateObjectItemCoroutine.Start(mCreateObjectItemPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mCreateObjectItemStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreateObjectItemResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreateObjectItemStartTime, "CreateObjectItem", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void CreateObjectItemCallback(IRestResponse response)
+        private void OnCreateObjectItemResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateObjectItem: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateObjectItem: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling CreateObjectItem: " + response.Error);
             }
 
-            CreateObjectItemData = (ObjectResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ObjectResource), response.Headers);
-            KnetikLogger.LogResponse(mCreateObjectItemStartTime, mCreateObjectItemPath, string.Format("Response received successfully:\n{0}", CreateObjectItemData.ToString()));
+            CreateObjectItemData = (ObjectResource) KnetikClient.Deserialize(response.Content, typeof(ObjectResource), response.Headers);
+            KnetikLogger.LogResponse(mCreateObjectItemStartTime, "CreateObjectItem", string.Format("Response received successfully:\n{0}", CreateObjectItemData));
 
             if (CreateObjectItemComplete != null)
             {
-                CreateObjectItemComplete(CreateObjectItemData);
+                CreateObjectItemComplete(response.ResponseCode, CreateObjectItemData);
             }
         }
 
@@ -274,48 +279,47 @@ namespace com.knetikcloud.Api
         public void CreateObjectTemplate(ItemTemplateResource template)
         {
             
-            mCreateObjectTemplatePath = "/objects/templates";
-            if (!string.IsNullOrEmpty(mCreateObjectTemplatePath))
+            mWebCallEvent.WebPath = "/objects/templates";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mCreateObjectTemplatePath = mCreateObjectTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(template); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(template); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mCreateObjectTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mCreateObjectTemplateStartTime, mCreateObjectTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mCreateObjectTemplateCoroutine.ResponseReceived += CreateObjectTemplateCallback;
-            mCreateObjectTemplateCoroutine.Start(mCreateObjectTemplatePath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mCreateObjectTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreateObjectTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreateObjectTemplateStartTime, "CreateObjectTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void CreateObjectTemplateCallback(IRestResponse response)
+        private void OnCreateObjectTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateObjectTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateObjectTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling CreateObjectTemplate: " + response.Error);
             }
 
-            CreateObjectTemplateData = (ItemTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mCreateObjectTemplateStartTime, mCreateObjectTemplatePath, string.Format("Response received successfully:\n{0}", CreateObjectTemplateData.ToString()));
+            CreateObjectTemplateData = (ItemTemplateResource) KnetikClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mCreateObjectTemplateStartTime, "CreateObjectTemplate", string.Format("Response received successfully:\n{0}", CreateObjectTemplateData));
 
             if (CreateObjectTemplateComplete != null)
             {
-                CreateObjectTemplateComplete(CreateObjectTemplateData);
+                CreateObjectTemplateComplete(response.ResponseCode, CreateObjectTemplateData);
             }
         }
 
@@ -338,46 +342,45 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'objectId' when calling DeleteObjectItem");
             }
             
-            mDeleteObjectItemPath = "/objects/{template_id}/{object_id}";
-            if (!string.IsNullOrEmpty(mDeleteObjectItemPath))
+            mWebCallEvent.WebPath = "/objects/{template_id}/{object_id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteObjectItemPath = mDeleteObjectItemPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteObjectItemPath = mDeleteObjectItemPath.Replace("{" + "template_id" + "}", KnetikClient.DefaultClient.ParameterToString(templateId));
-mDeleteObjectItemPath = mDeleteObjectItemPath.Replace("{" + "object_id" + "}", KnetikClient.DefaultClient.ParameterToString(objectId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "template_id" + "}", KnetikClient.ParameterToString(templateId));
+mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "object_id" + "}", KnetikClient.ParameterToString(objectId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteObjectItemStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteObjectItemStartTime, mDeleteObjectItemPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteObjectItemCoroutine.ResponseReceived += DeleteObjectItemCallback;
-            mDeleteObjectItemCoroutine.Start(mDeleteObjectItemPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteObjectItemStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteObjectItemResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteObjectItemStartTime, "DeleteObjectItem", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteObjectItemCallback(IRestResponse response)
+        private void OnDeleteObjectItemResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteObjectItem: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteObjectItem: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteObjectItem: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteObjectItemStartTime, mDeleteObjectItemPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteObjectItemStartTime, "DeleteObjectItem", "Response received successfully.");
             if (DeleteObjectItemComplete != null)
             {
-                DeleteObjectItemComplete();
+                DeleteObjectItemComplete(response.ResponseCode);
             }
         }
 
@@ -395,50 +398,49 @@ mDeleteObjectItemPath = mDeleteObjectItemPath.Replace("{" + "object_id" + "}", K
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeleteObjectTemplate");
             }
             
-            mDeleteObjectTemplatePath = "/objects/templates/{id}";
-            if (!string.IsNullOrEmpty(mDeleteObjectTemplatePath))
+            mWebCallEvent.WebPath = "/objects/templates/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteObjectTemplatePath = mDeleteObjectTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteObjectTemplatePath = mDeleteObjectTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
+                mWebCallEvent.QueryParams["cascade"] = KnetikClient.ParameterToString(cascade);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteObjectTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteObjectTemplateStartTime, mDeleteObjectTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteObjectTemplateCoroutine.ResponseReceived += DeleteObjectTemplateCallback;
-            mDeleteObjectTemplateCoroutine.Start(mDeleteObjectTemplatePath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteObjectTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteObjectTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteObjectTemplateStartTime, "DeleteObjectTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteObjectTemplateCallback(IRestResponse response)
+        private void OnDeleteObjectTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteObjectTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteObjectTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteObjectTemplate: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteObjectTemplateStartTime, mDeleteObjectTemplatePath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteObjectTemplateStartTime, "DeleteObjectTemplate", "Response received successfully.");
             if (DeleteObjectTemplateComplete != null)
             {
-                DeleteObjectTemplateComplete();
+                DeleteObjectTemplateComplete(response.ResponseCode);
             }
         }
 
@@ -461,48 +463,47 @@ mDeleteObjectItemPath = mDeleteObjectItemPath.Replace("{" + "object_id" + "}", K
                 throw new KnetikException(400, "Missing required parameter 'objectId' when calling GetObjectItem");
             }
             
-            mGetObjectItemPath = "/objects/{template_id}/{object_id}";
-            if (!string.IsNullOrEmpty(mGetObjectItemPath))
+            mWebCallEvent.WebPath = "/objects/{template_id}/{object_id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetObjectItemPath = mGetObjectItemPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetObjectItemPath = mGetObjectItemPath.Replace("{" + "template_id" + "}", KnetikClient.DefaultClient.ParameterToString(templateId));
-mGetObjectItemPath = mGetObjectItemPath.Replace("{" + "object_id" + "}", KnetikClient.DefaultClient.ParameterToString(objectId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "template_id" + "}", KnetikClient.ParameterToString(templateId));
+mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "object_id" + "}", KnetikClient.ParameterToString(objectId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetObjectItemStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetObjectItemStartTime, mGetObjectItemPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetObjectItemCoroutine.ResponseReceived += GetObjectItemCallback;
-            mGetObjectItemCoroutine.Start(mGetObjectItemPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetObjectItemStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetObjectItemResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetObjectItemStartTime, "GetObjectItem", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetObjectItemCallback(IRestResponse response)
+        private void OnGetObjectItemResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetObjectItem: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetObjectItem: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetObjectItem: " + response.Error);
             }
 
-            GetObjectItemData = (ObjectResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ObjectResource), response.Headers);
-            KnetikLogger.LogResponse(mGetObjectItemStartTime, mGetObjectItemPath, string.Format("Response received successfully:\n{0}", GetObjectItemData.ToString()));
+            GetObjectItemData = (ObjectResource) KnetikClient.Deserialize(response.Content, typeof(ObjectResource), response.Headers);
+            KnetikLogger.LogResponse(mGetObjectItemStartTime, "GetObjectItem", string.Format("Response received successfully:\n{0}", GetObjectItemData));
 
             if (GetObjectItemComplete != null)
             {
-                GetObjectItemComplete(GetObjectItemData);
+                GetObjectItemComplete(response.ResponseCode, GetObjectItemData);
             }
         }
 
@@ -522,62 +523,61 @@ mGetObjectItemPath = mGetObjectItemPath.Replace("{" + "object_id" + "}", KnetikC
                 throw new KnetikException(400, "Missing required parameter 'templateId' when calling GetObjectItems");
             }
             
-            mGetObjectItemsPath = "/objects/{template_id}";
-            if (!string.IsNullOrEmpty(mGetObjectItemsPath))
+            mWebCallEvent.WebPath = "/objects/{template_id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetObjectItemsPath = mGetObjectItemsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetObjectItemsPath = mGetObjectItemsPath.Replace("{" + "template_id" + "}", KnetikClient.DefaultClient.ParameterToString(templateId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "template_id" + "}", KnetikClient.ParameterToString(templateId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetObjectItemsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetObjectItemsStartTime, mGetObjectItemsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetObjectItemsCoroutine.ResponseReceived += GetObjectItemsCallback;
-            mGetObjectItemsCoroutine.Start(mGetObjectItemsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetObjectItemsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetObjectItemsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetObjectItemsStartTime, "GetObjectItems", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetObjectItemsCallback(IRestResponse response)
+        private void OnGetObjectItemsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetObjectItems: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetObjectItems: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetObjectItems: " + response.Error);
             }
 
-            GetObjectItemsData = (PageResourceObjectResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceObjectResource), response.Headers);
-            KnetikLogger.LogResponse(mGetObjectItemsStartTime, mGetObjectItemsPath, string.Format("Response received successfully:\n{0}", GetObjectItemsData.ToString()));
+            GetObjectItemsData = (PageResourceObjectResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceObjectResource), response.Headers);
+            KnetikLogger.LogResponse(mGetObjectItemsStartTime, "GetObjectItems", string.Format("Response received successfully:\n{0}", GetObjectItemsData));
 
             if (GetObjectItemsComplete != null)
             {
-                GetObjectItemsComplete(GetObjectItemsData);
+                GetObjectItemsComplete(response.ResponseCode, GetObjectItemsData);
             }
         }
 
@@ -594,47 +594,46 @@ mGetObjectItemPath = mGetObjectItemPath.Replace("{" + "object_id" + "}", KnetikC
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetObjectTemplate");
             }
             
-            mGetObjectTemplatePath = "/objects/templates/{id}";
-            if (!string.IsNullOrEmpty(mGetObjectTemplatePath))
+            mWebCallEvent.WebPath = "/objects/templates/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetObjectTemplatePath = mGetObjectTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetObjectTemplatePath = mGetObjectTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetObjectTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetObjectTemplateStartTime, mGetObjectTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetObjectTemplateCoroutine.ResponseReceived += GetObjectTemplateCallback;
-            mGetObjectTemplateCoroutine.Start(mGetObjectTemplatePath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetObjectTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetObjectTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetObjectTemplateStartTime, "GetObjectTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetObjectTemplateCallback(IRestResponse response)
+        private void OnGetObjectTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetObjectTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetObjectTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetObjectTemplate: " + response.Error);
             }
 
-            GetObjectTemplateData = (ItemTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mGetObjectTemplateStartTime, mGetObjectTemplatePath, string.Format("Response received successfully:\n{0}", GetObjectTemplateData.ToString()));
+            GetObjectTemplateData = (ItemTemplateResource) KnetikClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mGetObjectTemplateStartTime, "GetObjectTemplate", string.Format("Response received successfully:\n{0}", GetObjectTemplateData));
 
             if (GetObjectTemplateComplete != null)
             {
-                GetObjectTemplateComplete(GetObjectTemplateData);
+                GetObjectTemplateComplete(response.ResponseCode, GetObjectTemplateData);
             }
         }
 
@@ -648,61 +647,60 @@ mGetObjectItemPath = mGetObjectItemPath.Replace("{" + "object_id" + "}", KnetikC
         public void GetObjectTemplates(int? size, int? page, string order)
         {
             
-            mGetObjectTemplatesPath = "/objects/templates";
-            if (!string.IsNullOrEmpty(mGetObjectTemplatesPath))
+            mWebCallEvent.WebPath = "/objects/templates";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetObjectTemplatesPath = mGetObjectTemplatesPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetObjectTemplatesStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetObjectTemplatesStartTime, mGetObjectTemplatesPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetObjectTemplatesCoroutine.ResponseReceived += GetObjectTemplatesCallback;
-            mGetObjectTemplatesCoroutine.Start(mGetObjectTemplatesPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetObjectTemplatesStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetObjectTemplatesResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetObjectTemplatesStartTime, "GetObjectTemplates", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetObjectTemplatesCallback(IRestResponse response)
+        private void OnGetObjectTemplatesResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetObjectTemplates: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetObjectTemplates: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetObjectTemplates: " + response.Error);
             }
 
-            GetObjectTemplatesData = (PageResourceItemTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceItemTemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mGetObjectTemplatesStartTime, mGetObjectTemplatesPath, string.Format("Response received successfully:\n{0}", GetObjectTemplatesData.ToString()));
+            GetObjectTemplatesData = (PageResourceItemTemplateResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceItemTemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mGetObjectTemplatesStartTime, "GetObjectTemplates", string.Format("Response received successfully:\n{0}", GetObjectTemplatesData));
 
             if (GetObjectTemplatesComplete != null)
             {
-                GetObjectTemplatesComplete(GetObjectTemplatesData);
+                GetObjectTemplatesComplete(response.ResponseCode, GetObjectTemplatesData);
             }
         }
 
@@ -711,69 +709,68 @@ mGetObjectItemPath = mGetObjectItemPath.Replace("{" + "object_id" + "}", KnetikC
         /// Update an object 
         /// </summary>
         /// <param name="templateId">The id of the template this object is part of</param>
-        /// <param name="entitlementId">The id of the entitlement</param>
+        /// <param name="objectId">The id of the object</param>
         /// <param name="cascade">Whether to cascade group changes, such as in the limited gettable behavior. A 400 error will return otherwise if the group is already in use with different values.</param>
         /// <param name="objectItem">The object item object</param>
-        public void UpdateObjectItem(string templateId, int? entitlementId, bool? cascade, EntitlementItem objectItem)
+        public void UpdateObjectItem(string templateId, int? objectId, bool? cascade, ObjectResource objectItem)
         {
             // verify the required parameter 'templateId' is set
             if (templateId == null)
             {
                 throw new KnetikException(400, "Missing required parameter 'templateId' when calling UpdateObjectItem");
             }
-            // verify the required parameter 'entitlementId' is set
-            if (entitlementId == null)
+            // verify the required parameter 'objectId' is set
+            if (objectId == null)
             {
-                throw new KnetikException(400, "Missing required parameter 'entitlementId' when calling UpdateObjectItem");
+                throw new KnetikException(400, "Missing required parameter 'objectId' when calling UpdateObjectItem");
             }
             
-            mUpdateObjectItemPath = "/objects/{template_id}/{object_id}";
-            if (!string.IsNullOrEmpty(mUpdateObjectItemPath))
+            mWebCallEvent.WebPath = "/objects/{template_id}/{object_id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateObjectItemPath = mUpdateObjectItemPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateObjectItemPath = mUpdateObjectItemPath.Replace("{" + "template_id" + "}", KnetikClient.DefaultClient.ParameterToString(templateId));
-mUpdateObjectItemPath = mUpdateObjectItemPath.Replace("{" + "entitlement_id" + "}", KnetikClient.DefaultClient.ParameterToString(entitlementId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "template_id" + "}", KnetikClient.ParameterToString(templateId));
+mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "object_id" + "}", KnetikClient.ParameterToString(objectId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
+                mWebCallEvent.QueryParams["cascade"] = KnetikClient.ParameterToString(cascade);
             }
 
-            postBody = KnetikClient.DefaultClient.Serialize(objectItem); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(objectItem); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateObjectItemStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateObjectItemStartTime, mUpdateObjectItemPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateObjectItemCoroutine.ResponseReceived += UpdateObjectItemCallback;
-            mUpdateObjectItemCoroutine.Start(mUpdateObjectItemPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateObjectItemStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateObjectItemResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateObjectItemStartTime, "UpdateObjectItem", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateObjectItemCallback(IRestResponse response)
+        private void OnUpdateObjectItemResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateObjectItem: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateObjectItem: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateObjectItem: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mUpdateObjectItemStartTime, mUpdateObjectItemPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mUpdateObjectItemStartTime, "UpdateObjectItem", "Response received successfully.");
             if (UpdateObjectItemComplete != null)
             {
-                UpdateObjectItemComplete();
+                UpdateObjectItemComplete(response.ResponseCode);
             }
         }
 
@@ -791,49 +788,48 @@ mUpdateObjectItemPath = mUpdateObjectItemPath.Replace("{" + "entitlement_id" + "
                 throw new KnetikException(400, "Missing required parameter 'id' when calling UpdateObjectTemplate");
             }
             
-            mUpdateObjectTemplatePath = "/objects/templates/{id}";
-            if (!string.IsNullOrEmpty(mUpdateObjectTemplatePath))
+            mWebCallEvent.WebPath = "/objects/templates/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateObjectTemplatePath = mUpdateObjectTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateObjectTemplatePath = mUpdateObjectTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(template); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(template); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateObjectTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateObjectTemplateStartTime, mUpdateObjectTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateObjectTemplateCoroutine.ResponseReceived += UpdateObjectTemplateCallback;
-            mUpdateObjectTemplateCoroutine.Start(mUpdateObjectTemplatePath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateObjectTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateObjectTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateObjectTemplateStartTime, "UpdateObjectTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateObjectTemplateCallback(IRestResponse response)
+        private void OnUpdateObjectTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateObjectTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateObjectTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateObjectTemplate: " + response.Error);
             }
 
-            UpdateObjectTemplateData = (ItemTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mUpdateObjectTemplateStartTime, mUpdateObjectTemplatePath, string.Format("Response received successfully:\n{0}", UpdateObjectTemplateData.ToString()));
+            UpdateObjectTemplateData = (ItemTemplateResource) KnetikClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mUpdateObjectTemplateStartTime, "UpdateObjectTemplate", string.Format("Response received successfully:\n{0}", UpdateObjectTemplateData));
 
             if (UpdateObjectTemplateComplete != null)
             {
-                UpdateObjectTemplateComplete(UpdateObjectTemplateData);
+                UpdateObjectTemplateComplete(response.ResponseCode, UpdateObjectTemplateData);
             }
         }
 

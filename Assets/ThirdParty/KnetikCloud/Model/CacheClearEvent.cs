@@ -2,8 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using com.knetikcloud.Attributes;
-using com.knetikcloud.Serialization;
+using KnetikUnity.Attributes;
+using KnetikUnity.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -17,16 +17,10 @@ namespace com.knetikcloud.Model
     public class CacheClearEvent : BroadcastableEvent
     {
         /// <summary>
-        /// Gets or Sets CustomerSetup
+        /// Gets or Sets Teardown
         /// </summary>
-        [JsonProperty(PropertyName = "customer_setup")]
-        public bool? CustomerSetup;
-
-        /// <summary>
-        /// Gets or Sets CustomerTeardown
-        /// </summary>
-        [JsonProperty(PropertyName = "customer_teardown")]
-        public bool? CustomerTeardown;
+        [JsonProperty(PropertyName = "teardown")]
+        public bool? Teardown;
 
         /// <inheritdoc />
         /// <summary>
@@ -46,8 +40,7 @@ namespace com.knetikcloud.Model
             sb.Append("  Synchronous: ").Append(Synchronous).Append("\n");
             sb.Append("  Timestamp: ").Append(Timestamp).Append("\n");
             sb.Append("  Type: ").Append(Type).Append("\n");
-            sb.Append("  CustomerSetup: ").Append(CustomerSetup).Append("\n");
-            sb.Append("  CustomerTeardown: ").Append(CustomerTeardown).Append("\n");
+            sb.Append("  Teardown: ").Append(Teardown).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }

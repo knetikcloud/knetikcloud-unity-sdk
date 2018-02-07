@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -18,6 +17,7 @@ namespace com.knetikcloud.Api
     public interface IGamificationMetricsApi
     {
         
+
         /// <summary>
         /// Add a metric Post a new score/stat for an activity occurrence without ending the occurrence itself
         /// </summary>
@@ -32,11 +32,12 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class GamificationMetricsApi : IGamificationMetricsApi
     {
-        private readonly KnetikCoroutine mAddMetricCoroutine;
-        private DateTime mAddMetricStartTime;
-        private string mAddMetricPath;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
 
-        public delegate void AddMetricCompleteDelegate();
+        private readonly KnetikResponseContext mAddMetricResponseContext;
+        private DateTime mAddMetricStartTime;
+
+        public delegate void AddMetricCompleteDelegate(long responseCode);
         public AddMetricCompleteDelegate AddMetricComplete;
 
         /// <summary>
@@ -45,7 +46,8 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public GamificationMetricsApi()
         {
-            mAddMetricCoroutine = new KnetikCoroutine();
+            mAddMetricResponseContext = new KnetikResponseContext();
+            mAddMetricResponseContext.ResponseReceived += OnAddMetricResponse;
         }
     
         /// <inheritdoc />
@@ -56,46 +58,45 @@ namespace com.knetikcloud.Api
         public void AddMetric(MetricResource metric)
         {
             
-            mAddMetricPath = "/metrics";
-            if (!string.IsNullOrEmpty(mAddMetricPath))
+            mWebCallEvent.WebPath = "/metrics";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mAddMetricPath = mAddMetricPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(metric); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(metric); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mAddMetricStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mAddMetricStartTime, mAddMetricPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mAddMetricCoroutine.ResponseReceived += AddMetricCallback;
-            mAddMetricCoroutine.Start(mAddMetricPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mAddMetricStartTime = DateTime.Now;
+            mWebCallEvent.Context = mAddMetricResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mAddMetricStartTime, "AddMetric", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void AddMetricCallback(IRestResponse response)
+        private void OnAddMetricResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling AddMetric: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling AddMetric: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling AddMetric: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mAddMetricStartTime, mAddMetricPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mAddMetricStartTime, "AddMetric", "Response received successfully.");
             if (AddMetricComplete != null)
             {
-                AddMetricComplete();
+                AddMetricComplete(response.ResponseCode);
             }
         }
 

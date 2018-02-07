@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,11 +18,6 @@ namespace com.knetikcloud.Api
     {
         InventorySubscriptionResource GetUserSubscriptionDetailsData { get; }
 
-        List<InventorySubscriptionResource> GetUsersSubscriptionDetailsData { get; }
-
-        InvoiceResource ReactivateUserSubscriptionData { get; }
-
-        
         /// <summary>
         /// Get details about a user&#39;s subscription 
         /// </summary>
@@ -31,11 +25,15 @@ namespace com.knetikcloud.Api
         /// <param name="inventoryId">The id of the user&#39;s inventory</param>
         void GetUserSubscriptionDetails(int? userId, int? inventoryId);
 
+        List<InventorySubscriptionResource> GetUsersSubscriptionDetailsData { get; }
+
         /// <summary>
         /// Get details about a user&#39;s subscriptions 
         /// </summary>
         /// <param name="userId">The id of the user</param>
         void GetUsersSubscriptionDetails(int? userId);
+
+        InvoiceResource ReactivateUserSubscriptionData { get; }
 
         /// <summary>
         /// Reactivate a subscription and charge fee 
@@ -45,6 +43,8 @@ namespace com.knetikcloud.Api
         /// <param name="reactivateSubscriptionRequest">The reactivate subscription request object inventory</param>
         void ReactivateUserSubscription(int? userId, int? inventoryId, ReactivateSubscriptionRequest reactivateSubscriptionRequest);
 
+        
+
         /// <summary>
         /// Set a new date to bill a subscription on 
         /// </summary>
@@ -52,6 +52,8 @@ namespace com.knetikcloud.Api
         /// <param name="inventoryId">The id of the user&#39;s inventory</param>
         /// <param name="billDate">The new bill date. Unix timestamp in seconds</param>
         void SetSubscriptionBillDate(int? userId, int? inventoryId, long? billDate);
+
+        
 
         /// <summary>
         /// Set the payment method to use for a subscription May send null to use floating default
@@ -61,6 +63,8 @@ namespace com.knetikcloud.Api
         /// <param name="paymentMethodId">The id of the payment method</param>
         void SetSubscriptionPaymentMethod(int? userId, int? inventoryId, IntWrapper paymentMethodId);
 
+        
+
         /// <summary>
         /// Set the status of a subscription Note that the new status may be blocked if the system is not configured to allow the current status to be changed to the new, to enforce proper flow. The default options for statuses are shown below but may be altered for special use cases
         /// </summary>
@@ -69,6 +73,8 @@ namespace com.knetikcloud.Api
         /// <param name="status">The new status for the subscription. Actual options may differ from the indicated set if the invoice status type data has been altered.  Allowable values: (&#39;current&#39;, &#39;canceled&#39;, &#39;stopped&#39;, &#39;payment_failed&#39;, &#39;suspended&#39;)</param>
         void SetSubscriptionStatus(int? userId, int? inventoryId, StringWrapper status);
 
+        
+
         /// <summary>
         /// Set a new subscription plan for a user 
         /// </summary>
@@ -76,6 +82,8 @@ namespace com.knetikcloud.Api
         /// <param name="inventoryId">The id of the user&#39;s inventory</param>
         /// <param name="planId">The id of the new plan. Must be from the same subscription</param>
         void SetUserSubscriptionPlan(int? userId, int? inventoryId, StringWrapper planId);
+
+        
 
         /// <summary>
         /// Set a new subscription price for a user This new price will be what the user is charged at the begining of each new period. This override is specific to the current subscription and will not carry over if they end and later re-subscribe. It will persist if the plan is changed using the setUserSubscriptionPlan endpoint.
@@ -93,56 +101,50 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class UsersSubscriptionsApi : IUsersSubscriptionsApi
     {
-        private readonly KnetikCoroutine mGetUserSubscriptionDetailsCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mGetUserSubscriptionDetailsResponseContext;
         private DateTime mGetUserSubscriptionDetailsStartTime;
-        private string mGetUserSubscriptionDetailsPath;
-        private readonly KnetikCoroutine mGetUsersSubscriptionDetailsCoroutine;
+        private readonly KnetikResponseContext mGetUsersSubscriptionDetailsResponseContext;
         private DateTime mGetUsersSubscriptionDetailsStartTime;
-        private string mGetUsersSubscriptionDetailsPath;
-        private readonly KnetikCoroutine mReactivateUserSubscriptionCoroutine;
+        private readonly KnetikResponseContext mReactivateUserSubscriptionResponseContext;
         private DateTime mReactivateUserSubscriptionStartTime;
-        private string mReactivateUserSubscriptionPath;
-        private readonly KnetikCoroutine mSetSubscriptionBillDateCoroutine;
+        private readonly KnetikResponseContext mSetSubscriptionBillDateResponseContext;
         private DateTime mSetSubscriptionBillDateStartTime;
-        private string mSetSubscriptionBillDatePath;
-        private readonly KnetikCoroutine mSetSubscriptionPaymentMethodCoroutine;
+        private readonly KnetikResponseContext mSetSubscriptionPaymentMethodResponseContext;
         private DateTime mSetSubscriptionPaymentMethodStartTime;
-        private string mSetSubscriptionPaymentMethodPath;
-        private readonly KnetikCoroutine mSetSubscriptionStatusCoroutine;
+        private readonly KnetikResponseContext mSetSubscriptionStatusResponseContext;
         private DateTime mSetSubscriptionStatusStartTime;
-        private string mSetSubscriptionStatusPath;
-        private readonly KnetikCoroutine mSetUserSubscriptionPlanCoroutine;
+        private readonly KnetikResponseContext mSetUserSubscriptionPlanResponseContext;
         private DateTime mSetUserSubscriptionPlanStartTime;
-        private string mSetUserSubscriptionPlanPath;
-        private readonly KnetikCoroutine mSetUserSubscriptionPriceCoroutine;
+        private readonly KnetikResponseContext mSetUserSubscriptionPriceResponseContext;
         private DateTime mSetUserSubscriptionPriceStartTime;
-        private string mSetUserSubscriptionPricePath;
 
         public InventorySubscriptionResource GetUserSubscriptionDetailsData { get; private set; }
-        public delegate void GetUserSubscriptionDetailsCompleteDelegate(InventorySubscriptionResource response);
+        public delegate void GetUserSubscriptionDetailsCompleteDelegate(long responseCode, InventorySubscriptionResource response);
         public GetUserSubscriptionDetailsCompleteDelegate GetUserSubscriptionDetailsComplete;
 
         public List<InventorySubscriptionResource> GetUsersSubscriptionDetailsData { get; private set; }
-        public delegate void GetUsersSubscriptionDetailsCompleteDelegate(List<InventorySubscriptionResource> response);
+        public delegate void GetUsersSubscriptionDetailsCompleteDelegate(long responseCode, List<InventorySubscriptionResource> response);
         public GetUsersSubscriptionDetailsCompleteDelegate GetUsersSubscriptionDetailsComplete;
 
         public InvoiceResource ReactivateUserSubscriptionData { get; private set; }
-        public delegate void ReactivateUserSubscriptionCompleteDelegate(InvoiceResource response);
+        public delegate void ReactivateUserSubscriptionCompleteDelegate(long responseCode, InvoiceResource response);
         public ReactivateUserSubscriptionCompleteDelegate ReactivateUserSubscriptionComplete;
 
-        public delegate void SetSubscriptionBillDateCompleteDelegate();
+        public delegate void SetSubscriptionBillDateCompleteDelegate(long responseCode);
         public SetSubscriptionBillDateCompleteDelegate SetSubscriptionBillDateComplete;
 
-        public delegate void SetSubscriptionPaymentMethodCompleteDelegate();
+        public delegate void SetSubscriptionPaymentMethodCompleteDelegate(long responseCode);
         public SetSubscriptionPaymentMethodCompleteDelegate SetSubscriptionPaymentMethodComplete;
 
-        public delegate void SetSubscriptionStatusCompleteDelegate();
+        public delegate void SetSubscriptionStatusCompleteDelegate(long responseCode);
         public SetSubscriptionStatusCompleteDelegate SetSubscriptionStatusComplete;
 
-        public delegate void SetUserSubscriptionPlanCompleteDelegate();
+        public delegate void SetUserSubscriptionPlanCompleteDelegate(long responseCode);
         public SetUserSubscriptionPlanCompleteDelegate SetUserSubscriptionPlanComplete;
 
-        public delegate void SetUserSubscriptionPriceCompleteDelegate();
+        public delegate void SetUserSubscriptionPriceCompleteDelegate(long responseCode);
         public SetUserSubscriptionPriceCompleteDelegate SetUserSubscriptionPriceComplete;
 
         /// <summary>
@@ -151,14 +153,22 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public UsersSubscriptionsApi()
         {
-            mGetUserSubscriptionDetailsCoroutine = new KnetikCoroutine();
-            mGetUsersSubscriptionDetailsCoroutine = new KnetikCoroutine();
-            mReactivateUserSubscriptionCoroutine = new KnetikCoroutine();
-            mSetSubscriptionBillDateCoroutine = new KnetikCoroutine();
-            mSetSubscriptionPaymentMethodCoroutine = new KnetikCoroutine();
-            mSetSubscriptionStatusCoroutine = new KnetikCoroutine();
-            mSetUserSubscriptionPlanCoroutine = new KnetikCoroutine();
-            mSetUserSubscriptionPriceCoroutine = new KnetikCoroutine();
+            mGetUserSubscriptionDetailsResponseContext = new KnetikResponseContext();
+            mGetUserSubscriptionDetailsResponseContext.ResponseReceived += OnGetUserSubscriptionDetailsResponse;
+            mGetUsersSubscriptionDetailsResponseContext = new KnetikResponseContext();
+            mGetUsersSubscriptionDetailsResponseContext.ResponseReceived += OnGetUsersSubscriptionDetailsResponse;
+            mReactivateUserSubscriptionResponseContext = new KnetikResponseContext();
+            mReactivateUserSubscriptionResponseContext.ResponseReceived += OnReactivateUserSubscriptionResponse;
+            mSetSubscriptionBillDateResponseContext = new KnetikResponseContext();
+            mSetSubscriptionBillDateResponseContext.ResponseReceived += OnSetSubscriptionBillDateResponse;
+            mSetSubscriptionPaymentMethodResponseContext = new KnetikResponseContext();
+            mSetSubscriptionPaymentMethodResponseContext.ResponseReceived += OnSetSubscriptionPaymentMethodResponse;
+            mSetSubscriptionStatusResponseContext = new KnetikResponseContext();
+            mSetSubscriptionStatusResponseContext.ResponseReceived += OnSetSubscriptionStatusResponse;
+            mSetUserSubscriptionPlanResponseContext = new KnetikResponseContext();
+            mSetUserSubscriptionPlanResponseContext.ResponseReceived += OnSetUserSubscriptionPlanResponse;
+            mSetUserSubscriptionPriceResponseContext = new KnetikResponseContext();
+            mSetUserSubscriptionPriceResponseContext.ResponseReceived += OnSetUserSubscriptionPriceResponse;
         }
     
         /// <inheritdoc />
@@ -180,48 +190,47 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'inventoryId' when calling GetUserSubscriptionDetails");
             }
             
-            mGetUserSubscriptionDetailsPath = "/users/{user_id}/subscriptions/{inventory_id}";
-            if (!string.IsNullOrEmpty(mGetUserSubscriptionDetailsPath))
+            mWebCallEvent.WebPath = "/users/{user_id}/subscriptions/{inventory_id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetUserSubscriptionDetailsPath = mGetUserSubscriptionDetailsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetUserSubscriptionDetailsPath = mGetUserSubscriptionDetailsPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
-mGetUserSubscriptionDetailsPath = mGetUserSubscriptionDetailsPath.Replace("{" + "inventory_id" + "}", KnetikClient.DefaultClient.ParameterToString(inventoryId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "inventory_id" + "}", KnetikClient.ParameterToString(inventoryId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetUserSubscriptionDetailsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetUserSubscriptionDetailsStartTime, mGetUserSubscriptionDetailsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetUserSubscriptionDetailsCoroutine.ResponseReceived += GetUserSubscriptionDetailsCallback;
-            mGetUserSubscriptionDetailsCoroutine.Start(mGetUserSubscriptionDetailsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetUserSubscriptionDetailsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetUserSubscriptionDetailsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetUserSubscriptionDetailsStartTime, "GetUserSubscriptionDetails", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetUserSubscriptionDetailsCallback(IRestResponse response)
+        private void OnGetUserSubscriptionDetailsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUserSubscriptionDetails: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUserSubscriptionDetails: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetUserSubscriptionDetails: " + response.Error);
             }
 
-            GetUserSubscriptionDetailsData = (InventorySubscriptionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(InventorySubscriptionResource), response.Headers);
-            KnetikLogger.LogResponse(mGetUserSubscriptionDetailsStartTime, mGetUserSubscriptionDetailsPath, string.Format("Response received successfully:\n{0}", GetUserSubscriptionDetailsData.ToString()));
+            GetUserSubscriptionDetailsData = (InventorySubscriptionResource) KnetikClient.Deserialize(response.Content, typeof(InventorySubscriptionResource), response.Headers);
+            KnetikLogger.LogResponse(mGetUserSubscriptionDetailsStartTime, "GetUserSubscriptionDetails", string.Format("Response received successfully:\n{0}", GetUserSubscriptionDetailsData));
 
             if (GetUserSubscriptionDetailsComplete != null)
             {
-                GetUserSubscriptionDetailsComplete(GetUserSubscriptionDetailsData);
+                GetUserSubscriptionDetailsComplete(response.ResponseCode, GetUserSubscriptionDetailsData);
             }
         }
 
@@ -238,47 +247,46 @@ mGetUserSubscriptionDetailsPath = mGetUserSubscriptionDetailsPath.Replace("{" + 
                 throw new KnetikException(400, "Missing required parameter 'userId' when calling GetUsersSubscriptionDetails");
             }
             
-            mGetUsersSubscriptionDetailsPath = "/users/{user_id}/subscriptions";
-            if (!string.IsNullOrEmpty(mGetUsersSubscriptionDetailsPath))
+            mWebCallEvent.WebPath = "/users/{user_id}/subscriptions";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetUsersSubscriptionDetailsPath = mGetUsersSubscriptionDetailsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetUsersSubscriptionDetailsPath = mGetUsersSubscriptionDetailsPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetUsersSubscriptionDetailsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetUsersSubscriptionDetailsStartTime, mGetUsersSubscriptionDetailsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetUsersSubscriptionDetailsCoroutine.ResponseReceived += GetUsersSubscriptionDetailsCallback;
-            mGetUsersSubscriptionDetailsCoroutine.Start(mGetUsersSubscriptionDetailsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetUsersSubscriptionDetailsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetUsersSubscriptionDetailsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetUsersSubscriptionDetailsStartTime, "GetUsersSubscriptionDetails", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetUsersSubscriptionDetailsCallback(IRestResponse response)
+        private void OnGetUsersSubscriptionDetailsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUsersSubscriptionDetails: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUsersSubscriptionDetails: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetUsersSubscriptionDetails: " + response.Error);
             }
 
-            GetUsersSubscriptionDetailsData = (List<InventorySubscriptionResource>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<InventorySubscriptionResource>), response.Headers);
-            KnetikLogger.LogResponse(mGetUsersSubscriptionDetailsStartTime, mGetUsersSubscriptionDetailsPath, string.Format("Response received successfully:\n{0}", GetUsersSubscriptionDetailsData.ToString()));
+            GetUsersSubscriptionDetailsData = (List<InventorySubscriptionResource>) KnetikClient.Deserialize(response.Content, typeof(List<InventorySubscriptionResource>), response.Headers);
+            KnetikLogger.LogResponse(mGetUsersSubscriptionDetailsStartTime, "GetUsersSubscriptionDetails", string.Format("Response received successfully:\n{0}", GetUsersSubscriptionDetailsData));
 
             if (GetUsersSubscriptionDetailsComplete != null)
             {
-                GetUsersSubscriptionDetailsComplete(GetUsersSubscriptionDetailsData);
+                GetUsersSubscriptionDetailsComplete(response.ResponseCode, GetUsersSubscriptionDetailsData);
             }
         }
 
@@ -302,50 +310,49 @@ mGetUserSubscriptionDetailsPath = mGetUserSubscriptionDetailsPath.Replace("{" + 
                 throw new KnetikException(400, "Missing required parameter 'inventoryId' when calling ReactivateUserSubscription");
             }
             
-            mReactivateUserSubscriptionPath = "/users/{user_id}/subscriptions/{inventory_id}/reactivate";
-            if (!string.IsNullOrEmpty(mReactivateUserSubscriptionPath))
+            mWebCallEvent.WebPath = "/users/{user_id}/subscriptions/{inventory_id}/reactivate";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mReactivateUserSubscriptionPath = mReactivateUserSubscriptionPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mReactivateUserSubscriptionPath = mReactivateUserSubscriptionPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
-mReactivateUserSubscriptionPath = mReactivateUserSubscriptionPath.Replace("{" + "inventory_id" + "}", KnetikClient.DefaultClient.ParameterToString(inventoryId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "inventory_id" + "}", KnetikClient.ParameterToString(inventoryId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(reactivateSubscriptionRequest); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(reactivateSubscriptionRequest); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mReactivateUserSubscriptionStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mReactivateUserSubscriptionStartTime, mReactivateUserSubscriptionPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mReactivateUserSubscriptionCoroutine.ResponseReceived += ReactivateUserSubscriptionCallback;
-            mReactivateUserSubscriptionCoroutine.Start(mReactivateUserSubscriptionPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mReactivateUserSubscriptionStartTime = DateTime.Now;
+            mWebCallEvent.Context = mReactivateUserSubscriptionResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mReactivateUserSubscriptionStartTime, "ReactivateUserSubscription", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void ReactivateUserSubscriptionCallback(IRestResponse response)
+        private void OnReactivateUserSubscriptionResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling ReactivateUserSubscription: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling ReactivateUserSubscription: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling ReactivateUserSubscription: " + response.Error);
             }
 
-            ReactivateUserSubscriptionData = (InvoiceResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(InvoiceResource), response.Headers);
-            KnetikLogger.LogResponse(mReactivateUserSubscriptionStartTime, mReactivateUserSubscriptionPath, string.Format("Response received successfully:\n{0}", ReactivateUserSubscriptionData.ToString()));
+            ReactivateUserSubscriptionData = (InvoiceResource) KnetikClient.Deserialize(response.Content, typeof(InvoiceResource), response.Headers);
+            KnetikLogger.LogResponse(mReactivateUserSubscriptionStartTime, "ReactivateUserSubscription", string.Format("Response received successfully:\n{0}", ReactivateUserSubscriptionData));
 
             if (ReactivateUserSubscriptionComplete != null)
             {
-                ReactivateUserSubscriptionComplete(ReactivateUserSubscriptionData);
+                ReactivateUserSubscriptionComplete(response.ResponseCode, ReactivateUserSubscriptionData);
             }
         }
 
@@ -374,48 +381,47 @@ mReactivateUserSubscriptionPath = mReactivateUserSubscriptionPath.Replace("{" + 
                 throw new KnetikException(400, "Missing required parameter 'billDate' when calling SetSubscriptionBillDate");
             }
             
-            mSetSubscriptionBillDatePath = "/users/{user_id}/subscriptions/{inventory_id}/bill-date";
-            if (!string.IsNullOrEmpty(mSetSubscriptionBillDatePath))
+            mWebCallEvent.WebPath = "/users/{user_id}/subscriptions/{inventory_id}/bill-date";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mSetSubscriptionBillDatePath = mSetSubscriptionBillDatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mSetSubscriptionBillDatePath = mSetSubscriptionBillDatePath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
-mSetSubscriptionBillDatePath = mSetSubscriptionBillDatePath.Replace("{" + "inventory_id" + "}", KnetikClient.DefaultClient.ParameterToString(inventoryId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "inventory_id" + "}", KnetikClient.ParameterToString(inventoryId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(billDate); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(billDate); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mSetSubscriptionBillDateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mSetSubscriptionBillDateStartTime, mSetSubscriptionBillDatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mSetSubscriptionBillDateCoroutine.ResponseReceived += SetSubscriptionBillDateCallback;
-            mSetSubscriptionBillDateCoroutine.Start(mSetSubscriptionBillDatePath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mSetSubscriptionBillDateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mSetSubscriptionBillDateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mSetSubscriptionBillDateStartTime, "SetSubscriptionBillDate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void SetSubscriptionBillDateCallback(IRestResponse response)
+        private void OnSetSubscriptionBillDateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling SetSubscriptionBillDate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling SetSubscriptionBillDate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling SetSubscriptionBillDate: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mSetSubscriptionBillDateStartTime, mSetSubscriptionBillDatePath, "Response received successfully.");
+            KnetikLogger.LogResponse(mSetSubscriptionBillDateStartTime, "SetSubscriptionBillDate", "Response received successfully.");
             if (SetSubscriptionBillDateComplete != null)
             {
-                SetSubscriptionBillDateComplete();
+                SetSubscriptionBillDateComplete(response.ResponseCode);
             }
         }
 
@@ -439,48 +445,47 @@ mSetSubscriptionBillDatePath = mSetSubscriptionBillDatePath.Replace("{" + "inven
                 throw new KnetikException(400, "Missing required parameter 'inventoryId' when calling SetSubscriptionPaymentMethod");
             }
             
-            mSetSubscriptionPaymentMethodPath = "/users/{user_id}/subscriptions/{inventory_id}/payment-method";
-            if (!string.IsNullOrEmpty(mSetSubscriptionPaymentMethodPath))
+            mWebCallEvent.WebPath = "/users/{user_id}/subscriptions/{inventory_id}/payment-method";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mSetSubscriptionPaymentMethodPath = mSetSubscriptionPaymentMethodPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mSetSubscriptionPaymentMethodPath = mSetSubscriptionPaymentMethodPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
-mSetSubscriptionPaymentMethodPath = mSetSubscriptionPaymentMethodPath.Replace("{" + "inventory_id" + "}", KnetikClient.DefaultClient.ParameterToString(inventoryId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "inventory_id" + "}", KnetikClient.ParameterToString(inventoryId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(paymentMethodId); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(paymentMethodId); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mSetSubscriptionPaymentMethodStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mSetSubscriptionPaymentMethodStartTime, mSetSubscriptionPaymentMethodPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mSetSubscriptionPaymentMethodCoroutine.ResponseReceived += SetSubscriptionPaymentMethodCallback;
-            mSetSubscriptionPaymentMethodCoroutine.Start(mSetSubscriptionPaymentMethodPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mSetSubscriptionPaymentMethodStartTime = DateTime.Now;
+            mWebCallEvent.Context = mSetSubscriptionPaymentMethodResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mSetSubscriptionPaymentMethodStartTime, "SetSubscriptionPaymentMethod", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void SetSubscriptionPaymentMethodCallback(IRestResponse response)
+        private void OnSetSubscriptionPaymentMethodResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling SetSubscriptionPaymentMethod: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling SetSubscriptionPaymentMethod: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling SetSubscriptionPaymentMethod: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mSetSubscriptionPaymentMethodStartTime, mSetSubscriptionPaymentMethodPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mSetSubscriptionPaymentMethodStartTime, "SetSubscriptionPaymentMethod", "Response received successfully.");
             if (SetSubscriptionPaymentMethodComplete != null)
             {
-                SetSubscriptionPaymentMethodComplete();
+                SetSubscriptionPaymentMethodComplete(response.ResponseCode);
             }
         }
 
@@ -509,48 +514,47 @@ mSetSubscriptionPaymentMethodPath = mSetSubscriptionPaymentMethodPath.Replace("{
                 throw new KnetikException(400, "Missing required parameter 'status' when calling SetSubscriptionStatus");
             }
             
-            mSetSubscriptionStatusPath = "/users/{user_id}/subscriptions/{inventory_id}/status";
-            if (!string.IsNullOrEmpty(mSetSubscriptionStatusPath))
+            mWebCallEvent.WebPath = "/users/{user_id}/subscriptions/{inventory_id}/status";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mSetSubscriptionStatusPath = mSetSubscriptionStatusPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mSetSubscriptionStatusPath = mSetSubscriptionStatusPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
-mSetSubscriptionStatusPath = mSetSubscriptionStatusPath.Replace("{" + "inventory_id" + "}", KnetikClient.DefaultClient.ParameterToString(inventoryId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "inventory_id" + "}", KnetikClient.ParameterToString(inventoryId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(status); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(status); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mSetSubscriptionStatusStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mSetSubscriptionStatusStartTime, mSetSubscriptionStatusPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mSetSubscriptionStatusCoroutine.ResponseReceived += SetSubscriptionStatusCallback;
-            mSetSubscriptionStatusCoroutine.Start(mSetSubscriptionStatusPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mSetSubscriptionStatusStartTime = DateTime.Now;
+            mWebCallEvent.Context = mSetSubscriptionStatusResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mSetSubscriptionStatusStartTime, "SetSubscriptionStatus", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void SetSubscriptionStatusCallback(IRestResponse response)
+        private void OnSetSubscriptionStatusResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling SetSubscriptionStatus: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling SetSubscriptionStatus: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling SetSubscriptionStatus: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mSetSubscriptionStatusStartTime, mSetSubscriptionStatusPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mSetSubscriptionStatusStartTime, "SetSubscriptionStatus", "Response received successfully.");
             if (SetSubscriptionStatusComplete != null)
             {
-                SetSubscriptionStatusComplete();
+                SetSubscriptionStatusComplete(response.ResponseCode);
             }
         }
 
@@ -574,48 +578,47 @@ mSetSubscriptionStatusPath = mSetSubscriptionStatusPath.Replace("{" + "inventory
                 throw new KnetikException(400, "Missing required parameter 'inventoryId' when calling SetUserSubscriptionPlan");
             }
             
-            mSetUserSubscriptionPlanPath = "/users/{user_id}/subscriptions/{inventory_id}/plan";
-            if (!string.IsNullOrEmpty(mSetUserSubscriptionPlanPath))
+            mWebCallEvent.WebPath = "/users/{user_id}/subscriptions/{inventory_id}/plan";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mSetUserSubscriptionPlanPath = mSetUserSubscriptionPlanPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mSetUserSubscriptionPlanPath = mSetUserSubscriptionPlanPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
-mSetUserSubscriptionPlanPath = mSetUserSubscriptionPlanPath.Replace("{" + "inventory_id" + "}", KnetikClient.DefaultClient.ParameterToString(inventoryId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "inventory_id" + "}", KnetikClient.ParameterToString(inventoryId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(planId); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(planId); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mSetUserSubscriptionPlanStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mSetUserSubscriptionPlanStartTime, mSetUserSubscriptionPlanPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mSetUserSubscriptionPlanCoroutine.ResponseReceived += SetUserSubscriptionPlanCallback;
-            mSetUserSubscriptionPlanCoroutine.Start(mSetUserSubscriptionPlanPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mSetUserSubscriptionPlanStartTime = DateTime.Now;
+            mWebCallEvent.Context = mSetUserSubscriptionPlanResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mSetUserSubscriptionPlanStartTime, "SetUserSubscriptionPlan", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void SetUserSubscriptionPlanCallback(IRestResponse response)
+        private void OnSetUserSubscriptionPlanResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling SetUserSubscriptionPlan: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling SetUserSubscriptionPlan: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling SetUserSubscriptionPlan: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mSetUserSubscriptionPlanStartTime, mSetUserSubscriptionPlanPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mSetUserSubscriptionPlanStartTime, "SetUserSubscriptionPlan", "Response received successfully.");
             if (SetUserSubscriptionPlanComplete != null)
             {
-                SetUserSubscriptionPlanComplete();
+                SetUserSubscriptionPlanComplete(response.ResponseCode);
             }
         }
 
@@ -639,48 +642,47 @@ mSetUserSubscriptionPlanPath = mSetUserSubscriptionPlanPath.Replace("{" + "inven
                 throw new KnetikException(400, "Missing required parameter 'inventoryId' when calling SetUserSubscriptionPrice");
             }
             
-            mSetUserSubscriptionPricePath = "/users/{user_id}/subscriptions/{inventory_id}/price-override";
-            if (!string.IsNullOrEmpty(mSetUserSubscriptionPricePath))
+            mWebCallEvent.WebPath = "/users/{user_id}/subscriptions/{inventory_id}/price-override";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mSetUserSubscriptionPricePath = mSetUserSubscriptionPricePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mSetUserSubscriptionPricePath = mSetUserSubscriptionPricePath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
-mSetUserSubscriptionPricePath = mSetUserSubscriptionPricePath.Replace("{" + "inventory_id" + "}", KnetikClient.DefaultClient.ParameterToString(inventoryId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "inventory_id" + "}", KnetikClient.ParameterToString(inventoryId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(theOverrideDetails); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(theOverrideDetails); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mSetUserSubscriptionPriceStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mSetUserSubscriptionPriceStartTime, mSetUserSubscriptionPricePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mSetUserSubscriptionPriceCoroutine.ResponseReceived += SetUserSubscriptionPriceCallback;
-            mSetUserSubscriptionPriceCoroutine.Start(mSetUserSubscriptionPricePath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mSetUserSubscriptionPriceStartTime = DateTime.Now;
+            mWebCallEvent.Context = mSetUserSubscriptionPriceResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mSetUserSubscriptionPriceStartTime, "SetUserSubscriptionPrice", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void SetUserSubscriptionPriceCallback(IRestResponse response)
+        private void OnSetUserSubscriptionPriceResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling SetUserSubscriptionPrice: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling SetUserSubscriptionPrice: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling SetUserSubscriptionPrice: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mSetUserSubscriptionPriceStartTime, mSetUserSubscriptionPricePath, "Response received successfully.");
+            KnetikLogger.LogResponse(mSetUserSubscriptionPriceStartTime, "SetUserSubscriptionPrice", "Response received successfully.");
             if (SetUserSubscriptionPriceComplete != null)
             {
-                SetUserSubscriptionPriceComplete();
+                SetUserSubscriptionPriceComplete(response.ResponseCode);
             }
         }
 

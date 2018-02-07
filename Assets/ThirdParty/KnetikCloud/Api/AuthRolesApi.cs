@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,28 +18,13 @@ namespace com.knetikcloud.Api
     {
         RoleResource CreateRoleData { get; }
 
-        List<RoleResource> GetClientRolesData { get; }
-
-        RoleResource GetRoleData { get; }
-
-        PageResourceRoleResource GetRolesData { get; }
-
-        List<RoleResource> GetUserRolesData { get; }
-
-        ClientResource SetClientRolesData { get; }
-
-        RoleResource SetPermissionsForRoleData { get; }
-
-        UserResource SetUserRolesData { get; }
-
-        RoleResource UpdateRoleData { get; }
-
-        
         /// <summary>
         /// Create a new role 
         /// </summary>
         /// <param name="roleResource">The role resource object</param>
         void CreateRole(RoleResource roleResource);
+
+        
 
         /// <summary>
         /// Delete a role 
@@ -49,17 +33,23 @@ namespace com.knetikcloud.Api
         /// <param name="force">If true, removes role from users/clients</param>
         void DeleteRole(string role, bool? force);
 
+        List<RoleResource> GetClientRolesData { get; }
+
         /// <summary>
         /// Get roles for a client 
         /// </summary>
         /// <param name="clientKey">The client key</param>
         void GetClientRoles(string clientKey);
 
+        RoleResource GetRoleData { get; }
+
         /// <summary>
         /// Get a single role 
         /// </summary>
         /// <param name="role">The role value</param>
         void GetRole(string role);
+
+        PageResourceRoleResource GetRolesData { get; }
 
         /// <summary>
         /// List and search roles 
@@ -71,11 +61,15 @@ namespace com.knetikcloud.Api
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
         void GetRoles(string filterName, string filterRole, int? size, int? page, string order);
 
+        List<RoleResource> GetUserRolesData { get; }
+
         /// <summary>
         /// Get roles for a user 
         /// </summary>
         /// <param name="userId">The user&#39;s id</param>
         void GetUserRoles(int? userId);
+
+        ClientResource SetClientRolesData { get; }
 
         /// <summary>
         /// Set roles for a client 
@@ -84,6 +78,8 @@ namespace com.knetikcloud.Api
         /// <param name="rolesList">The list of unique roles</param>
         void SetClientRoles(string clientKey, List<string> rolesList);
 
+        RoleResource SetPermissionsForRoleData { get; }
+
         /// <summary>
         /// Set permissions for a role 
         /// </summary>
@@ -91,12 +87,16 @@ namespace com.knetikcloud.Api
         /// <param name="permissionsList">The list of unique permissions</param>
         void SetPermissionsForRole(string role, List<string> permissionsList);
 
+        UserResource SetUserRolesData { get; }
+
         /// <summary>
         /// Set roles for a user 
         /// </summary>
         /// <param name="userId">The user&#39;s id</param>
         /// <param name="rolesList">The list of unique roles</param>
         void SetUserRoles(int? userId, List<string> rolesList);
+
+        RoleResource UpdateRoleData { get; }
 
         /// <summary>
         /// Update a role 
@@ -113,74 +113,66 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class AuthRolesApi : IAuthRolesApi
     {
-        private readonly KnetikCoroutine mCreateRoleCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mCreateRoleResponseContext;
         private DateTime mCreateRoleStartTime;
-        private string mCreateRolePath;
-        private readonly KnetikCoroutine mDeleteRoleCoroutine;
+        private readonly KnetikResponseContext mDeleteRoleResponseContext;
         private DateTime mDeleteRoleStartTime;
-        private string mDeleteRolePath;
-        private readonly KnetikCoroutine mGetClientRolesCoroutine;
+        private readonly KnetikResponseContext mGetClientRolesResponseContext;
         private DateTime mGetClientRolesStartTime;
-        private string mGetClientRolesPath;
-        private readonly KnetikCoroutine mGetRoleCoroutine;
+        private readonly KnetikResponseContext mGetRoleResponseContext;
         private DateTime mGetRoleStartTime;
-        private string mGetRolePath;
-        private readonly KnetikCoroutine mGetRolesCoroutine;
+        private readonly KnetikResponseContext mGetRolesResponseContext;
         private DateTime mGetRolesStartTime;
-        private string mGetRolesPath;
-        private readonly KnetikCoroutine mGetUserRolesCoroutine;
+        private readonly KnetikResponseContext mGetUserRolesResponseContext;
         private DateTime mGetUserRolesStartTime;
-        private string mGetUserRolesPath;
-        private readonly KnetikCoroutine mSetClientRolesCoroutine;
+        private readonly KnetikResponseContext mSetClientRolesResponseContext;
         private DateTime mSetClientRolesStartTime;
-        private string mSetClientRolesPath;
-        private readonly KnetikCoroutine mSetPermissionsForRoleCoroutine;
+        private readonly KnetikResponseContext mSetPermissionsForRoleResponseContext;
         private DateTime mSetPermissionsForRoleStartTime;
-        private string mSetPermissionsForRolePath;
-        private readonly KnetikCoroutine mSetUserRolesCoroutine;
+        private readonly KnetikResponseContext mSetUserRolesResponseContext;
         private DateTime mSetUserRolesStartTime;
-        private string mSetUserRolesPath;
-        private readonly KnetikCoroutine mUpdateRoleCoroutine;
+        private readonly KnetikResponseContext mUpdateRoleResponseContext;
         private DateTime mUpdateRoleStartTime;
-        private string mUpdateRolePath;
 
         public RoleResource CreateRoleData { get; private set; }
-        public delegate void CreateRoleCompleteDelegate(RoleResource response);
+        public delegate void CreateRoleCompleteDelegate(long responseCode, RoleResource response);
         public CreateRoleCompleteDelegate CreateRoleComplete;
 
-        public delegate void DeleteRoleCompleteDelegate();
+        public delegate void DeleteRoleCompleteDelegate(long responseCode);
         public DeleteRoleCompleteDelegate DeleteRoleComplete;
 
         public List<RoleResource> GetClientRolesData { get; private set; }
-        public delegate void GetClientRolesCompleteDelegate(List<RoleResource> response);
+        public delegate void GetClientRolesCompleteDelegate(long responseCode, List<RoleResource> response);
         public GetClientRolesCompleteDelegate GetClientRolesComplete;
 
         public RoleResource GetRoleData { get; private set; }
-        public delegate void GetRoleCompleteDelegate(RoleResource response);
+        public delegate void GetRoleCompleteDelegate(long responseCode, RoleResource response);
         public GetRoleCompleteDelegate GetRoleComplete;
 
         public PageResourceRoleResource GetRolesData { get; private set; }
-        public delegate void GetRolesCompleteDelegate(PageResourceRoleResource response);
+        public delegate void GetRolesCompleteDelegate(long responseCode, PageResourceRoleResource response);
         public GetRolesCompleteDelegate GetRolesComplete;
 
         public List<RoleResource> GetUserRolesData { get; private set; }
-        public delegate void GetUserRolesCompleteDelegate(List<RoleResource> response);
+        public delegate void GetUserRolesCompleteDelegate(long responseCode, List<RoleResource> response);
         public GetUserRolesCompleteDelegate GetUserRolesComplete;
 
         public ClientResource SetClientRolesData { get; private set; }
-        public delegate void SetClientRolesCompleteDelegate(ClientResource response);
+        public delegate void SetClientRolesCompleteDelegate(long responseCode, ClientResource response);
         public SetClientRolesCompleteDelegate SetClientRolesComplete;
 
         public RoleResource SetPermissionsForRoleData { get; private set; }
-        public delegate void SetPermissionsForRoleCompleteDelegate(RoleResource response);
+        public delegate void SetPermissionsForRoleCompleteDelegate(long responseCode, RoleResource response);
         public SetPermissionsForRoleCompleteDelegate SetPermissionsForRoleComplete;
 
         public UserResource SetUserRolesData { get; private set; }
-        public delegate void SetUserRolesCompleteDelegate(UserResource response);
+        public delegate void SetUserRolesCompleteDelegate(long responseCode, UserResource response);
         public SetUserRolesCompleteDelegate SetUserRolesComplete;
 
         public RoleResource UpdateRoleData { get; private set; }
-        public delegate void UpdateRoleCompleteDelegate(RoleResource response);
+        public delegate void UpdateRoleCompleteDelegate(long responseCode, RoleResource response);
         public UpdateRoleCompleteDelegate UpdateRoleComplete;
 
         /// <summary>
@@ -189,16 +181,26 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public AuthRolesApi()
         {
-            mCreateRoleCoroutine = new KnetikCoroutine();
-            mDeleteRoleCoroutine = new KnetikCoroutine();
-            mGetClientRolesCoroutine = new KnetikCoroutine();
-            mGetRoleCoroutine = new KnetikCoroutine();
-            mGetRolesCoroutine = new KnetikCoroutine();
-            mGetUserRolesCoroutine = new KnetikCoroutine();
-            mSetClientRolesCoroutine = new KnetikCoroutine();
-            mSetPermissionsForRoleCoroutine = new KnetikCoroutine();
-            mSetUserRolesCoroutine = new KnetikCoroutine();
-            mUpdateRoleCoroutine = new KnetikCoroutine();
+            mCreateRoleResponseContext = new KnetikResponseContext();
+            mCreateRoleResponseContext.ResponseReceived += OnCreateRoleResponse;
+            mDeleteRoleResponseContext = new KnetikResponseContext();
+            mDeleteRoleResponseContext.ResponseReceived += OnDeleteRoleResponse;
+            mGetClientRolesResponseContext = new KnetikResponseContext();
+            mGetClientRolesResponseContext.ResponseReceived += OnGetClientRolesResponse;
+            mGetRoleResponseContext = new KnetikResponseContext();
+            mGetRoleResponseContext.ResponseReceived += OnGetRoleResponse;
+            mGetRolesResponseContext = new KnetikResponseContext();
+            mGetRolesResponseContext.ResponseReceived += OnGetRolesResponse;
+            mGetUserRolesResponseContext = new KnetikResponseContext();
+            mGetUserRolesResponseContext.ResponseReceived += OnGetUserRolesResponse;
+            mSetClientRolesResponseContext = new KnetikResponseContext();
+            mSetClientRolesResponseContext.ResponseReceived += OnSetClientRolesResponse;
+            mSetPermissionsForRoleResponseContext = new KnetikResponseContext();
+            mSetPermissionsForRoleResponseContext.ResponseReceived += OnSetPermissionsForRoleResponse;
+            mSetUserRolesResponseContext = new KnetikResponseContext();
+            mSetUserRolesResponseContext.ResponseReceived += OnSetUserRolesResponse;
+            mUpdateRoleResponseContext = new KnetikResponseContext();
+            mUpdateRoleResponseContext.ResponseReceived += OnUpdateRoleResponse;
         }
     
         /// <inheritdoc />
@@ -209,48 +211,47 @@ namespace com.knetikcloud.Api
         public void CreateRole(RoleResource roleResource)
         {
             
-            mCreateRolePath = "/auth/roles";
-            if (!string.IsNullOrEmpty(mCreateRolePath))
+            mWebCallEvent.WebPath = "/auth/roles";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mCreateRolePath = mCreateRolePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(roleResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(roleResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mCreateRoleStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mCreateRoleStartTime, mCreateRolePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mCreateRoleCoroutine.ResponseReceived += CreateRoleCallback;
-            mCreateRoleCoroutine.Start(mCreateRolePath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mCreateRoleStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreateRoleResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreateRoleStartTime, "CreateRole", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void CreateRoleCallback(IRestResponse response)
+        private void OnCreateRoleResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateRole: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateRole: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling CreateRole: " + response.Error);
             }
 
-            CreateRoleData = (RoleResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(RoleResource), response.Headers);
-            KnetikLogger.LogResponse(mCreateRoleStartTime, mCreateRolePath, string.Format("Response received successfully:\n{0}", CreateRoleData.ToString()));
+            CreateRoleData = (RoleResource) KnetikClient.Deserialize(response.Content, typeof(RoleResource), response.Headers);
+            KnetikLogger.LogResponse(mCreateRoleStartTime, "CreateRole", string.Format("Response received successfully:\n{0}", CreateRoleData));
 
             if (CreateRoleComplete != null)
             {
-                CreateRoleComplete(CreateRoleData);
+                CreateRoleComplete(response.ResponseCode, CreateRoleData);
             }
         }
 
@@ -268,50 +269,49 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'role' when calling DeleteRole");
             }
             
-            mDeleteRolePath = "/auth/roles/{role}";
-            if (!string.IsNullOrEmpty(mDeleteRolePath))
+            mWebCallEvent.WebPath = "/auth/roles/{role}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteRolePath = mDeleteRolePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteRolePath = mDeleteRolePath.Replace("{" + "role" + "}", KnetikClient.DefaultClient.ParameterToString(role));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "role" + "}", KnetikClient.ParameterToString(role));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (force != null)
             {
-                queryParams.Add("force", KnetikClient.DefaultClient.ParameterToString(force));
+                mWebCallEvent.QueryParams["force"] = KnetikClient.ParameterToString(force);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteRoleStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteRoleStartTime, mDeleteRolePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteRoleCoroutine.ResponseReceived += DeleteRoleCallback;
-            mDeleteRoleCoroutine.Start(mDeleteRolePath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteRoleStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteRoleResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteRoleStartTime, "DeleteRole", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteRoleCallback(IRestResponse response)
+        private void OnDeleteRoleResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteRole: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteRole: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteRole: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteRoleStartTime, mDeleteRolePath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteRoleStartTime, "DeleteRole", "Response received successfully.");
             if (DeleteRoleComplete != null)
             {
-                DeleteRoleComplete();
+                DeleteRoleComplete(response.ResponseCode);
             }
         }
 
@@ -328,47 +328,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'clientKey' when calling GetClientRoles");
             }
             
-            mGetClientRolesPath = "/auth/clients/{client_key}/roles";
-            if (!string.IsNullOrEmpty(mGetClientRolesPath))
+            mWebCallEvent.WebPath = "/auth/clients/{client_key}/roles";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetClientRolesPath = mGetClientRolesPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetClientRolesPath = mGetClientRolesPath.Replace("{" + "client_key" + "}", KnetikClient.DefaultClient.ParameterToString(clientKey));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "client_key" + "}", KnetikClient.ParameterToString(clientKey));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetClientRolesStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetClientRolesStartTime, mGetClientRolesPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetClientRolesCoroutine.ResponseReceived += GetClientRolesCallback;
-            mGetClientRolesCoroutine.Start(mGetClientRolesPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetClientRolesStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetClientRolesResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetClientRolesStartTime, "GetClientRoles", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetClientRolesCallback(IRestResponse response)
+        private void OnGetClientRolesResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetClientRoles: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetClientRoles: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetClientRoles: " + response.Error);
             }
 
-            GetClientRolesData = (List<RoleResource>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<RoleResource>), response.Headers);
-            KnetikLogger.LogResponse(mGetClientRolesStartTime, mGetClientRolesPath, string.Format("Response received successfully:\n{0}", GetClientRolesData.ToString()));
+            GetClientRolesData = (List<RoleResource>) KnetikClient.Deserialize(response.Content, typeof(List<RoleResource>), response.Headers);
+            KnetikLogger.LogResponse(mGetClientRolesStartTime, "GetClientRoles", string.Format("Response received successfully:\n{0}", GetClientRolesData));
 
             if (GetClientRolesComplete != null)
             {
-                GetClientRolesComplete(GetClientRolesData);
+                GetClientRolesComplete(response.ResponseCode, GetClientRolesData);
             }
         }
 
@@ -385,47 +384,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'role' when calling GetRole");
             }
             
-            mGetRolePath = "/auth/roles/{role}";
-            if (!string.IsNullOrEmpty(mGetRolePath))
+            mWebCallEvent.WebPath = "/auth/roles/{role}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetRolePath = mGetRolePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetRolePath = mGetRolePath.Replace("{" + "role" + "}", KnetikClient.DefaultClient.ParameterToString(role));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "role" + "}", KnetikClient.ParameterToString(role));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetRoleStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetRoleStartTime, mGetRolePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetRoleCoroutine.ResponseReceived += GetRoleCallback;
-            mGetRoleCoroutine.Start(mGetRolePath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetRoleStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetRoleResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetRoleStartTime, "GetRole", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetRoleCallback(IRestResponse response)
+        private void OnGetRoleResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetRole: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetRole: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetRole: " + response.Error);
             }
 
-            GetRoleData = (RoleResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(RoleResource), response.Headers);
-            KnetikLogger.LogResponse(mGetRoleStartTime, mGetRolePath, string.Format("Response received successfully:\n{0}", GetRoleData.ToString()));
+            GetRoleData = (RoleResource) KnetikClient.Deserialize(response.Content, typeof(RoleResource), response.Headers);
+            KnetikLogger.LogResponse(mGetRoleStartTime, "GetRole", string.Format("Response received successfully:\n{0}", GetRoleData));
 
             if (GetRoleComplete != null)
             {
-                GetRoleComplete(GetRoleData);
+                GetRoleComplete(response.ResponseCode, GetRoleData);
             }
         }
 
@@ -441,71 +439,70 @@ namespace com.knetikcloud.Api
         public void GetRoles(string filterName, string filterRole, int? size, int? page, string order)
         {
             
-            mGetRolesPath = "/auth/roles";
-            if (!string.IsNullOrEmpty(mGetRolesPath))
+            mWebCallEvent.WebPath = "/auth/roles";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetRolesPath = mGetRolesPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (filterName != null)
             {
-                queryParams.Add("filter_name", KnetikClient.DefaultClient.ParameterToString(filterName));
+                mWebCallEvent.QueryParams["filter_name"] = KnetikClient.ParameterToString(filterName);
             }
 
             if (filterRole != null)
             {
-                queryParams.Add("filter_role", KnetikClient.DefaultClient.ParameterToString(filterRole));
+                mWebCallEvent.QueryParams["filter_role"] = KnetikClient.ParameterToString(filterRole);
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetRolesStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetRolesStartTime, mGetRolesPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetRolesCoroutine.ResponseReceived += GetRolesCallback;
-            mGetRolesCoroutine.Start(mGetRolesPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetRolesStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetRolesResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetRolesStartTime, "GetRoles", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetRolesCallback(IRestResponse response)
+        private void OnGetRolesResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetRoles: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetRoles: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetRoles: " + response.Error);
             }
 
-            GetRolesData = (PageResourceRoleResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceRoleResource), response.Headers);
-            KnetikLogger.LogResponse(mGetRolesStartTime, mGetRolesPath, string.Format("Response received successfully:\n{0}", GetRolesData.ToString()));
+            GetRolesData = (PageResourceRoleResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceRoleResource), response.Headers);
+            KnetikLogger.LogResponse(mGetRolesStartTime, "GetRoles", string.Format("Response received successfully:\n{0}", GetRolesData));
 
             if (GetRolesComplete != null)
             {
-                GetRolesComplete(GetRolesData);
+                GetRolesComplete(response.ResponseCode, GetRolesData);
             }
         }
 
@@ -522,47 +519,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'userId' when calling GetUserRoles");
             }
             
-            mGetUserRolesPath = "/auth/users/{user_id}/roles";
-            if (!string.IsNullOrEmpty(mGetUserRolesPath))
+            mWebCallEvent.WebPath = "/auth/users/{user_id}/roles";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetUserRolesPath = mGetUserRolesPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetUserRolesPath = mGetUserRolesPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetUserRolesStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetUserRolesStartTime, mGetUserRolesPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetUserRolesCoroutine.ResponseReceived += GetUserRolesCallback;
-            mGetUserRolesCoroutine.Start(mGetUserRolesPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetUserRolesStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetUserRolesResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetUserRolesStartTime, "GetUserRoles", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetUserRolesCallback(IRestResponse response)
+        private void OnGetUserRolesResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUserRoles: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUserRoles: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetUserRoles: " + response.Error);
             }
 
-            GetUserRolesData = (List<RoleResource>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<RoleResource>), response.Headers);
-            KnetikLogger.LogResponse(mGetUserRolesStartTime, mGetUserRolesPath, string.Format("Response received successfully:\n{0}", GetUserRolesData.ToString()));
+            GetUserRolesData = (List<RoleResource>) KnetikClient.Deserialize(response.Content, typeof(List<RoleResource>), response.Headers);
+            KnetikLogger.LogResponse(mGetUserRolesStartTime, "GetUserRoles", string.Format("Response received successfully:\n{0}", GetUserRolesData));
 
             if (GetUserRolesComplete != null)
             {
-                GetUserRolesComplete(GetUserRolesData);
+                GetUserRolesComplete(response.ResponseCode, GetUserRolesData);
             }
         }
 
@@ -580,49 +576,48 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'clientKey' when calling SetClientRoles");
             }
             
-            mSetClientRolesPath = "/auth/clients/{client_key}/roles";
-            if (!string.IsNullOrEmpty(mSetClientRolesPath))
+            mWebCallEvent.WebPath = "/auth/clients/{client_key}/roles";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mSetClientRolesPath = mSetClientRolesPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mSetClientRolesPath = mSetClientRolesPath.Replace("{" + "client_key" + "}", KnetikClient.DefaultClient.ParameterToString(clientKey));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "client_key" + "}", KnetikClient.ParameterToString(clientKey));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(rolesList); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(rolesList); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mSetClientRolesStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mSetClientRolesStartTime, mSetClientRolesPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mSetClientRolesCoroutine.ResponseReceived += SetClientRolesCallback;
-            mSetClientRolesCoroutine.Start(mSetClientRolesPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mSetClientRolesStartTime = DateTime.Now;
+            mWebCallEvent.Context = mSetClientRolesResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mSetClientRolesStartTime, "SetClientRoles", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void SetClientRolesCallback(IRestResponse response)
+        private void OnSetClientRolesResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling SetClientRoles: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling SetClientRoles: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling SetClientRoles: " + response.Error);
             }
 
-            SetClientRolesData = (ClientResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ClientResource), response.Headers);
-            KnetikLogger.LogResponse(mSetClientRolesStartTime, mSetClientRolesPath, string.Format("Response received successfully:\n{0}", SetClientRolesData.ToString()));
+            SetClientRolesData = (ClientResource) KnetikClient.Deserialize(response.Content, typeof(ClientResource), response.Headers);
+            KnetikLogger.LogResponse(mSetClientRolesStartTime, "SetClientRoles", string.Format("Response received successfully:\n{0}", SetClientRolesData));
 
             if (SetClientRolesComplete != null)
             {
-                SetClientRolesComplete(SetClientRolesData);
+                SetClientRolesComplete(response.ResponseCode, SetClientRolesData);
             }
         }
 
@@ -640,49 +635,48 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'role' when calling SetPermissionsForRole");
             }
             
-            mSetPermissionsForRolePath = "/auth/roles/{role}/permissions";
-            if (!string.IsNullOrEmpty(mSetPermissionsForRolePath))
+            mWebCallEvent.WebPath = "/auth/roles/{role}/permissions";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mSetPermissionsForRolePath = mSetPermissionsForRolePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mSetPermissionsForRolePath = mSetPermissionsForRolePath.Replace("{" + "role" + "}", KnetikClient.DefaultClient.ParameterToString(role));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "role" + "}", KnetikClient.ParameterToString(role));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(permissionsList); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(permissionsList); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mSetPermissionsForRoleStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mSetPermissionsForRoleStartTime, mSetPermissionsForRolePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mSetPermissionsForRoleCoroutine.ResponseReceived += SetPermissionsForRoleCallback;
-            mSetPermissionsForRoleCoroutine.Start(mSetPermissionsForRolePath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mSetPermissionsForRoleStartTime = DateTime.Now;
+            mWebCallEvent.Context = mSetPermissionsForRoleResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mSetPermissionsForRoleStartTime, "SetPermissionsForRole", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void SetPermissionsForRoleCallback(IRestResponse response)
+        private void OnSetPermissionsForRoleResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling SetPermissionsForRole: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling SetPermissionsForRole: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling SetPermissionsForRole: " + response.Error);
             }
 
-            SetPermissionsForRoleData = (RoleResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(RoleResource), response.Headers);
-            KnetikLogger.LogResponse(mSetPermissionsForRoleStartTime, mSetPermissionsForRolePath, string.Format("Response received successfully:\n{0}", SetPermissionsForRoleData.ToString()));
+            SetPermissionsForRoleData = (RoleResource) KnetikClient.Deserialize(response.Content, typeof(RoleResource), response.Headers);
+            KnetikLogger.LogResponse(mSetPermissionsForRoleStartTime, "SetPermissionsForRole", string.Format("Response received successfully:\n{0}", SetPermissionsForRoleData));
 
             if (SetPermissionsForRoleComplete != null)
             {
-                SetPermissionsForRoleComplete(SetPermissionsForRoleData);
+                SetPermissionsForRoleComplete(response.ResponseCode, SetPermissionsForRoleData);
             }
         }
 
@@ -700,49 +694,48 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'userId' when calling SetUserRoles");
             }
             
-            mSetUserRolesPath = "/auth/users/{user_id}/roles";
-            if (!string.IsNullOrEmpty(mSetUserRolesPath))
+            mWebCallEvent.WebPath = "/auth/users/{user_id}/roles";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mSetUserRolesPath = mSetUserRolesPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mSetUserRolesPath = mSetUserRolesPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(rolesList); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(rolesList); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mSetUserRolesStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mSetUserRolesStartTime, mSetUserRolesPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mSetUserRolesCoroutine.ResponseReceived += SetUserRolesCallback;
-            mSetUserRolesCoroutine.Start(mSetUserRolesPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mSetUserRolesStartTime = DateTime.Now;
+            mWebCallEvent.Context = mSetUserRolesResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mSetUserRolesStartTime, "SetUserRoles", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void SetUserRolesCallback(IRestResponse response)
+        private void OnSetUserRolesResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling SetUserRoles: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling SetUserRoles: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling SetUserRoles: " + response.Error);
             }
 
-            SetUserRolesData = (UserResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(UserResource), response.Headers);
-            KnetikLogger.LogResponse(mSetUserRolesStartTime, mSetUserRolesPath, string.Format("Response received successfully:\n{0}", SetUserRolesData.ToString()));
+            SetUserRolesData = (UserResource) KnetikClient.Deserialize(response.Content, typeof(UserResource), response.Headers);
+            KnetikLogger.LogResponse(mSetUserRolesStartTime, "SetUserRoles", string.Format("Response received successfully:\n{0}", SetUserRolesData));
 
             if (SetUserRolesComplete != null)
             {
-                SetUserRolesComplete(SetUserRolesData);
+                SetUserRolesComplete(response.ResponseCode, SetUserRolesData);
             }
         }
 
@@ -760,49 +753,48 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'role' when calling UpdateRole");
             }
             
-            mUpdateRolePath = "/auth/roles/{role}";
-            if (!string.IsNullOrEmpty(mUpdateRolePath))
+            mWebCallEvent.WebPath = "/auth/roles/{role}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateRolePath = mUpdateRolePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateRolePath = mUpdateRolePath.Replace("{" + "role" + "}", KnetikClient.DefaultClient.ParameterToString(role));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "role" + "}", KnetikClient.ParameterToString(role));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(roleResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(roleResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateRoleStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateRoleStartTime, mUpdateRolePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateRoleCoroutine.ResponseReceived += UpdateRoleCallback;
-            mUpdateRoleCoroutine.Start(mUpdateRolePath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateRoleStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateRoleResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateRoleStartTime, "UpdateRole", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateRoleCallback(IRestResponse response)
+        private void OnUpdateRoleResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateRole: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateRole: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateRole: " + response.Error);
             }
 
-            UpdateRoleData = (RoleResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(RoleResource), response.Headers);
-            KnetikLogger.LogResponse(mUpdateRoleStartTime, mUpdateRolePath, string.Format("Response received successfully:\n{0}", UpdateRoleData.ToString()));
+            UpdateRoleData = (RoleResource) KnetikClient.Deserialize(response.Content, typeof(RoleResource), response.Headers);
+            KnetikLogger.LogResponse(mUpdateRoleStartTime, "UpdateRole", string.Format("Response received successfully:\n{0}", UpdateRoleData));
 
             if (UpdateRoleComplete != null)
             {
-                UpdateRoleComplete(UpdateRoleData);
+                UpdateRoleComplete(response.ResponseCode, UpdateRoleData);
             }
         }
 

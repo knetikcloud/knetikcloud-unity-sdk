@@ -1,7 +1,5 @@
-﻿
+﻿using KnetikUnity.Exceptions;
 
-using com.knetikcloud.Client;
-using com.knetikcloud.Model;
 
 namespace com.knetikcloud.Credentials
 {

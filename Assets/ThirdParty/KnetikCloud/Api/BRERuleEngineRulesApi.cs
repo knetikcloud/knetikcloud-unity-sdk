@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,20 +18,13 @@ namespace com.knetikcloud.Api
     {
         BreRule CreateBRERuleData { get; }
 
-        string GetBREExpressionAsStringData { get; }
-
-        BreRule GetBRERuleData { get; }
-
-        PageResourceBreRule GetBRERulesData { get; }
-
-        BreRule UpdateBRERuleData { get; }
-
-        
         /// <summary>
         /// Create a rule Rules define which actions to run when a given event verifies the specified condition. Full list of predicates and other type of expressions can be found at GET /bre/expressions/
         /// </summary>
         /// <param name="breRule">The BRE rule object</param>
         void CreateBRERule(BreRule breRule);
+
+        
 
         /// <summary>
         /// Delete a rule May fail if there are existing rules against it. Cannot delete core rules
@@ -40,17 +32,23 @@ namespace com.knetikcloud.Api
         /// <param name="id">The id of the rule</param>
         void DeleteBRERule(string id);
 
+        string GetBREExpressionAsStringData { get; }
+
         /// <summary>
         /// Returns a string representation of the provided expression 
         /// </summary>
         /// <param name="expression">The expression</param>
         void GetBREExpressionAsString(Expressionobject expression);
 
+        BreRule GetBRERuleData { get; }
+
         /// <summary>
         /// Get a single rule 
         /// </summary>
         /// <param name="id">The id of the rule</param>
         void GetBRERule(string id);
+
+        PageResourceBreRule GetBRERulesData { get; }
 
         /// <summary>
         /// List rules 
@@ -65,12 +63,16 @@ namespace com.knetikcloud.Api
         /// <param name="page">The number of the page returned, starting with 1</param>
         void GetBRERules(string filterName, bool? filterEnabled, bool? filterSystem, string filterTrigger, string filterAction, string filterCondition, int? size, int? page);
 
+        
+
         /// <summary>
         /// Enable or disable a rule This is helpful for turning off systems rules which cannot be deleted or modified otherwise
         /// </summary>
         /// <param name="id">The id of the rule</param>
         /// <param name="enabled">The boolean value</param>
         void SetBRERule(string id, BooleanResource enabled);
+
+        BreRule UpdateBRERuleData { get; }
 
         /// <summary>
         /// Update a rule Cannot update system rules
@@ -87,52 +89,47 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class BRERuleEngineRulesApi : IBRERuleEngineRulesApi
     {
-        private readonly KnetikCoroutine mCreateBRERuleCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mCreateBRERuleResponseContext;
         private DateTime mCreateBRERuleStartTime;
-        private string mCreateBRERulePath;
-        private readonly KnetikCoroutine mDeleteBRERuleCoroutine;
+        private readonly KnetikResponseContext mDeleteBRERuleResponseContext;
         private DateTime mDeleteBRERuleStartTime;
-        private string mDeleteBRERulePath;
-        private readonly KnetikCoroutine mGetBREExpressionAsStringCoroutine;
+        private readonly KnetikResponseContext mGetBREExpressionAsStringResponseContext;
         private DateTime mGetBREExpressionAsStringStartTime;
-        private string mGetBREExpressionAsStringPath;
-        private readonly KnetikCoroutine mGetBRERuleCoroutine;
+        private readonly KnetikResponseContext mGetBRERuleResponseContext;
         private DateTime mGetBRERuleStartTime;
-        private string mGetBRERulePath;
-        private readonly KnetikCoroutine mGetBRERulesCoroutine;
+        private readonly KnetikResponseContext mGetBRERulesResponseContext;
         private DateTime mGetBRERulesStartTime;
-        private string mGetBRERulesPath;
-        private readonly KnetikCoroutine mSetBRERuleCoroutine;
+        private readonly KnetikResponseContext mSetBRERuleResponseContext;
         private DateTime mSetBRERuleStartTime;
-        private string mSetBRERulePath;
-        private readonly KnetikCoroutine mUpdateBRERuleCoroutine;
+        private readonly KnetikResponseContext mUpdateBRERuleResponseContext;
         private DateTime mUpdateBRERuleStartTime;
-        private string mUpdateBRERulePath;
 
         public BreRule CreateBRERuleData { get; private set; }
-        public delegate void CreateBRERuleCompleteDelegate(BreRule response);
+        public delegate void CreateBRERuleCompleteDelegate(long responseCode, BreRule response);
         public CreateBRERuleCompleteDelegate CreateBRERuleComplete;
 
-        public delegate void DeleteBRERuleCompleteDelegate();
+        public delegate void DeleteBRERuleCompleteDelegate(long responseCode);
         public DeleteBRERuleCompleteDelegate DeleteBRERuleComplete;
 
         public string GetBREExpressionAsStringData { get; private set; }
-        public delegate void GetBREExpressionAsStringCompleteDelegate(string response);
+        public delegate void GetBREExpressionAsStringCompleteDelegate(long responseCode, string response);
         public GetBREExpressionAsStringCompleteDelegate GetBREExpressionAsStringComplete;
 
         public BreRule GetBRERuleData { get; private set; }
-        public delegate void GetBRERuleCompleteDelegate(BreRule response);
+        public delegate void GetBRERuleCompleteDelegate(long responseCode, BreRule response);
         public GetBRERuleCompleteDelegate GetBRERuleComplete;
 
         public PageResourceBreRule GetBRERulesData { get; private set; }
-        public delegate void GetBRERulesCompleteDelegate(PageResourceBreRule response);
+        public delegate void GetBRERulesCompleteDelegate(long responseCode, PageResourceBreRule response);
         public GetBRERulesCompleteDelegate GetBRERulesComplete;
 
-        public delegate void SetBRERuleCompleteDelegate();
+        public delegate void SetBRERuleCompleteDelegate(long responseCode);
         public SetBRERuleCompleteDelegate SetBRERuleComplete;
 
         public BreRule UpdateBRERuleData { get; private set; }
-        public delegate void UpdateBRERuleCompleteDelegate(BreRule response);
+        public delegate void UpdateBRERuleCompleteDelegate(long responseCode, BreRule response);
         public UpdateBRERuleCompleteDelegate UpdateBRERuleComplete;
 
         /// <summary>
@@ -141,13 +138,20 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public BRERuleEngineRulesApi()
         {
-            mCreateBRERuleCoroutine = new KnetikCoroutine();
-            mDeleteBRERuleCoroutine = new KnetikCoroutine();
-            mGetBREExpressionAsStringCoroutine = new KnetikCoroutine();
-            mGetBRERuleCoroutine = new KnetikCoroutine();
-            mGetBRERulesCoroutine = new KnetikCoroutine();
-            mSetBRERuleCoroutine = new KnetikCoroutine();
-            mUpdateBRERuleCoroutine = new KnetikCoroutine();
+            mCreateBRERuleResponseContext = new KnetikResponseContext();
+            mCreateBRERuleResponseContext.ResponseReceived += OnCreateBRERuleResponse;
+            mDeleteBRERuleResponseContext = new KnetikResponseContext();
+            mDeleteBRERuleResponseContext.ResponseReceived += OnDeleteBRERuleResponse;
+            mGetBREExpressionAsStringResponseContext = new KnetikResponseContext();
+            mGetBREExpressionAsStringResponseContext.ResponseReceived += OnGetBREExpressionAsStringResponse;
+            mGetBRERuleResponseContext = new KnetikResponseContext();
+            mGetBRERuleResponseContext.ResponseReceived += OnGetBRERuleResponse;
+            mGetBRERulesResponseContext = new KnetikResponseContext();
+            mGetBRERulesResponseContext.ResponseReceived += OnGetBRERulesResponse;
+            mSetBRERuleResponseContext = new KnetikResponseContext();
+            mSetBRERuleResponseContext.ResponseReceived += OnSetBRERuleResponse;
+            mUpdateBRERuleResponseContext = new KnetikResponseContext();
+            mUpdateBRERuleResponseContext.ResponseReceived += OnUpdateBRERuleResponse;
         }
     
         /// <inheritdoc />
@@ -158,48 +162,47 @@ namespace com.knetikcloud.Api
         public void CreateBRERule(BreRule breRule)
         {
             
-            mCreateBRERulePath = "/bre/rules";
-            if (!string.IsNullOrEmpty(mCreateBRERulePath))
+            mWebCallEvent.WebPath = "/bre/rules";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mCreateBRERulePath = mCreateBRERulePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(breRule); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(breRule); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mCreateBRERuleStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mCreateBRERuleStartTime, mCreateBRERulePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mCreateBRERuleCoroutine.ResponseReceived += CreateBRERuleCallback;
-            mCreateBRERuleCoroutine.Start(mCreateBRERulePath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mCreateBRERuleStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreateBRERuleResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreateBRERuleStartTime, "CreateBRERule", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void CreateBRERuleCallback(IRestResponse response)
+        private void OnCreateBRERuleResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateBRERule: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateBRERule: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling CreateBRERule: " + response.Error);
             }
 
-            CreateBRERuleData = (BreRule) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(BreRule), response.Headers);
-            KnetikLogger.LogResponse(mCreateBRERuleStartTime, mCreateBRERulePath, string.Format("Response received successfully:\n{0}", CreateBRERuleData.ToString()));
+            CreateBRERuleData = (BreRule) KnetikClient.Deserialize(response.Content, typeof(BreRule), response.Headers);
+            KnetikLogger.LogResponse(mCreateBRERuleStartTime, "CreateBRERule", string.Format("Response received successfully:\n{0}", CreateBRERuleData));
 
             if (CreateBRERuleComplete != null)
             {
-                CreateBRERuleComplete(CreateBRERuleData);
+                CreateBRERuleComplete(response.ResponseCode, CreateBRERuleData);
             }
         }
 
@@ -216,45 +219,44 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeleteBRERule");
             }
             
-            mDeleteBRERulePath = "/bre/rules/{id}";
-            if (!string.IsNullOrEmpty(mDeleteBRERulePath))
+            mWebCallEvent.WebPath = "/bre/rules/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteBRERulePath = mDeleteBRERulePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteBRERulePath = mDeleteBRERulePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteBRERuleStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteBRERuleStartTime, mDeleteBRERulePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteBRERuleCoroutine.ResponseReceived += DeleteBRERuleCallback;
-            mDeleteBRERuleCoroutine.Start(mDeleteBRERulePath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteBRERuleStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteBRERuleResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteBRERuleStartTime, "DeleteBRERule", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteBRERuleCallback(IRestResponse response)
+        private void OnDeleteBRERuleResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteBRERule: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteBRERule: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteBRERule: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteBRERuleStartTime, mDeleteBRERulePath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteBRERuleStartTime, "DeleteBRERule", "Response received successfully.");
             if (DeleteBRERuleComplete != null)
             {
-                DeleteBRERuleComplete();
+                DeleteBRERuleComplete(response.ResponseCode);
             }
         }
 
@@ -266,48 +268,47 @@ namespace com.knetikcloud.Api
         public void GetBREExpressionAsString(Expressionobject expression)
         {
             
-            mGetBREExpressionAsStringPath = "/bre/rules/expression-as-string";
-            if (!string.IsNullOrEmpty(mGetBREExpressionAsStringPath))
+            mWebCallEvent.WebPath = "/bre/rules/expression-as-string";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetBREExpressionAsStringPath = mGetBREExpressionAsStringPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(expression); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(expression); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetBREExpressionAsStringStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetBREExpressionAsStringStartTime, mGetBREExpressionAsStringPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetBREExpressionAsStringCoroutine.ResponseReceived += GetBREExpressionAsStringCallback;
-            mGetBREExpressionAsStringCoroutine.Start(mGetBREExpressionAsStringPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetBREExpressionAsStringStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetBREExpressionAsStringResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mGetBREExpressionAsStringStartTime, "GetBREExpressionAsString", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetBREExpressionAsStringCallback(IRestResponse response)
+        private void OnGetBREExpressionAsStringResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetBREExpressionAsString: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetBREExpressionAsString: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetBREExpressionAsString: " + response.Error);
             }
 
-            GetBREExpressionAsStringData = (string) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(string), response.Headers);
-            KnetikLogger.LogResponse(mGetBREExpressionAsStringStartTime, mGetBREExpressionAsStringPath, string.Format("Response received successfully:\n{0}", GetBREExpressionAsStringData.ToString()));
+            GetBREExpressionAsStringData = (string) KnetikClient.Deserialize(response.Content, typeof(string), response.Headers);
+            KnetikLogger.LogResponse(mGetBREExpressionAsStringStartTime, "GetBREExpressionAsString", string.Format("Response received successfully:\n{0}", GetBREExpressionAsStringData));
 
             if (GetBREExpressionAsStringComplete != null)
             {
-                GetBREExpressionAsStringComplete(GetBREExpressionAsStringData);
+                GetBREExpressionAsStringComplete(response.ResponseCode, GetBREExpressionAsStringData);
             }
         }
 
@@ -324,47 +325,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetBRERule");
             }
             
-            mGetBRERulePath = "/bre/rules/{id}";
-            if (!string.IsNullOrEmpty(mGetBRERulePath))
+            mWebCallEvent.WebPath = "/bre/rules/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetBRERulePath = mGetBRERulePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetBRERulePath = mGetBRERulePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetBRERuleStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetBRERuleStartTime, mGetBRERulePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetBRERuleCoroutine.ResponseReceived += GetBRERuleCallback;
-            mGetBRERuleCoroutine.Start(mGetBRERulePath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetBRERuleStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetBRERuleResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetBRERuleStartTime, "GetBRERule", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetBRERuleCallback(IRestResponse response)
+        private void OnGetBRERuleResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetBRERule: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetBRERule: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetBRERule: " + response.Error);
             }
 
-            GetBRERuleData = (BreRule) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(BreRule), response.Headers);
-            KnetikLogger.LogResponse(mGetBRERuleStartTime, mGetBRERulePath, string.Format("Response received successfully:\n{0}", GetBRERuleData.ToString()));
+            GetBRERuleData = (BreRule) KnetikClient.Deserialize(response.Content, typeof(BreRule), response.Headers);
+            KnetikLogger.LogResponse(mGetBRERuleStartTime, "GetBRERule", string.Format("Response received successfully:\n{0}", GetBRERuleData));
 
             if (GetBRERuleComplete != null)
             {
-                GetBRERuleComplete(GetBRERuleData);
+                GetBRERuleComplete(response.ResponseCode, GetBRERuleData);
             }
         }
 
@@ -383,86 +383,85 @@ namespace com.knetikcloud.Api
         public void GetBRERules(string filterName, bool? filterEnabled, bool? filterSystem, string filterTrigger, string filterAction, string filterCondition, int? size, int? page)
         {
             
-            mGetBRERulesPath = "/bre/rules";
-            if (!string.IsNullOrEmpty(mGetBRERulesPath))
+            mWebCallEvent.WebPath = "/bre/rules";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetBRERulesPath = mGetBRERulesPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (filterName != null)
             {
-                queryParams.Add("filter_name", KnetikClient.DefaultClient.ParameterToString(filterName));
+                mWebCallEvent.QueryParams["filter_name"] = KnetikClient.ParameterToString(filterName);
             }
 
             if (filterEnabled != null)
             {
-                queryParams.Add("filter_enabled", KnetikClient.DefaultClient.ParameterToString(filterEnabled));
+                mWebCallEvent.QueryParams["filter_enabled"] = KnetikClient.ParameterToString(filterEnabled);
             }
 
             if (filterSystem != null)
             {
-                queryParams.Add("filter_system", KnetikClient.DefaultClient.ParameterToString(filterSystem));
+                mWebCallEvent.QueryParams["filter_system"] = KnetikClient.ParameterToString(filterSystem);
             }
 
             if (filterTrigger != null)
             {
-                queryParams.Add("filter_trigger", KnetikClient.DefaultClient.ParameterToString(filterTrigger));
+                mWebCallEvent.QueryParams["filter_trigger"] = KnetikClient.ParameterToString(filterTrigger);
             }
 
             if (filterAction != null)
             {
-                queryParams.Add("filter_action", KnetikClient.DefaultClient.ParameterToString(filterAction));
+                mWebCallEvent.QueryParams["filter_action"] = KnetikClient.ParameterToString(filterAction);
             }
 
             if (filterCondition != null)
             {
-                queryParams.Add("filter_condition", KnetikClient.DefaultClient.ParameterToString(filterCondition));
+                mWebCallEvent.QueryParams["filter_condition"] = KnetikClient.ParameterToString(filterCondition);
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetBRERulesStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetBRERulesStartTime, mGetBRERulesPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetBRERulesCoroutine.ResponseReceived += GetBRERulesCallback;
-            mGetBRERulesCoroutine.Start(mGetBRERulesPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetBRERulesStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetBRERulesResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetBRERulesStartTime, "GetBRERules", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetBRERulesCallback(IRestResponse response)
+        private void OnGetBRERulesResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetBRERules: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetBRERules: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetBRERules: " + response.Error);
             }
 
-            GetBRERulesData = (PageResourceBreRule) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceBreRule), response.Headers);
-            KnetikLogger.LogResponse(mGetBRERulesStartTime, mGetBRERulesPath, string.Format("Response received successfully:\n{0}", GetBRERulesData.ToString()));
+            GetBRERulesData = (PageResourceBreRule) KnetikClient.Deserialize(response.Content, typeof(PageResourceBreRule), response.Headers);
+            KnetikLogger.LogResponse(mGetBRERulesStartTime, "GetBRERules", string.Format("Response received successfully:\n{0}", GetBRERulesData));
 
             if (GetBRERulesComplete != null)
             {
-                GetBRERulesComplete(GetBRERulesData);
+                GetBRERulesComplete(response.ResponseCode, GetBRERulesData);
             }
         }
 
@@ -480,47 +479,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling SetBRERule");
             }
             
-            mSetBRERulePath = "/bre/rules/{id}/enabled";
-            if (!string.IsNullOrEmpty(mSetBRERulePath))
+            mWebCallEvent.WebPath = "/bre/rules/{id}/enabled";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mSetBRERulePath = mSetBRERulePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mSetBRERulePath = mSetBRERulePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(enabled); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(enabled); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mSetBRERuleStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mSetBRERuleStartTime, mSetBRERulePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mSetBRERuleCoroutine.ResponseReceived += SetBRERuleCallback;
-            mSetBRERuleCoroutine.Start(mSetBRERulePath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mSetBRERuleStartTime = DateTime.Now;
+            mWebCallEvent.Context = mSetBRERuleResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mSetBRERuleStartTime, "SetBRERule", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void SetBRERuleCallback(IRestResponse response)
+        private void OnSetBRERuleResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling SetBRERule: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling SetBRERule: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling SetBRERule: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mSetBRERuleStartTime, mSetBRERulePath, "Response received successfully.");
+            KnetikLogger.LogResponse(mSetBRERuleStartTime, "SetBRERule", "Response received successfully.");
             if (SetBRERuleComplete != null)
             {
-                SetBRERuleComplete();
+                SetBRERuleComplete(response.ResponseCode);
             }
         }
 
@@ -538,49 +536,48 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling UpdateBRERule");
             }
             
-            mUpdateBRERulePath = "/bre/rules/{id}";
-            if (!string.IsNullOrEmpty(mUpdateBRERulePath))
+            mWebCallEvent.WebPath = "/bre/rules/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateBRERulePath = mUpdateBRERulePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateBRERulePath = mUpdateBRERulePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(breRule); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(breRule); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateBRERuleStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateBRERuleStartTime, mUpdateBRERulePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateBRERuleCoroutine.ResponseReceived += UpdateBRERuleCallback;
-            mUpdateBRERuleCoroutine.Start(mUpdateBRERulePath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateBRERuleStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateBRERuleResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateBRERuleStartTime, "UpdateBRERule", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateBRERuleCallback(IRestResponse response)
+        private void OnUpdateBRERuleResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateBRERule: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateBRERule: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateBRERule: " + response.Error);
             }
 
-            UpdateBRERuleData = (BreRule) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(BreRule), response.Headers);
-            KnetikLogger.LogResponse(mUpdateBRERuleStartTime, mUpdateBRERulePath, string.Format("Response received successfully:\n{0}", UpdateBRERuleData.ToString()));
+            UpdateBRERuleData = (BreRule) KnetikClient.Deserialize(response.Content, typeof(BreRule), response.Headers);
+            KnetikLogger.LogResponse(mUpdateBRERuleStartTime, "UpdateBRERule", string.Format("Response received successfully:\n{0}", UpdateBRERuleData));
 
             if (UpdateBRERuleComplete != null)
             {
-                UpdateBRERuleComplete(UpdateBRERuleData);
+                UpdateBRERuleComplete(response.ResponseCode, UpdateBRERuleData);
             }
         }
 

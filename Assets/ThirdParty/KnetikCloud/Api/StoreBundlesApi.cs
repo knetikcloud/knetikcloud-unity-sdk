@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,19 +18,6 @@ namespace com.knetikcloud.Api
     {
         BundleItem CreateBundleItemData { get; }
 
-        ItemTemplateResource CreateBundleTemplateData { get; }
-
-        BundleItem GetBundleItemData { get; }
-
-        ItemTemplateResource GetBundleTemplateData { get; }
-
-        PageResourceItemTemplateResource GetBundleTemplatesData { get; }
-
-        BundleItem UpdateBundleItemData { get; }
-
-        ItemTemplateResource UpdateBundleTemplateData { get; }
-
-        
         /// <summary>
         /// Create a bundle item The SKU for the bundle itself must be unique and there can only be one SKU.  Extra notes for price_override:  The price of all the items (multiplied by the quantity) must equal the price of the bundle.  With individual prices set, items will be processed individually and can be refunded as such.  However, if all prices are set to null, the price of the bundle will be used and will be treated as one item.
         /// </summary>
@@ -39,17 +25,23 @@ namespace com.knetikcloud.Api
         /// <param name="bundleItem">The bundle item object</param>
         void CreateBundleItem(bool? cascade, BundleItem bundleItem);
 
+        ItemTemplateResource CreateBundleTemplateData { get; }
+
         /// <summary>
         /// Create a bundle template Bundle Templates define a type of bundle and the properties they have.
         /// </summary>
         /// <param name="bundleTemplateResource">The new bundle template</param>
         void CreateBundleTemplate(ItemTemplateResource bundleTemplateResource);
 
+        
+
         /// <summary>
         /// Delete a bundle item 
         /// </summary>
         /// <param name="id">The id of the bundle</param>
         void DeleteBundleItem(int? id);
+
+        
 
         /// <summary>
         /// Delete a bundle template 
@@ -58,17 +50,23 @@ namespace com.knetikcloud.Api
         /// <param name="cascade">force deleting the template if it&#39;s attached to other objects, cascade &#x3D; detach</param>
         void DeleteBundleTemplate(string id, string cascade);
 
+        BundleItem GetBundleItemData { get; }
+
         /// <summary>
         /// Get a single bundle item 
         /// </summary>
         /// <param name="id">The id of the bundle</param>
         void GetBundleItem(int? id);
 
+        ItemTemplateResource GetBundleTemplateData { get; }
+
         /// <summary>
         /// Get a single bundle template Bundle Templates define a type of bundle and the properties they have.
         /// </summary>
         /// <param name="id">The id of the template</param>
         void GetBundleTemplate(string id);
+
+        PageResourceItemTemplateResource GetBundleTemplatesData { get; }
 
         /// <summary>
         /// List and search bundle templates 
@@ -78,6 +76,8 @@ namespace com.knetikcloud.Api
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
         void GetBundleTemplates(int? size, int? page, string order);
 
+        BundleItem UpdateBundleItemData { get; }
+
         /// <summary>
         /// Update a bundle item 
         /// </summary>
@@ -85,6 +85,8 @@ namespace com.knetikcloud.Api
         /// <param name="cascade">Whether to cascade group changes, such as in the limited gettable behavior. A 400 error will return otherwise if the group is already in use with different values.</param>
         /// <param name="bundleItem">The bundle item object</param>
         void UpdateBundleItem(int? id, bool? cascade, BundleItem bundleItem);
+
+        ItemTemplateResource UpdateBundleTemplateData { get; }
 
         /// <summary>
         /// Update a bundle template 
@@ -101,66 +103,59 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class StoreBundlesApi : IStoreBundlesApi
     {
-        private readonly KnetikCoroutine mCreateBundleItemCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mCreateBundleItemResponseContext;
         private DateTime mCreateBundleItemStartTime;
-        private string mCreateBundleItemPath;
-        private readonly KnetikCoroutine mCreateBundleTemplateCoroutine;
+        private readonly KnetikResponseContext mCreateBundleTemplateResponseContext;
         private DateTime mCreateBundleTemplateStartTime;
-        private string mCreateBundleTemplatePath;
-        private readonly KnetikCoroutine mDeleteBundleItemCoroutine;
+        private readonly KnetikResponseContext mDeleteBundleItemResponseContext;
         private DateTime mDeleteBundleItemStartTime;
-        private string mDeleteBundleItemPath;
-        private readonly KnetikCoroutine mDeleteBundleTemplateCoroutine;
+        private readonly KnetikResponseContext mDeleteBundleTemplateResponseContext;
         private DateTime mDeleteBundleTemplateStartTime;
-        private string mDeleteBundleTemplatePath;
-        private readonly KnetikCoroutine mGetBundleItemCoroutine;
+        private readonly KnetikResponseContext mGetBundleItemResponseContext;
         private DateTime mGetBundleItemStartTime;
-        private string mGetBundleItemPath;
-        private readonly KnetikCoroutine mGetBundleTemplateCoroutine;
+        private readonly KnetikResponseContext mGetBundleTemplateResponseContext;
         private DateTime mGetBundleTemplateStartTime;
-        private string mGetBundleTemplatePath;
-        private readonly KnetikCoroutine mGetBundleTemplatesCoroutine;
+        private readonly KnetikResponseContext mGetBundleTemplatesResponseContext;
         private DateTime mGetBundleTemplatesStartTime;
-        private string mGetBundleTemplatesPath;
-        private readonly KnetikCoroutine mUpdateBundleItemCoroutine;
+        private readonly KnetikResponseContext mUpdateBundleItemResponseContext;
         private DateTime mUpdateBundleItemStartTime;
-        private string mUpdateBundleItemPath;
-        private readonly KnetikCoroutine mUpdateBundleTemplateCoroutine;
+        private readonly KnetikResponseContext mUpdateBundleTemplateResponseContext;
         private DateTime mUpdateBundleTemplateStartTime;
-        private string mUpdateBundleTemplatePath;
 
         public BundleItem CreateBundleItemData { get; private set; }
-        public delegate void CreateBundleItemCompleteDelegate(BundleItem response);
+        public delegate void CreateBundleItemCompleteDelegate(long responseCode, BundleItem response);
         public CreateBundleItemCompleteDelegate CreateBundleItemComplete;
 
         public ItemTemplateResource CreateBundleTemplateData { get; private set; }
-        public delegate void CreateBundleTemplateCompleteDelegate(ItemTemplateResource response);
+        public delegate void CreateBundleTemplateCompleteDelegate(long responseCode, ItemTemplateResource response);
         public CreateBundleTemplateCompleteDelegate CreateBundleTemplateComplete;
 
-        public delegate void DeleteBundleItemCompleteDelegate();
+        public delegate void DeleteBundleItemCompleteDelegate(long responseCode);
         public DeleteBundleItemCompleteDelegate DeleteBundleItemComplete;
 
-        public delegate void DeleteBundleTemplateCompleteDelegate();
+        public delegate void DeleteBundleTemplateCompleteDelegate(long responseCode);
         public DeleteBundleTemplateCompleteDelegate DeleteBundleTemplateComplete;
 
         public BundleItem GetBundleItemData { get; private set; }
-        public delegate void GetBundleItemCompleteDelegate(BundleItem response);
+        public delegate void GetBundleItemCompleteDelegate(long responseCode, BundleItem response);
         public GetBundleItemCompleteDelegate GetBundleItemComplete;
 
         public ItemTemplateResource GetBundleTemplateData { get; private set; }
-        public delegate void GetBundleTemplateCompleteDelegate(ItemTemplateResource response);
+        public delegate void GetBundleTemplateCompleteDelegate(long responseCode, ItemTemplateResource response);
         public GetBundleTemplateCompleteDelegate GetBundleTemplateComplete;
 
         public PageResourceItemTemplateResource GetBundleTemplatesData { get; private set; }
-        public delegate void GetBundleTemplatesCompleteDelegate(PageResourceItemTemplateResource response);
+        public delegate void GetBundleTemplatesCompleteDelegate(long responseCode, PageResourceItemTemplateResource response);
         public GetBundleTemplatesCompleteDelegate GetBundleTemplatesComplete;
 
         public BundleItem UpdateBundleItemData { get; private set; }
-        public delegate void UpdateBundleItemCompleteDelegate(BundleItem response);
+        public delegate void UpdateBundleItemCompleteDelegate(long responseCode, BundleItem response);
         public UpdateBundleItemCompleteDelegate UpdateBundleItemComplete;
 
         public ItemTemplateResource UpdateBundleTemplateData { get; private set; }
-        public delegate void UpdateBundleTemplateCompleteDelegate(ItemTemplateResource response);
+        public delegate void UpdateBundleTemplateCompleteDelegate(long responseCode, ItemTemplateResource response);
         public UpdateBundleTemplateCompleteDelegate UpdateBundleTemplateComplete;
 
         /// <summary>
@@ -169,15 +164,24 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public StoreBundlesApi()
         {
-            mCreateBundleItemCoroutine = new KnetikCoroutine();
-            mCreateBundleTemplateCoroutine = new KnetikCoroutine();
-            mDeleteBundleItemCoroutine = new KnetikCoroutine();
-            mDeleteBundleTemplateCoroutine = new KnetikCoroutine();
-            mGetBundleItemCoroutine = new KnetikCoroutine();
-            mGetBundleTemplateCoroutine = new KnetikCoroutine();
-            mGetBundleTemplatesCoroutine = new KnetikCoroutine();
-            mUpdateBundleItemCoroutine = new KnetikCoroutine();
-            mUpdateBundleTemplateCoroutine = new KnetikCoroutine();
+            mCreateBundleItemResponseContext = new KnetikResponseContext();
+            mCreateBundleItemResponseContext.ResponseReceived += OnCreateBundleItemResponse;
+            mCreateBundleTemplateResponseContext = new KnetikResponseContext();
+            mCreateBundleTemplateResponseContext.ResponseReceived += OnCreateBundleTemplateResponse;
+            mDeleteBundleItemResponseContext = new KnetikResponseContext();
+            mDeleteBundleItemResponseContext.ResponseReceived += OnDeleteBundleItemResponse;
+            mDeleteBundleTemplateResponseContext = new KnetikResponseContext();
+            mDeleteBundleTemplateResponseContext.ResponseReceived += OnDeleteBundleTemplateResponse;
+            mGetBundleItemResponseContext = new KnetikResponseContext();
+            mGetBundleItemResponseContext.ResponseReceived += OnGetBundleItemResponse;
+            mGetBundleTemplateResponseContext = new KnetikResponseContext();
+            mGetBundleTemplateResponseContext.ResponseReceived += OnGetBundleTemplateResponse;
+            mGetBundleTemplatesResponseContext = new KnetikResponseContext();
+            mGetBundleTemplatesResponseContext.ResponseReceived += OnGetBundleTemplatesResponse;
+            mUpdateBundleItemResponseContext = new KnetikResponseContext();
+            mUpdateBundleItemResponseContext.ResponseReceived += OnUpdateBundleItemResponse;
+            mUpdateBundleTemplateResponseContext = new KnetikResponseContext();
+            mUpdateBundleTemplateResponseContext.ResponseReceived += OnUpdateBundleTemplateResponse;
         }
     
         /// <inheritdoc />
@@ -189,53 +193,52 @@ namespace com.knetikcloud.Api
         public void CreateBundleItem(bool? cascade, BundleItem bundleItem)
         {
             
-            mCreateBundleItemPath = "/store/bundles";
-            if (!string.IsNullOrEmpty(mCreateBundleItemPath))
+            mWebCallEvent.WebPath = "/store/bundles";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mCreateBundleItemPath = mCreateBundleItemPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
+                mWebCallEvent.QueryParams["cascade"] = KnetikClient.ParameterToString(cascade);
             }
 
-            postBody = KnetikClient.DefaultClient.Serialize(bundleItem); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(bundleItem); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mCreateBundleItemStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mCreateBundleItemStartTime, mCreateBundleItemPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mCreateBundleItemCoroutine.ResponseReceived += CreateBundleItemCallback;
-            mCreateBundleItemCoroutine.Start(mCreateBundleItemPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mCreateBundleItemStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreateBundleItemResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreateBundleItemStartTime, "CreateBundleItem", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void CreateBundleItemCallback(IRestResponse response)
+        private void OnCreateBundleItemResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateBundleItem: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateBundleItem: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling CreateBundleItem: " + response.Error);
             }
 
-            CreateBundleItemData = (BundleItem) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(BundleItem), response.Headers);
-            KnetikLogger.LogResponse(mCreateBundleItemStartTime, mCreateBundleItemPath, string.Format("Response received successfully:\n{0}", CreateBundleItemData.ToString()));
+            CreateBundleItemData = (BundleItem) KnetikClient.Deserialize(response.Content, typeof(BundleItem), response.Headers);
+            KnetikLogger.LogResponse(mCreateBundleItemStartTime, "CreateBundleItem", string.Format("Response received successfully:\n{0}", CreateBundleItemData));
 
             if (CreateBundleItemComplete != null)
             {
-                CreateBundleItemComplete(CreateBundleItemData);
+                CreateBundleItemComplete(response.ResponseCode, CreateBundleItemData);
             }
         }
 
@@ -247,48 +250,47 @@ namespace com.knetikcloud.Api
         public void CreateBundleTemplate(ItemTemplateResource bundleTemplateResource)
         {
             
-            mCreateBundleTemplatePath = "/store/bundles/templates";
-            if (!string.IsNullOrEmpty(mCreateBundleTemplatePath))
+            mWebCallEvent.WebPath = "/store/bundles/templates";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mCreateBundleTemplatePath = mCreateBundleTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(bundleTemplateResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(bundleTemplateResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mCreateBundleTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mCreateBundleTemplateStartTime, mCreateBundleTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mCreateBundleTemplateCoroutine.ResponseReceived += CreateBundleTemplateCallback;
-            mCreateBundleTemplateCoroutine.Start(mCreateBundleTemplatePath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mCreateBundleTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreateBundleTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreateBundleTemplateStartTime, "CreateBundleTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void CreateBundleTemplateCallback(IRestResponse response)
+        private void OnCreateBundleTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateBundleTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateBundleTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling CreateBundleTemplate: " + response.Error);
             }
 
-            CreateBundleTemplateData = (ItemTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mCreateBundleTemplateStartTime, mCreateBundleTemplatePath, string.Format("Response received successfully:\n{0}", CreateBundleTemplateData.ToString()));
+            CreateBundleTemplateData = (ItemTemplateResource) KnetikClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mCreateBundleTemplateStartTime, "CreateBundleTemplate", string.Format("Response received successfully:\n{0}", CreateBundleTemplateData));
 
             if (CreateBundleTemplateComplete != null)
             {
-                CreateBundleTemplateComplete(CreateBundleTemplateData);
+                CreateBundleTemplateComplete(response.ResponseCode, CreateBundleTemplateData);
             }
         }
 
@@ -305,45 +307,44 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeleteBundleItem");
             }
             
-            mDeleteBundleItemPath = "/store/bundles/{id}";
-            if (!string.IsNullOrEmpty(mDeleteBundleItemPath))
+            mWebCallEvent.WebPath = "/store/bundles/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteBundleItemPath = mDeleteBundleItemPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteBundleItemPath = mDeleteBundleItemPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteBundleItemStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteBundleItemStartTime, mDeleteBundleItemPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteBundleItemCoroutine.ResponseReceived += DeleteBundleItemCallback;
-            mDeleteBundleItemCoroutine.Start(mDeleteBundleItemPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteBundleItemStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteBundleItemResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteBundleItemStartTime, "DeleteBundleItem", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteBundleItemCallback(IRestResponse response)
+        private void OnDeleteBundleItemResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteBundleItem: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteBundleItem: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteBundleItem: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteBundleItemStartTime, mDeleteBundleItemPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteBundleItemStartTime, "DeleteBundleItem", "Response received successfully.");
             if (DeleteBundleItemComplete != null)
             {
-                DeleteBundleItemComplete();
+                DeleteBundleItemComplete(response.ResponseCode);
             }
         }
 
@@ -361,50 +362,49 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeleteBundleTemplate");
             }
             
-            mDeleteBundleTemplatePath = "/store/bundles/templates/{id}";
-            if (!string.IsNullOrEmpty(mDeleteBundleTemplatePath))
+            mWebCallEvent.WebPath = "/store/bundles/templates/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteBundleTemplatePath = mDeleteBundleTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteBundleTemplatePath = mDeleteBundleTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
+                mWebCallEvent.QueryParams["cascade"] = KnetikClient.ParameterToString(cascade);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteBundleTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteBundleTemplateStartTime, mDeleteBundleTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteBundleTemplateCoroutine.ResponseReceived += DeleteBundleTemplateCallback;
-            mDeleteBundleTemplateCoroutine.Start(mDeleteBundleTemplatePath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteBundleTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteBundleTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteBundleTemplateStartTime, "DeleteBundleTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteBundleTemplateCallback(IRestResponse response)
+        private void OnDeleteBundleTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteBundleTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteBundleTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteBundleTemplate: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteBundleTemplateStartTime, mDeleteBundleTemplatePath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteBundleTemplateStartTime, "DeleteBundleTemplate", "Response received successfully.");
             if (DeleteBundleTemplateComplete != null)
             {
-                DeleteBundleTemplateComplete();
+                DeleteBundleTemplateComplete(response.ResponseCode);
             }
         }
 
@@ -421,47 +421,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetBundleItem");
             }
             
-            mGetBundleItemPath = "/store/bundles/{id}";
-            if (!string.IsNullOrEmpty(mGetBundleItemPath))
+            mWebCallEvent.WebPath = "/store/bundles/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetBundleItemPath = mGetBundleItemPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetBundleItemPath = mGetBundleItemPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetBundleItemStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetBundleItemStartTime, mGetBundleItemPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetBundleItemCoroutine.ResponseReceived += GetBundleItemCallback;
-            mGetBundleItemCoroutine.Start(mGetBundleItemPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetBundleItemStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetBundleItemResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetBundleItemStartTime, "GetBundleItem", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetBundleItemCallback(IRestResponse response)
+        private void OnGetBundleItemResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetBundleItem: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetBundleItem: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetBundleItem: " + response.Error);
             }
 
-            GetBundleItemData = (BundleItem) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(BundleItem), response.Headers);
-            KnetikLogger.LogResponse(mGetBundleItemStartTime, mGetBundleItemPath, string.Format("Response received successfully:\n{0}", GetBundleItemData.ToString()));
+            GetBundleItemData = (BundleItem) KnetikClient.Deserialize(response.Content, typeof(BundleItem), response.Headers);
+            KnetikLogger.LogResponse(mGetBundleItemStartTime, "GetBundleItem", string.Format("Response received successfully:\n{0}", GetBundleItemData));
 
             if (GetBundleItemComplete != null)
             {
-                GetBundleItemComplete(GetBundleItemData);
+                GetBundleItemComplete(response.ResponseCode, GetBundleItemData);
             }
         }
 
@@ -478,47 +477,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetBundleTemplate");
             }
             
-            mGetBundleTemplatePath = "/store/bundles/templates/{id}";
-            if (!string.IsNullOrEmpty(mGetBundleTemplatePath))
+            mWebCallEvent.WebPath = "/store/bundles/templates/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetBundleTemplatePath = mGetBundleTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetBundleTemplatePath = mGetBundleTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetBundleTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetBundleTemplateStartTime, mGetBundleTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetBundleTemplateCoroutine.ResponseReceived += GetBundleTemplateCallback;
-            mGetBundleTemplateCoroutine.Start(mGetBundleTemplatePath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetBundleTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetBundleTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetBundleTemplateStartTime, "GetBundleTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetBundleTemplateCallback(IRestResponse response)
+        private void OnGetBundleTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetBundleTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetBundleTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetBundleTemplate: " + response.Error);
             }
 
-            GetBundleTemplateData = (ItemTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mGetBundleTemplateStartTime, mGetBundleTemplatePath, string.Format("Response received successfully:\n{0}", GetBundleTemplateData.ToString()));
+            GetBundleTemplateData = (ItemTemplateResource) KnetikClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mGetBundleTemplateStartTime, "GetBundleTemplate", string.Format("Response received successfully:\n{0}", GetBundleTemplateData));
 
             if (GetBundleTemplateComplete != null)
             {
-                GetBundleTemplateComplete(GetBundleTemplateData);
+                GetBundleTemplateComplete(response.ResponseCode, GetBundleTemplateData);
             }
         }
 
@@ -532,61 +530,60 @@ namespace com.knetikcloud.Api
         public void GetBundleTemplates(int? size, int? page, string order)
         {
             
-            mGetBundleTemplatesPath = "/store/bundles/templates";
-            if (!string.IsNullOrEmpty(mGetBundleTemplatesPath))
+            mWebCallEvent.WebPath = "/store/bundles/templates";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetBundleTemplatesPath = mGetBundleTemplatesPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetBundleTemplatesStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetBundleTemplatesStartTime, mGetBundleTemplatesPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetBundleTemplatesCoroutine.ResponseReceived += GetBundleTemplatesCallback;
-            mGetBundleTemplatesCoroutine.Start(mGetBundleTemplatesPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetBundleTemplatesStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetBundleTemplatesResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetBundleTemplatesStartTime, "GetBundleTemplates", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetBundleTemplatesCallback(IRestResponse response)
+        private void OnGetBundleTemplatesResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetBundleTemplates: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetBundleTemplates: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetBundleTemplates: " + response.Error);
             }
 
-            GetBundleTemplatesData = (PageResourceItemTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceItemTemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mGetBundleTemplatesStartTime, mGetBundleTemplatesPath, string.Format("Response received successfully:\n{0}", GetBundleTemplatesData.ToString()));
+            GetBundleTemplatesData = (PageResourceItemTemplateResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceItemTemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mGetBundleTemplatesStartTime, "GetBundleTemplates", string.Format("Response received successfully:\n{0}", GetBundleTemplatesData));
 
             if (GetBundleTemplatesComplete != null)
             {
-                GetBundleTemplatesComplete(GetBundleTemplatesData);
+                GetBundleTemplatesComplete(response.ResponseCode, GetBundleTemplatesData);
             }
         }
 
@@ -605,54 +602,53 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling UpdateBundleItem");
             }
             
-            mUpdateBundleItemPath = "/store/bundles/{id}";
-            if (!string.IsNullOrEmpty(mUpdateBundleItemPath))
+            mWebCallEvent.WebPath = "/store/bundles/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateBundleItemPath = mUpdateBundleItemPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateBundleItemPath = mUpdateBundleItemPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
+                mWebCallEvent.QueryParams["cascade"] = KnetikClient.ParameterToString(cascade);
             }
 
-            postBody = KnetikClient.DefaultClient.Serialize(bundleItem); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(bundleItem); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateBundleItemStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateBundleItemStartTime, mUpdateBundleItemPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateBundleItemCoroutine.ResponseReceived += UpdateBundleItemCallback;
-            mUpdateBundleItemCoroutine.Start(mUpdateBundleItemPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateBundleItemStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateBundleItemResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateBundleItemStartTime, "UpdateBundleItem", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateBundleItemCallback(IRestResponse response)
+        private void OnUpdateBundleItemResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateBundleItem: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateBundleItem: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateBundleItem: " + response.Error);
             }
 
-            UpdateBundleItemData = (BundleItem) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(BundleItem), response.Headers);
-            KnetikLogger.LogResponse(mUpdateBundleItemStartTime, mUpdateBundleItemPath, string.Format("Response received successfully:\n{0}", UpdateBundleItemData.ToString()));
+            UpdateBundleItemData = (BundleItem) KnetikClient.Deserialize(response.Content, typeof(BundleItem), response.Headers);
+            KnetikLogger.LogResponse(mUpdateBundleItemStartTime, "UpdateBundleItem", string.Format("Response received successfully:\n{0}", UpdateBundleItemData));
 
             if (UpdateBundleItemComplete != null)
             {
-                UpdateBundleItemComplete(UpdateBundleItemData);
+                UpdateBundleItemComplete(response.ResponseCode, UpdateBundleItemData);
             }
         }
 
@@ -670,49 +666,48 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling UpdateBundleTemplate");
             }
             
-            mUpdateBundleTemplatePath = "/store/bundles/templates/{id}";
-            if (!string.IsNullOrEmpty(mUpdateBundleTemplatePath))
+            mWebCallEvent.WebPath = "/store/bundles/templates/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateBundleTemplatePath = mUpdateBundleTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateBundleTemplatePath = mUpdateBundleTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(bundleTemplateResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(bundleTemplateResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateBundleTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateBundleTemplateStartTime, mUpdateBundleTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateBundleTemplateCoroutine.ResponseReceived += UpdateBundleTemplateCallback;
-            mUpdateBundleTemplateCoroutine.Start(mUpdateBundleTemplatePath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateBundleTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateBundleTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateBundleTemplateStartTime, "UpdateBundleTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateBundleTemplateCallback(IRestResponse response)
+        private void OnUpdateBundleTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateBundleTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateBundleTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateBundleTemplate: " + response.Error);
             }
 
-            UpdateBundleTemplateData = (ItemTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mUpdateBundleTemplateStartTime, mUpdateBundleTemplatePath, string.Format("Response received successfully:\n{0}", UpdateBundleTemplateData.ToString()));
+            UpdateBundleTemplateData = (ItemTemplateResource) KnetikClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mUpdateBundleTemplateStartTime, "UpdateBundleTemplate", string.Format("Response received successfully:\n{0}", UpdateBundleTemplateData));
 
             if (UpdateBundleTemplateComplete != null)
             {
-                UpdateBundleTemplateComplete(UpdateBundleTemplateData);
+                UpdateBundleTemplateComplete(response.ResponseCode, UpdateBundleTemplateData);
             }
         }
 

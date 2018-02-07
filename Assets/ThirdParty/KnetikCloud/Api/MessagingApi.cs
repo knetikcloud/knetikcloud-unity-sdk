@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -18,11 +17,14 @@ namespace com.knetikcloud.Api
     public interface IMessagingApi
     {
         
+
         /// <summary>
         /// Send a raw email to one or more users 
         /// </summary>
         /// <param name="rawEmailResource">The new raw email to be sent</param>
         void SendRawEmail(RawEmailResource rawEmailResource);
+
+        
 
         /// <summary>
         /// Send a raw push notification Sends a raw push notification message to one or more users. User&#39;s without registered mobile device for the application will be skipped.
@@ -30,11 +32,15 @@ namespace com.knetikcloud.Api
         /// <param name="rawPushResource">The new raw push notification to be sent</param>
         void SendRawPush(RawPushResource rawPushResource);
 
+        
+
         /// <summary>
         /// Send a raw SMS Sends a raw SMS text message to one or more users. User&#39;s without registered mobile numbers will be skipped.
         /// </summary>
         /// <param name="rawSMSResource">The new raw SMS to be sent</param>
         void SendRawSMS(RawSMSResource rawSMSResource);
+
+        
 
         /// <summary>
         /// Send a templated email to one or more users 
@@ -42,11 +48,15 @@ namespace com.knetikcloud.Api
         /// <param name="messageResource">The new template email to be sent</param>
         void SendTemplatedEmail(TemplateEmailResource messageResource);
 
+        
+
         /// <summary>
         /// Send a templated push notification Sends a templated push notification message to one or more users. User&#39;s without registered mobile device for the application will be skipped.
         /// </summary>
         /// <param name="templatePushResource">The new templated push notification to be sent</param>
         void SendTemplatedPush(TemplatePushResource templatePushResource);
+
+        
 
         /// <summary>
         /// Send a new templated SMS Sends a templated SMS text message to one or more users. User&#39;s without registered mobile numbers will be skipped.
@@ -62,41 +72,37 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class MessagingApi : IMessagingApi
     {
-        private readonly KnetikCoroutine mSendRawEmailCoroutine;
-        private DateTime mSendRawEmailStartTime;
-        private string mSendRawEmailPath;
-        private readonly KnetikCoroutine mSendRawPushCoroutine;
-        private DateTime mSendRawPushStartTime;
-        private string mSendRawPushPath;
-        private readonly KnetikCoroutine mSendRawSMSCoroutine;
-        private DateTime mSendRawSMSStartTime;
-        private string mSendRawSMSPath;
-        private readonly KnetikCoroutine mSendTemplatedEmailCoroutine;
-        private DateTime mSendTemplatedEmailStartTime;
-        private string mSendTemplatedEmailPath;
-        private readonly KnetikCoroutine mSendTemplatedPushCoroutine;
-        private DateTime mSendTemplatedPushStartTime;
-        private string mSendTemplatedPushPath;
-        private readonly KnetikCoroutine mSendTemplatedSMSCoroutine;
-        private DateTime mSendTemplatedSMSStartTime;
-        private string mSendTemplatedSMSPath;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
 
-        public delegate void SendRawEmailCompleteDelegate();
+        private readonly KnetikResponseContext mSendRawEmailResponseContext;
+        private DateTime mSendRawEmailStartTime;
+        private readonly KnetikResponseContext mSendRawPushResponseContext;
+        private DateTime mSendRawPushStartTime;
+        private readonly KnetikResponseContext mSendRawSMSResponseContext;
+        private DateTime mSendRawSMSStartTime;
+        private readonly KnetikResponseContext mSendTemplatedEmailResponseContext;
+        private DateTime mSendTemplatedEmailStartTime;
+        private readonly KnetikResponseContext mSendTemplatedPushResponseContext;
+        private DateTime mSendTemplatedPushStartTime;
+        private readonly KnetikResponseContext mSendTemplatedSMSResponseContext;
+        private DateTime mSendTemplatedSMSStartTime;
+
+        public delegate void SendRawEmailCompleteDelegate(long responseCode);
         public SendRawEmailCompleteDelegate SendRawEmailComplete;
 
-        public delegate void SendRawPushCompleteDelegate();
+        public delegate void SendRawPushCompleteDelegate(long responseCode);
         public SendRawPushCompleteDelegate SendRawPushComplete;
 
-        public delegate void SendRawSMSCompleteDelegate();
+        public delegate void SendRawSMSCompleteDelegate(long responseCode);
         public SendRawSMSCompleteDelegate SendRawSMSComplete;
 
-        public delegate void SendTemplatedEmailCompleteDelegate();
+        public delegate void SendTemplatedEmailCompleteDelegate(long responseCode);
         public SendTemplatedEmailCompleteDelegate SendTemplatedEmailComplete;
 
-        public delegate void SendTemplatedPushCompleteDelegate();
+        public delegate void SendTemplatedPushCompleteDelegate(long responseCode);
         public SendTemplatedPushCompleteDelegate SendTemplatedPushComplete;
 
-        public delegate void SendTemplatedSMSCompleteDelegate();
+        public delegate void SendTemplatedSMSCompleteDelegate(long responseCode);
         public SendTemplatedSMSCompleteDelegate SendTemplatedSMSComplete;
 
         /// <summary>
@@ -105,12 +111,18 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public MessagingApi()
         {
-            mSendRawEmailCoroutine = new KnetikCoroutine();
-            mSendRawPushCoroutine = new KnetikCoroutine();
-            mSendRawSMSCoroutine = new KnetikCoroutine();
-            mSendTemplatedEmailCoroutine = new KnetikCoroutine();
-            mSendTemplatedPushCoroutine = new KnetikCoroutine();
-            mSendTemplatedSMSCoroutine = new KnetikCoroutine();
+            mSendRawEmailResponseContext = new KnetikResponseContext();
+            mSendRawEmailResponseContext.ResponseReceived += OnSendRawEmailResponse;
+            mSendRawPushResponseContext = new KnetikResponseContext();
+            mSendRawPushResponseContext.ResponseReceived += OnSendRawPushResponse;
+            mSendRawSMSResponseContext = new KnetikResponseContext();
+            mSendRawSMSResponseContext.ResponseReceived += OnSendRawSMSResponse;
+            mSendTemplatedEmailResponseContext = new KnetikResponseContext();
+            mSendTemplatedEmailResponseContext.ResponseReceived += OnSendTemplatedEmailResponse;
+            mSendTemplatedPushResponseContext = new KnetikResponseContext();
+            mSendTemplatedPushResponseContext.ResponseReceived += OnSendTemplatedPushResponse;
+            mSendTemplatedSMSResponseContext = new KnetikResponseContext();
+            mSendTemplatedSMSResponseContext.ResponseReceived += OnSendTemplatedSMSResponse;
         }
     
         /// <inheritdoc />
@@ -121,46 +133,45 @@ namespace com.knetikcloud.Api
         public void SendRawEmail(RawEmailResource rawEmailResource)
         {
             
-            mSendRawEmailPath = "/messaging/raw-email";
-            if (!string.IsNullOrEmpty(mSendRawEmailPath))
+            mWebCallEvent.WebPath = "/messaging/raw-email";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mSendRawEmailPath = mSendRawEmailPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(rawEmailResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(rawEmailResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mSendRawEmailStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mSendRawEmailStartTime, mSendRawEmailPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mSendRawEmailCoroutine.ResponseReceived += SendRawEmailCallback;
-            mSendRawEmailCoroutine.Start(mSendRawEmailPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mSendRawEmailStartTime = DateTime.Now;
+            mWebCallEvent.Context = mSendRawEmailResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mSendRawEmailStartTime, "SendRawEmail", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void SendRawEmailCallback(IRestResponse response)
+        private void OnSendRawEmailResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling SendRawEmail: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling SendRawEmail: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling SendRawEmail: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mSendRawEmailStartTime, mSendRawEmailPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mSendRawEmailStartTime, "SendRawEmail", "Response received successfully.");
             if (SendRawEmailComplete != null)
             {
-                SendRawEmailComplete();
+                SendRawEmailComplete(response.ResponseCode);
             }
         }
 
@@ -172,46 +183,45 @@ namespace com.knetikcloud.Api
         public void SendRawPush(RawPushResource rawPushResource)
         {
             
-            mSendRawPushPath = "/messaging/raw-push";
-            if (!string.IsNullOrEmpty(mSendRawPushPath))
+            mWebCallEvent.WebPath = "/messaging/raw-push";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mSendRawPushPath = mSendRawPushPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(rawPushResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(rawPushResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mSendRawPushStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mSendRawPushStartTime, mSendRawPushPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mSendRawPushCoroutine.ResponseReceived += SendRawPushCallback;
-            mSendRawPushCoroutine.Start(mSendRawPushPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mSendRawPushStartTime = DateTime.Now;
+            mWebCallEvent.Context = mSendRawPushResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mSendRawPushStartTime, "SendRawPush", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void SendRawPushCallback(IRestResponse response)
+        private void OnSendRawPushResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling SendRawPush: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling SendRawPush: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling SendRawPush: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mSendRawPushStartTime, mSendRawPushPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mSendRawPushStartTime, "SendRawPush", "Response received successfully.");
             if (SendRawPushComplete != null)
             {
-                SendRawPushComplete();
+                SendRawPushComplete(response.ResponseCode);
             }
         }
 
@@ -223,46 +233,45 @@ namespace com.knetikcloud.Api
         public void SendRawSMS(RawSMSResource rawSMSResource)
         {
             
-            mSendRawSMSPath = "/messaging/raw-sms";
-            if (!string.IsNullOrEmpty(mSendRawSMSPath))
+            mWebCallEvent.WebPath = "/messaging/raw-sms";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mSendRawSMSPath = mSendRawSMSPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(rawSMSResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(rawSMSResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mSendRawSMSStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mSendRawSMSStartTime, mSendRawSMSPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mSendRawSMSCoroutine.ResponseReceived += SendRawSMSCallback;
-            mSendRawSMSCoroutine.Start(mSendRawSMSPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mSendRawSMSStartTime = DateTime.Now;
+            mWebCallEvent.Context = mSendRawSMSResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mSendRawSMSStartTime, "SendRawSMS", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void SendRawSMSCallback(IRestResponse response)
+        private void OnSendRawSMSResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling SendRawSMS: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling SendRawSMS: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling SendRawSMS: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mSendRawSMSStartTime, mSendRawSMSPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mSendRawSMSStartTime, "SendRawSMS", "Response received successfully.");
             if (SendRawSMSComplete != null)
             {
-                SendRawSMSComplete();
+                SendRawSMSComplete(response.ResponseCode);
             }
         }
 
@@ -274,46 +283,45 @@ namespace com.knetikcloud.Api
         public void SendTemplatedEmail(TemplateEmailResource messageResource)
         {
             
-            mSendTemplatedEmailPath = "/messaging/templated-email";
-            if (!string.IsNullOrEmpty(mSendTemplatedEmailPath))
+            mWebCallEvent.WebPath = "/messaging/templated-email";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mSendTemplatedEmailPath = mSendTemplatedEmailPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(messageResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(messageResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mSendTemplatedEmailStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mSendTemplatedEmailStartTime, mSendTemplatedEmailPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mSendTemplatedEmailCoroutine.ResponseReceived += SendTemplatedEmailCallback;
-            mSendTemplatedEmailCoroutine.Start(mSendTemplatedEmailPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mSendTemplatedEmailStartTime = DateTime.Now;
+            mWebCallEvent.Context = mSendTemplatedEmailResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mSendTemplatedEmailStartTime, "SendTemplatedEmail", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void SendTemplatedEmailCallback(IRestResponse response)
+        private void OnSendTemplatedEmailResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling SendTemplatedEmail: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling SendTemplatedEmail: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling SendTemplatedEmail: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mSendTemplatedEmailStartTime, mSendTemplatedEmailPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mSendTemplatedEmailStartTime, "SendTemplatedEmail", "Response received successfully.");
             if (SendTemplatedEmailComplete != null)
             {
-                SendTemplatedEmailComplete();
+                SendTemplatedEmailComplete(response.ResponseCode);
             }
         }
 
@@ -325,46 +333,45 @@ namespace com.knetikcloud.Api
         public void SendTemplatedPush(TemplatePushResource templatePushResource)
         {
             
-            mSendTemplatedPushPath = "/messaging/templated-push";
-            if (!string.IsNullOrEmpty(mSendTemplatedPushPath))
+            mWebCallEvent.WebPath = "/messaging/templated-push";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mSendTemplatedPushPath = mSendTemplatedPushPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(templatePushResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(templatePushResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mSendTemplatedPushStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mSendTemplatedPushStartTime, mSendTemplatedPushPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mSendTemplatedPushCoroutine.ResponseReceived += SendTemplatedPushCallback;
-            mSendTemplatedPushCoroutine.Start(mSendTemplatedPushPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mSendTemplatedPushStartTime = DateTime.Now;
+            mWebCallEvent.Context = mSendTemplatedPushResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mSendTemplatedPushStartTime, "SendTemplatedPush", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void SendTemplatedPushCallback(IRestResponse response)
+        private void OnSendTemplatedPushResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling SendTemplatedPush: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling SendTemplatedPush: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling SendTemplatedPush: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mSendTemplatedPushStartTime, mSendTemplatedPushPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mSendTemplatedPushStartTime, "SendTemplatedPush", "Response received successfully.");
             if (SendTemplatedPushComplete != null)
             {
-                SendTemplatedPushComplete();
+                SendTemplatedPushComplete(response.ResponseCode);
             }
         }
 
@@ -376,46 +383,45 @@ namespace com.knetikcloud.Api
         public void SendTemplatedSMS(TemplateSMSResource templateSMSResource)
         {
             
-            mSendTemplatedSMSPath = "/messaging/templated-sms";
-            if (!string.IsNullOrEmpty(mSendTemplatedSMSPath))
+            mWebCallEvent.WebPath = "/messaging/templated-sms";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mSendTemplatedSMSPath = mSendTemplatedSMSPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(templateSMSResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(templateSMSResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mSendTemplatedSMSStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mSendTemplatedSMSStartTime, mSendTemplatedSMSPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mSendTemplatedSMSCoroutine.ResponseReceived += SendTemplatedSMSCallback;
-            mSendTemplatedSMSCoroutine.Start(mSendTemplatedSMSPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mSendTemplatedSMSStartTime = DateTime.Now;
+            mWebCallEvent.Context = mSendTemplatedSMSResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mSendTemplatedSMSStartTime, "SendTemplatedSMS", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void SendTemplatedSMSCallback(IRestResponse response)
+        private void OnSendTemplatedSMSResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling SendTemplatedSMS: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling SendTemplatedSMS: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling SendTemplatedSMS: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mSendTemplatedSMSStartTime, mSendTemplatedSMSPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mSendTemplatedSMSStartTime, "SendTemplatedSMS", "Response received successfully.");
             if (SendTemplatedSMSComplete != null)
             {
-                SendTemplatedSMSComplete();
+                SendTemplatedSMSComplete(response.ResponseCode);
             }
         }
 

@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,34 +18,13 @@ namespace com.knetikcloud.Api
     {
         ActivityResource CreateActivityData { get; }
 
-        ActivityOccurrenceResource CreateActivityOccurrenceData { get; }
-
-        TemplateResource CreateActivityTemplateData { get; }
-
-        PageResourceBareActivityResource GetActivitiesData { get; }
-
-        ActivityResource GetActivityData { get; }
-
-        ActivityOccurrenceResource GetActivityOccurrenceDetailsData { get; }
-
-        TemplateResource GetActivityTemplateData { get; }
-
-        PageResourceTemplateResource GetActivityTemplatesData { get; }
-
-        PageResourceActivityOccurrenceResource ListActivityOccurrencesData { get; }
-
-        ActivityOccurrenceResults SetActivityOccurrenceResultsData { get; }
-
-        ActivityResource UpdateActivityData { get; }
-
-        TemplateResource UpdateActivityTemplateData { get; }
-
-        
         /// <summary>
         /// Create an activity 
         /// </summary>
         /// <param name="activityResource">The activity resource object</param>
         void CreateActivity(ActivityResource activityResource);
+
+        ActivityOccurrenceResource CreateActivityOccurrenceData { get; }
 
         /// <summary>
         /// Create a new activity occurrence. Ex: start a game Has to enforce extra rules if not used as an admin
@@ -55,11 +33,15 @@ namespace com.knetikcloud.Api
         /// <param name="activityOccurrenceResource">The activity occurrence object</param>
         void CreateActivityOccurrence(bool? test, CreateActivityOccurrenceRequest activityOccurrenceResource);
 
+        TemplateResource CreateActivityTemplateData { get; }
+
         /// <summary>
         /// Create a activity template Activity Templates define a type of activity and the properties they have
         /// </summary>
         /// <param name="activityTemplateResource">The activity template resource object</param>
         void CreateActivityTemplate(TemplateResource activityTemplateResource);
+
+        
 
         /// <summary>
         /// Delete an activity 
@@ -67,12 +49,16 @@ namespace com.knetikcloud.Api
         /// <param name="id">The id of the activity</param>
         void DeleteActivity(long? id);
 
+        
+
         /// <summary>
         /// Delete a activity template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="cascade">The value needed to delete used templates</param>
         void DeleteActivityTemplate(string id, string cascade);
+
+        PageResourceBareActivityResource GetActivitiesData { get; }
 
         /// <summary>
         /// List activity definitions 
@@ -85,11 +71,15 @@ namespace com.knetikcloud.Api
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
         void GetActivities(bool? filterTemplate, string filterName, string filterId, int? size, int? page, string order);
 
+        ActivityResource GetActivityData { get; }
+
         /// <summary>
         /// Get a single activity 
         /// </summary>
         /// <param name="id">The id of the activity</param>
         void GetActivity(long? id);
+
+        ActivityOccurrenceResource GetActivityOccurrenceDetailsData { get; }
 
         /// <summary>
         /// Load a single activity occurrence details 
@@ -97,11 +87,15 @@ namespace com.knetikcloud.Api
         /// <param name="activityOccurrenceId">The id of the activity occurrence</param>
         void GetActivityOccurrenceDetails(long? activityOccurrenceId);
 
+        TemplateResource GetActivityTemplateData { get; }
+
         /// <summary>
         /// Get a single activity template 
         /// </summary>
         /// <param name="id">The id of the template</param>
         void GetActivityTemplate(string id);
+
+        PageResourceTemplateResource GetActivityTemplatesData { get; }
 
         /// <summary>
         /// List and search activity templates 
@@ -110,6 +104,8 @@ namespace com.knetikcloud.Api
         /// <param name="page">The number of the page returned, starting with 1</param>
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
         void GetActivityTemplates(int? size, int? page, string order);
+
+        PageResourceActivityOccurrenceResource ListActivityOccurrencesData { get; }
 
         /// <summary>
         /// List activity occurrences 
@@ -123,12 +119,16 @@ namespace com.knetikcloud.Api
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
         void ListActivityOccurrences(string filterActivity, string filterStatus, int? filterEvent, int? filterChallenge, int? size, int? page, string order);
 
+        ActivityOccurrenceResults SetActivityOccurrenceResultsData { get; }
+
         /// <summary>
         /// Sets the status of an activity occurrence to FINISHED and logs metrics 
         /// </summary>
         /// <param name="activityOccurrenceId">The id of the activity occurrence</param>
         /// <param name="activityOccurrenceResults">The activity occurrence object</param>
         void SetActivityOccurrenceResults(long? activityOccurrenceId, ActivityOccurrenceResultsResource activityOccurrenceResults);
+
+        ActivityResource UpdateActivityData { get; }
 
         /// <summary>
         /// Update an activity 
@@ -137,12 +137,16 @@ namespace com.knetikcloud.Api
         /// <param name="activityResource">The activity resource object</param>
         void UpdateActivity(long? id, ActivityResource activityResource);
 
+        
+
         /// <summary>
         /// Updated the status of an activity occurrence If setting to &#39;FINISHED&#39; reward will be run based on current metrics that have been recorded already. Aternatively, see results endpoint to finish and record all metrics at once.
         /// </summary>
         /// <param name="activityOccurrenceId">The id of the activity occurrence</param>
         /// <param name="activityOccurrenceStatus">The activity occurrence status object</param>
         void UpdateActivityOccurrence(long? activityOccurrenceId, string activityOccurrenceStatus);
+
+        TemplateResource UpdateActivityTemplateData { get; }
 
         /// <summary>
         /// Update an activity template 
@@ -159,107 +163,94 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class ActivitiesApi : IActivitiesApi
     {
-        private readonly KnetikCoroutine mCreateActivityCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mCreateActivityResponseContext;
         private DateTime mCreateActivityStartTime;
-        private string mCreateActivityPath;
-        private readonly KnetikCoroutine mCreateActivityOccurrenceCoroutine;
+        private readonly KnetikResponseContext mCreateActivityOccurrenceResponseContext;
         private DateTime mCreateActivityOccurrenceStartTime;
-        private string mCreateActivityOccurrencePath;
-        private readonly KnetikCoroutine mCreateActivityTemplateCoroutine;
+        private readonly KnetikResponseContext mCreateActivityTemplateResponseContext;
         private DateTime mCreateActivityTemplateStartTime;
-        private string mCreateActivityTemplatePath;
-        private readonly KnetikCoroutine mDeleteActivityCoroutine;
+        private readonly KnetikResponseContext mDeleteActivityResponseContext;
         private DateTime mDeleteActivityStartTime;
-        private string mDeleteActivityPath;
-        private readonly KnetikCoroutine mDeleteActivityTemplateCoroutine;
+        private readonly KnetikResponseContext mDeleteActivityTemplateResponseContext;
         private DateTime mDeleteActivityTemplateStartTime;
-        private string mDeleteActivityTemplatePath;
-        private readonly KnetikCoroutine mGetActivitiesCoroutine;
+        private readonly KnetikResponseContext mGetActivitiesResponseContext;
         private DateTime mGetActivitiesStartTime;
-        private string mGetActivitiesPath;
-        private readonly KnetikCoroutine mGetActivityCoroutine;
+        private readonly KnetikResponseContext mGetActivityResponseContext;
         private DateTime mGetActivityStartTime;
-        private string mGetActivityPath;
-        private readonly KnetikCoroutine mGetActivityOccurrenceDetailsCoroutine;
+        private readonly KnetikResponseContext mGetActivityOccurrenceDetailsResponseContext;
         private DateTime mGetActivityOccurrenceDetailsStartTime;
-        private string mGetActivityOccurrenceDetailsPath;
-        private readonly KnetikCoroutine mGetActivityTemplateCoroutine;
+        private readonly KnetikResponseContext mGetActivityTemplateResponseContext;
         private DateTime mGetActivityTemplateStartTime;
-        private string mGetActivityTemplatePath;
-        private readonly KnetikCoroutine mGetActivityTemplatesCoroutine;
+        private readonly KnetikResponseContext mGetActivityTemplatesResponseContext;
         private DateTime mGetActivityTemplatesStartTime;
-        private string mGetActivityTemplatesPath;
-        private readonly KnetikCoroutine mListActivityOccurrencesCoroutine;
+        private readonly KnetikResponseContext mListActivityOccurrencesResponseContext;
         private DateTime mListActivityOccurrencesStartTime;
-        private string mListActivityOccurrencesPath;
-        private readonly KnetikCoroutine mSetActivityOccurrenceResultsCoroutine;
+        private readonly KnetikResponseContext mSetActivityOccurrenceResultsResponseContext;
         private DateTime mSetActivityOccurrenceResultsStartTime;
-        private string mSetActivityOccurrenceResultsPath;
-        private readonly KnetikCoroutine mUpdateActivityCoroutine;
+        private readonly KnetikResponseContext mUpdateActivityResponseContext;
         private DateTime mUpdateActivityStartTime;
-        private string mUpdateActivityPath;
-        private readonly KnetikCoroutine mUpdateActivityOccurrenceCoroutine;
+        private readonly KnetikResponseContext mUpdateActivityOccurrenceResponseContext;
         private DateTime mUpdateActivityOccurrenceStartTime;
-        private string mUpdateActivityOccurrencePath;
-        private readonly KnetikCoroutine mUpdateActivityTemplateCoroutine;
+        private readonly KnetikResponseContext mUpdateActivityTemplateResponseContext;
         private DateTime mUpdateActivityTemplateStartTime;
-        private string mUpdateActivityTemplatePath;
 
         public ActivityResource CreateActivityData { get; private set; }
-        public delegate void CreateActivityCompleteDelegate(ActivityResource response);
+        public delegate void CreateActivityCompleteDelegate(long responseCode, ActivityResource response);
         public CreateActivityCompleteDelegate CreateActivityComplete;
 
         public ActivityOccurrenceResource CreateActivityOccurrenceData { get; private set; }
-        public delegate void CreateActivityOccurrenceCompleteDelegate(ActivityOccurrenceResource response);
+        public delegate void CreateActivityOccurrenceCompleteDelegate(long responseCode, ActivityOccurrenceResource response);
         public CreateActivityOccurrenceCompleteDelegate CreateActivityOccurrenceComplete;
 
         public TemplateResource CreateActivityTemplateData { get; private set; }
-        public delegate void CreateActivityTemplateCompleteDelegate(TemplateResource response);
+        public delegate void CreateActivityTemplateCompleteDelegate(long responseCode, TemplateResource response);
         public CreateActivityTemplateCompleteDelegate CreateActivityTemplateComplete;
 
-        public delegate void DeleteActivityCompleteDelegate();
+        public delegate void DeleteActivityCompleteDelegate(long responseCode);
         public DeleteActivityCompleteDelegate DeleteActivityComplete;
 
-        public delegate void DeleteActivityTemplateCompleteDelegate();
+        public delegate void DeleteActivityTemplateCompleteDelegate(long responseCode);
         public DeleteActivityTemplateCompleteDelegate DeleteActivityTemplateComplete;
 
         public PageResourceBareActivityResource GetActivitiesData { get; private set; }
-        public delegate void GetActivitiesCompleteDelegate(PageResourceBareActivityResource response);
+        public delegate void GetActivitiesCompleteDelegate(long responseCode, PageResourceBareActivityResource response);
         public GetActivitiesCompleteDelegate GetActivitiesComplete;
 
         public ActivityResource GetActivityData { get; private set; }
-        public delegate void GetActivityCompleteDelegate(ActivityResource response);
+        public delegate void GetActivityCompleteDelegate(long responseCode, ActivityResource response);
         public GetActivityCompleteDelegate GetActivityComplete;
 
         public ActivityOccurrenceResource GetActivityOccurrenceDetailsData { get; private set; }
-        public delegate void GetActivityOccurrenceDetailsCompleteDelegate(ActivityOccurrenceResource response);
+        public delegate void GetActivityOccurrenceDetailsCompleteDelegate(long responseCode, ActivityOccurrenceResource response);
         public GetActivityOccurrenceDetailsCompleteDelegate GetActivityOccurrenceDetailsComplete;
 
         public TemplateResource GetActivityTemplateData { get; private set; }
-        public delegate void GetActivityTemplateCompleteDelegate(TemplateResource response);
+        public delegate void GetActivityTemplateCompleteDelegate(long responseCode, TemplateResource response);
         public GetActivityTemplateCompleteDelegate GetActivityTemplateComplete;
 
         public PageResourceTemplateResource GetActivityTemplatesData { get; private set; }
-        public delegate void GetActivityTemplatesCompleteDelegate(PageResourceTemplateResource response);
+        public delegate void GetActivityTemplatesCompleteDelegate(long responseCode, PageResourceTemplateResource response);
         public GetActivityTemplatesCompleteDelegate GetActivityTemplatesComplete;
 
         public PageResourceActivityOccurrenceResource ListActivityOccurrencesData { get; private set; }
-        public delegate void ListActivityOccurrencesCompleteDelegate(PageResourceActivityOccurrenceResource response);
+        public delegate void ListActivityOccurrencesCompleteDelegate(long responseCode, PageResourceActivityOccurrenceResource response);
         public ListActivityOccurrencesCompleteDelegate ListActivityOccurrencesComplete;
 
         public ActivityOccurrenceResults SetActivityOccurrenceResultsData { get; private set; }
-        public delegate void SetActivityOccurrenceResultsCompleteDelegate(ActivityOccurrenceResults response);
+        public delegate void SetActivityOccurrenceResultsCompleteDelegate(long responseCode, ActivityOccurrenceResults response);
         public SetActivityOccurrenceResultsCompleteDelegate SetActivityOccurrenceResultsComplete;
 
         public ActivityResource UpdateActivityData { get; private set; }
-        public delegate void UpdateActivityCompleteDelegate(ActivityResource response);
+        public delegate void UpdateActivityCompleteDelegate(long responseCode, ActivityResource response);
         public UpdateActivityCompleteDelegate UpdateActivityComplete;
 
-        public delegate void UpdateActivityOccurrenceCompleteDelegate();
+        public delegate void UpdateActivityOccurrenceCompleteDelegate(long responseCode);
         public UpdateActivityOccurrenceCompleteDelegate UpdateActivityOccurrenceComplete;
 
         public TemplateResource UpdateActivityTemplateData { get; private set; }
-        public delegate void UpdateActivityTemplateCompleteDelegate(TemplateResource response);
+        public delegate void UpdateActivityTemplateCompleteDelegate(long responseCode, TemplateResource response);
         public UpdateActivityTemplateCompleteDelegate UpdateActivityTemplateComplete;
 
         /// <summary>
@@ -268,21 +259,36 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public ActivitiesApi()
         {
-            mCreateActivityCoroutine = new KnetikCoroutine();
-            mCreateActivityOccurrenceCoroutine = new KnetikCoroutine();
-            mCreateActivityTemplateCoroutine = new KnetikCoroutine();
-            mDeleteActivityCoroutine = new KnetikCoroutine();
-            mDeleteActivityTemplateCoroutine = new KnetikCoroutine();
-            mGetActivitiesCoroutine = new KnetikCoroutine();
-            mGetActivityCoroutine = new KnetikCoroutine();
-            mGetActivityOccurrenceDetailsCoroutine = new KnetikCoroutine();
-            mGetActivityTemplateCoroutine = new KnetikCoroutine();
-            mGetActivityTemplatesCoroutine = new KnetikCoroutine();
-            mListActivityOccurrencesCoroutine = new KnetikCoroutine();
-            mSetActivityOccurrenceResultsCoroutine = new KnetikCoroutine();
-            mUpdateActivityCoroutine = new KnetikCoroutine();
-            mUpdateActivityOccurrenceCoroutine = new KnetikCoroutine();
-            mUpdateActivityTemplateCoroutine = new KnetikCoroutine();
+            mCreateActivityResponseContext = new KnetikResponseContext();
+            mCreateActivityResponseContext.ResponseReceived += OnCreateActivityResponse;
+            mCreateActivityOccurrenceResponseContext = new KnetikResponseContext();
+            mCreateActivityOccurrenceResponseContext.ResponseReceived += OnCreateActivityOccurrenceResponse;
+            mCreateActivityTemplateResponseContext = new KnetikResponseContext();
+            mCreateActivityTemplateResponseContext.ResponseReceived += OnCreateActivityTemplateResponse;
+            mDeleteActivityResponseContext = new KnetikResponseContext();
+            mDeleteActivityResponseContext.ResponseReceived += OnDeleteActivityResponse;
+            mDeleteActivityTemplateResponseContext = new KnetikResponseContext();
+            mDeleteActivityTemplateResponseContext.ResponseReceived += OnDeleteActivityTemplateResponse;
+            mGetActivitiesResponseContext = new KnetikResponseContext();
+            mGetActivitiesResponseContext.ResponseReceived += OnGetActivitiesResponse;
+            mGetActivityResponseContext = new KnetikResponseContext();
+            mGetActivityResponseContext.ResponseReceived += OnGetActivityResponse;
+            mGetActivityOccurrenceDetailsResponseContext = new KnetikResponseContext();
+            mGetActivityOccurrenceDetailsResponseContext.ResponseReceived += OnGetActivityOccurrenceDetailsResponse;
+            mGetActivityTemplateResponseContext = new KnetikResponseContext();
+            mGetActivityTemplateResponseContext.ResponseReceived += OnGetActivityTemplateResponse;
+            mGetActivityTemplatesResponseContext = new KnetikResponseContext();
+            mGetActivityTemplatesResponseContext.ResponseReceived += OnGetActivityTemplatesResponse;
+            mListActivityOccurrencesResponseContext = new KnetikResponseContext();
+            mListActivityOccurrencesResponseContext.ResponseReceived += OnListActivityOccurrencesResponse;
+            mSetActivityOccurrenceResultsResponseContext = new KnetikResponseContext();
+            mSetActivityOccurrenceResultsResponseContext.ResponseReceived += OnSetActivityOccurrenceResultsResponse;
+            mUpdateActivityResponseContext = new KnetikResponseContext();
+            mUpdateActivityResponseContext.ResponseReceived += OnUpdateActivityResponse;
+            mUpdateActivityOccurrenceResponseContext = new KnetikResponseContext();
+            mUpdateActivityOccurrenceResponseContext.ResponseReceived += OnUpdateActivityOccurrenceResponse;
+            mUpdateActivityTemplateResponseContext = new KnetikResponseContext();
+            mUpdateActivityTemplateResponseContext.ResponseReceived += OnUpdateActivityTemplateResponse;
         }
     
         /// <inheritdoc />
@@ -293,48 +299,47 @@ namespace com.knetikcloud.Api
         public void CreateActivity(ActivityResource activityResource)
         {
             
-            mCreateActivityPath = "/activities";
-            if (!string.IsNullOrEmpty(mCreateActivityPath))
+            mWebCallEvent.WebPath = "/activities";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mCreateActivityPath = mCreateActivityPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(activityResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(activityResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mCreateActivityStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mCreateActivityStartTime, mCreateActivityPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mCreateActivityCoroutine.ResponseReceived += CreateActivityCallback;
-            mCreateActivityCoroutine.Start(mCreateActivityPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mCreateActivityStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreateActivityResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreateActivityStartTime, "CreateActivity", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void CreateActivityCallback(IRestResponse response)
+        private void OnCreateActivityResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateActivity: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateActivity: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling CreateActivity: " + response.Error);
             }
 
-            CreateActivityData = (ActivityResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ActivityResource), response.Headers);
-            KnetikLogger.LogResponse(mCreateActivityStartTime, mCreateActivityPath, string.Format("Response received successfully:\n{0}", CreateActivityData.ToString()));
+            CreateActivityData = (ActivityResource) KnetikClient.Deserialize(response.Content, typeof(ActivityResource), response.Headers);
+            KnetikLogger.LogResponse(mCreateActivityStartTime, "CreateActivity", string.Format("Response received successfully:\n{0}", CreateActivityData));
 
             if (CreateActivityComplete != null)
             {
-                CreateActivityComplete(CreateActivityData);
+                CreateActivityComplete(response.ResponseCode, CreateActivityData);
             }
         }
 
@@ -347,53 +352,52 @@ namespace com.knetikcloud.Api
         public void CreateActivityOccurrence(bool? test, CreateActivityOccurrenceRequest activityOccurrenceResource)
         {
             
-            mCreateActivityOccurrencePath = "/activity-occurrences";
-            if (!string.IsNullOrEmpty(mCreateActivityOccurrencePath))
+            mWebCallEvent.WebPath = "/activity-occurrences";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mCreateActivityOccurrencePath = mCreateActivityOccurrencePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (test != null)
             {
-                queryParams.Add("test", KnetikClient.DefaultClient.ParameterToString(test));
+                mWebCallEvent.QueryParams["test"] = KnetikClient.ParameterToString(test);
             }
 
-            postBody = KnetikClient.DefaultClient.Serialize(activityOccurrenceResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(activityOccurrenceResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mCreateActivityOccurrenceStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mCreateActivityOccurrenceStartTime, mCreateActivityOccurrencePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mCreateActivityOccurrenceCoroutine.ResponseReceived += CreateActivityOccurrenceCallback;
-            mCreateActivityOccurrenceCoroutine.Start(mCreateActivityOccurrencePath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mCreateActivityOccurrenceStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreateActivityOccurrenceResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreateActivityOccurrenceStartTime, "CreateActivityOccurrence", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void CreateActivityOccurrenceCallback(IRestResponse response)
+        private void OnCreateActivityOccurrenceResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateActivityOccurrence: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateActivityOccurrence: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling CreateActivityOccurrence: " + response.Error);
             }
 
-            CreateActivityOccurrenceData = (ActivityOccurrenceResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ActivityOccurrenceResource), response.Headers);
-            KnetikLogger.LogResponse(mCreateActivityOccurrenceStartTime, mCreateActivityOccurrencePath, string.Format("Response received successfully:\n{0}", CreateActivityOccurrenceData.ToString()));
+            CreateActivityOccurrenceData = (ActivityOccurrenceResource) KnetikClient.Deserialize(response.Content, typeof(ActivityOccurrenceResource), response.Headers);
+            KnetikLogger.LogResponse(mCreateActivityOccurrenceStartTime, "CreateActivityOccurrence", string.Format("Response received successfully:\n{0}", CreateActivityOccurrenceData));
 
             if (CreateActivityOccurrenceComplete != null)
             {
-                CreateActivityOccurrenceComplete(CreateActivityOccurrenceData);
+                CreateActivityOccurrenceComplete(response.ResponseCode, CreateActivityOccurrenceData);
             }
         }
 
@@ -405,48 +409,47 @@ namespace com.knetikcloud.Api
         public void CreateActivityTemplate(TemplateResource activityTemplateResource)
         {
             
-            mCreateActivityTemplatePath = "/activities/templates";
-            if (!string.IsNullOrEmpty(mCreateActivityTemplatePath))
+            mWebCallEvent.WebPath = "/activities/templates";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mCreateActivityTemplatePath = mCreateActivityTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(activityTemplateResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(activityTemplateResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mCreateActivityTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mCreateActivityTemplateStartTime, mCreateActivityTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mCreateActivityTemplateCoroutine.ResponseReceived += CreateActivityTemplateCallback;
-            mCreateActivityTemplateCoroutine.Start(mCreateActivityTemplatePath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mCreateActivityTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreateActivityTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreateActivityTemplateStartTime, "CreateActivityTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void CreateActivityTemplateCallback(IRestResponse response)
+        private void OnCreateActivityTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateActivityTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateActivityTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling CreateActivityTemplate: " + response.Error);
             }
 
-            CreateActivityTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mCreateActivityTemplateStartTime, mCreateActivityTemplatePath, string.Format("Response received successfully:\n{0}", CreateActivityTemplateData.ToString()));
+            CreateActivityTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mCreateActivityTemplateStartTime, "CreateActivityTemplate", string.Format("Response received successfully:\n{0}", CreateActivityTemplateData));
 
             if (CreateActivityTemplateComplete != null)
             {
-                CreateActivityTemplateComplete(CreateActivityTemplateData);
+                CreateActivityTemplateComplete(response.ResponseCode, CreateActivityTemplateData);
             }
         }
 
@@ -463,45 +466,44 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeleteActivity");
             }
             
-            mDeleteActivityPath = "/activities/{id}";
-            if (!string.IsNullOrEmpty(mDeleteActivityPath))
+            mWebCallEvent.WebPath = "/activities/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteActivityPath = mDeleteActivityPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteActivityPath = mDeleteActivityPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteActivityStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteActivityStartTime, mDeleteActivityPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteActivityCoroutine.ResponseReceived += DeleteActivityCallback;
-            mDeleteActivityCoroutine.Start(mDeleteActivityPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteActivityStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteActivityResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteActivityStartTime, "DeleteActivity", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteActivityCallback(IRestResponse response)
+        private void OnDeleteActivityResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteActivity: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteActivity: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteActivity: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteActivityStartTime, mDeleteActivityPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteActivityStartTime, "DeleteActivity", "Response received successfully.");
             if (DeleteActivityComplete != null)
             {
-                DeleteActivityComplete();
+                DeleteActivityComplete(response.ResponseCode);
             }
         }
 
@@ -519,50 +521,49 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeleteActivityTemplate");
             }
             
-            mDeleteActivityTemplatePath = "/activities/templates/{id}";
-            if (!string.IsNullOrEmpty(mDeleteActivityTemplatePath))
+            mWebCallEvent.WebPath = "/activities/templates/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteActivityTemplatePath = mDeleteActivityTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteActivityTemplatePath = mDeleteActivityTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
+                mWebCallEvent.QueryParams["cascade"] = KnetikClient.ParameterToString(cascade);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteActivityTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteActivityTemplateStartTime, mDeleteActivityTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteActivityTemplateCoroutine.ResponseReceived += DeleteActivityTemplateCallback;
-            mDeleteActivityTemplateCoroutine.Start(mDeleteActivityTemplatePath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteActivityTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteActivityTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteActivityTemplateStartTime, "DeleteActivityTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteActivityTemplateCallback(IRestResponse response)
+        private void OnDeleteActivityTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteActivityTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteActivityTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteActivityTemplate: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteActivityTemplateStartTime, mDeleteActivityTemplatePath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteActivityTemplateStartTime, "DeleteActivityTemplate", "Response received successfully.");
             if (DeleteActivityTemplateComplete != null)
             {
-                DeleteActivityTemplateComplete();
+                DeleteActivityTemplateComplete(response.ResponseCode);
             }
         }
 
@@ -579,76 +580,75 @@ namespace com.knetikcloud.Api
         public void GetActivities(bool? filterTemplate, string filterName, string filterId, int? size, int? page, string order)
         {
             
-            mGetActivitiesPath = "/activities";
-            if (!string.IsNullOrEmpty(mGetActivitiesPath))
+            mWebCallEvent.WebPath = "/activities";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetActivitiesPath = mGetActivitiesPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (filterTemplate != null)
             {
-                queryParams.Add("filter_template", KnetikClient.DefaultClient.ParameterToString(filterTemplate));
+                mWebCallEvent.QueryParams["filter_template"] = KnetikClient.ParameterToString(filterTemplate);
             }
 
             if (filterName != null)
             {
-                queryParams.Add("filter_name", KnetikClient.DefaultClient.ParameterToString(filterName));
+                mWebCallEvent.QueryParams["filter_name"] = KnetikClient.ParameterToString(filterName);
             }
 
             if (filterId != null)
             {
-                queryParams.Add("filter_id", KnetikClient.DefaultClient.ParameterToString(filterId));
+                mWebCallEvent.QueryParams["filter_id"] = KnetikClient.ParameterToString(filterId);
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetActivitiesStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetActivitiesStartTime, mGetActivitiesPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetActivitiesCoroutine.ResponseReceived += GetActivitiesCallback;
-            mGetActivitiesCoroutine.Start(mGetActivitiesPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetActivitiesStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetActivitiesResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetActivitiesStartTime, "GetActivities", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetActivitiesCallback(IRestResponse response)
+        private void OnGetActivitiesResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetActivities: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetActivities: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetActivities: " + response.Error);
             }
 
-            GetActivitiesData = (PageResourceBareActivityResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceBareActivityResource), response.Headers);
-            KnetikLogger.LogResponse(mGetActivitiesStartTime, mGetActivitiesPath, string.Format("Response received successfully:\n{0}", GetActivitiesData.ToString()));
+            GetActivitiesData = (PageResourceBareActivityResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceBareActivityResource), response.Headers);
+            KnetikLogger.LogResponse(mGetActivitiesStartTime, "GetActivities", string.Format("Response received successfully:\n{0}", GetActivitiesData));
 
             if (GetActivitiesComplete != null)
             {
-                GetActivitiesComplete(GetActivitiesData);
+                GetActivitiesComplete(response.ResponseCode, GetActivitiesData);
             }
         }
 
@@ -665,47 +665,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetActivity");
             }
             
-            mGetActivityPath = "/activities/{id}";
-            if (!string.IsNullOrEmpty(mGetActivityPath))
+            mWebCallEvent.WebPath = "/activities/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetActivityPath = mGetActivityPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetActivityPath = mGetActivityPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetActivityStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetActivityStartTime, mGetActivityPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetActivityCoroutine.ResponseReceived += GetActivityCallback;
-            mGetActivityCoroutine.Start(mGetActivityPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetActivityStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetActivityResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetActivityStartTime, "GetActivity", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetActivityCallback(IRestResponse response)
+        private void OnGetActivityResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetActivity: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetActivity: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetActivity: " + response.Error);
             }
 
-            GetActivityData = (ActivityResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ActivityResource), response.Headers);
-            KnetikLogger.LogResponse(mGetActivityStartTime, mGetActivityPath, string.Format("Response received successfully:\n{0}", GetActivityData.ToString()));
+            GetActivityData = (ActivityResource) KnetikClient.Deserialize(response.Content, typeof(ActivityResource), response.Headers);
+            KnetikLogger.LogResponse(mGetActivityStartTime, "GetActivity", string.Format("Response received successfully:\n{0}", GetActivityData));
 
             if (GetActivityComplete != null)
             {
-                GetActivityComplete(GetActivityData);
+                GetActivityComplete(response.ResponseCode, GetActivityData);
             }
         }
 
@@ -722,47 +721,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'activityOccurrenceId' when calling GetActivityOccurrenceDetails");
             }
             
-            mGetActivityOccurrenceDetailsPath = "/activity-occurrences/{activity_occurrence_id}";
-            if (!string.IsNullOrEmpty(mGetActivityOccurrenceDetailsPath))
+            mWebCallEvent.WebPath = "/activity-occurrences/{activity_occurrence_id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetActivityOccurrenceDetailsPath = mGetActivityOccurrenceDetailsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetActivityOccurrenceDetailsPath = mGetActivityOccurrenceDetailsPath.Replace("{" + "activity_occurrence_id" + "}", KnetikClient.DefaultClient.ParameterToString(activityOccurrenceId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "activity_occurrence_id" + "}", KnetikClient.ParameterToString(activityOccurrenceId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetActivityOccurrenceDetailsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetActivityOccurrenceDetailsStartTime, mGetActivityOccurrenceDetailsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetActivityOccurrenceDetailsCoroutine.ResponseReceived += GetActivityOccurrenceDetailsCallback;
-            mGetActivityOccurrenceDetailsCoroutine.Start(mGetActivityOccurrenceDetailsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetActivityOccurrenceDetailsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetActivityOccurrenceDetailsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetActivityOccurrenceDetailsStartTime, "GetActivityOccurrenceDetails", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetActivityOccurrenceDetailsCallback(IRestResponse response)
+        private void OnGetActivityOccurrenceDetailsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetActivityOccurrenceDetails: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetActivityOccurrenceDetails: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetActivityOccurrenceDetails: " + response.Error);
             }
 
-            GetActivityOccurrenceDetailsData = (ActivityOccurrenceResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ActivityOccurrenceResource), response.Headers);
-            KnetikLogger.LogResponse(mGetActivityOccurrenceDetailsStartTime, mGetActivityOccurrenceDetailsPath, string.Format("Response received successfully:\n{0}", GetActivityOccurrenceDetailsData.ToString()));
+            GetActivityOccurrenceDetailsData = (ActivityOccurrenceResource) KnetikClient.Deserialize(response.Content, typeof(ActivityOccurrenceResource), response.Headers);
+            KnetikLogger.LogResponse(mGetActivityOccurrenceDetailsStartTime, "GetActivityOccurrenceDetails", string.Format("Response received successfully:\n{0}", GetActivityOccurrenceDetailsData));
 
             if (GetActivityOccurrenceDetailsComplete != null)
             {
-                GetActivityOccurrenceDetailsComplete(GetActivityOccurrenceDetailsData);
+                GetActivityOccurrenceDetailsComplete(response.ResponseCode, GetActivityOccurrenceDetailsData);
             }
         }
 
@@ -779,47 +777,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetActivityTemplate");
             }
             
-            mGetActivityTemplatePath = "/activities/templates/{id}";
-            if (!string.IsNullOrEmpty(mGetActivityTemplatePath))
+            mWebCallEvent.WebPath = "/activities/templates/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetActivityTemplatePath = mGetActivityTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetActivityTemplatePath = mGetActivityTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetActivityTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetActivityTemplateStartTime, mGetActivityTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetActivityTemplateCoroutine.ResponseReceived += GetActivityTemplateCallback;
-            mGetActivityTemplateCoroutine.Start(mGetActivityTemplatePath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetActivityTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetActivityTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetActivityTemplateStartTime, "GetActivityTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetActivityTemplateCallback(IRestResponse response)
+        private void OnGetActivityTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetActivityTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetActivityTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetActivityTemplate: " + response.Error);
             }
 
-            GetActivityTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mGetActivityTemplateStartTime, mGetActivityTemplatePath, string.Format("Response received successfully:\n{0}", GetActivityTemplateData.ToString()));
+            GetActivityTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mGetActivityTemplateStartTime, "GetActivityTemplate", string.Format("Response received successfully:\n{0}", GetActivityTemplateData));
 
             if (GetActivityTemplateComplete != null)
             {
-                GetActivityTemplateComplete(GetActivityTemplateData);
+                GetActivityTemplateComplete(response.ResponseCode, GetActivityTemplateData);
             }
         }
 
@@ -833,61 +830,60 @@ namespace com.knetikcloud.Api
         public void GetActivityTemplates(int? size, int? page, string order)
         {
             
-            mGetActivityTemplatesPath = "/activities/templates";
-            if (!string.IsNullOrEmpty(mGetActivityTemplatesPath))
+            mWebCallEvent.WebPath = "/activities/templates";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetActivityTemplatesPath = mGetActivityTemplatesPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetActivityTemplatesStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetActivityTemplatesStartTime, mGetActivityTemplatesPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetActivityTemplatesCoroutine.ResponseReceived += GetActivityTemplatesCallback;
-            mGetActivityTemplatesCoroutine.Start(mGetActivityTemplatesPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetActivityTemplatesStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetActivityTemplatesResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetActivityTemplatesStartTime, "GetActivityTemplates", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetActivityTemplatesCallback(IRestResponse response)
+        private void OnGetActivityTemplatesResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetActivityTemplates: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetActivityTemplates: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetActivityTemplates: " + response.Error);
             }
 
-            GetActivityTemplatesData = (PageResourceTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceTemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mGetActivityTemplatesStartTime, mGetActivityTemplatesPath, string.Format("Response received successfully:\n{0}", GetActivityTemplatesData.ToString()));
+            GetActivityTemplatesData = (PageResourceTemplateResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceTemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mGetActivityTemplatesStartTime, "GetActivityTemplates", string.Format("Response received successfully:\n{0}", GetActivityTemplatesData));
 
             if (GetActivityTemplatesComplete != null)
             {
-                GetActivityTemplatesComplete(GetActivityTemplatesData);
+                GetActivityTemplatesComplete(response.ResponseCode, GetActivityTemplatesData);
             }
         }
 
@@ -905,81 +901,80 @@ namespace com.knetikcloud.Api
         public void ListActivityOccurrences(string filterActivity, string filterStatus, int? filterEvent, int? filterChallenge, int? size, int? page, string order)
         {
             
-            mListActivityOccurrencesPath = "/activity-occurrences";
-            if (!string.IsNullOrEmpty(mListActivityOccurrencesPath))
+            mWebCallEvent.WebPath = "/activity-occurrences";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mListActivityOccurrencesPath = mListActivityOccurrencesPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (filterActivity != null)
             {
-                queryParams.Add("filter_activity", KnetikClient.DefaultClient.ParameterToString(filterActivity));
+                mWebCallEvent.QueryParams["filter_activity"] = KnetikClient.ParameterToString(filterActivity);
             }
 
             if (filterStatus != null)
             {
-                queryParams.Add("filter_status", KnetikClient.DefaultClient.ParameterToString(filterStatus));
+                mWebCallEvent.QueryParams["filter_status"] = KnetikClient.ParameterToString(filterStatus);
             }
 
             if (filterEvent != null)
             {
-                queryParams.Add("filter_event", KnetikClient.DefaultClient.ParameterToString(filterEvent));
+                mWebCallEvent.QueryParams["filter_event"] = KnetikClient.ParameterToString(filterEvent);
             }
 
             if (filterChallenge != null)
             {
-                queryParams.Add("filter_challenge", KnetikClient.DefaultClient.ParameterToString(filterChallenge));
+                mWebCallEvent.QueryParams["filter_challenge"] = KnetikClient.ParameterToString(filterChallenge);
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mListActivityOccurrencesStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mListActivityOccurrencesStartTime, mListActivityOccurrencesPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mListActivityOccurrencesCoroutine.ResponseReceived += ListActivityOccurrencesCallback;
-            mListActivityOccurrencesCoroutine.Start(mListActivityOccurrencesPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mListActivityOccurrencesStartTime = DateTime.Now;
+            mWebCallEvent.Context = mListActivityOccurrencesResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mListActivityOccurrencesStartTime, "ListActivityOccurrences", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void ListActivityOccurrencesCallback(IRestResponse response)
+        private void OnListActivityOccurrencesResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling ListActivityOccurrences: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling ListActivityOccurrences: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling ListActivityOccurrences: " + response.Error);
             }
 
-            ListActivityOccurrencesData = (PageResourceActivityOccurrenceResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceActivityOccurrenceResource), response.Headers);
-            KnetikLogger.LogResponse(mListActivityOccurrencesStartTime, mListActivityOccurrencesPath, string.Format("Response received successfully:\n{0}", ListActivityOccurrencesData.ToString()));
+            ListActivityOccurrencesData = (PageResourceActivityOccurrenceResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceActivityOccurrenceResource), response.Headers);
+            KnetikLogger.LogResponse(mListActivityOccurrencesStartTime, "ListActivityOccurrences", string.Format("Response received successfully:\n{0}", ListActivityOccurrencesData));
 
             if (ListActivityOccurrencesComplete != null)
             {
-                ListActivityOccurrencesComplete(ListActivityOccurrencesData);
+                ListActivityOccurrencesComplete(response.ResponseCode, ListActivityOccurrencesData);
             }
         }
 
@@ -997,49 +992,48 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'activityOccurrenceId' when calling SetActivityOccurrenceResults");
             }
             
-            mSetActivityOccurrenceResultsPath = "/activity-occurrences/{activity_occurrence_id}/results";
-            if (!string.IsNullOrEmpty(mSetActivityOccurrenceResultsPath))
+            mWebCallEvent.WebPath = "/activity-occurrences/{activity_occurrence_id}/results";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mSetActivityOccurrenceResultsPath = mSetActivityOccurrenceResultsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mSetActivityOccurrenceResultsPath = mSetActivityOccurrenceResultsPath.Replace("{" + "activity_occurrence_id" + "}", KnetikClient.DefaultClient.ParameterToString(activityOccurrenceId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "activity_occurrence_id" + "}", KnetikClient.ParameterToString(activityOccurrenceId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(activityOccurrenceResults); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(activityOccurrenceResults); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mSetActivityOccurrenceResultsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mSetActivityOccurrenceResultsStartTime, mSetActivityOccurrenceResultsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mSetActivityOccurrenceResultsCoroutine.ResponseReceived += SetActivityOccurrenceResultsCallback;
-            mSetActivityOccurrenceResultsCoroutine.Start(mSetActivityOccurrenceResultsPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mSetActivityOccurrenceResultsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mSetActivityOccurrenceResultsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mSetActivityOccurrenceResultsStartTime, "SetActivityOccurrenceResults", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void SetActivityOccurrenceResultsCallback(IRestResponse response)
+        private void OnSetActivityOccurrenceResultsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling SetActivityOccurrenceResults: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling SetActivityOccurrenceResults: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling SetActivityOccurrenceResults: " + response.Error);
             }
 
-            SetActivityOccurrenceResultsData = (ActivityOccurrenceResults) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ActivityOccurrenceResults), response.Headers);
-            KnetikLogger.LogResponse(mSetActivityOccurrenceResultsStartTime, mSetActivityOccurrenceResultsPath, string.Format("Response received successfully:\n{0}", SetActivityOccurrenceResultsData.ToString()));
+            SetActivityOccurrenceResultsData = (ActivityOccurrenceResults) KnetikClient.Deserialize(response.Content, typeof(ActivityOccurrenceResults), response.Headers);
+            KnetikLogger.LogResponse(mSetActivityOccurrenceResultsStartTime, "SetActivityOccurrenceResults", string.Format("Response received successfully:\n{0}", SetActivityOccurrenceResultsData));
 
             if (SetActivityOccurrenceResultsComplete != null)
             {
-                SetActivityOccurrenceResultsComplete(SetActivityOccurrenceResultsData);
+                SetActivityOccurrenceResultsComplete(response.ResponseCode, SetActivityOccurrenceResultsData);
             }
         }
 
@@ -1057,49 +1051,48 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling UpdateActivity");
             }
             
-            mUpdateActivityPath = "/activities/{id}";
-            if (!string.IsNullOrEmpty(mUpdateActivityPath))
+            mWebCallEvent.WebPath = "/activities/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateActivityPath = mUpdateActivityPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateActivityPath = mUpdateActivityPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(activityResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(activityResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateActivityStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateActivityStartTime, mUpdateActivityPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateActivityCoroutine.ResponseReceived += UpdateActivityCallback;
-            mUpdateActivityCoroutine.Start(mUpdateActivityPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateActivityStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateActivityResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateActivityStartTime, "UpdateActivity", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateActivityCallback(IRestResponse response)
+        private void OnUpdateActivityResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateActivity: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateActivity: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateActivity: " + response.Error);
             }
 
-            UpdateActivityData = (ActivityResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ActivityResource), response.Headers);
-            KnetikLogger.LogResponse(mUpdateActivityStartTime, mUpdateActivityPath, string.Format("Response received successfully:\n{0}", UpdateActivityData.ToString()));
+            UpdateActivityData = (ActivityResource) KnetikClient.Deserialize(response.Content, typeof(ActivityResource), response.Headers);
+            KnetikLogger.LogResponse(mUpdateActivityStartTime, "UpdateActivity", string.Format("Response received successfully:\n{0}", UpdateActivityData));
 
             if (UpdateActivityComplete != null)
             {
-                UpdateActivityComplete(UpdateActivityData);
+                UpdateActivityComplete(response.ResponseCode, UpdateActivityData);
             }
         }
 
@@ -1117,47 +1110,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'activityOccurrenceId' when calling UpdateActivityOccurrence");
             }
             
-            mUpdateActivityOccurrencePath = "/activity-occurrences/{activity_occurrence_id}/status";
-            if (!string.IsNullOrEmpty(mUpdateActivityOccurrencePath))
+            mWebCallEvent.WebPath = "/activity-occurrences/{activity_occurrence_id}/status";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateActivityOccurrencePath = mUpdateActivityOccurrencePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateActivityOccurrencePath = mUpdateActivityOccurrencePath.Replace("{" + "activity_occurrence_id" + "}", KnetikClient.DefaultClient.ParameterToString(activityOccurrenceId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "activity_occurrence_id" + "}", KnetikClient.ParameterToString(activityOccurrenceId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(activityOccurrenceStatus); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(activityOccurrenceStatus); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateActivityOccurrenceStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateActivityOccurrenceStartTime, mUpdateActivityOccurrencePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateActivityOccurrenceCoroutine.ResponseReceived += UpdateActivityOccurrenceCallback;
-            mUpdateActivityOccurrenceCoroutine.Start(mUpdateActivityOccurrencePath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateActivityOccurrenceStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateActivityOccurrenceResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateActivityOccurrenceStartTime, "UpdateActivityOccurrence", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateActivityOccurrenceCallback(IRestResponse response)
+        private void OnUpdateActivityOccurrenceResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateActivityOccurrence: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateActivityOccurrence: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateActivityOccurrence: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mUpdateActivityOccurrenceStartTime, mUpdateActivityOccurrencePath, "Response received successfully.");
+            KnetikLogger.LogResponse(mUpdateActivityOccurrenceStartTime, "UpdateActivityOccurrence", "Response received successfully.");
             if (UpdateActivityOccurrenceComplete != null)
             {
-                UpdateActivityOccurrenceComplete();
+                UpdateActivityOccurrenceComplete(response.ResponseCode);
             }
         }
 
@@ -1175,49 +1167,48 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling UpdateActivityTemplate");
             }
             
-            mUpdateActivityTemplatePath = "/activities/templates/{id}";
-            if (!string.IsNullOrEmpty(mUpdateActivityTemplatePath))
+            mWebCallEvent.WebPath = "/activities/templates/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateActivityTemplatePath = mUpdateActivityTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateActivityTemplatePath = mUpdateActivityTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(activityTemplateResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(activityTemplateResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateActivityTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateActivityTemplateStartTime, mUpdateActivityTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateActivityTemplateCoroutine.ResponseReceived += UpdateActivityTemplateCallback;
-            mUpdateActivityTemplateCoroutine.Start(mUpdateActivityTemplatePath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateActivityTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateActivityTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateActivityTemplateStartTime, "UpdateActivityTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateActivityTemplateCallback(IRestResponse response)
+        private void OnUpdateActivityTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateActivityTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateActivityTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateActivityTemplate: " + response.Error);
             }
 
-            UpdateActivityTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mUpdateActivityTemplateStartTime, mUpdateActivityTemplatePath, string.Format("Response received successfully:\n{0}", UpdateActivityTemplateData.ToString()));
+            UpdateActivityTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mUpdateActivityTemplateStartTime, "UpdateActivityTemplate", string.Format("Response received successfully:\n{0}", UpdateActivityTemplateData));
 
             if (UpdateActivityTemplateComplete != null)
             {
-                UpdateActivityTemplateComplete(UpdateActivityTemplateData);
+                UpdateActivityTemplateComplete(response.ResponseCode, UpdateActivityTemplateData);
             }
         }
 

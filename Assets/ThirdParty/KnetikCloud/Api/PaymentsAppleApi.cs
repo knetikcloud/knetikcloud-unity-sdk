@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,7 +18,6 @@ namespace com.knetikcloud.Api
     {
         string VerifyAppleReceiptData { get; }
 
-        
         /// <summary>
         /// Pay invoice with Apple receipt Mark an invoice paid using Apple payment receipt. A receipt will only be accepted once and the details of the transaction must match the invoice, including the product_id matching the sku text of the item in the invoice. Returns the transaction ID if successful.
         /// </summary>
@@ -34,12 +32,13 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class PaymentsAppleApi : IPaymentsAppleApi
     {
-        private readonly KnetikCoroutine mVerifyAppleReceiptCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mVerifyAppleReceiptResponseContext;
         private DateTime mVerifyAppleReceiptStartTime;
-        private string mVerifyAppleReceiptPath;
 
         public string VerifyAppleReceiptData { get; private set; }
-        public delegate void VerifyAppleReceiptCompleteDelegate(string response);
+        public delegate void VerifyAppleReceiptCompleteDelegate(long responseCode, string response);
         public VerifyAppleReceiptCompleteDelegate VerifyAppleReceiptComplete;
 
         /// <summary>
@@ -48,7 +47,8 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public PaymentsAppleApi()
         {
-            mVerifyAppleReceiptCoroutine = new KnetikCoroutine();
+            mVerifyAppleReceiptResponseContext = new KnetikResponseContext();
+            mVerifyAppleReceiptResponseContext.ResponseReceived += OnVerifyAppleReceiptResponse;
         }
     
         /// <inheritdoc />
@@ -59,48 +59,47 @@ namespace com.knetikcloud.Api
         public void VerifyAppleReceipt(ApplyPaymentRequest request)
         {
             
-            mVerifyAppleReceiptPath = "/payment/provider/apple/receipt";
-            if (!string.IsNullOrEmpty(mVerifyAppleReceiptPath))
+            mWebCallEvent.WebPath = "/payment/provider/apple/receipt";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mVerifyAppleReceiptPath = mVerifyAppleReceiptPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(request); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mVerifyAppleReceiptStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mVerifyAppleReceiptStartTime, mVerifyAppleReceiptPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mVerifyAppleReceiptCoroutine.ResponseReceived += VerifyAppleReceiptCallback;
-            mVerifyAppleReceiptCoroutine.Start(mVerifyAppleReceiptPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mVerifyAppleReceiptStartTime = DateTime.Now;
+            mWebCallEvent.Context = mVerifyAppleReceiptResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mVerifyAppleReceiptStartTime, "VerifyAppleReceipt", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void VerifyAppleReceiptCallback(IRestResponse response)
+        private void OnVerifyAppleReceiptResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling VerifyAppleReceipt: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling VerifyAppleReceipt: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling VerifyAppleReceipt: " + response.Error);
             }
 
-            VerifyAppleReceiptData = (string) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(string), response.Headers);
-            KnetikLogger.LogResponse(mVerifyAppleReceiptStartTime, mVerifyAppleReceiptPath, string.Format("Response received successfully:\n{0}", VerifyAppleReceiptData.ToString()));
+            VerifyAppleReceiptData = (string) KnetikClient.Deserialize(response.Content, typeof(string), response.Headers);
+            KnetikLogger.LogResponse(mVerifyAppleReceiptStartTime, "VerifyAppleReceipt", string.Format("Response received successfully:\n{0}", VerifyAppleReceiptData));
 
             if (VerifyAppleReceiptComplete != null)
             {
-                VerifyAppleReceiptComplete(VerifyAppleReceiptData);
+                VerifyAppleReceiptComplete(response.ResponseCode, VerifyAppleReceiptData);
             }
         }
 

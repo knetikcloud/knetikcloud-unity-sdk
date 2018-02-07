@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,7 +18,6 @@ namespace com.knetikcloud.Api
     {
         PageResourceBillingReport GetSubscriptionReportsData { get; }
 
-        
         /// <summary>
         /// Get a list of available subscription reports in most recent first order 
         /// </summary>
@@ -35,12 +33,13 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class ReportingSubscriptionsApi : IReportingSubscriptionsApi
     {
-        private readonly KnetikCoroutine mGetSubscriptionReportsCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mGetSubscriptionReportsResponseContext;
         private DateTime mGetSubscriptionReportsStartTime;
-        private string mGetSubscriptionReportsPath;
 
         public PageResourceBillingReport GetSubscriptionReportsData { get; private set; }
-        public delegate void GetSubscriptionReportsCompleteDelegate(PageResourceBillingReport response);
+        public delegate void GetSubscriptionReportsCompleteDelegate(long responseCode, PageResourceBillingReport response);
         public GetSubscriptionReportsCompleteDelegate GetSubscriptionReportsComplete;
 
         /// <summary>
@@ -49,7 +48,8 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public ReportingSubscriptionsApi()
         {
-            mGetSubscriptionReportsCoroutine = new KnetikCoroutine();
+            mGetSubscriptionReportsResponseContext = new KnetikResponseContext();
+            mGetSubscriptionReportsResponseContext.ResponseReceived += OnGetSubscriptionReportsResponse;
         }
     
         /// <inheritdoc />
@@ -61,56 +61,55 @@ namespace com.knetikcloud.Api
         public void GetSubscriptionReports(int? size, int? page)
         {
             
-            mGetSubscriptionReportsPath = "/reporting/subscription";
-            if (!string.IsNullOrEmpty(mGetSubscriptionReportsPath))
+            mWebCallEvent.WebPath = "/reporting/subscription";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetSubscriptionReportsPath = mGetSubscriptionReportsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetSubscriptionReportsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetSubscriptionReportsStartTime, mGetSubscriptionReportsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetSubscriptionReportsCoroutine.ResponseReceived += GetSubscriptionReportsCallback;
-            mGetSubscriptionReportsCoroutine.Start(mGetSubscriptionReportsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetSubscriptionReportsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetSubscriptionReportsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetSubscriptionReportsStartTime, "GetSubscriptionReports", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetSubscriptionReportsCallback(IRestResponse response)
+        private void OnGetSubscriptionReportsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetSubscriptionReports: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetSubscriptionReports: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetSubscriptionReports: " + response.Error);
             }
 
-            GetSubscriptionReportsData = (PageResourceBillingReport) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceBillingReport), response.Headers);
-            KnetikLogger.LogResponse(mGetSubscriptionReportsStartTime, mGetSubscriptionReportsPath, string.Format("Response received successfully:\n{0}", GetSubscriptionReportsData.ToString()));
+            GetSubscriptionReportsData = (PageResourceBillingReport) KnetikClient.Deserialize(response.Content, typeof(PageResourceBillingReport), response.Headers);
+            KnetikLogger.LogResponse(mGetSubscriptionReportsStartTime, "GetSubscriptionReports", string.Format("Response received successfully:\n{0}", GetSubscriptionReportsData));
 
             if (GetSubscriptionReportsComplete != null)
             {
-                GetSubscriptionReportsComplete(GetSubscriptionReportsData);
+                GetSubscriptionReportsComplete(response.ResponseCode, GetSubscriptionReportsData);
             }
         }
 

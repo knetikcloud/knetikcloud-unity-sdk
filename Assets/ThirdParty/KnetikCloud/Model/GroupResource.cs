@@ -2,8 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using com.knetikcloud.Attributes;
-using com.knetikcloud.Serialization;
+using KnetikUnity.Attributes;
+using KnetikUnity.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -24,9 +24,9 @@ namespace com.knetikcloud.Model
         public Dictionary<string, Property> AdditionalProperties;
 
         /// <summary>
-        /// A description of the group. Max 250 characters
+        /// A description of the group
         /// </summary>
-        /// <value>A description of the group. Max 250 characters</value>
+        /// <value>A description of the group</value>
         [JsonProperty(PropertyName = "description")]
         public string Description;
 
@@ -73,6 +73,13 @@ namespace com.knetikcloud.Model
         public int? SubMemberCount;
 
         /// <summary>
+        /// Tags for search
+        /// </summary>
+        /// <value>Tags for search</value>
+        [JsonProperty(PropertyName = "tags")]
+        public List<string> Tags;
+
+        /// <summary>
         /// A group template this group is validated against. May be null and no validation of additional_properties will be done
         /// </summary>
         /// <value>A group template this group is validated against. May be null and no validation of additional_properties will be done</value>
@@ -80,9 +87,9 @@ namespace com.knetikcloud.Model
         public string Template;
 
         /// <summary>
-        /// Unique name used in url and references. Uppercase, lowercase, numbers and hyphens only. Max 50 characters. Cannot be altered once created
+        /// Unique name used in url and references. Uppercase, lowercase, numbers and hyphens only. Max 50 characters. Cannot be altered once created. Default: random UUID
         /// </summary>
-        /// <value>Unique name used in url and references. Uppercase, lowercase, numbers and hyphens only. Max 50 characters. Cannot be altered once created</value>
+        /// <value>Unique name used in url and references. Uppercase, lowercase, numbers and hyphens only. Max 50 characters. Cannot be altered once created. Default: random UUID</value>
         [JsonProperty(PropertyName = "unique_name")]
         public string UniqueName;
 
@@ -103,6 +110,7 @@ namespace com.knetikcloud.Model
             sb.Append("  Parent: ").Append(Parent).Append("\n");
             sb.Append("  Status: ").Append(Status).Append("\n");
             sb.Append("  SubMemberCount: ").Append(SubMemberCount).Append("\n");
+            sb.Append("  Tags: ").Append(Tags).Append("\n");
             sb.Append("  Template: ").Append(Template).Append("\n");
             sb.Append("  UniqueName: ").Append(UniqueName).Append("\n");
             sb.Append("}\n");

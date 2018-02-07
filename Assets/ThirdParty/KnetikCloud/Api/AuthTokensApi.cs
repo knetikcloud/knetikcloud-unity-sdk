@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -17,11 +16,8 @@ namespace com.knetikcloud.Api
     /// </summary>
     public interface IAuthTokensApi
     {
-        OauthAccessTokenResource GetTokenData { get; }
-
-        PageResourceOauthAccessTokenResource GetTokensData { get; }
-
         
+
         /// <summary>
         /// Delete tokens by username, client id, or both 
         /// </summary>
@@ -29,12 +25,16 @@ namespace com.knetikcloud.Api
         /// <param name="clientId">The id of the client</param>
         void DeleteTokens(string username, string clientId);
 
+        OauthAccessTokenResource GetTokenData { get; }
+
         /// <summary>
         /// Get a single token by username and client id 
         /// </summary>
         /// <param name="username">The username of the user</param>
         /// <param name="clientId">The id of the client</param>
         void GetToken(string username, string clientId);
+
+        PageResourceOauthAccessTokenResource GetTokensData { get; }
 
         /// <summary>
         /// List usernames and client ids Token value not shown
@@ -54,25 +54,24 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class AuthTokensApi : IAuthTokensApi
     {
-        private readonly KnetikCoroutine mDeleteTokensCoroutine;
-        private DateTime mDeleteTokensStartTime;
-        private string mDeleteTokensPath;
-        private readonly KnetikCoroutine mGetTokenCoroutine;
-        private DateTime mGetTokenStartTime;
-        private string mGetTokenPath;
-        private readonly KnetikCoroutine mGetTokensCoroutine;
-        private DateTime mGetTokensStartTime;
-        private string mGetTokensPath;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
 
-        public delegate void DeleteTokensCompleteDelegate();
+        private readonly KnetikResponseContext mDeleteTokensResponseContext;
+        private DateTime mDeleteTokensStartTime;
+        private readonly KnetikResponseContext mGetTokenResponseContext;
+        private DateTime mGetTokenStartTime;
+        private readonly KnetikResponseContext mGetTokensResponseContext;
+        private DateTime mGetTokensStartTime;
+
+        public delegate void DeleteTokensCompleteDelegate(long responseCode);
         public DeleteTokensCompleteDelegate DeleteTokensComplete;
 
         public OauthAccessTokenResource GetTokenData { get; private set; }
-        public delegate void GetTokenCompleteDelegate(OauthAccessTokenResource response);
+        public delegate void GetTokenCompleteDelegate(long responseCode, OauthAccessTokenResource response);
         public GetTokenCompleteDelegate GetTokenComplete;
 
         public PageResourceOauthAccessTokenResource GetTokensData { get; private set; }
-        public delegate void GetTokensCompleteDelegate(PageResourceOauthAccessTokenResource response);
+        public delegate void GetTokensCompleteDelegate(long responseCode, PageResourceOauthAccessTokenResource response);
         public GetTokensCompleteDelegate GetTokensComplete;
 
         /// <summary>
@@ -81,9 +80,12 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public AuthTokensApi()
         {
-            mDeleteTokensCoroutine = new KnetikCoroutine();
-            mGetTokenCoroutine = new KnetikCoroutine();
-            mGetTokensCoroutine = new KnetikCoroutine();
+            mDeleteTokensResponseContext = new KnetikResponseContext();
+            mDeleteTokensResponseContext.ResponseReceived += OnDeleteTokensResponse;
+            mGetTokenResponseContext = new KnetikResponseContext();
+            mGetTokenResponseContext.ResponseReceived += OnGetTokenResponse;
+            mGetTokensResponseContext = new KnetikResponseContext();
+            mGetTokensResponseContext.ResponseReceived += OnGetTokensResponse;
         }
     
         /// <inheritdoc />
@@ -95,54 +97,53 @@ namespace com.knetikcloud.Api
         public void DeleteTokens(string username, string clientId)
         {
             
-            mDeleteTokensPath = "/auth/tokens";
-            if (!string.IsNullOrEmpty(mDeleteTokensPath))
+            mWebCallEvent.WebPath = "/auth/tokens";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteTokensPath = mDeleteTokensPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (username != null)
             {
-                queryParams.Add("username", KnetikClient.DefaultClient.ParameterToString(username));
+                mWebCallEvent.QueryParams["username"] = KnetikClient.ParameterToString(username);
             }
 
             if (clientId != null)
             {
-                queryParams.Add("client_id", KnetikClient.DefaultClient.ParameterToString(clientId));
+                mWebCallEvent.QueryParams["client_id"] = KnetikClient.ParameterToString(clientId);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteTokensStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteTokensStartTime, mDeleteTokensPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteTokensCoroutine.ResponseReceived += DeleteTokensCallback;
-            mDeleteTokensCoroutine.Start(mDeleteTokensPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteTokensStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteTokensResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteTokensStartTime, "DeleteTokens", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteTokensCallback(IRestResponse response)
+        private void OnDeleteTokensResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteTokens: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteTokens: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteTokens: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteTokensStartTime, mDeleteTokensPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteTokensStartTime, "DeleteTokens", "Response received successfully.");
             if (DeleteTokensComplete != null)
             {
-                DeleteTokensComplete();
+                DeleteTokensComplete(response.ResponseCode);
             }
         }
 
@@ -165,48 +166,47 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'clientId' when calling GetToken");
             }
             
-            mGetTokenPath = "/auth/tokens/{username}/{client_id}";
-            if (!string.IsNullOrEmpty(mGetTokenPath))
+            mWebCallEvent.WebPath = "/auth/tokens/{username}/{client_id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetTokenPath = mGetTokenPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetTokenPath = mGetTokenPath.Replace("{" + "username" + "}", KnetikClient.DefaultClient.ParameterToString(username));
-mGetTokenPath = mGetTokenPath.Replace("{" + "client_id" + "}", KnetikClient.DefaultClient.ParameterToString(clientId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "username" + "}", KnetikClient.ParameterToString(username));
+mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "client_id" + "}", KnetikClient.ParameterToString(clientId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetTokenStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetTokenStartTime, mGetTokenPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetTokenCoroutine.ResponseReceived += GetTokenCallback;
-            mGetTokenCoroutine.Start(mGetTokenPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetTokenStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetTokenResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetTokenStartTime, "GetToken", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetTokenCallback(IRestResponse response)
+        private void OnGetTokenResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetToken: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetToken: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetToken: " + response.Error);
             }
 
-            GetTokenData = (OauthAccessTokenResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(OauthAccessTokenResource), response.Headers);
-            KnetikLogger.LogResponse(mGetTokenStartTime, mGetTokenPath, string.Format("Response received successfully:\n{0}", GetTokenData.ToString()));
+            GetTokenData = (OauthAccessTokenResource) KnetikClient.Deserialize(response.Content, typeof(OauthAccessTokenResource), response.Headers);
+            KnetikLogger.LogResponse(mGetTokenStartTime, "GetToken", string.Format("Response received successfully:\n{0}", GetTokenData));
 
             if (GetTokenComplete != null)
             {
-                GetTokenComplete(GetTokenData);
+                GetTokenComplete(response.ResponseCode, GetTokenData);
             }
         }
 
@@ -222,71 +222,70 @@ mGetTokenPath = mGetTokenPath.Replace("{" + "client_id" + "}", KnetikClient.Defa
         public void GetTokens(string filterClientId, string filterUsername, int? size, int? page, string order)
         {
             
-            mGetTokensPath = "/auth/tokens";
-            if (!string.IsNullOrEmpty(mGetTokensPath))
+            mWebCallEvent.WebPath = "/auth/tokens";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetTokensPath = mGetTokensPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (filterClientId != null)
             {
-                queryParams.Add("filter_client_id", KnetikClient.DefaultClient.ParameterToString(filterClientId));
+                mWebCallEvent.QueryParams["filter_client_id"] = KnetikClient.ParameterToString(filterClientId);
             }
 
             if (filterUsername != null)
             {
-                queryParams.Add("filter_username", KnetikClient.DefaultClient.ParameterToString(filterUsername));
+                mWebCallEvent.QueryParams["filter_username"] = KnetikClient.ParameterToString(filterUsername);
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetTokensStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetTokensStartTime, mGetTokensPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetTokensCoroutine.ResponseReceived += GetTokensCallback;
-            mGetTokensCoroutine.Start(mGetTokensPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetTokensStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetTokensResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetTokensStartTime, "GetTokens", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetTokensCallback(IRestResponse response)
+        private void OnGetTokensResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetTokens: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetTokens: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetTokens: " + response.Error);
             }
 
-            GetTokensData = (PageResourceOauthAccessTokenResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceOauthAccessTokenResource), response.Headers);
-            KnetikLogger.LogResponse(mGetTokensStartTime, mGetTokensPath, string.Format("Response received successfully:\n{0}", GetTokensData.ToString()));
+            GetTokensData = (PageResourceOauthAccessTokenResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceOauthAccessTokenResource), response.Headers);
+            KnetikLogger.LogResponse(mGetTokensStartTime, "GetTokens", string.Format("Response received successfully:\n{0}", GetTokensData));
 
             if (GetTokensComplete != null)
             {
-                GetTokensComplete(GetTokensData);
+                GetTokensComplete(response.ResponseCode, GetTokensData);
             }
         }
 

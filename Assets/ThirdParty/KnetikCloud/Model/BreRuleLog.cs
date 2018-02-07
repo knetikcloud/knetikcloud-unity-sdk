@@ -2,8 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using com.knetikcloud.Attributes;
-using com.knetikcloud.Serialization;
+using KnetikUnity.Attributes;
+using KnetikUnity.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -16,6 +16,13 @@ namespace com.knetikcloud.Model
     
     public class BreRuleLog
     {
+        /// <summary>
+        /// The actions of the BRE rule
+        /// </summary>
+        /// <value>The actions of the BRE rule</value>
+        [JsonProperty(PropertyName = "actions")]
+        public List<BreActionLog> Actions;
+
         /// <summary>
         /// Whether the rule ran
         /// </summary>
@@ -67,6 +74,7 @@ namespace com.knetikcloud.Model
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("class BreRuleLog {\n");
+            sb.Append("  Actions: ").Append(Actions).Append("\n");
             sb.Append("  Ran: ").Append(Ran).Append("\n");
             sb.Append("  Reason: ").Append(Reason).Append("\n");
             sb.Append("  RuleEndDate: ").Append(RuleEndDate).Append("\n");
