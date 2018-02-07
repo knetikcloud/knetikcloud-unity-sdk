@@ -2,8 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using com.knetikcloud.Attributes;
-using com.knetikcloud.Serialization;
+using KnetikUnity.Attributes;
+using KnetikUnity.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -59,6 +59,13 @@ namespace com.knetikcloud.Model
         public long? EndDate;
 
         /// <summary>
+        /// How many times the rule has been evaluated (it's conditions checked, whether it then runs or not)
+        /// </summary>
+        /// <value>How many times the rule has been evaluated (it's conditions checked, whether it then runs or not)</value>
+        [JsonProperty(PropertyName = "evaluation_count")]
+        public long? EvaluationCount;
+
+        /// <summary>
         /// The event name of the trigger this rule runs for. Affects which parameters are available
         /// </summary>
         /// <value>The event name of the trigger this rule runs for. Affects which parameters are available</value>
@@ -78,6 +85,13 @@ namespace com.knetikcloud.Model
         /// <value>The human readable name of the rule</value>
         [JsonProperty(PropertyName = "name")]
         public string Name;
+
+        /// <summary>
+        /// How many times the rule has run
+        /// </summary>
+        /// <value>How many times the rule has run</value>
+        [JsonProperty(PropertyName = "run_count")]
+        public long? RunCount;
 
         /// <summary>
         /// Used to sort rules to control the order they run in. Larger numbered sort values run first.  Default 500
@@ -115,9 +129,11 @@ namespace com.knetikcloud.Model
             sb.Append("  Description: ").Append(Description).Append("\n");
             sb.Append("  Enabled: ").Append(Enabled).Append("\n");
             sb.Append("  EndDate: ").Append(EndDate).Append("\n");
+            sb.Append("  EvaluationCount: ").Append(EvaluationCount).Append("\n");
             sb.Append("  EventName: ").Append(EventName).Append("\n");
             sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  Name: ").Append(Name).Append("\n");
+            sb.Append("  RunCount: ").Append(RunCount).Append("\n");
             sb.Append("  Sort: ").Append(Sort).Append("\n");
             sb.Append("  StartDate: ").Append(StartDate).Append("\n");
             sb.Append("  SystemRule: ").Append(SystemRule).Append("\n");

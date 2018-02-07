@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -17,23 +16,16 @@ namespace com.knetikcloud.Api
     /// </summary>
     public interface IStoreShoppingCartsApi
     {
-        string CreateCartData { get; }
-
-        Cart GetCartData { get; }
-
-        PageResourceCartSummary GetCartsData { get; }
-
-        CartShippableResponse GetShippableData { get; }
-
-        SampleCountriesResponse GetShippingCountriesData { get; }
-
         
+
         /// <summary>
         /// Adds a custom discount to the cart 
         /// </summary>
         /// <param name="id">The id of the cart</param>
         /// <param name="customDiscount">The details of the discount to add</param>
         void AddCustomDiscount(string id, CouponDefinition customDiscount);
+
+        
 
         /// <summary>
         /// Adds a discount coupon to the cart 
@@ -42,12 +34,16 @@ namespace com.knetikcloud.Api
         /// <param name="skuRequest">The request of the sku</param>
         void AddDiscountToCart(string id, SkuRequest skuRequest);
 
+        
+
         /// <summary>
         /// Add an item to the cart Currently, carts cannot contain virtual and real currency items at the same time. Furthermore, the API only support a single virtual item at the moment
         /// </summary>
         /// <param name="id">The id of the cart</param>
         /// <param name="cartItemRequest">The cart item request object</param>
         void AddItemToCart(string id, CartItemRequest cartItemRequest);
+
+        string CreateCartData { get; }
 
         /// <summary>
         /// Create a cart You don&#39;t have to have a user to create a cart but the API requires authentication to checkout
@@ -56,11 +52,15 @@ namespace com.knetikcloud.Api
         /// <param name="currencyCode">Set the currency for the cart, by currency code. May be disallowed by site settings.</param>
         void CreateCart(int? owner, string currencyCode);
 
+        Cart GetCartData { get; }
+
         /// <summary>
         /// Returns the cart with the given GUID 
         /// </summary>
         /// <param name="id">The id of the cart</param>
         void GetCart(string id);
+
+        PageResourceCartSummary GetCartsData { get; }
 
         /// <summary>
         /// Get a list of carts 
@@ -71,17 +71,23 @@ namespace com.knetikcloud.Api
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
         void GetCarts(int? filterOwnerId, int? size, int? page, string order);
 
+        CartShippableResponse GetShippableData { get; }
+
         /// <summary>
         /// Returns whether a cart requires shipping 
         /// </summary>
         /// <param name="id">The id of the cart</param>
         void GetShippable(string id);
 
+        SampleCountriesResponse GetShippingCountriesData { get; }
+
         /// <summary>
         /// Get the list of available shipping countries per vendor Since a cart can have multiple vendors with different shipping options, the countries are broken down by vendors. Please see notes about the response object as the fields are variable.
         /// </summary>
         /// <param name="id">The id of the cart</param>
         void GetShippingCountries(string id);
+
+        
 
         /// <summary>
         /// Removes a discount coupon from the cart 
@@ -90,12 +96,16 @@ namespace com.knetikcloud.Api
         /// <param name="code">The SKU code of the coupon to remove</param>
         void RemoveDiscountFromCart(string id, string code);
 
+        
+
         /// <summary>
         /// Sets the currency to use for the cart May be disallowed by site settings.
         /// </summary>
         /// <param name="id">The id of the cart</param>
         /// <param name="currencyCode">The code of the currency</param>
         void SetCartCurrency(string id, StringWrapper currencyCode);
+
+        
 
         /// <summary>
         /// Sets the owner of a cart if none is set already 
@@ -104,12 +114,16 @@ namespace com.knetikcloud.Api
         /// <param name="userId">The id of the user</param>
         void SetCartOwner(string id, IntWrapper userId);
 
+        
+
         /// <summary>
         /// Changes the quantity of an item already in the cart A quantity of zero will remove the item from the cart altogether.
         /// </summary>
         /// <param name="id">The id of the cart</param>
         /// <param name="cartItemRequest">The cart item request object</param>
         void UpdateItemInCart(string id, CartItemRequest cartItemRequest);
+
+        
 
         /// <summary>
         /// Modifies or sets the order shipping address 
@@ -126,88 +140,77 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class StoreShoppingCartsApi : IStoreShoppingCartsApi
     {
-        private readonly KnetikCoroutine mAddCustomDiscountCoroutine;
-        private DateTime mAddCustomDiscountStartTime;
-        private string mAddCustomDiscountPath;
-        private readonly KnetikCoroutine mAddDiscountToCartCoroutine;
-        private DateTime mAddDiscountToCartStartTime;
-        private string mAddDiscountToCartPath;
-        private readonly KnetikCoroutine mAddItemToCartCoroutine;
-        private DateTime mAddItemToCartStartTime;
-        private string mAddItemToCartPath;
-        private readonly KnetikCoroutine mCreateCartCoroutine;
-        private DateTime mCreateCartStartTime;
-        private string mCreateCartPath;
-        private readonly KnetikCoroutine mGetCartCoroutine;
-        private DateTime mGetCartStartTime;
-        private string mGetCartPath;
-        private readonly KnetikCoroutine mGetCartsCoroutine;
-        private DateTime mGetCartsStartTime;
-        private string mGetCartsPath;
-        private readonly KnetikCoroutine mGetShippableCoroutine;
-        private DateTime mGetShippableStartTime;
-        private string mGetShippablePath;
-        private readonly KnetikCoroutine mGetShippingCountriesCoroutine;
-        private DateTime mGetShippingCountriesStartTime;
-        private string mGetShippingCountriesPath;
-        private readonly KnetikCoroutine mRemoveDiscountFromCartCoroutine;
-        private DateTime mRemoveDiscountFromCartStartTime;
-        private string mRemoveDiscountFromCartPath;
-        private readonly KnetikCoroutine mSetCartCurrencyCoroutine;
-        private DateTime mSetCartCurrencyStartTime;
-        private string mSetCartCurrencyPath;
-        private readonly KnetikCoroutine mSetCartOwnerCoroutine;
-        private DateTime mSetCartOwnerStartTime;
-        private string mSetCartOwnerPath;
-        private readonly KnetikCoroutine mUpdateItemInCartCoroutine;
-        private DateTime mUpdateItemInCartStartTime;
-        private string mUpdateItemInCartPath;
-        private readonly KnetikCoroutine mUpdateShippingAddressCoroutine;
-        private DateTime mUpdateShippingAddressStartTime;
-        private string mUpdateShippingAddressPath;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
 
-        public delegate void AddCustomDiscountCompleteDelegate();
+        private readonly KnetikResponseContext mAddCustomDiscountResponseContext;
+        private DateTime mAddCustomDiscountStartTime;
+        private readonly KnetikResponseContext mAddDiscountToCartResponseContext;
+        private DateTime mAddDiscountToCartStartTime;
+        private readonly KnetikResponseContext mAddItemToCartResponseContext;
+        private DateTime mAddItemToCartStartTime;
+        private readonly KnetikResponseContext mCreateCartResponseContext;
+        private DateTime mCreateCartStartTime;
+        private readonly KnetikResponseContext mGetCartResponseContext;
+        private DateTime mGetCartStartTime;
+        private readonly KnetikResponseContext mGetCartsResponseContext;
+        private DateTime mGetCartsStartTime;
+        private readonly KnetikResponseContext mGetShippableResponseContext;
+        private DateTime mGetShippableStartTime;
+        private readonly KnetikResponseContext mGetShippingCountriesResponseContext;
+        private DateTime mGetShippingCountriesStartTime;
+        private readonly KnetikResponseContext mRemoveDiscountFromCartResponseContext;
+        private DateTime mRemoveDiscountFromCartStartTime;
+        private readonly KnetikResponseContext mSetCartCurrencyResponseContext;
+        private DateTime mSetCartCurrencyStartTime;
+        private readonly KnetikResponseContext mSetCartOwnerResponseContext;
+        private DateTime mSetCartOwnerStartTime;
+        private readonly KnetikResponseContext mUpdateItemInCartResponseContext;
+        private DateTime mUpdateItemInCartStartTime;
+        private readonly KnetikResponseContext mUpdateShippingAddressResponseContext;
+        private DateTime mUpdateShippingAddressStartTime;
+
+        public delegate void AddCustomDiscountCompleteDelegate(long responseCode);
         public AddCustomDiscountCompleteDelegate AddCustomDiscountComplete;
 
-        public delegate void AddDiscountToCartCompleteDelegate();
+        public delegate void AddDiscountToCartCompleteDelegate(long responseCode);
         public AddDiscountToCartCompleteDelegate AddDiscountToCartComplete;
 
-        public delegate void AddItemToCartCompleteDelegate();
+        public delegate void AddItemToCartCompleteDelegate(long responseCode);
         public AddItemToCartCompleteDelegate AddItemToCartComplete;
 
         public string CreateCartData { get; private set; }
-        public delegate void CreateCartCompleteDelegate(string response);
+        public delegate void CreateCartCompleteDelegate(long responseCode, string response);
         public CreateCartCompleteDelegate CreateCartComplete;
 
         public Cart GetCartData { get; private set; }
-        public delegate void GetCartCompleteDelegate(Cart response);
+        public delegate void GetCartCompleteDelegate(long responseCode, Cart response);
         public GetCartCompleteDelegate GetCartComplete;
 
         public PageResourceCartSummary GetCartsData { get; private set; }
-        public delegate void GetCartsCompleteDelegate(PageResourceCartSummary response);
+        public delegate void GetCartsCompleteDelegate(long responseCode, PageResourceCartSummary response);
         public GetCartsCompleteDelegate GetCartsComplete;
 
         public CartShippableResponse GetShippableData { get; private set; }
-        public delegate void GetShippableCompleteDelegate(CartShippableResponse response);
+        public delegate void GetShippableCompleteDelegate(long responseCode, CartShippableResponse response);
         public GetShippableCompleteDelegate GetShippableComplete;
 
         public SampleCountriesResponse GetShippingCountriesData { get; private set; }
-        public delegate void GetShippingCountriesCompleteDelegate(SampleCountriesResponse response);
+        public delegate void GetShippingCountriesCompleteDelegate(long responseCode, SampleCountriesResponse response);
         public GetShippingCountriesCompleteDelegate GetShippingCountriesComplete;
 
-        public delegate void RemoveDiscountFromCartCompleteDelegate();
+        public delegate void RemoveDiscountFromCartCompleteDelegate(long responseCode);
         public RemoveDiscountFromCartCompleteDelegate RemoveDiscountFromCartComplete;
 
-        public delegate void SetCartCurrencyCompleteDelegate();
+        public delegate void SetCartCurrencyCompleteDelegate(long responseCode);
         public SetCartCurrencyCompleteDelegate SetCartCurrencyComplete;
 
-        public delegate void SetCartOwnerCompleteDelegate();
+        public delegate void SetCartOwnerCompleteDelegate(long responseCode);
         public SetCartOwnerCompleteDelegate SetCartOwnerComplete;
 
-        public delegate void UpdateItemInCartCompleteDelegate();
+        public delegate void UpdateItemInCartCompleteDelegate(long responseCode);
         public UpdateItemInCartCompleteDelegate UpdateItemInCartComplete;
 
-        public delegate void UpdateShippingAddressCompleteDelegate();
+        public delegate void UpdateShippingAddressCompleteDelegate(long responseCode);
         public UpdateShippingAddressCompleteDelegate UpdateShippingAddressComplete;
 
         /// <summary>
@@ -216,19 +219,32 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public StoreShoppingCartsApi()
         {
-            mAddCustomDiscountCoroutine = new KnetikCoroutine();
-            mAddDiscountToCartCoroutine = new KnetikCoroutine();
-            mAddItemToCartCoroutine = new KnetikCoroutine();
-            mCreateCartCoroutine = new KnetikCoroutine();
-            mGetCartCoroutine = new KnetikCoroutine();
-            mGetCartsCoroutine = new KnetikCoroutine();
-            mGetShippableCoroutine = new KnetikCoroutine();
-            mGetShippingCountriesCoroutine = new KnetikCoroutine();
-            mRemoveDiscountFromCartCoroutine = new KnetikCoroutine();
-            mSetCartCurrencyCoroutine = new KnetikCoroutine();
-            mSetCartOwnerCoroutine = new KnetikCoroutine();
-            mUpdateItemInCartCoroutine = new KnetikCoroutine();
-            mUpdateShippingAddressCoroutine = new KnetikCoroutine();
+            mAddCustomDiscountResponseContext = new KnetikResponseContext();
+            mAddCustomDiscountResponseContext.ResponseReceived += OnAddCustomDiscountResponse;
+            mAddDiscountToCartResponseContext = new KnetikResponseContext();
+            mAddDiscountToCartResponseContext.ResponseReceived += OnAddDiscountToCartResponse;
+            mAddItemToCartResponseContext = new KnetikResponseContext();
+            mAddItemToCartResponseContext.ResponseReceived += OnAddItemToCartResponse;
+            mCreateCartResponseContext = new KnetikResponseContext();
+            mCreateCartResponseContext.ResponseReceived += OnCreateCartResponse;
+            mGetCartResponseContext = new KnetikResponseContext();
+            mGetCartResponseContext.ResponseReceived += OnGetCartResponse;
+            mGetCartsResponseContext = new KnetikResponseContext();
+            mGetCartsResponseContext.ResponseReceived += OnGetCartsResponse;
+            mGetShippableResponseContext = new KnetikResponseContext();
+            mGetShippableResponseContext.ResponseReceived += OnGetShippableResponse;
+            mGetShippingCountriesResponseContext = new KnetikResponseContext();
+            mGetShippingCountriesResponseContext.ResponseReceived += OnGetShippingCountriesResponse;
+            mRemoveDiscountFromCartResponseContext = new KnetikResponseContext();
+            mRemoveDiscountFromCartResponseContext.ResponseReceived += OnRemoveDiscountFromCartResponse;
+            mSetCartCurrencyResponseContext = new KnetikResponseContext();
+            mSetCartCurrencyResponseContext.ResponseReceived += OnSetCartCurrencyResponse;
+            mSetCartOwnerResponseContext = new KnetikResponseContext();
+            mSetCartOwnerResponseContext.ResponseReceived += OnSetCartOwnerResponse;
+            mUpdateItemInCartResponseContext = new KnetikResponseContext();
+            mUpdateItemInCartResponseContext.ResponseReceived += OnUpdateItemInCartResponse;
+            mUpdateShippingAddressResponseContext = new KnetikResponseContext();
+            mUpdateShippingAddressResponseContext.ResponseReceived += OnUpdateShippingAddressResponse;
         }
     
         /// <inheritdoc />
@@ -245,47 +261,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling AddCustomDiscount");
             }
             
-            mAddCustomDiscountPath = "/carts/{id}/custom-discounts";
-            if (!string.IsNullOrEmpty(mAddCustomDiscountPath))
+            mWebCallEvent.WebPath = "/carts/{id}/custom-discounts";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mAddCustomDiscountPath = mAddCustomDiscountPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mAddCustomDiscountPath = mAddCustomDiscountPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(customDiscount); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(customDiscount); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mAddCustomDiscountStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mAddCustomDiscountStartTime, mAddCustomDiscountPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mAddCustomDiscountCoroutine.ResponseReceived += AddCustomDiscountCallback;
-            mAddCustomDiscountCoroutine.Start(mAddCustomDiscountPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mAddCustomDiscountStartTime = DateTime.Now;
+            mWebCallEvent.Context = mAddCustomDiscountResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mAddCustomDiscountStartTime, "AddCustomDiscount", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void AddCustomDiscountCallback(IRestResponse response)
+        private void OnAddCustomDiscountResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling AddCustomDiscount: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling AddCustomDiscount: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling AddCustomDiscount: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mAddCustomDiscountStartTime, mAddCustomDiscountPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mAddCustomDiscountStartTime, "AddCustomDiscount", "Response received successfully.");
             if (AddCustomDiscountComplete != null)
             {
-                AddCustomDiscountComplete();
+                AddCustomDiscountComplete(response.ResponseCode);
             }
         }
 
@@ -303,47 +318,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling AddDiscountToCart");
             }
             
-            mAddDiscountToCartPath = "/carts/{id}/discounts";
-            if (!string.IsNullOrEmpty(mAddDiscountToCartPath))
+            mWebCallEvent.WebPath = "/carts/{id}/discounts";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mAddDiscountToCartPath = mAddDiscountToCartPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mAddDiscountToCartPath = mAddDiscountToCartPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(skuRequest); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(skuRequest); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mAddDiscountToCartStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mAddDiscountToCartStartTime, mAddDiscountToCartPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mAddDiscountToCartCoroutine.ResponseReceived += AddDiscountToCartCallback;
-            mAddDiscountToCartCoroutine.Start(mAddDiscountToCartPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mAddDiscountToCartStartTime = DateTime.Now;
+            mWebCallEvent.Context = mAddDiscountToCartResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mAddDiscountToCartStartTime, "AddDiscountToCart", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void AddDiscountToCartCallback(IRestResponse response)
+        private void OnAddDiscountToCartResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling AddDiscountToCart: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling AddDiscountToCart: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling AddDiscountToCart: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mAddDiscountToCartStartTime, mAddDiscountToCartPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mAddDiscountToCartStartTime, "AddDiscountToCart", "Response received successfully.");
             if (AddDiscountToCartComplete != null)
             {
-                AddDiscountToCartComplete();
+                AddDiscountToCartComplete(response.ResponseCode);
             }
         }
 
@@ -361,47 +375,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling AddItemToCart");
             }
             
-            mAddItemToCartPath = "/carts/{id}/items";
-            if (!string.IsNullOrEmpty(mAddItemToCartPath))
+            mWebCallEvent.WebPath = "/carts/{id}/items";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mAddItemToCartPath = mAddItemToCartPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mAddItemToCartPath = mAddItemToCartPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(cartItemRequest); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(cartItemRequest); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mAddItemToCartStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mAddItemToCartStartTime, mAddItemToCartPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mAddItemToCartCoroutine.ResponseReceived += AddItemToCartCallback;
-            mAddItemToCartCoroutine.Start(mAddItemToCartPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mAddItemToCartStartTime = DateTime.Now;
+            mWebCallEvent.Context = mAddItemToCartResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mAddItemToCartStartTime, "AddItemToCart", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void AddItemToCartCallback(IRestResponse response)
+        private void OnAddItemToCartResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling AddItemToCart: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling AddItemToCart: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling AddItemToCart: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mAddItemToCartStartTime, mAddItemToCartPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mAddItemToCartStartTime, "AddItemToCart", "Response received successfully.");
             if (AddItemToCartComplete != null)
             {
-                AddItemToCartComplete();
+                AddItemToCartComplete(response.ResponseCode);
             }
         }
 
@@ -414,56 +427,55 @@ namespace com.knetikcloud.Api
         public void CreateCart(int? owner, string currencyCode)
         {
             
-            mCreateCartPath = "/carts";
-            if (!string.IsNullOrEmpty(mCreateCartPath))
+            mWebCallEvent.WebPath = "/carts";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mCreateCartPath = mCreateCartPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (owner != null)
             {
-                queryParams.Add("owner", KnetikClient.DefaultClient.ParameterToString(owner));
+                mWebCallEvent.QueryParams["owner"] = KnetikClient.ParameterToString(owner);
             }
 
             if (currencyCode != null)
             {
-                queryParams.Add("currency_code", KnetikClient.DefaultClient.ParameterToString(currencyCode));
+                mWebCallEvent.QueryParams["currency_code"] = KnetikClient.ParameterToString(currencyCode);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mCreateCartStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mCreateCartStartTime, mCreateCartPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mCreateCartCoroutine.ResponseReceived += CreateCartCallback;
-            mCreateCartCoroutine.Start(mCreateCartPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mCreateCartStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreateCartResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreateCartStartTime, "CreateCart", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void CreateCartCallback(IRestResponse response)
+        private void OnCreateCartResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateCart: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateCart: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling CreateCart: " + response.Error);
             }
 
-            CreateCartData = (string) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(string), response.Headers);
-            KnetikLogger.LogResponse(mCreateCartStartTime, mCreateCartPath, string.Format("Response received successfully:\n{0}", CreateCartData.ToString()));
+            CreateCartData = (string) KnetikClient.Deserialize(response.Content, typeof(string), response.Headers);
+            KnetikLogger.LogResponse(mCreateCartStartTime, "CreateCart", string.Format("Response received successfully:\n{0}", CreateCartData));
 
             if (CreateCartComplete != null)
             {
-                CreateCartComplete(CreateCartData);
+                CreateCartComplete(response.ResponseCode, CreateCartData);
             }
         }
 
@@ -480,47 +492,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetCart");
             }
             
-            mGetCartPath = "/carts/{id}";
-            if (!string.IsNullOrEmpty(mGetCartPath))
+            mWebCallEvent.WebPath = "/carts/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetCartPath = mGetCartPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetCartPath = mGetCartPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetCartStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetCartStartTime, mGetCartPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetCartCoroutine.ResponseReceived += GetCartCallback;
-            mGetCartCoroutine.Start(mGetCartPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetCartStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetCartResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetCartStartTime, "GetCart", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetCartCallback(IRestResponse response)
+        private void OnGetCartResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCart: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCart: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetCart: " + response.Error);
             }
 
-            GetCartData = (Cart) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(Cart), response.Headers);
-            KnetikLogger.LogResponse(mGetCartStartTime, mGetCartPath, string.Format("Response received successfully:\n{0}", GetCartData.ToString()));
+            GetCartData = (Cart) KnetikClient.Deserialize(response.Content, typeof(Cart), response.Headers);
+            KnetikLogger.LogResponse(mGetCartStartTime, "GetCart", string.Format("Response received successfully:\n{0}", GetCartData));
 
             if (GetCartComplete != null)
             {
-                GetCartComplete(GetCartData);
+                GetCartComplete(response.ResponseCode, GetCartData);
             }
         }
 
@@ -535,66 +546,65 @@ namespace com.knetikcloud.Api
         public void GetCarts(int? filterOwnerId, int? size, int? page, string order)
         {
             
-            mGetCartsPath = "/carts";
-            if (!string.IsNullOrEmpty(mGetCartsPath))
+            mWebCallEvent.WebPath = "/carts";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetCartsPath = mGetCartsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (filterOwnerId != null)
             {
-                queryParams.Add("filter_owner_id", KnetikClient.DefaultClient.ParameterToString(filterOwnerId));
+                mWebCallEvent.QueryParams["filter_owner_id"] = KnetikClient.ParameterToString(filterOwnerId);
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetCartsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetCartsStartTime, mGetCartsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetCartsCoroutine.ResponseReceived += GetCartsCallback;
-            mGetCartsCoroutine.Start(mGetCartsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetCartsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetCartsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetCartsStartTime, "GetCarts", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetCartsCallback(IRestResponse response)
+        private void OnGetCartsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCarts: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCarts: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetCarts: " + response.Error);
             }
 
-            GetCartsData = (PageResourceCartSummary) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceCartSummary), response.Headers);
-            KnetikLogger.LogResponse(mGetCartsStartTime, mGetCartsPath, string.Format("Response received successfully:\n{0}", GetCartsData.ToString()));
+            GetCartsData = (PageResourceCartSummary) KnetikClient.Deserialize(response.Content, typeof(PageResourceCartSummary), response.Headers);
+            KnetikLogger.LogResponse(mGetCartsStartTime, "GetCarts", string.Format("Response received successfully:\n{0}", GetCartsData));
 
             if (GetCartsComplete != null)
             {
-                GetCartsComplete(GetCartsData);
+                GetCartsComplete(response.ResponseCode, GetCartsData);
             }
         }
 
@@ -611,47 +621,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetShippable");
             }
             
-            mGetShippablePath = "/carts/{id}/shippable";
-            if (!string.IsNullOrEmpty(mGetShippablePath))
+            mWebCallEvent.WebPath = "/carts/{id}/shippable";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetShippablePath = mGetShippablePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetShippablePath = mGetShippablePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetShippableStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetShippableStartTime, mGetShippablePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetShippableCoroutine.ResponseReceived += GetShippableCallback;
-            mGetShippableCoroutine.Start(mGetShippablePath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetShippableStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetShippableResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetShippableStartTime, "GetShippable", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetShippableCallback(IRestResponse response)
+        private void OnGetShippableResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetShippable: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetShippable: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetShippable: " + response.Error);
             }
 
-            GetShippableData = (CartShippableResponse) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CartShippableResponse), response.Headers);
-            KnetikLogger.LogResponse(mGetShippableStartTime, mGetShippablePath, string.Format("Response received successfully:\n{0}", GetShippableData.ToString()));
+            GetShippableData = (CartShippableResponse) KnetikClient.Deserialize(response.Content, typeof(CartShippableResponse), response.Headers);
+            KnetikLogger.LogResponse(mGetShippableStartTime, "GetShippable", string.Format("Response received successfully:\n{0}", GetShippableData));
 
             if (GetShippableComplete != null)
             {
-                GetShippableComplete(GetShippableData);
+                GetShippableComplete(response.ResponseCode, GetShippableData);
             }
         }
 
@@ -668,47 +677,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetShippingCountries");
             }
             
-            mGetShippingCountriesPath = "/carts/{id}/countries";
-            if (!string.IsNullOrEmpty(mGetShippingCountriesPath))
+            mWebCallEvent.WebPath = "/carts/{id}/countries";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetShippingCountriesPath = mGetShippingCountriesPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetShippingCountriesPath = mGetShippingCountriesPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetShippingCountriesStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetShippingCountriesStartTime, mGetShippingCountriesPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetShippingCountriesCoroutine.ResponseReceived += GetShippingCountriesCallback;
-            mGetShippingCountriesCoroutine.Start(mGetShippingCountriesPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetShippingCountriesStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetShippingCountriesResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetShippingCountriesStartTime, "GetShippingCountries", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetShippingCountriesCallback(IRestResponse response)
+        private void OnGetShippingCountriesResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetShippingCountries: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetShippingCountries: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetShippingCountries: " + response.Error);
             }
 
-            GetShippingCountriesData = (SampleCountriesResponse) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(SampleCountriesResponse), response.Headers);
-            KnetikLogger.LogResponse(mGetShippingCountriesStartTime, mGetShippingCountriesPath, string.Format("Response received successfully:\n{0}", GetShippingCountriesData.ToString()));
+            GetShippingCountriesData = (SampleCountriesResponse) KnetikClient.Deserialize(response.Content, typeof(SampleCountriesResponse), response.Headers);
+            KnetikLogger.LogResponse(mGetShippingCountriesStartTime, "GetShippingCountries", string.Format("Response received successfully:\n{0}", GetShippingCountriesData));
 
             if (GetShippingCountriesComplete != null)
             {
-                GetShippingCountriesComplete(GetShippingCountriesData);
+                GetShippingCountriesComplete(response.ResponseCode, GetShippingCountriesData);
             }
         }
 
@@ -731,46 +739,45 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'code' when calling RemoveDiscountFromCart");
             }
             
-            mRemoveDiscountFromCartPath = "/carts/{id}/discounts/{code}";
-            if (!string.IsNullOrEmpty(mRemoveDiscountFromCartPath))
+            mWebCallEvent.WebPath = "/carts/{id}/discounts/{code}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mRemoveDiscountFromCartPath = mRemoveDiscountFromCartPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mRemoveDiscountFromCartPath = mRemoveDiscountFromCartPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
-mRemoveDiscountFromCartPath = mRemoveDiscountFromCartPath.Replace("{" + "code" + "}", KnetikClient.DefaultClient.ParameterToString(code));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "code" + "}", KnetikClient.ParameterToString(code));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mRemoveDiscountFromCartStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mRemoveDiscountFromCartStartTime, mRemoveDiscountFromCartPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mRemoveDiscountFromCartCoroutine.ResponseReceived += RemoveDiscountFromCartCallback;
-            mRemoveDiscountFromCartCoroutine.Start(mRemoveDiscountFromCartPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mRemoveDiscountFromCartStartTime = DateTime.Now;
+            mWebCallEvent.Context = mRemoveDiscountFromCartResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mRemoveDiscountFromCartStartTime, "RemoveDiscountFromCart", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void RemoveDiscountFromCartCallback(IRestResponse response)
+        private void OnRemoveDiscountFromCartResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling RemoveDiscountFromCart: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling RemoveDiscountFromCart: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling RemoveDiscountFromCart: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mRemoveDiscountFromCartStartTime, mRemoveDiscountFromCartPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mRemoveDiscountFromCartStartTime, "RemoveDiscountFromCart", "Response received successfully.");
             if (RemoveDiscountFromCartComplete != null)
             {
-                RemoveDiscountFromCartComplete();
+                RemoveDiscountFromCartComplete(response.ResponseCode);
             }
         }
 
@@ -788,47 +795,46 @@ mRemoveDiscountFromCartPath = mRemoveDiscountFromCartPath.Replace("{" + "code" +
                 throw new KnetikException(400, "Missing required parameter 'id' when calling SetCartCurrency");
             }
             
-            mSetCartCurrencyPath = "/carts/{id}/currency";
-            if (!string.IsNullOrEmpty(mSetCartCurrencyPath))
+            mWebCallEvent.WebPath = "/carts/{id}/currency";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mSetCartCurrencyPath = mSetCartCurrencyPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mSetCartCurrencyPath = mSetCartCurrencyPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(currencyCode); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(currencyCode); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mSetCartCurrencyStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mSetCartCurrencyStartTime, mSetCartCurrencyPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mSetCartCurrencyCoroutine.ResponseReceived += SetCartCurrencyCallback;
-            mSetCartCurrencyCoroutine.Start(mSetCartCurrencyPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mSetCartCurrencyStartTime = DateTime.Now;
+            mWebCallEvent.Context = mSetCartCurrencyResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mSetCartCurrencyStartTime, "SetCartCurrency", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void SetCartCurrencyCallback(IRestResponse response)
+        private void OnSetCartCurrencyResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling SetCartCurrency: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling SetCartCurrency: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling SetCartCurrency: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mSetCartCurrencyStartTime, mSetCartCurrencyPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mSetCartCurrencyStartTime, "SetCartCurrency", "Response received successfully.");
             if (SetCartCurrencyComplete != null)
             {
-                SetCartCurrencyComplete();
+                SetCartCurrencyComplete(response.ResponseCode);
             }
         }
 
@@ -846,47 +852,46 @@ mRemoveDiscountFromCartPath = mRemoveDiscountFromCartPath.Replace("{" + "code" +
                 throw new KnetikException(400, "Missing required parameter 'id' when calling SetCartOwner");
             }
             
-            mSetCartOwnerPath = "/carts/{id}/owner";
-            if (!string.IsNullOrEmpty(mSetCartOwnerPath))
+            mWebCallEvent.WebPath = "/carts/{id}/owner";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mSetCartOwnerPath = mSetCartOwnerPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mSetCartOwnerPath = mSetCartOwnerPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(userId); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(userId); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mSetCartOwnerStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mSetCartOwnerStartTime, mSetCartOwnerPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mSetCartOwnerCoroutine.ResponseReceived += SetCartOwnerCallback;
-            mSetCartOwnerCoroutine.Start(mSetCartOwnerPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mSetCartOwnerStartTime = DateTime.Now;
+            mWebCallEvent.Context = mSetCartOwnerResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mSetCartOwnerStartTime, "SetCartOwner", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void SetCartOwnerCallback(IRestResponse response)
+        private void OnSetCartOwnerResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling SetCartOwner: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling SetCartOwner: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling SetCartOwner: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mSetCartOwnerStartTime, mSetCartOwnerPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mSetCartOwnerStartTime, "SetCartOwner", "Response received successfully.");
             if (SetCartOwnerComplete != null)
             {
-                SetCartOwnerComplete();
+                SetCartOwnerComplete(response.ResponseCode);
             }
         }
 
@@ -904,47 +909,46 @@ mRemoveDiscountFromCartPath = mRemoveDiscountFromCartPath.Replace("{" + "code" +
                 throw new KnetikException(400, "Missing required parameter 'id' when calling UpdateItemInCart");
             }
             
-            mUpdateItemInCartPath = "/carts/{id}/items";
-            if (!string.IsNullOrEmpty(mUpdateItemInCartPath))
+            mWebCallEvent.WebPath = "/carts/{id}/items";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateItemInCartPath = mUpdateItemInCartPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateItemInCartPath = mUpdateItemInCartPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(cartItemRequest); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(cartItemRequest); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateItemInCartStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateItemInCartStartTime, mUpdateItemInCartPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateItemInCartCoroutine.ResponseReceived += UpdateItemInCartCallback;
-            mUpdateItemInCartCoroutine.Start(mUpdateItemInCartPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateItemInCartStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateItemInCartResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateItemInCartStartTime, "UpdateItemInCart", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateItemInCartCallback(IRestResponse response)
+        private void OnUpdateItemInCartResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateItemInCart: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateItemInCart: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateItemInCart: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mUpdateItemInCartStartTime, mUpdateItemInCartPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mUpdateItemInCartStartTime, "UpdateItemInCart", "Response received successfully.");
             if (UpdateItemInCartComplete != null)
             {
-                UpdateItemInCartComplete();
+                UpdateItemInCartComplete(response.ResponseCode);
             }
         }
 
@@ -962,47 +966,46 @@ mRemoveDiscountFromCartPath = mRemoveDiscountFromCartPath.Replace("{" + "code" +
                 throw new KnetikException(400, "Missing required parameter 'id' when calling UpdateShippingAddress");
             }
             
-            mUpdateShippingAddressPath = "/carts/{id}/shipping-address";
-            if (!string.IsNullOrEmpty(mUpdateShippingAddressPath))
+            mWebCallEvent.WebPath = "/carts/{id}/shipping-address";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateShippingAddressPath = mUpdateShippingAddressPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateShippingAddressPath = mUpdateShippingAddressPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(cartShippingAddressRequest); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(cartShippingAddressRequest); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateShippingAddressStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateShippingAddressStartTime, mUpdateShippingAddressPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateShippingAddressCoroutine.ResponseReceived += UpdateShippingAddressCallback;
-            mUpdateShippingAddressCoroutine.Start(mUpdateShippingAddressPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateShippingAddressStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateShippingAddressResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateShippingAddressStartTime, "UpdateShippingAddress", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateShippingAddressCallback(IRestResponse response)
+        private void OnUpdateShippingAddressResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateShippingAddress: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateShippingAddress: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateShippingAddress: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mUpdateShippingAddressStartTime, mUpdateShippingAddressPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mUpdateShippingAddressStartTime, "UpdateShippingAddress", "Response received successfully.");
             if (UpdateShippingAddressComplete != null)
             {
-                UpdateShippingAddressComplete();
+                UpdateShippingAddressComplete(response.ResponseCode);
             }
         }
 

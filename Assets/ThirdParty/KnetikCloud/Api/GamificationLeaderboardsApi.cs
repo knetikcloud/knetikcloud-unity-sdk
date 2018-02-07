@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,11 +18,6 @@ namespace com.knetikcloud.Api
     {
         LeaderboardResource GetLeaderboardData { get; }
 
-        LeaderboardEntryResource GetLeaderboardRankData { get; }
-
-        List<string> GetLeaderboardStrategiesData { get; }
-
-        
         /// <summary>
         /// Retrieves leaderboard details and paginated entries The context type identifies the type of entity (i.e., &#39;activity&#39;) being tracked on the leaderboard. The context ID is the unique ID of the actual entity tracked by the leaderboard. Sorting is based on the fields of LeaderboardEntryResource rather than the returned LeaderboardResource.
         /// </summary>
@@ -34,6 +28,8 @@ namespace com.knetikcloud.Api
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
         void GetLeaderboard(string contextType, string contextId, int? size, int? page, string order);
 
+        LeaderboardEntryResource GetLeaderboardRankData { get; }
+
         /// <summary>
         /// Retrieves a specific user entry with rank The context type identifies the type of entity (i.e., &#39;activity&#39;) being tracked on the leaderboard. The context ID is the unique ID of the actual entity tracked by the leaderboard
         /// </summary>
@@ -41,6 +37,8 @@ namespace com.knetikcloud.Api
         /// <param name="contextId">The context id for the leaderboard</param>
         /// <param name="id">The id of a user</param>
         void GetLeaderboardRank(string contextType, string contextId, string id);
+
+        List<string> GetLeaderboardStrategiesData { get; }
 
         /// <summary>
         /// Get a list of available leaderboard strategy names 
@@ -55,26 +53,25 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class GamificationLeaderboardsApi : IGamificationLeaderboardsApi
     {
-        private readonly KnetikCoroutine mGetLeaderboardCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mGetLeaderboardResponseContext;
         private DateTime mGetLeaderboardStartTime;
-        private string mGetLeaderboardPath;
-        private readonly KnetikCoroutine mGetLeaderboardRankCoroutine;
+        private readonly KnetikResponseContext mGetLeaderboardRankResponseContext;
         private DateTime mGetLeaderboardRankStartTime;
-        private string mGetLeaderboardRankPath;
-        private readonly KnetikCoroutine mGetLeaderboardStrategiesCoroutine;
+        private readonly KnetikResponseContext mGetLeaderboardStrategiesResponseContext;
         private DateTime mGetLeaderboardStrategiesStartTime;
-        private string mGetLeaderboardStrategiesPath;
 
         public LeaderboardResource GetLeaderboardData { get; private set; }
-        public delegate void GetLeaderboardCompleteDelegate(LeaderboardResource response);
+        public delegate void GetLeaderboardCompleteDelegate(long responseCode, LeaderboardResource response);
         public GetLeaderboardCompleteDelegate GetLeaderboardComplete;
 
         public LeaderboardEntryResource GetLeaderboardRankData { get; private set; }
-        public delegate void GetLeaderboardRankCompleteDelegate(LeaderboardEntryResource response);
+        public delegate void GetLeaderboardRankCompleteDelegate(long responseCode, LeaderboardEntryResource response);
         public GetLeaderboardRankCompleteDelegate GetLeaderboardRankComplete;
 
         public List<string> GetLeaderboardStrategiesData { get; private set; }
-        public delegate void GetLeaderboardStrategiesCompleteDelegate(List<string> response);
+        public delegate void GetLeaderboardStrategiesCompleteDelegate(long responseCode, List<string> response);
         public GetLeaderboardStrategiesCompleteDelegate GetLeaderboardStrategiesComplete;
 
         /// <summary>
@@ -83,9 +80,12 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public GamificationLeaderboardsApi()
         {
-            mGetLeaderboardCoroutine = new KnetikCoroutine();
-            mGetLeaderboardRankCoroutine = new KnetikCoroutine();
-            mGetLeaderboardStrategiesCoroutine = new KnetikCoroutine();
+            mGetLeaderboardResponseContext = new KnetikResponseContext();
+            mGetLeaderboardResponseContext.ResponseReceived += OnGetLeaderboardResponse;
+            mGetLeaderboardRankResponseContext = new KnetikResponseContext();
+            mGetLeaderboardRankResponseContext.ResponseReceived += OnGetLeaderboardRankResponse;
+            mGetLeaderboardStrategiesResponseContext = new KnetikResponseContext();
+            mGetLeaderboardStrategiesResponseContext.ResponseReceived += OnGetLeaderboardStrategiesResponse;
         }
     
         /// <inheritdoc />
@@ -110,63 +110,62 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'contextId' when calling GetLeaderboard");
             }
             
-            mGetLeaderboardPath = "/leaderboards/{context_type}/{context_id}";
-            if (!string.IsNullOrEmpty(mGetLeaderboardPath))
+            mWebCallEvent.WebPath = "/leaderboards/{context_type}/{context_id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetLeaderboardPath = mGetLeaderboardPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetLeaderboardPath = mGetLeaderboardPath.Replace("{" + "context_type" + "}", KnetikClient.DefaultClient.ParameterToString(contextType));
-mGetLeaderboardPath = mGetLeaderboardPath.Replace("{" + "context_id" + "}", KnetikClient.DefaultClient.ParameterToString(contextId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "context_type" + "}", KnetikClient.ParameterToString(contextType));
+mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "context_id" + "}", KnetikClient.ParameterToString(contextId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetLeaderboardStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetLeaderboardStartTime, mGetLeaderboardPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetLeaderboardCoroutine.ResponseReceived += GetLeaderboardCallback;
-            mGetLeaderboardCoroutine.Start(mGetLeaderboardPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetLeaderboardStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetLeaderboardResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetLeaderboardStartTime, "GetLeaderboard", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetLeaderboardCallback(IRestResponse response)
+        private void OnGetLeaderboardResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetLeaderboard: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetLeaderboard: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetLeaderboard: " + response.Error);
             }
 
-            GetLeaderboardData = (LeaderboardResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(LeaderboardResource), response.Headers);
-            KnetikLogger.LogResponse(mGetLeaderboardStartTime, mGetLeaderboardPath, string.Format("Response received successfully:\n{0}", GetLeaderboardData.ToString()));
+            GetLeaderboardData = (LeaderboardResource) KnetikClient.Deserialize(response.Content, typeof(LeaderboardResource), response.Headers);
+            KnetikLogger.LogResponse(mGetLeaderboardStartTime, "GetLeaderboard", string.Format("Response received successfully:\n{0}", GetLeaderboardData));
 
             if (GetLeaderboardComplete != null)
             {
-                GetLeaderboardComplete(GetLeaderboardData);
+                GetLeaderboardComplete(response.ResponseCode, GetLeaderboardData);
             }
         }
 
@@ -195,49 +194,48 @@ mGetLeaderboardPath = mGetLeaderboardPath.Replace("{" + "context_id" + "}", Knet
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetLeaderboardRank");
             }
             
-            mGetLeaderboardRankPath = "/leaderboards/{context_type}/{context_id}/users/{id}/rank";
-            if (!string.IsNullOrEmpty(mGetLeaderboardRankPath))
+            mWebCallEvent.WebPath = "/leaderboards/{context_type}/{context_id}/users/{id}/rank";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetLeaderboardRankPath = mGetLeaderboardRankPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetLeaderboardRankPath = mGetLeaderboardRankPath.Replace("{" + "context_type" + "}", KnetikClient.DefaultClient.ParameterToString(contextType));
-mGetLeaderboardRankPath = mGetLeaderboardRankPath.Replace("{" + "context_id" + "}", KnetikClient.DefaultClient.ParameterToString(contextId));
-mGetLeaderboardRankPath = mGetLeaderboardRankPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "context_type" + "}", KnetikClient.ParameterToString(contextType));
+mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "context_id" + "}", KnetikClient.ParameterToString(contextId));
+mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetLeaderboardRankStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetLeaderboardRankStartTime, mGetLeaderboardRankPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetLeaderboardRankCoroutine.ResponseReceived += GetLeaderboardRankCallback;
-            mGetLeaderboardRankCoroutine.Start(mGetLeaderboardRankPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetLeaderboardRankStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetLeaderboardRankResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetLeaderboardRankStartTime, "GetLeaderboardRank", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetLeaderboardRankCallback(IRestResponse response)
+        private void OnGetLeaderboardRankResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetLeaderboardRank: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetLeaderboardRank: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetLeaderboardRank: " + response.Error);
             }
 
-            GetLeaderboardRankData = (LeaderboardEntryResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(LeaderboardEntryResource), response.Headers);
-            KnetikLogger.LogResponse(mGetLeaderboardRankStartTime, mGetLeaderboardRankPath, string.Format("Response received successfully:\n{0}", GetLeaderboardRankData.ToString()));
+            GetLeaderboardRankData = (LeaderboardEntryResource) KnetikClient.Deserialize(response.Content, typeof(LeaderboardEntryResource), response.Headers);
+            KnetikLogger.LogResponse(mGetLeaderboardRankStartTime, "GetLeaderboardRank", string.Format("Response received successfully:\n{0}", GetLeaderboardRankData));
 
             if (GetLeaderboardRankComplete != null)
             {
-                GetLeaderboardRankComplete(GetLeaderboardRankData);
+                GetLeaderboardRankComplete(response.ResponseCode, GetLeaderboardRankData);
             }
         }
 
@@ -248,46 +246,45 @@ mGetLeaderboardRankPath = mGetLeaderboardRankPath.Replace("{" + "id" + "}", Knet
         public void GetLeaderboardStrategies()
         {
             
-            mGetLeaderboardStrategiesPath = "/leaderboards/strategies";
-            if (!string.IsNullOrEmpty(mGetLeaderboardStrategiesPath))
+            mWebCallEvent.WebPath = "/leaderboards/strategies";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetLeaderboardStrategiesPath = mGetLeaderboardStrategiesPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetLeaderboardStrategiesStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetLeaderboardStrategiesStartTime, mGetLeaderboardStrategiesPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetLeaderboardStrategiesCoroutine.ResponseReceived += GetLeaderboardStrategiesCallback;
-            mGetLeaderboardStrategiesCoroutine.Start(mGetLeaderboardStrategiesPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetLeaderboardStrategiesStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetLeaderboardStrategiesResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetLeaderboardStrategiesStartTime, "GetLeaderboardStrategies", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetLeaderboardStrategiesCallback(IRestResponse response)
+        private void OnGetLeaderboardStrategiesResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetLeaderboardStrategies: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetLeaderboardStrategies: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetLeaderboardStrategies: " + response.Error);
             }
 
-            GetLeaderboardStrategiesData = (List<string>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<string>), response.Headers);
-            KnetikLogger.LogResponse(mGetLeaderboardStrategiesStartTime, mGetLeaderboardStrategiesPath, string.Format("Response received successfully:\n{0}", GetLeaderboardStrategiesData.ToString()));
+            GetLeaderboardStrategiesData = (List<string>) KnetikClient.Deserialize(response.Content, typeof(List<string>), response.Headers);
+            KnetikLogger.LogResponse(mGetLeaderboardStrategiesStartTime, "GetLeaderboardStrategies", string.Format("Response received successfully:\n{0}", GetLeaderboardStrategiesData));
 
             if (GetLeaderboardStrategiesComplete != null)
             {
-                GetLeaderboardStrategiesComplete(GetLeaderboardStrategiesData);
+                GetLeaderboardStrategiesComplete(response.ResponseCode, GetLeaderboardStrategiesData);
             }
         }
 

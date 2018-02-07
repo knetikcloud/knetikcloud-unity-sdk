@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,18 +18,13 @@ namespace com.knetikcloud.Api
     {
         CommentResource AddCommentData { get; }
 
-        CommentResource GetCommentData { get; }
-
-        PageResourceCommentResource GetCommentsData { get; }
-
-        PageResourceCommentResource SearchCommentsData { get; }
-
-        
         /// <summary>
         /// Add a new comment 
         /// </summary>
         /// <param name="commentResource">The comment to be added</param>
         void AddComment(CommentResource commentResource);
+
+        
 
         /// <summary>
         /// Delete a comment 
@@ -38,11 +32,15 @@ namespace com.knetikcloud.Api
         /// <param name="id">The comment id</param>
         void DeleteComment(long? id);
 
+        CommentResource GetCommentData { get; }
+
         /// <summary>
         /// Return a comment 
         /// </summary>
         /// <param name="id">The comment id</param>
         void GetComment(long? id);
+
+        PageResourceCommentResource GetCommentsData { get; }
 
         /// <summary>
         /// Returns a page of comments 
@@ -53,13 +51,7 @@ namespace com.knetikcloud.Api
         /// <param name="page">The number of the page returned, starting with 1</param>
         void GetComments(string context, int? contextId, int? size, int? page);
 
-        /// <summary>
-        /// Search the comment index The body is an ElasticSearch query json. Please see their &lt;a href&#x3D;&#39;https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html&#39;&gt;documentation&lt;/a&gt; for details on the format and search options
-        /// </summary>
-        /// <param name="query">The search query</param>
-        /// <param name="size">The number of objects returned per page</param>
-        /// <param name="page">The number of the page returned, starting with 1</param>
-        void SearchComments(Object query, int? size, int? page);
+        
 
         /// <summary>
         /// Update a comment 
@@ -76,45 +68,35 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class ContentCommentsApi : IContentCommentsApi
     {
-        private readonly KnetikCoroutine mAddCommentCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mAddCommentResponseContext;
         private DateTime mAddCommentStartTime;
-        private string mAddCommentPath;
-        private readonly KnetikCoroutine mDeleteCommentCoroutine;
+        private readonly KnetikResponseContext mDeleteCommentResponseContext;
         private DateTime mDeleteCommentStartTime;
-        private string mDeleteCommentPath;
-        private readonly KnetikCoroutine mGetCommentCoroutine;
+        private readonly KnetikResponseContext mGetCommentResponseContext;
         private DateTime mGetCommentStartTime;
-        private string mGetCommentPath;
-        private readonly KnetikCoroutine mGetCommentsCoroutine;
+        private readonly KnetikResponseContext mGetCommentsResponseContext;
         private DateTime mGetCommentsStartTime;
-        private string mGetCommentsPath;
-        private readonly KnetikCoroutine mSearchCommentsCoroutine;
-        private DateTime mSearchCommentsStartTime;
-        private string mSearchCommentsPath;
-        private readonly KnetikCoroutine mUpdateCommentCoroutine;
+        private readonly KnetikResponseContext mUpdateCommentResponseContext;
         private DateTime mUpdateCommentStartTime;
-        private string mUpdateCommentPath;
 
         public CommentResource AddCommentData { get; private set; }
-        public delegate void AddCommentCompleteDelegate(CommentResource response);
+        public delegate void AddCommentCompleteDelegate(long responseCode, CommentResource response);
         public AddCommentCompleteDelegate AddCommentComplete;
 
-        public delegate void DeleteCommentCompleteDelegate();
+        public delegate void DeleteCommentCompleteDelegate(long responseCode);
         public DeleteCommentCompleteDelegate DeleteCommentComplete;
 
         public CommentResource GetCommentData { get; private set; }
-        public delegate void GetCommentCompleteDelegate(CommentResource response);
+        public delegate void GetCommentCompleteDelegate(long responseCode, CommentResource response);
         public GetCommentCompleteDelegate GetCommentComplete;
 
         public PageResourceCommentResource GetCommentsData { get; private set; }
-        public delegate void GetCommentsCompleteDelegate(PageResourceCommentResource response);
+        public delegate void GetCommentsCompleteDelegate(long responseCode, PageResourceCommentResource response);
         public GetCommentsCompleteDelegate GetCommentsComplete;
 
-        public PageResourceCommentResource SearchCommentsData { get; private set; }
-        public delegate void SearchCommentsCompleteDelegate(PageResourceCommentResource response);
-        public SearchCommentsCompleteDelegate SearchCommentsComplete;
-
-        public delegate void UpdateCommentCompleteDelegate();
+        public delegate void UpdateCommentCompleteDelegate(long responseCode);
         public UpdateCommentCompleteDelegate UpdateCommentComplete;
 
         /// <summary>
@@ -123,12 +105,16 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public ContentCommentsApi()
         {
-            mAddCommentCoroutine = new KnetikCoroutine();
-            mDeleteCommentCoroutine = new KnetikCoroutine();
-            mGetCommentCoroutine = new KnetikCoroutine();
-            mGetCommentsCoroutine = new KnetikCoroutine();
-            mSearchCommentsCoroutine = new KnetikCoroutine();
-            mUpdateCommentCoroutine = new KnetikCoroutine();
+            mAddCommentResponseContext = new KnetikResponseContext();
+            mAddCommentResponseContext.ResponseReceived += OnAddCommentResponse;
+            mDeleteCommentResponseContext = new KnetikResponseContext();
+            mDeleteCommentResponseContext.ResponseReceived += OnDeleteCommentResponse;
+            mGetCommentResponseContext = new KnetikResponseContext();
+            mGetCommentResponseContext.ResponseReceived += OnGetCommentResponse;
+            mGetCommentsResponseContext = new KnetikResponseContext();
+            mGetCommentsResponseContext.ResponseReceived += OnGetCommentsResponse;
+            mUpdateCommentResponseContext = new KnetikResponseContext();
+            mUpdateCommentResponseContext.ResponseReceived += OnUpdateCommentResponse;
         }
     
         /// <inheritdoc />
@@ -139,48 +125,47 @@ namespace com.knetikcloud.Api
         public void AddComment(CommentResource commentResource)
         {
             
-            mAddCommentPath = "/comments";
-            if (!string.IsNullOrEmpty(mAddCommentPath))
+            mWebCallEvent.WebPath = "/comments";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mAddCommentPath = mAddCommentPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(commentResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(commentResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mAddCommentStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mAddCommentStartTime, mAddCommentPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mAddCommentCoroutine.ResponseReceived += AddCommentCallback;
-            mAddCommentCoroutine.Start(mAddCommentPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mAddCommentStartTime = DateTime.Now;
+            mWebCallEvent.Context = mAddCommentResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mAddCommentStartTime, "AddComment", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void AddCommentCallback(IRestResponse response)
+        private void OnAddCommentResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling AddComment: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling AddComment: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling AddComment: " + response.Error);
             }
 
-            AddCommentData = (CommentResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CommentResource), response.Headers);
-            KnetikLogger.LogResponse(mAddCommentStartTime, mAddCommentPath, string.Format("Response received successfully:\n{0}", AddCommentData.ToString()));
+            AddCommentData = (CommentResource) KnetikClient.Deserialize(response.Content, typeof(CommentResource), response.Headers);
+            KnetikLogger.LogResponse(mAddCommentStartTime, "AddComment", string.Format("Response received successfully:\n{0}", AddCommentData));
 
             if (AddCommentComplete != null)
             {
-                AddCommentComplete(AddCommentData);
+                AddCommentComplete(response.ResponseCode, AddCommentData);
             }
         }
 
@@ -197,45 +182,44 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeleteComment");
             }
             
-            mDeleteCommentPath = "/comments/{id}";
-            if (!string.IsNullOrEmpty(mDeleteCommentPath))
+            mWebCallEvent.WebPath = "/comments/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteCommentPath = mDeleteCommentPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteCommentPath = mDeleteCommentPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteCommentStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteCommentStartTime, mDeleteCommentPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteCommentCoroutine.ResponseReceived += DeleteCommentCallback;
-            mDeleteCommentCoroutine.Start(mDeleteCommentPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteCommentStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteCommentResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteCommentStartTime, "DeleteComment", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteCommentCallback(IRestResponse response)
+        private void OnDeleteCommentResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteComment: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteComment: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteComment: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteCommentStartTime, mDeleteCommentPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteCommentStartTime, "DeleteComment", "Response received successfully.");
             if (DeleteCommentComplete != null)
             {
-                DeleteCommentComplete();
+                DeleteCommentComplete(response.ResponseCode);
             }
         }
 
@@ -252,47 +236,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetComment");
             }
             
-            mGetCommentPath = "/comments/{id}";
-            if (!string.IsNullOrEmpty(mGetCommentPath))
+            mWebCallEvent.WebPath = "/comments/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetCommentPath = mGetCommentPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetCommentPath = mGetCommentPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetCommentStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetCommentStartTime, mGetCommentPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetCommentCoroutine.ResponseReceived += GetCommentCallback;
-            mGetCommentCoroutine.Start(mGetCommentPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetCommentStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetCommentResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetCommentStartTime, "GetComment", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetCommentCallback(IRestResponse response)
+        private void OnGetCommentResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetComment: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetComment: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetComment: " + response.Error);
             }
 
-            GetCommentData = (CommentResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CommentResource), response.Headers);
-            KnetikLogger.LogResponse(mGetCommentStartTime, mGetCommentPath, string.Format("Response received successfully:\n{0}", GetCommentData.ToString()));
+            GetCommentData = (CommentResource) KnetikClient.Deserialize(response.Content, typeof(CommentResource), response.Headers);
+            KnetikLogger.LogResponse(mGetCommentStartTime, "GetComment", string.Format("Response received successfully:\n{0}", GetCommentData));
 
             if (GetCommentComplete != null)
             {
-                GetCommentComplete(GetCommentData);
+                GetCommentComplete(response.ResponseCode, GetCommentData);
             }
         }
 
@@ -317,131 +300,65 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'contextId' when calling GetComments");
             }
             
-            mGetCommentsPath = "/comments";
-            if (!string.IsNullOrEmpty(mGetCommentsPath))
+            mWebCallEvent.WebPath = "/comments";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetCommentsPath = mGetCommentsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (context != null)
             {
-                queryParams.Add("context", KnetikClient.DefaultClient.ParameterToString(context));
+                mWebCallEvent.QueryParams["context"] = KnetikClient.ParameterToString(context);
             }
 
             if (contextId != null)
             {
-                queryParams.Add("context_id", KnetikClient.DefaultClient.ParameterToString(contextId));
+                mWebCallEvent.QueryParams["context_id"] = KnetikClient.ParameterToString(contextId);
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetCommentsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetCommentsStartTime, mGetCommentsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetCommentsCoroutine.ResponseReceived += GetCommentsCallback;
-            mGetCommentsCoroutine.Start(mGetCommentsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetCommentsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetCommentsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetCommentsStartTime, "GetComments", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetCommentsCallback(IRestResponse response)
+        private void OnGetCommentsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetComments: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetComments: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetComments: " + response.Error);
             }
 
-            GetCommentsData = (PageResourceCommentResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceCommentResource), response.Headers);
-            KnetikLogger.LogResponse(mGetCommentsStartTime, mGetCommentsPath, string.Format("Response received successfully:\n{0}", GetCommentsData.ToString()));
+            GetCommentsData = (PageResourceCommentResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceCommentResource), response.Headers);
+            KnetikLogger.LogResponse(mGetCommentsStartTime, "GetComments", string.Format("Response received successfully:\n{0}", GetCommentsData));
 
             if (GetCommentsComplete != null)
             {
-                GetCommentsComplete(GetCommentsData);
-            }
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        /// Search the comment index The body is an ElasticSearch query json. Please see their &lt;a href&#x3D;&#39;https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html&#39;&gt;documentation&lt;/a&gt; for details on the format and search options
-        /// </summary>
-        /// <param name="query">The search query</param>
-        /// <param name="size">The number of objects returned per page</param>
-        /// <param name="page">The number of the page returned, starting with 1</param>
-        public void SearchComments(Object query, int? size, int? page)
-        {
-            
-            mSearchCommentsPath = "/comments/search";
-            if (!string.IsNullOrEmpty(mSearchCommentsPath))
-            {
-                mSearchCommentsPath = mSearchCommentsPath.Replace("{format}", "json");
-            }
-            
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
-
-            if (size != null)
-            {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
-            }
-
-            if (page != null)
-            {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
-            }
-
-            postBody = KnetikClient.DefaultClient.Serialize(query); // http body (model) parameter
- 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
-
-            mSearchCommentsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mSearchCommentsStartTime, mSearchCommentsPath, "Sending server request...");
-
-            // make the HTTP request
-            mSearchCommentsCoroutine.ResponseReceived += SearchCommentsCallback;
-            mSearchCommentsCoroutine.Start(mSearchCommentsPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-        }
-
-        private void SearchCommentsCallback(IRestResponse response)
-        {
-            if (((int)response.StatusCode) >= 400)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling SearchComments: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling SearchComments: " + response.ErrorMessage, response.ErrorMessage);
-            }
-
-            SearchCommentsData = (PageResourceCommentResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceCommentResource), response.Headers);
-            KnetikLogger.LogResponse(mSearchCommentsStartTime, mSearchCommentsPath, string.Format("Response received successfully:\n{0}", SearchCommentsData.ToString()));
-
-            if (SearchCommentsComplete != null)
-            {
-                SearchCommentsComplete(SearchCommentsData);
+                GetCommentsComplete(response.ResponseCode, GetCommentsData);
             }
         }
 
@@ -459,47 +376,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling UpdateComment");
             }
             
-            mUpdateCommentPath = "/comments/{id}/content";
-            if (!string.IsNullOrEmpty(mUpdateCommentPath))
+            mWebCallEvent.WebPath = "/comments/{id}/content";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateCommentPath = mUpdateCommentPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateCommentPath = mUpdateCommentPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(content); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(content); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateCommentStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateCommentStartTime, mUpdateCommentPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateCommentCoroutine.ResponseReceived += UpdateCommentCallback;
-            mUpdateCommentCoroutine.Start(mUpdateCommentPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateCommentStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateCommentResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateCommentStartTime, "UpdateComment", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateCommentCallback(IRestResponse response)
+        private void OnUpdateCommentResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateComment: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateComment: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateComment: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mUpdateCommentStartTime, mUpdateCommentPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mUpdateCommentStartTime, "UpdateComment", "Response received successfully.");
             if (UpdateCommentComplete != null)
             {
-                UpdateCommentComplete();
+                UpdateCommentComplete(response.ResponseCode);
             }
         }
 

@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,9 +18,6 @@ namespace com.knetikcloud.Api
     {
         PageResourceLocationLogResource GetUserLocationLogData { get; }
 
-        TokenDetailsResource GetUserTokenDetailsData { get; }
-
-        
         /// <summary>
         /// Returns the authentication log for a user A log entry is recorded everytime a user requests a new token. Standard pagination available
         /// </summary>
@@ -30,6 +26,8 @@ namespace com.knetikcloud.Api
         /// <param name="page">The number of the page returned, starting with 1</param>
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
         void GetUserLocationLog(int? userId, int? size, int? page, string order);
+
+        TokenDetailsResource GetUserTokenDetailsData { get; }
 
         /// <summary>
         /// Returns the authentication token details. Use /users endpoint for detailed user&#39;s info 
@@ -44,19 +42,19 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class UtilSecurityApi : IUtilSecurityApi
     {
-        private readonly KnetikCoroutine mGetUserLocationLogCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mGetUserLocationLogResponseContext;
         private DateTime mGetUserLocationLogStartTime;
-        private string mGetUserLocationLogPath;
-        private readonly KnetikCoroutine mGetUserTokenDetailsCoroutine;
+        private readonly KnetikResponseContext mGetUserTokenDetailsResponseContext;
         private DateTime mGetUserTokenDetailsStartTime;
-        private string mGetUserTokenDetailsPath;
 
         public PageResourceLocationLogResource GetUserLocationLogData { get; private set; }
-        public delegate void GetUserLocationLogCompleteDelegate(PageResourceLocationLogResource response);
+        public delegate void GetUserLocationLogCompleteDelegate(long responseCode, PageResourceLocationLogResource response);
         public GetUserLocationLogCompleteDelegate GetUserLocationLogComplete;
 
         public TokenDetailsResource GetUserTokenDetailsData { get; private set; }
-        public delegate void GetUserTokenDetailsCompleteDelegate(TokenDetailsResource response);
+        public delegate void GetUserTokenDetailsCompleteDelegate(long responseCode, TokenDetailsResource response);
         public GetUserTokenDetailsCompleteDelegate GetUserTokenDetailsComplete;
 
         /// <summary>
@@ -65,8 +63,10 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public UtilSecurityApi()
         {
-            mGetUserLocationLogCoroutine = new KnetikCoroutine();
-            mGetUserTokenDetailsCoroutine = new KnetikCoroutine();
+            mGetUserLocationLogResponseContext = new KnetikResponseContext();
+            mGetUserLocationLogResponseContext.ResponseReceived += OnGetUserLocationLogResponse;
+            mGetUserTokenDetailsResponseContext = new KnetikResponseContext();
+            mGetUserTokenDetailsResponseContext.ResponseReceived += OnGetUserTokenDetailsResponse;
         }
     
         /// <inheritdoc />
@@ -80,66 +80,65 @@ namespace com.knetikcloud.Api
         public void GetUserLocationLog(int? userId, int? size, int? page, string order)
         {
             
-            mGetUserLocationLogPath = "/security/country-log";
-            if (!string.IsNullOrEmpty(mGetUserLocationLogPath))
+            mWebCallEvent.WebPath = "/security/country-log";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetUserLocationLogPath = mGetUserLocationLogPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (userId != null)
             {
-                queryParams.Add("user_id", KnetikClient.DefaultClient.ParameterToString(userId));
+                mWebCallEvent.QueryParams["user_id"] = KnetikClient.ParameterToString(userId);
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetUserLocationLogStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetUserLocationLogStartTime, mGetUserLocationLogPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetUserLocationLogCoroutine.ResponseReceived += GetUserLocationLogCallback;
-            mGetUserLocationLogCoroutine.Start(mGetUserLocationLogPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetUserLocationLogStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetUserLocationLogResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetUserLocationLogStartTime, "GetUserLocationLog", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetUserLocationLogCallback(IRestResponse response)
+        private void OnGetUserLocationLogResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUserLocationLog: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUserLocationLog: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetUserLocationLog: " + response.Error);
             }
 
-            GetUserLocationLogData = (PageResourceLocationLogResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceLocationLogResource), response.Headers);
-            KnetikLogger.LogResponse(mGetUserLocationLogStartTime, mGetUserLocationLogPath, string.Format("Response received successfully:\n{0}", GetUserLocationLogData.ToString()));
+            GetUserLocationLogData = (PageResourceLocationLogResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceLocationLogResource), response.Headers);
+            KnetikLogger.LogResponse(mGetUserLocationLogStartTime, "GetUserLocationLog", string.Format("Response received successfully:\n{0}", GetUserLocationLogData));
 
             if (GetUserLocationLogComplete != null)
             {
-                GetUserLocationLogComplete(GetUserLocationLogData);
+                GetUserLocationLogComplete(response.ResponseCode, GetUserLocationLogData);
             }
         }
 
@@ -150,46 +149,45 @@ namespace com.knetikcloud.Api
         public void GetUserTokenDetails()
         {
             
-            mGetUserTokenDetailsPath = "/me";
-            if (!string.IsNullOrEmpty(mGetUserTokenDetailsPath))
+            mWebCallEvent.WebPath = "/me";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetUserTokenDetailsPath = mGetUserTokenDetailsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetUserTokenDetailsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetUserTokenDetailsStartTime, mGetUserTokenDetailsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetUserTokenDetailsCoroutine.ResponseReceived += GetUserTokenDetailsCallback;
-            mGetUserTokenDetailsCoroutine.Start(mGetUserTokenDetailsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetUserTokenDetailsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetUserTokenDetailsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetUserTokenDetailsStartTime, "GetUserTokenDetails", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetUserTokenDetailsCallback(IRestResponse response)
+        private void OnGetUserTokenDetailsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUserTokenDetails: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUserTokenDetails: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetUserTokenDetails: " + response.Error);
             }
 
-            GetUserTokenDetailsData = (TokenDetailsResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TokenDetailsResource), response.Headers);
-            KnetikLogger.LogResponse(mGetUserTokenDetailsStartTime, mGetUserTokenDetailsPath, string.Format("Response received successfully:\n{0}", GetUserTokenDetailsData.ToString()));
+            GetUserTokenDetailsData = (TokenDetailsResource) KnetikClient.Deserialize(response.Content, typeof(TokenDetailsResource), response.Headers);
+            KnetikLogger.LogResponse(mGetUserTokenDetailsStartTime, "GetUserTokenDetails", string.Format("Response received successfully:\n{0}", GetUserTokenDetailsData));
 
             if (GetUserTokenDetailsComplete != null)
             {
-                GetUserTokenDetailsComplete(GetUserTokenDetailsData);
+                GetUserTokenDetailsComplete(response.ResponseCode, GetUserTokenDetailsData);
             }
         }
 

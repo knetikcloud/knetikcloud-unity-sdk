@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -17,25 +16,8 @@ namespace com.knetikcloud.Api
     /// </summary>
     public interface ICampaignsApi
     {
-        CampaignResource CreateCampaignData { get; }
-
-        TemplateResource CreateCampaignTemplateData { get; }
-
-        CampaignResource GetCampaignData { get; }
-
-        PageResourceChallengeResource GetCampaignChallengesData { get; }
-
-        TemplateResource GetCampaignTemplateData { get; }
-
-        PageResourceTemplateResource GetCampaignTemplatesData { get; }
-
-        PageResourceCampaignResource GetCampaignsData { get; }
-
-        CampaignResource UpdateCampaignData { get; }
-
-        TemplateResource UpdateCampaignTemplateData { get; }
-
         
+
         /// <summary>
         /// Add a challenge to a campaign 
         /// </summary>
@@ -43,11 +25,15 @@ namespace com.knetikcloud.Api
         /// <param name="challengeId">The id of the challenge</param>
         void AddChallengeToCampaign(long? id, long? challengeId);
 
+        CampaignResource CreateCampaignData { get; }
+
         /// <summary>
         /// Create a campaign 
         /// </summary>
         /// <param name="campaignResource">The campaign resource object</param>
         void CreateCampaign(CampaignResource campaignResource);
+
+        TemplateResource CreateCampaignTemplateData { get; }
 
         /// <summary>
         /// Create a campaign template Campaign Templates define a type of campaign and the properties they have
@@ -55,11 +41,15 @@ namespace com.knetikcloud.Api
         /// <param name="campaignTemplateResource">The campaign template resource object</param>
         void CreateCampaignTemplate(TemplateResource campaignTemplateResource);
 
+        
+
         /// <summary>
         /// Delete a campaign 
         /// </summary>
         /// <param name="id">The campaign id</param>
         void DeleteCampaign(long? id);
+
+        
 
         /// <summary>
         /// Delete a campaign template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
@@ -68,11 +58,15 @@ namespace com.knetikcloud.Api
         /// <param name="cascade">The value needed to delete used templates</param>
         void DeleteCampaignTemplate(string id, string cascade);
 
+        CampaignResource GetCampaignData { get; }
+
         /// <summary>
         /// Returns a single campaign 
         /// </summary>
         /// <param name="id">The campaign id</param>
         void GetCampaign(long? id);
+
+        PageResourceChallengeResource GetCampaignChallengesData { get; }
 
         /// <summary>
         /// List the challenges associated with a campaign 
@@ -85,11 +79,15 @@ namespace com.knetikcloud.Api
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
         void GetCampaignChallenges(long? id, string filterStartDate, string filterEndDate, int? size, int? page, string order);
 
+        TemplateResource GetCampaignTemplateData { get; }
+
         /// <summary>
         /// Get a single campaign template 
         /// </summary>
         /// <param name="id">The id of the template</param>
         void GetCampaignTemplate(string id);
+
+        PageResourceTemplateResource GetCampaignTemplatesData { get; }
 
         /// <summary>
         /// List and search campaign templates 
@@ -98,6 +96,8 @@ namespace com.knetikcloud.Api
         /// <param name="page">The number of the page returned, starting with 1</param>
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
         void GetCampaignTemplates(int? size, int? page, string order);
+
+        PageResourceCampaignResource GetCampaignsData { get; }
 
         /// <summary>
         /// List and search campaigns 
@@ -108,6 +108,8 @@ namespace com.knetikcloud.Api
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
         void GetCampaigns(bool? filterActive, int? size, int? page, string order);
 
+        
+
         /// <summary>
         /// Remove a challenge from a campaign 
         /// </summary>
@@ -115,12 +117,16 @@ namespace com.knetikcloud.Api
         /// <param name="id">The challenge id</param>
         void RemoveChallengeFromCampaign(long? campaignId, long? id);
 
+        CampaignResource UpdateCampaignData { get; }
+
         /// <summary>
         /// Update a campaign 
         /// </summary>
         /// <param name="id">The campaign id</param>
         /// <param name="campaignResource">The campaign resource object</param>
         void UpdateCampaign(long? id, CampaignResource campaignResource);
+
+        TemplateResource UpdateCampaignTemplateData { get; }
 
         /// <summary>
         /// Update an campaign template 
@@ -137,92 +143,81 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class CampaignsApi : ICampaignsApi
     {
-        private readonly KnetikCoroutine mAddChallengeToCampaignCoroutine;
-        private DateTime mAddChallengeToCampaignStartTime;
-        private string mAddChallengeToCampaignPath;
-        private readonly KnetikCoroutine mCreateCampaignCoroutine;
-        private DateTime mCreateCampaignStartTime;
-        private string mCreateCampaignPath;
-        private readonly KnetikCoroutine mCreateCampaignTemplateCoroutine;
-        private DateTime mCreateCampaignTemplateStartTime;
-        private string mCreateCampaignTemplatePath;
-        private readonly KnetikCoroutine mDeleteCampaignCoroutine;
-        private DateTime mDeleteCampaignStartTime;
-        private string mDeleteCampaignPath;
-        private readonly KnetikCoroutine mDeleteCampaignTemplateCoroutine;
-        private DateTime mDeleteCampaignTemplateStartTime;
-        private string mDeleteCampaignTemplatePath;
-        private readonly KnetikCoroutine mGetCampaignCoroutine;
-        private DateTime mGetCampaignStartTime;
-        private string mGetCampaignPath;
-        private readonly KnetikCoroutine mGetCampaignChallengesCoroutine;
-        private DateTime mGetCampaignChallengesStartTime;
-        private string mGetCampaignChallengesPath;
-        private readonly KnetikCoroutine mGetCampaignTemplateCoroutine;
-        private DateTime mGetCampaignTemplateStartTime;
-        private string mGetCampaignTemplatePath;
-        private readonly KnetikCoroutine mGetCampaignTemplatesCoroutine;
-        private DateTime mGetCampaignTemplatesStartTime;
-        private string mGetCampaignTemplatesPath;
-        private readonly KnetikCoroutine mGetCampaignsCoroutine;
-        private DateTime mGetCampaignsStartTime;
-        private string mGetCampaignsPath;
-        private readonly KnetikCoroutine mRemoveChallengeFromCampaignCoroutine;
-        private DateTime mRemoveChallengeFromCampaignStartTime;
-        private string mRemoveChallengeFromCampaignPath;
-        private readonly KnetikCoroutine mUpdateCampaignCoroutine;
-        private DateTime mUpdateCampaignStartTime;
-        private string mUpdateCampaignPath;
-        private readonly KnetikCoroutine mUpdateCampaignTemplateCoroutine;
-        private DateTime mUpdateCampaignTemplateStartTime;
-        private string mUpdateCampaignTemplatePath;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
 
-        public delegate void AddChallengeToCampaignCompleteDelegate();
+        private readonly KnetikResponseContext mAddChallengeToCampaignResponseContext;
+        private DateTime mAddChallengeToCampaignStartTime;
+        private readonly KnetikResponseContext mCreateCampaignResponseContext;
+        private DateTime mCreateCampaignStartTime;
+        private readonly KnetikResponseContext mCreateCampaignTemplateResponseContext;
+        private DateTime mCreateCampaignTemplateStartTime;
+        private readonly KnetikResponseContext mDeleteCampaignResponseContext;
+        private DateTime mDeleteCampaignStartTime;
+        private readonly KnetikResponseContext mDeleteCampaignTemplateResponseContext;
+        private DateTime mDeleteCampaignTemplateStartTime;
+        private readonly KnetikResponseContext mGetCampaignResponseContext;
+        private DateTime mGetCampaignStartTime;
+        private readonly KnetikResponseContext mGetCampaignChallengesResponseContext;
+        private DateTime mGetCampaignChallengesStartTime;
+        private readonly KnetikResponseContext mGetCampaignTemplateResponseContext;
+        private DateTime mGetCampaignTemplateStartTime;
+        private readonly KnetikResponseContext mGetCampaignTemplatesResponseContext;
+        private DateTime mGetCampaignTemplatesStartTime;
+        private readonly KnetikResponseContext mGetCampaignsResponseContext;
+        private DateTime mGetCampaignsStartTime;
+        private readonly KnetikResponseContext mRemoveChallengeFromCampaignResponseContext;
+        private DateTime mRemoveChallengeFromCampaignStartTime;
+        private readonly KnetikResponseContext mUpdateCampaignResponseContext;
+        private DateTime mUpdateCampaignStartTime;
+        private readonly KnetikResponseContext mUpdateCampaignTemplateResponseContext;
+        private DateTime mUpdateCampaignTemplateStartTime;
+
+        public delegate void AddChallengeToCampaignCompleteDelegate(long responseCode);
         public AddChallengeToCampaignCompleteDelegate AddChallengeToCampaignComplete;
 
         public CampaignResource CreateCampaignData { get; private set; }
-        public delegate void CreateCampaignCompleteDelegate(CampaignResource response);
+        public delegate void CreateCampaignCompleteDelegate(long responseCode, CampaignResource response);
         public CreateCampaignCompleteDelegate CreateCampaignComplete;
 
         public TemplateResource CreateCampaignTemplateData { get; private set; }
-        public delegate void CreateCampaignTemplateCompleteDelegate(TemplateResource response);
+        public delegate void CreateCampaignTemplateCompleteDelegate(long responseCode, TemplateResource response);
         public CreateCampaignTemplateCompleteDelegate CreateCampaignTemplateComplete;
 
-        public delegate void DeleteCampaignCompleteDelegate();
+        public delegate void DeleteCampaignCompleteDelegate(long responseCode);
         public DeleteCampaignCompleteDelegate DeleteCampaignComplete;
 
-        public delegate void DeleteCampaignTemplateCompleteDelegate();
+        public delegate void DeleteCampaignTemplateCompleteDelegate(long responseCode);
         public DeleteCampaignTemplateCompleteDelegate DeleteCampaignTemplateComplete;
 
         public CampaignResource GetCampaignData { get; private set; }
-        public delegate void GetCampaignCompleteDelegate(CampaignResource response);
+        public delegate void GetCampaignCompleteDelegate(long responseCode, CampaignResource response);
         public GetCampaignCompleteDelegate GetCampaignComplete;
 
         public PageResourceChallengeResource GetCampaignChallengesData { get; private set; }
-        public delegate void GetCampaignChallengesCompleteDelegate(PageResourceChallengeResource response);
+        public delegate void GetCampaignChallengesCompleteDelegate(long responseCode, PageResourceChallengeResource response);
         public GetCampaignChallengesCompleteDelegate GetCampaignChallengesComplete;
 
         public TemplateResource GetCampaignTemplateData { get; private set; }
-        public delegate void GetCampaignTemplateCompleteDelegate(TemplateResource response);
+        public delegate void GetCampaignTemplateCompleteDelegate(long responseCode, TemplateResource response);
         public GetCampaignTemplateCompleteDelegate GetCampaignTemplateComplete;
 
         public PageResourceTemplateResource GetCampaignTemplatesData { get; private set; }
-        public delegate void GetCampaignTemplatesCompleteDelegate(PageResourceTemplateResource response);
+        public delegate void GetCampaignTemplatesCompleteDelegate(long responseCode, PageResourceTemplateResource response);
         public GetCampaignTemplatesCompleteDelegate GetCampaignTemplatesComplete;
 
         public PageResourceCampaignResource GetCampaignsData { get; private set; }
-        public delegate void GetCampaignsCompleteDelegate(PageResourceCampaignResource response);
+        public delegate void GetCampaignsCompleteDelegate(long responseCode, PageResourceCampaignResource response);
         public GetCampaignsCompleteDelegate GetCampaignsComplete;
 
-        public delegate void RemoveChallengeFromCampaignCompleteDelegate();
+        public delegate void RemoveChallengeFromCampaignCompleteDelegate(long responseCode);
         public RemoveChallengeFromCampaignCompleteDelegate RemoveChallengeFromCampaignComplete;
 
         public CampaignResource UpdateCampaignData { get; private set; }
-        public delegate void UpdateCampaignCompleteDelegate(CampaignResource response);
+        public delegate void UpdateCampaignCompleteDelegate(long responseCode, CampaignResource response);
         public UpdateCampaignCompleteDelegate UpdateCampaignComplete;
 
         public TemplateResource UpdateCampaignTemplateData { get; private set; }
-        public delegate void UpdateCampaignTemplateCompleteDelegate(TemplateResource response);
+        public delegate void UpdateCampaignTemplateCompleteDelegate(long responseCode, TemplateResource response);
         public UpdateCampaignTemplateCompleteDelegate UpdateCampaignTemplateComplete;
 
         /// <summary>
@@ -231,19 +226,32 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public CampaignsApi()
         {
-            mAddChallengeToCampaignCoroutine = new KnetikCoroutine();
-            mCreateCampaignCoroutine = new KnetikCoroutine();
-            mCreateCampaignTemplateCoroutine = new KnetikCoroutine();
-            mDeleteCampaignCoroutine = new KnetikCoroutine();
-            mDeleteCampaignTemplateCoroutine = new KnetikCoroutine();
-            mGetCampaignCoroutine = new KnetikCoroutine();
-            mGetCampaignChallengesCoroutine = new KnetikCoroutine();
-            mGetCampaignTemplateCoroutine = new KnetikCoroutine();
-            mGetCampaignTemplatesCoroutine = new KnetikCoroutine();
-            mGetCampaignsCoroutine = new KnetikCoroutine();
-            mRemoveChallengeFromCampaignCoroutine = new KnetikCoroutine();
-            mUpdateCampaignCoroutine = new KnetikCoroutine();
-            mUpdateCampaignTemplateCoroutine = new KnetikCoroutine();
+            mAddChallengeToCampaignResponseContext = new KnetikResponseContext();
+            mAddChallengeToCampaignResponseContext.ResponseReceived += OnAddChallengeToCampaignResponse;
+            mCreateCampaignResponseContext = new KnetikResponseContext();
+            mCreateCampaignResponseContext.ResponseReceived += OnCreateCampaignResponse;
+            mCreateCampaignTemplateResponseContext = new KnetikResponseContext();
+            mCreateCampaignTemplateResponseContext.ResponseReceived += OnCreateCampaignTemplateResponse;
+            mDeleteCampaignResponseContext = new KnetikResponseContext();
+            mDeleteCampaignResponseContext.ResponseReceived += OnDeleteCampaignResponse;
+            mDeleteCampaignTemplateResponseContext = new KnetikResponseContext();
+            mDeleteCampaignTemplateResponseContext.ResponseReceived += OnDeleteCampaignTemplateResponse;
+            mGetCampaignResponseContext = new KnetikResponseContext();
+            mGetCampaignResponseContext.ResponseReceived += OnGetCampaignResponse;
+            mGetCampaignChallengesResponseContext = new KnetikResponseContext();
+            mGetCampaignChallengesResponseContext.ResponseReceived += OnGetCampaignChallengesResponse;
+            mGetCampaignTemplateResponseContext = new KnetikResponseContext();
+            mGetCampaignTemplateResponseContext.ResponseReceived += OnGetCampaignTemplateResponse;
+            mGetCampaignTemplatesResponseContext = new KnetikResponseContext();
+            mGetCampaignTemplatesResponseContext.ResponseReceived += OnGetCampaignTemplatesResponse;
+            mGetCampaignsResponseContext = new KnetikResponseContext();
+            mGetCampaignsResponseContext.ResponseReceived += OnGetCampaignsResponse;
+            mRemoveChallengeFromCampaignResponseContext = new KnetikResponseContext();
+            mRemoveChallengeFromCampaignResponseContext.ResponseReceived += OnRemoveChallengeFromCampaignResponse;
+            mUpdateCampaignResponseContext = new KnetikResponseContext();
+            mUpdateCampaignResponseContext.ResponseReceived += OnUpdateCampaignResponse;
+            mUpdateCampaignTemplateResponseContext = new KnetikResponseContext();
+            mUpdateCampaignTemplateResponseContext.ResponseReceived += OnUpdateCampaignTemplateResponse;
         }
     
         /// <inheritdoc />
@@ -260,47 +268,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling AddChallengeToCampaign");
             }
             
-            mAddChallengeToCampaignPath = "/campaigns/{id}/challenges";
-            if (!string.IsNullOrEmpty(mAddChallengeToCampaignPath))
+            mWebCallEvent.WebPath = "/campaigns/{id}/challenges";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mAddChallengeToCampaignPath = mAddChallengeToCampaignPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mAddChallengeToCampaignPath = mAddChallengeToCampaignPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(challengeId); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(challengeId); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mAddChallengeToCampaignStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mAddChallengeToCampaignStartTime, mAddChallengeToCampaignPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mAddChallengeToCampaignCoroutine.ResponseReceived += AddChallengeToCampaignCallback;
-            mAddChallengeToCampaignCoroutine.Start(mAddChallengeToCampaignPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mAddChallengeToCampaignStartTime = DateTime.Now;
+            mWebCallEvent.Context = mAddChallengeToCampaignResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mAddChallengeToCampaignStartTime, "AddChallengeToCampaign", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void AddChallengeToCampaignCallback(IRestResponse response)
+        private void OnAddChallengeToCampaignResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling AddChallengeToCampaign: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling AddChallengeToCampaign: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling AddChallengeToCampaign: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mAddChallengeToCampaignStartTime, mAddChallengeToCampaignPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mAddChallengeToCampaignStartTime, "AddChallengeToCampaign", "Response received successfully.");
             if (AddChallengeToCampaignComplete != null)
             {
-                AddChallengeToCampaignComplete();
+                AddChallengeToCampaignComplete(response.ResponseCode);
             }
         }
 
@@ -312,48 +319,47 @@ namespace com.knetikcloud.Api
         public void CreateCampaign(CampaignResource campaignResource)
         {
             
-            mCreateCampaignPath = "/campaigns";
-            if (!string.IsNullOrEmpty(mCreateCampaignPath))
+            mWebCallEvent.WebPath = "/campaigns";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mCreateCampaignPath = mCreateCampaignPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(campaignResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(campaignResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mCreateCampaignStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mCreateCampaignStartTime, mCreateCampaignPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mCreateCampaignCoroutine.ResponseReceived += CreateCampaignCallback;
-            mCreateCampaignCoroutine.Start(mCreateCampaignPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mCreateCampaignStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreateCampaignResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreateCampaignStartTime, "CreateCampaign", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void CreateCampaignCallback(IRestResponse response)
+        private void OnCreateCampaignResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateCampaign: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateCampaign: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling CreateCampaign: " + response.Error);
             }
 
-            CreateCampaignData = (CampaignResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CampaignResource), response.Headers);
-            KnetikLogger.LogResponse(mCreateCampaignStartTime, mCreateCampaignPath, string.Format("Response received successfully:\n{0}", CreateCampaignData.ToString()));
+            CreateCampaignData = (CampaignResource) KnetikClient.Deserialize(response.Content, typeof(CampaignResource), response.Headers);
+            KnetikLogger.LogResponse(mCreateCampaignStartTime, "CreateCampaign", string.Format("Response received successfully:\n{0}", CreateCampaignData));
 
             if (CreateCampaignComplete != null)
             {
-                CreateCampaignComplete(CreateCampaignData);
+                CreateCampaignComplete(response.ResponseCode, CreateCampaignData);
             }
         }
 
@@ -365,48 +371,47 @@ namespace com.knetikcloud.Api
         public void CreateCampaignTemplate(TemplateResource campaignTemplateResource)
         {
             
-            mCreateCampaignTemplatePath = "/campaigns/templates";
-            if (!string.IsNullOrEmpty(mCreateCampaignTemplatePath))
+            mWebCallEvent.WebPath = "/campaigns/templates";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mCreateCampaignTemplatePath = mCreateCampaignTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(campaignTemplateResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(campaignTemplateResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mCreateCampaignTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mCreateCampaignTemplateStartTime, mCreateCampaignTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mCreateCampaignTemplateCoroutine.ResponseReceived += CreateCampaignTemplateCallback;
-            mCreateCampaignTemplateCoroutine.Start(mCreateCampaignTemplatePath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mCreateCampaignTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreateCampaignTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreateCampaignTemplateStartTime, "CreateCampaignTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void CreateCampaignTemplateCallback(IRestResponse response)
+        private void OnCreateCampaignTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateCampaignTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateCampaignTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling CreateCampaignTemplate: " + response.Error);
             }
 
-            CreateCampaignTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mCreateCampaignTemplateStartTime, mCreateCampaignTemplatePath, string.Format("Response received successfully:\n{0}", CreateCampaignTemplateData.ToString()));
+            CreateCampaignTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mCreateCampaignTemplateStartTime, "CreateCampaignTemplate", string.Format("Response received successfully:\n{0}", CreateCampaignTemplateData));
 
             if (CreateCampaignTemplateComplete != null)
             {
-                CreateCampaignTemplateComplete(CreateCampaignTemplateData);
+                CreateCampaignTemplateComplete(response.ResponseCode, CreateCampaignTemplateData);
             }
         }
 
@@ -423,45 +428,44 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeleteCampaign");
             }
             
-            mDeleteCampaignPath = "/campaigns/{id}";
-            if (!string.IsNullOrEmpty(mDeleteCampaignPath))
+            mWebCallEvent.WebPath = "/campaigns/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteCampaignPath = mDeleteCampaignPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteCampaignPath = mDeleteCampaignPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteCampaignStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteCampaignStartTime, mDeleteCampaignPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteCampaignCoroutine.ResponseReceived += DeleteCampaignCallback;
-            mDeleteCampaignCoroutine.Start(mDeleteCampaignPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteCampaignStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteCampaignResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteCampaignStartTime, "DeleteCampaign", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteCampaignCallback(IRestResponse response)
+        private void OnDeleteCampaignResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteCampaign: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteCampaign: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteCampaign: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteCampaignStartTime, mDeleteCampaignPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteCampaignStartTime, "DeleteCampaign", "Response received successfully.");
             if (DeleteCampaignComplete != null)
             {
-                DeleteCampaignComplete();
+                DeleteCampaignComplete(response.ResponseCode);
             }
         }
 
@@ -479,50 +483,49 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeleteCampaignTemplate");
             }
             
-            mDeleteCampaignTemplatePath = "/campaigns/templates/{id}";
-            if (!string.IsNullOrEmpty(mDeleteCampaignTemplatePath))
+            mWebCallEvent.WebPath = "/campaigns/templates/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteCampaignTemplatePath = mDeleteCampaignTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteCampaignTemplatePath = mDeleteCampaignTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
+                mWebCallEvent.QueryParams["cascade"] = KnetikClient.ParameterToString(cascade);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteCampaignTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteCampaignTemplateStartTime, mDeleteCampaignTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteCampaignTemplateCoroutine.ResponseReceived += DeleteCampaignTemplateCallback;
-            mDeleteCampaignTemplateCoroutine.Start(mDeleteCampaignTemplatePath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteCampaignTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteCampaignTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteCampaignTemplateStartTime, "DeleteCampaignTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteCampaignTemplateCallback(IRestResponse response)
+        private void OnDeleteCampaignTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteCampaignTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteCampaignTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteCampaignTemplate: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteCampaignTemplateStartTime, mDeleteCampaignTemplatePath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteCampaignTemplateStartTime, "DeleteCampaignTemplate", "Response received successfully.");
             if (DeleteCampaignTemplateComplete != null)
             {
-                DeleteCampaignTemplateComplete();
+                DeleteCampaignTemplateComplete(response.ResponseCode);
             }
         }
 
@@ -539,47 +542,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetCampaign");
             }
             
-            mGetCampaignPath = "/campaigns/{id}";
-            if (!string.IsNullOrEmpty(mGetCampaignPath))
+            mWebCallEvent.WebPath = "/campaigns/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetCampaignPath = mGetCampaignPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetCampaignPath = mGetCampaignPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetCampaignStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetCampaignStartTime, mGetCampaignPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetCampaignCoroutine.ResponseReceived += GetCampaignCallback;
-            mGetCampaignCoroutine.Start(mGetCampaignPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetCampaignStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetCampaignResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetCampaignStartTime, "GetCampaign", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetCampaignCallback(IRestResponse response)
+        private void OnGetCampaignResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCampaign: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCampaign: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetCampaign: " + response.Error);
             }
 
-            GetCampaignData = (CampaignResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CampaignResource), response.Headers);
-            KnetikLogger.LogResponse(mGetCampaignStartTime, mGetCampaignPath, string.Format("Response received successfully:\n{0}", GetCampaignData.ToString()));
+            GetCampaignData = (CampaignResource) KnetikClient.Deserialize(response.Content, typeof(CampaignResource), response.Headers);
+            KnetikLogger.LogResponse(mGetCampaignStartTime, "GetCampaign", string.Format("Response received successfully:\n{0}", GetCampaignData));
 
             if (GetCampaignComplete != null)
             {
-                GetCampaignComplete(GetCampaignData);
+                GetCampaignComplete(response.ResponseCode, GetCampaignData);
             }
         }
 
@@ -601,72 +603,71 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetCampaignChallenges");
             }
             
-            mGetCampaignChallengesPath = "/campaigns/{id}/challenges";
-            if (!string.IsNullOrEmpty(mGetCampaignChallengesPath))
+            mWebCallEvent.WebPath = "/campaigns/{id}/challenges";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetCampaignChallengesPath = mGetCampaignChallengesPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetCampaignChallengesPath = mGetCampaignChallengesPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (filterStartDate != null)
             {
-                queryParams.Add("filter_start_date", KnetikClient.DefaultClient.ParameterToString(filterStartDate));
+                mWebCallEvent.QueryParams["filter_start_date"] = KnetikClient.ParameterToString(filterStartDate);
             }
 
             if (filterEndDate != null)
             {
-                queryParams.Add("filter_end_date", KnetikClient.DefaultClient.ParameterToString(filterEndDate));
+                mWebCallEvent.QueryParams["filter_end_date"] = KnetikClient.ParameterToString(filterEndDate);
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetCampaignChallengesStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetCampaignChallengesStartTime, mGetCampaignChallengesPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetCampaignChallengesCoroutine.ResponseReceived += GetCampaignChallengesCallback;
-            mGetCampaignChallengesCoroutine.Start(mGetCampaignChallengesPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetCampaignChallengesStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetCampaignChallengesResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetCampaignChallengesStartTime, "GetCampaignChallenges", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetCampaignChallengesCallback(IRestResponse response)
+        private void OnGetCampaignChallengesResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCampaignChallenges: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCampaignChallenges: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetCampaignChallenges: " + response.Error);
             }
 
-            GetCampaignChallengesData = (PageResourceChallengeResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceChallengeResource), response.Headers);
-            KnetikLogger.LogResponse(mGetCampaignChallengesStartTime, mGetCampaignChallengesPath, string.Format("Response received successfully:\n{0}", GetCampaignChallengesData.ToString()));
+            GetCampaignChallengesData = (PageResourceChallengeResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceChallengeResource), response.Headers);
+            KnetikLogger.LogResponse(mGetCampaignChallengesStartTime, "GetCampaignChallenges", string.Format("Response received successfully:\n{0}", GetCampaignChallengesData));
 
             if (GetCampaignChallengesComplete != null)
             {
-                GetCampaignChallengesComplete(GetCampaignChallengesData);
+                GetCampaignChallengesComplete(response.ResponseCode, GetCampaignChallengesData);
             }
         }
 
@@ -683,47 +684,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetCampaignTemplate");
             }
             
-            mGetCampaignTemplatePath = "/campaigns/templates/{id}";
-            if (!string.IsNullOrEmpty(mGetCampaignTemplatePath))
+            mWebCallEvent.WebPath = "/campaigns/templates/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetCampaignTemplatePath = mGetCampaignTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetCampaignTemplatePath = mGetCampaignTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetCampaignTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetCampaignTemplateStartTime, mGetCampaignTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetCampaignTemplateCoroutine.ResponseReceived += GetCampaignTemplateCallback;
-            mGetCampaignTemplateCoroutine.Start(mGetCampaignTemplatePath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetCampaignTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetCampaignTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetCampaignTemplateStartTime, "GetCampaignTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetCampaignTemplateCallback(IRestResponse response)
+        private void OnGetCampaignTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCampaignTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCampaignTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetCampaignTemplate: " + response.Error);
             }
 
-            GetCampaignTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mGetCampaignTemplateStartTime, mGetCampaignTemplatePath, string.Format("Response received successfully:\n{0}", GetCampaignTemplateData.ToString()));
+            GetCampaignTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mGetCampaignTemplateStartTime, "GetCampaignTemplate", string.Format("Response received successfully:\n{0}", GetCampaignTemplateData));
 
             if (GetCampaignTemplateComplete != null)
             {
-                GetCampaignTemplateComplete(GetCampaignTemplateData);
+                GetCampaignTemplateComplete(response.ResponseCode, GetCampaignTemplateData);
             }
         }
 
@@ -737,61 +737,60 @@ namespace com.knetikcloud.Api
         public void GetCampaignTemplates(int? size, int? page, string order)
         {
             
-            mGetCampaignTemplatesPath = "/campaigns/templates";
-            if (!string.IsNullOrEmpty(mGetCampaignTemplatesPath))
+            mWebCallEvent.WebPath = "/campaigns/templates";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetCampaignTemplatesPath = mGetCampaignTemplatesPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetCampaignTemplatesStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetCampaignTemplatesStartTime, mGetCampaignTemplatesPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetCampaignTemplatesCoroutine.ResponseReceived += GetCampaignTemplatesCallback;
-            mGetCampaignTemplatesCoroutine.Start(mGetCampaignTemplatesPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetCampaignTemplatesStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetCampaignTemplatesResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetCampaignTemplatesStartTime, "GetCampaignTemplates", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetCampaignTemplatesCallback(IRestResponse response)
+        private void OnGetCampaignTemplatesResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCampaignTemplates: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCampaignTemplates: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetCampaignTemplates: " + response.Error);
             }
 
-            GetCampaignTemplatesData = (PageResourceTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceTemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mGetCampaignTemplatesStartTime, mGetCampaignTemplatesPath, string.Format("Response received successfully:\n{0}", GetCampaignTemplatesData.ToString()));
+            GetCampaignTemplatesData = (PageResourceTemplateResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceTemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mGetCampaignTemplatesStartTime, "GetCampaignTemplates", string.Format("Response received successfully:\n{0}", GetCampaignTemplatesData));
 
             if (GetCampaignTemplatesComplete != null)
             {
-                GetCampaignTemplatesComplete(GetCampaignTemplatesData);
+                GetCampaignTemplatesComplete(response.ResponseCode, GetCampaignTemplatesData);
             }
         }
 
@@ -806,66 +805,65 @@ namespace com.knetikcloud.Api
         public void GetCampaigns(bool? filterActive, int? size, int? page, string order)
         {
             
-            mGetCampaignsPath = "/campaigns";
-            if (!string.IsNullOrEmpty(mGetCampaignsPath))
+            mWebCallEvent.WebPath = "/campaigns";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetCampaignsPath = mGetCampaignsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (filterActive != null)
             {
-                queryParams.Add("filter_active", KnetikClient.DefaultClient.ParameterToString(filterActive));
+                mWebCallEvent.QueryParams["filter_active"] = KnetikClient.ParameterToString(filterActive);
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetCampaignsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetCampaignsStartTime, mGetCampaignsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetCampaignsCoroutine.ResponseReceived += GetCampaignsCallback;
-            mGetCampaignsCoroutine.Start(mGetCampaignsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetCampaignsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetCampaignsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetCampaignsStartTime, "GetCampaigns", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetCampaignsCallback(IRestResponse response)
+        private void OnGetCampaignsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCampaigns: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCampaigns: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetCampaigns: " + response.Error);
             }
 
-            GetCampaignsData = (PageResourceCampaignResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceCampaignResource), response.Headers);
-            KnetikLogger.LogResponse(mGetCampaignsStartTime, mGetCampaignsPath, string.Format("Response received successfully:\n{0}", GetCampaignsData.ToString()));
+            GetCampaignsData = (PageResourceCampaignResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceCampaignResource), response.Headers);
+            KnetikLogger.LogResponse(mGetCampaignsStartTime, "GetCampaigns", string.Format("Response received successfully:\n{0}", GetCampaignsData));
 
             if (GetCampaignsComplete != null)
             {
-                GetCampaignsComplete(GetCampaignsData);
+                GetCampaignsComplete(response.ResponseCode, GetCampaignsData);
             }
         }
 
@@ -888,46 +886,45 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling RemoveChallengeFromCampaign");
             }
             
-            mRemoveChallengeFromCampaignPath = "/campaigns/{campaign_id}/challenges/{id}";
-            if (!string.IsNullOrEmpty(mRemoveChallengeFromCampaignPath))
+            mWebCallEvent.WebPath = "/campaigns/{campaign_id}/challenges/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mRemoveChallengeFromCampaignPath = mRemoveChallengeFromCampaignPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mRemoveChallengeFromCampaignPath = mRemoveChallengeFromCampaignPath.Replace("{" + "campaign_id" + "}", KnetikClient.DefaultClient.ParameterToString(campaignId));
-mRemoveChallengeFromCampaignPath = mRemoveChallengeFromCampaignPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "campaign_id" + "}", KnetikClient.ParameterToString(campaignId));
+mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mRemoveChallengeFromCampaignStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mRemoveChallengeFromCampaignStartTime, mRemoveChallengeFromCampaignPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mRemoveChallengeFromCampaignCoroutine.ResponseReceived += RemoveChallengeFromCampaignCallback;
-            mRemoveChallengeFromCampaignCoroutine.Start(mRemoveChallengeFromCampaignPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mRemoveChallengeFromCampaignStartTime = DateTime.Now;
+            mWebCallEvent.Context = mRemoveChallengeFromCampaignResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mRemoveChallengeFromCampaignStartTime, "RemoveChallengeFromCampaign", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void RemoveChallengeFromCampaignCallback(IRestResponse response)
+        private void OnRemoveChallengeFromCampaignResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling RemoveChallengeFromCampaign: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling RemoveChallengeFromCampaign: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling RemoveChallengeFromCampaign: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mRemoveChallengeFromCampaignStartTime, mRemoveChallengeFromCampaignPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mRemoveChallengeFromCampaignStartTime, "RemoveChallengeFromCampaign", "Response received successfully.");
             if (RemoveChallengeFromCampaignComplete != null)
             {
-                RemoveChallengeFromCampaignComplete();
+                RemoveChallengeFromCampaignComplete(response.ResponseCode);
             }
         }
 
@@ -945,49 +942,48 @@ mRemoveChallengeFromCampaignPath = mRemoveChallengeFromCampaignPath.Replace("{" 
                 throw new KnetikException(400, "Missing required parameter 'id' when calling UpdateCampaign");
             }
             
-            mUpdateCampaignPath = "/campaigns/{id}";
-            if (!string.IsNullOrEmpty(mUpdateCampaignPath))
+            mWebCallEvent.WebPath = "/campaigns/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateCampaignPath = mUpdateCampaignPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateCampaignPath = mUpdateCampaignPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(campaignResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(campaignResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateCampaignStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateCampaignStartTime, mUpdateCampaignPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateCampaignCoroutine.ResponseReceived += UpdateCampaignCallback;
-            mUpdateCampaignCoroutine.Start(mUpdateCampaignPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateCampaignStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateCampaignResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateCampaignStartTime, "UpdateCampaign", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateCampaignCallback(IRestResponse response)
+        private void OnUpdateCampaignResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateCampaign: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateCampaign: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateCampaign: " + response.Error);
             }
 
-            UpdateCampaignData = (CampaignResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CampaignResource), response.Headers);
-            KnetikLogger.LogResponse(mUpdateCampaignStartTime, mUpdateCampaignPath, string.Format("Response received successfully:\n{0}", UpdateCampaignData.ToString()));
+            UpdateCampaignData = (CampaignResource) KnetikClient.Deserialize(response.Content, typeof(CampaignResource), response.Headers);
+            KnetikLogger.LogResponse(mUpdateCampaignStartTime, "UpdateCampaign", string.Format("Response received successfully:\n{0}", UpdateCampaignData));
 
             if (UpdateCampaignComplete != null)
             {
-                UpdateCampaignComplete(UpdateCampaignData);
+                UpdateCampaignComplete(response.ResponseCode, UpdateCampaignData);
             }
         }
 
@@ -1005,49 +1001,48 @@ mRemoveChallengeFromCampaignPath = mRemoveChallengeFromCampaignPath.Replace("{" 
                 throw new KnetikException(400, "Missing required parameter 'id' when calling UpdateCampaignTemplate");
             }
             
-            mUpdateCampaignTemplatePath = "/campaigns/templates/{id}";
-            if (!string.IsNullOrEmpty(mUpdateCampaignTemplatePath))
+            mWebCallEvent.WebPath = "/campaigns/templates/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateCampaignTemplatePath = mUpdateCampaignTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateCampaignTemplatePath = mUpdateCampaignTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(campaignTemplateResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(campaignTemplateResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateCampaignTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateCampaignTemplateStartTime, mUpdateCampaignTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateCampaignTemplateCoroutine.ResponseReceived += UpdateCampaignTemplateCallback;
-            mUpdateCampaignTemplateCoroutine.Start(mUpdateCampaignTemplatePath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateCampaignTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateCampaignTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateCampaignTemplateStartTime, "UpdateCampaignTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateCampaignTemplateCallback(IRestResponse response)
+        private void OnUpdateCampaignTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateCampaignTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateCampaignTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateCampaignTemplate: " + response.Error);
             }
 
-            UpdateCampaignTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mUpdateCampaignTemplateStartTime, mUpdateCampaignTemplatePath, string.Format("Response received successfully:\n{0}", UpdateCampaignTemplateData.ToString()));
+            UpdateCampaignTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mUpdateCampaignTemplateStartTime, "UpdateCampaignTemplate", string.Format("Response received successfully:\n{0}", UpdateCampaignTemplateData));
 
             if (UpdateCampaignTemplateComplete != null)
             {
-                UpdateCampaignTemplateComplete(UpdateCampaignTemplateData);
+                UpdateCampaignTemplateComplete(response.ResponseCode, UpdateCampaignTemplateData);
             }
         }
 

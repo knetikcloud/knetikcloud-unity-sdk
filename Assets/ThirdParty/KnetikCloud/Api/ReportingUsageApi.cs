@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,17 +18,6 @@ namespace com.knetikcloud.Api
     {
         PageResourceUsageInfo GetUsageByDayData { get; }
 
-        PageResourceUsageInfo GetUsageByHourData { get; }
-
-        PageResourceUsageInfo GetUsageByMinuteData { get; }
-
-        PageResourceUsageInfo GetUsageByMonthData { get; }
-
-        PageResourceUsageInfo GetUsageByYearData { get; }
-
-        List<string> GetUsageEndpointsData { get; }
-
-        
         /// <summary>
         /// Returns aggregated endpoint usage information by day 
         /// </summary>
@@ -41,6 +29,8 @@ namespace com.knetikcloud.Api
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
         void GetUsageByDay(long? startDate, long? endDate, bool? combineEndpoints, string method, string url, int? size, int? page);
+
+        PageResourceUsageInfo GetUsageByHourData { get; }
 
         /// <summary>
         /// Returns aggregated endpoint usage information by hour 
@@ -54,6 +44,8 @@ namespace com.knetikcloud.Api
         /// <param name="page">The number of the page returned, starting with 1</param>
         void GetUsageByHour(long? startDate, long? endDate, bool? combineEndpoints, string method, string url, int? size, int? page);
 
+        PageResourceUsageInfo GetUsageByMinuteData { get; }
+
         /// <summary>
         /// Returns aggregated endpoint usage information by minute 
         /// </summary>
@@ -65,6 +57,8 @@ namespace com.knetikcloud.Api
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
         void GetUsageByMinute(long? startDate, long? endDate, bool? combineEndpoints, string method, string url, int? size, int? page);
+
+        PageResourceUsageInfo GetUsageByMonthData { get; }
 
         /// <summary>
         /// Returns aggregated endpoint usage information by month 
@@ -78,6 +72,8 @@ namespace com.knetikcloud.Api
         /// <param name="page">The number of the page returned, starting with 1</param>
         void GetUsageByMonth(long? startDate, long? endDate, bool? combineEndpoints, string method, string url, int? size, int? page);
 
+        PageResourceUsageInfo GetUsageByYearData { get; }
+
         /// <summary>
         /// Returns aggregated endpoint usage information by year 
         /// </summary>
@@ -89,6 +85,8 @@ namespace com.knetikcloud.Api
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
         void GetUsageByYear(long? startDate, long? endDate, bool? combineEndpoints, string method, string url, int? size, int? page);
+
+        List<string> GetUsageEndpointsData { get; }
 
         /// <summary>
         /// Returns list of endpoints called (method and url) 
@@ -105,47 +103,43 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class ReportingUsageApi : IReportingUsageApi
     {
-        private readonly KnetikCoroutine mGetUsageByDayCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mGetUsageByDayResponseContext;
         private DateTime mGetUsageByDayStartTime;
-        private string mGetUsageByDayPath;
-        private readonly KnetikCoroutine mGetUsageByHourCoroutine;
+        private readonly KnetikResponseContext mGetUsageByHourResponseContext;
         private DateTime mGetUsageByHourStartTime;
-        private string mGetUsageByHourPath;
-        private readonly KnetikCoroutine mGetUsageByMinuteCoroutine;
+        private readonly KnetikResponseContext mGetUsageByMinuteResponseContext;
         private DateTime mGetUsageByMinuteStartTime;
-        private string mGetUsageByMinutePath;
-        private readonly KnetikCoroutine mGetUsageByMonthCoroutine;
+        private readonly KnetikResponseContext mGetUsageByMonthResponseContext;
         private DateTime mGetUsageByMonthStartTime;
-        private string mGetUsageByMonthPath;
-        private readonly KnetikCoroutine mGetUsageByYearCoroutine;
+        private readonly KnetikResponseContext mGetUsageByYearResponseContext;
         private DateTime mGetUsageByYearStartTime;
-        private string mGetUsageByYearPath;
-        private readonly KnetikCoroutine mGetUsageEndpointsCoroutine;
+        private readonly KnetikResponseContext mGetUsageEndpointsResponseContext;
         private DateTime mGetUsageEndpointsStartTime;
-        private string mGetUsageEndpointsPath;
 
         public PageResourceUsageInfo GetUsageByDayData { get; private set; }
-        public delegate void GetUsageByDayCompleteDelegate(PageResourceUsageInfo response);
+        public delegate void GetUsageByDayCompleteDelegate(long responseCode, PageResourceUsageInfo response);
         public GetUsageByDayCompleteDelegate GetUsageByDayComplete;
 
         public PageResourceUsageInfo GetUsageByHourData { get; private set; }
-        public delegate void GetUsageByHourCompleteDelegate(PageResourceUsageInfo response);
+        public delegate void GetUsageByHourCompleteDelegate(long responseCode, PageResourceUsageInfo response);
         public GetUsageByHourCompleteDelegate GetUsageByHourComplete;
 
         public PageResourceUsageInfo GetUsageByMinuteData { get; private set; }
-        public delegate void GetUsageByMinuteCompleteDelegate(PageResourceUsageInfo response);
+        public delegate void GetUsageByMinuteCompleteDelegate(long responseCode, PageResourceUsageInfo response);
         public GetUsageByMinuteCompleteDelegate GetUsageByMinuteComplete;
 
         public PageResourceUsageInfo GetUsageByMonthData { get; private set; }
-        public delegate void GetUsageByMonthCompleteDelegate(PageResourceUsageInfo response);
+        public delegate void GetUsageByMonthCompleteDelegate(long responseCode, PageResourceUsageInfo response);
         public GetUsageByMonthCompleteDelegate GetUsageByMonthComplete;
 
         public PageResourceUsageInfo GetUsageByYearData { get; private set; }
-        public delegate void GetUsageByYearCompleteDelegate(PageResourceUsageInfo response);
+        public delegate void GetUsageByYearCompleteDelegate(long responseCode, PageResourceUsageInfo response);
         public GetUsageByYearCompleteDelegate GetUsageByYearComplete;
 
         public List<string> GetUsageEndpointsData { get; private set; }
-        public delegate void GetUsageEndpointsCompleteDelegate(List<string> response);
+        public delegate void GetUsageEndpointsCompleteDelegate(long responseCode, List<string> response);
         public GetUsageEndpointsCompleteDelegate GetUsageEndpointsComplete;
 
         /// <summary>
@@ -154,12 +148,18 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public ReportingUsageApi()
         {
-            mGetUsageByDayCoroutine = new KnetikCoroutine();
-            mGetUsageByHourCoroutine = new KnetikCoroutine();
-            mGetUsageByMinuteCoroutine = new KnetikCoroutine();
-            mGetUsageByMonthCoroutine = new KnetikCoroutine();
-            mGetUsageByYearCoroutine = new KnetikCoroutine();
-            mGetUsageEndpointsCoroutine = new KnetikCoroutine();
+            mGetUsageByDayResponseContext = new KnetikResponseContext();
+            mGetUsageByDayResponseContext.ResponseReceived += OnGetUsageByDayResponse;
+            mGetUsageByHourResponseContext = new KnetikResponseContext();
+            mGetUsageByHourResponseContext.ResponseReceived += OnGetUsageByHourResponse;
+            mGetUsageByMinuteResponseContext = new KnetikResponseContext();
+            mGetUsageByMinuteResponseContext.ResponseReceived += OnGetUsageByMinuteResponse;
+            mGetUsageByMonthResponseContext = new KnetikResponseContext();
+            mGetUsageByMonthResponseContext.ResponseReceived += OnGetUsageByMonthResponse;
+            mGetUsageByYearResponseContext = new KnetikResponseContext();
+            mGetUsageByYearResponseContext.ResponseReceived += OnGetUsageByYearResponse;
+            mGetUsageEndpointsResponseContext = new KnetikResponseContext();
+            mGetUsageEndpointsResponseContext.ResponseReceived += OnGetUsageEndpointsResponse;
         }
     
         /// <inheritdoc />
@@ -186,81 +186,80 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'endDate' when calling GetUsageByDay");
             }
             
-            mGetUsageByDayPath = "/reporting/usage/day";
-            if (!string.IsNullOrEmpty(mGetUsageByDayPath))
+            mWebCallEvent.WebPath = "/reporting/usage/day";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetUsageByDayPath = mGetUsageByDayPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (startDate != null)
             {
-                queryParams.Add("start_date", KnetikClient.DefaultClient.ParameterToString(startDate));
+                mWebCallEvent.QueryParams["start_date"] = KnetikClient.ParameterToString(startDate);
             }
 
             if (endDate != null)
             {
-                queryParams.Add("end_date", KnetikClient.DefaultClient.ParameterToString(endDate));
+                mWebCallEvent.QueryParams["end_date"] = KnetikClient.ParameterToString(endDate);
             }
 
             if (combineEndpoints != null)
             {
-                queryParams.Add("combine_endpoints", KnetikClient.DefaultClient.ParameterToString(combineEndpoints));
+                mWebCallEvent.QueryParams["combine_endpoints"] = KnetikClient.ParameterToString(combineEndpoints);
             }
 
             if (method != null)
             {
-                queryParams.Add("method", KnetikClient.DefaultClient.ParameterToString(method));
+                mWebCallEvent.QueryParams["method"] = KnetikClient.ParameterToString(method);
             }
 
             if (url != null)
             {
-                queryParams.Add("url", KnetikClient.DefaultClient.ParameterToString(url));
+                mWebCallEvent.QueryParams["url"] = KnetikClient.ParameterToString(url);
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetUsageByDayStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetUsageByDayStartTime, mGetUsageByDayPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetUsageByDayCoroutine.ResponseReceived += GetUsageByDayCallback;
-            mGetUsageByDayCoroutine.Start(mGetUsageByDayPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetUsageByDayStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetUsageByDayResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetUsageByDayStartTime, "GetUsageByDay", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetUsageByDayCallback(IRestResponse response)
+        private void OnGetUsageByDayResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUsageByDay: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUsageByDay: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetUsageByDay: " + response.Error);
             }
 
-            GetUsageByDayData = (PageResourceUsageInfo) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceUsageInfo), response.Headers);
-            KnetikLogger.LogResponse(mGetUsageByDayStartTime, mGetUsageByDayPath, string.Format("Response received successfully:\n{0}", GetUsageByDayData.ToString()));
+            GetUsageByDayData = (PageResourceUsageInfo) KnetikClient.Deserialize(response.Content, typeof(PageResourceUsageInfo), response.Headers);
+            KnetikLogger.LogResponse(mGetUsageByDayStartTime, "GetUsageByDay", string.Format("Response received successfully:\n{0}", GetUsageByDayData));
 
             if (GetUsageByDayComplete != null)
             {
-                GetUsageByDayComplete(GetUsageByDayData);
+                GetUsageByDayComplete(response.ResponseCode, GetUsageByDayData);
             }
         }
 
@@ -288,81 +287,80 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'endDate' when calling GetUsageByHour");
             }
             
-            mGetUsageByHourPath = "/reporting/usage/hour";
-            if (!string.IsNullOrEmpty(mGetUsageByHourPath))
+            mWebCallEvent.WebPath = "/reporting/usage/hour";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetUsageByHourPath = mGetUsageByHourPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (startDate != null)
             {
-                queryParams.Add("start_date", KnetikClient.DefaultClient.ParameterToString(startDate));
+                mWebCallEvent.QueryParams["start_date"] = KnetikClient.ParameterToString(startDate);
             }
 
             if (endDate != null)
             {
-                queryParams.Add("end_date", KnetikClient.DefaultClient.ParameterToString(endDate));
+                mWebCallEvent.QueryParams["end_date"] = KnetikClient.ParameterToString(endDate);
             }
 
             if (combineEndpoints != null)
             {
-                queryParams.Add("combine_endpoints", KnetikClient.DefaultClient.ParameterToString(combineEndpoints));
+                mWebCallEvent.QueryParams["combine_endpoints"] = KnetikClient.ParameterToString(combineEndpoints);
             }
 
             if (method != null)
             {
-                queryParams.Add("method", KnetikClient.DefaultClient.ParameterToString(method));
+                mWebCallEvent.QueryParams["method"] = KnetikClient.ParameterToString(method);
             }
 
             if (url != null)
             {
-                queryParams.Add("url", KnetikClient.DefaultClient.ParameterToString(url));
+                mWebCallEvent.QueryParams["url"] = KnetikClient.ParameterToString(url);
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetUsageByHourStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetUsageByHourStartTime, mGetUsageByHourPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetUsageByHourCoroutine.ResponseReceived += GetUsageByHourCallback;
-            mGetUsageByHourCoroutine.Start(mGetUsageByHourPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetUsageByHourStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetUsageByHourResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetUsageByHourStartTime, "GetUsageByHour", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetUsageByHourCallback(IRestResponse response)
+        private void OnGetUsageByHourResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUsageByHour: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUsageByHour: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetUsageByHour: " + response.Error);
             }
 
-            GetUsageByHourData = (PageResourceUsageInfo) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceUsageInfo), response.Headers);
-            KnetikLogger.LogResponse(mGetUsageByHourStartTime, mGetUsageByHourPath, string.Format("Response received successfully:\n{0}", GetUsageByHourData.ToString()));
+            GetUsageByHourData = (PageResourceUsageInfo) KnetikClient.Deserialize(response.Content, typeof(PageResourceUsageInfo), response.Headers);
+            KnetikLogger.LogResponse(mGetUsageByHourStartTime, "GetUsageByHour", string.Format("Response received successfully:\n{0}", GetUsageByHourData));
 
             if (GetUsageByHourComplete != null)
             {
-                GetUsageByHourComplete(GetUsageByHourData);
+                GetUsageByHourComplete(response.ResponseCode, GetUsageByHourData);
             }
         }
 
@@ -390,81 +388,80 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'endDate' when calling GetUsageByMinute");
             }
             
-            mGetUsageByMinutePath = "/reporting/usage/minute";
-            if (!string.IsNullOrEmpty(mGetUsageByMinutePath))
+            mWebCallEvent.WebPath = "/reporting/usage/minute";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetUsageByMinutePath = mGetUsageByMinutePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (startDate != null)
             {
-                queryParams.Add("start_date", KnetikClient.DefaultClient.ParameterToString(startDate));
+                mWebCallEvent.QueryParams["start_date"] = KnetikClient.ParameterToString(startDate);
             }
 
             if (endDate != null)
             {
-                queryParams.Add("end_date", KnetikClient.DefaultClient.ParameterToString(endDate));
+                mWebCallEvent.QueryParams["end_date"] = KnetikClient.ParameterToString(endDate);
             }
 
             if (combineEndpoints != null)
             {
-                queryParams.Add("combine_endpoints", KnetikClient.DefaultClient.ParameterToString(combineEndpoints));
+                mWebCallEvent.QueryParams["combine_endpoints"] = KnetikClient.ParameterToString(combineEndpoints);
             }
 
             if (method != null)
             {
-                queryParams.Add("method", KnetikClient.DefaultClient.ParameterToString(method));
+                mWebCallEvent.QueryParams["method"] = KnetikClient.ParameterToString(method);
             }
 
             if (url != null)
             {
-                queryParams.Add("url", KnetikClient.DefaultClient.ParameterToString(url));
+                mWebCallEvent.QueryParams["url"] = KnetikClient.ParameterToString(url);
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetUsageByMinuteStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetUsageByMinuteStartTime, mGetUsageByMinutePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetUsageByMinuteCoroutine.ResponseReceived += GetUsageByMinuteCallback;
-            mGetUsageByMinuteCoroutine.Start(mGetUsageByMinutePath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetUsageByMinuteStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetUsageByMinuteResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetUsageByMinuteStartTime, "GetUsageByMinute", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetUsageByMinuteCallback(IRestResponse response)
+        private void OnGetUsageByMinuteResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUsageByMinute: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUsageByMinute: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetUsageByMinute: " + response.Error);
             }
 
-            GetUsageByMinuteData = (PageResourceUsageInfo) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceUsageInfo), response.Headers);
-            KnetikLogger.LogResponse(mGetUsageByMinuteStartTime, mGetUsageByMinutePath, string.Format("Response received successfully:\n{0}", GetUsageByMinuteData.ToString()));
+            GetUsageByMinuteData = (PageResourceUsageInfo) KnetikClient.Deserialize(response.Content, typeof(PageResourceUsageInfo), response.Headers);
+            KnetikLogger.LogResponse(mGetUsageByMinuteStartTime, "GetUsageByMinute", string.Format("Response received successfully:\n{0}", GetUsageByMinuteData));
 
             if (GetUsageByMinuteComplete != null)
             {
-                GetUsageByMinuteComplete(GetUsageByMinuteData);
+                GetUsageByMinuteComplete(response.ResponseCode, GetUsageByMinuteData);
             }
         }
 
@@ -492,81 +489,80 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'endDate' when calling GetUsageByMonth");
             }
             
-            mGetUsageByMonthPath = "/reporting/usage/month";
-            if (!string.IsNullOrEmpty(mGetUsageByMonthPath))
+            mWebCallEvent.WebPath = "/reporting/usage/month";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetUsageByMonthPath = mGetUsageByMonthPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (startDate != null)
             {
-                queryParams.Add("start_date", KnetikClient.DefaultClient.ParameterToString(startDate));
+                mWebCallEvent.QueryParams["start_date"] = KnetikClient.ParameterToString(startDate);
             }
 
             if (endDate != null)
             {
-                queryParams.Add("end_date", KnetikClient.DefaultClient.ParameterToString(endDate));
+                mWebCallEvent.QueryParams["end_date"] = KnetikClient.ParameterToString(endDate);
             }
 
             if (combineEndpoints != null)
             {
-                queryParams.Add("combine_endpoints", KnetikClient.DefaultClient.ParameterToString(combineEndpoints));
+                mWebCallEvent.QueryParams["combine_endpoints"] = KnetikClient.ParameterToString(combineEndpoints);
             }
 
             if (method != null)
             {
-                queryParams.Add("method", KnetikClient.DefaultClient.ParameterToString(method));
+                mWebCallEvent.QueryParams["method"] = KnetikClient.ParameterToString(method);
             }
 
             if (url != null)
             {
-                queryParams.Add("url", KnetikClient.DefaultClient.ParameterToString(url));
+                mWebCallEvent.QueryParams["url"] = KnetikClient.ParameterToString(url);
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetUsageByMonthStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetUsageByMonthStartTime, mGetUsageByMonthPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetUsageByMonthCoroutine.ResponseReceived += GetUsageByMonthCallback;
-            mGetUsageByMonthCoroutine.Start(mGetUsageByMonthPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetUsageByMonthStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetUsageByMonthResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetUsageByMonthStartTime, "GetUsageByMonth", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetUsageByMonthCallback(IRestResponse response)
+        private void OnGetUsageByMonthResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUsageByMonth: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUsageByMonth: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetUsageByMonth: " + response.Error);
             }
 
-            GetUsageByMonthData = (PageResourceUsageInfo) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceUsageInfo), response.Headers);
-            KnetikLogger.LogResponse(mGetUsageByMonthStartTime, mGetUsageByMonthPath, string.Format("Response received successfully:\n{0}", GetUsageByMonthData.ToString()));
+            GetUsageByMonthData = (PageResourceUsageInfo) KnetikClient.Deserialize(response.Content, typeof(PageResourceUsageInfo), response.Headers);
+            KnetikLogger.LogResponse(mGetUsageByMonthStartTime, "GetUsageByMonth", string.Format("Response received successfully:\n{0}", GetUsageByMonthData));
 
             if (GetUsageByMonthComplete != null)
             {
-                GetUsageByMonthComplete(GetUsageByMonthData);
+                GetUsageByMonthComplete(response.ResponseCode, GetUsageByMonthData);
             }
         }
 
@@ -594,81 +590,80 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'endDate' when calling GetUsageByYear");
             }
             
-            mGetUsageByYearPath = "/reporting/usage/year";
-            if (!string.IsNullOrEmpty(mGetUsageByYearPath))
+            mWebCallEvent.WebPath = "/reporting/usage/year";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetUsageByYearPath = mGetUsageByYearPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (startDate != null)
             {
-                queryParams.Add("start_date", KnetikClient.DefaultClient.ParameterToString(startDate));
+                mWebCallEvent.QueryParams["start_date"] = KnetikClient.ParameterToString(startDate);
             }
 
             if (endDate != null)
             {
-                queryParams.Add("end_date", KnetikClient.DefaultClient.ParameterToString(endDate));
+                mWebCallEvent.QueryParams["end_date"] = KnetikClient.ParameterToString(endDate);
             }
 
             if (combineEndpoints != null)
             {
-                queryParams.Add("combine_endpoints", KnetikClient.DefaultClient.ParameterToString(combineEndpoints));
+                mWebCallEvent.QueryParams["combine_endpoints"] = KnetikClient.ParameterToString(combineEndpoints);
             }
 
             if (method != null)
             {
-                queryParams.Add("method", KnetikClient.DefaultClient.ParameterToString(method));
+                mWebCallEvent.QueryParams["method"] = KnetikClient.ParameterToString(method);
             }
 
             if (url != null)
             {
-                queryParams.Add("url", KnetikClient.DefaultClient.ParameterToString(url));
+                mWebCallEvent.QueryParams["url"] = KnetikClient.ParameterToString(url);
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetUsageByYearStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetUsageByYearStartTime, mGetUsageByYearPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetUsageByYearCoroutine.ResponseReceived += GetUsageByYearCallback;
-            mGetUsageByYearCoroutine.Start(mGetUsageByYearPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetUsageByYearStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetUsageByYearResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetUsageByYearStartTime, "GetUsageByYear", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetUsageByYearCallback(IRestResponse response)
+        private void OnGetUsageByYearResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUsageByYear: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUsageByYear: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetUsageByYear: " + response.Error);
             }
 
-            GetUsageByYearData = (PageResourceUsageInfo) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceUsageInfo), response.Headers);
-            KnetikLogger.LogResponse(mGetUsageByYearStartTime, mGetUsageByYearPath, string.Format("Response received successfully:\n{0}", GetUsageByYearData.ToString()));
+            GetUsageByYearData = (PageResourceUsageInfo) KnetikClient.Deserialize(response.Content, typeof(PageResourceUsageInfo), response.Headers);
+            KnetikLogger.LogResponse(mGetUsageByYearStartTime, "GetUsageByYear", string.Format("Response received successfully:\n{0}", GetUsageByYearData));
 
             if (GetUsageByYearComplete != null)
             {
-                GetUsageByYearComplete(GetUsageByYearData);
+                GetUsageByYearComplete(response.ResponseCode, GetUsageByYearData);
             }
         }
 
@@ -691,56 +686,55 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'endDate' when calling GetUsageEndpoints");
             }
             
-            mGetUsageEndpointsPath = "/reporting/usage/endpoints";
-            if (!string.IsNullOrEmpty(mGetUsageEndpointsPath))
+            mWebCallEvent.WebPath = "/reporting/usage/endpoints";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetUsageEndpointsPath = mGetUsageEndpointsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (startDate != null)
             {
-                queryParams.Add("start_date", KnetikClient.DefaultClient.ParameterToString(startDate));
+                mWebCallEvent.QueryParams["start_date"] = KnetikClient.ParameterToString(startDate);
             }
 
             if (endDate != null)
             {
-                queryParams.Add("end_date", KnetikClient.DefaultClient.ParameterToString(endDate));
+                mWebCallEvent.QueryParams["end_date"] = KnetikClient.ParameterToString(endDate);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetUsageEndpointsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetUsageEndpointsStartTime, mGetUsageEndpointsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetUsageEndpointsCoroutine.ResponseReceived += GetUsageEndpointsCallback;
-            mGetUsageEndpointsCoroutine.Start(mGetUsageEndpointsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetUsageEndpointsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetUsageEndpointsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetUsageEndpointsStartTime, "GetUsageEndpoints", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetUsageEndpointsCallback(IRestResponse response)
+        private void OnGetUsageEndpointsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUsageEndpoints: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUsageEndpoints: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetUsageEndpoints: " + response.Error);
             }
 
-            GetUsageEndpointsData = (List<string>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<string>), response.Headers);
-            KnetikLogger.LogResponse(mGetUsageEndpointsStartTime, mGetUsageEndpointsPath, string.Format("Response received successfully:\n{0}", GetUsageEndpointsData.ToString()));
+            GetUsageEndpointsData = (List<string>) KnetikClient.Deserialize(response.Content, typeof(List<string>), response.Headers);
+            KnetikLogger.LogResponse(mGetUsageEndpointsStartTime, "GetUsageEndpoints", string.Format("Response received successfully:\n{0}", GetUsageEndpointsData));
 
             if (GetUsageEndpointsComplete != null)
             {
-                GetUsageEndpointsComplete(GetUsageEndpointsData);
+                GetUsageEndpointsComplete(response.ResponseCode, GetUsageEndpointsData);
             }
         }
 

@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -17,24 +16,29 @@ namespace com.knetikcloud.Api
     /// </summary>
     public interface IUtilMaintenanceApi
     {
-        Maintenance GetMaintenanceData { get; }
-
         
+
         /// <summary>
         /// Delete maintenance info 
         /// </summary>
         void DeleteMaintenance();
+
+        Maintenance GetMaintenanceData { get; }
 
         /// <summary>
         /// Get current maintenance info Get current maintenance info. 404 if no maintenance.
         /// </summary>
         void GetMaintenance();
 
+        
+
         /// <summary>
         /// Set current maintenance info 
         /// </summary>
         /// <param name="maintenance">The maintenance object</param>
         void SetMaintenance(Maintenance maintenance);
+
+        
 
         /// <summary>
         /// Update current maintenance info 
@@ -50,30 +54,28 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class UtilMaintenanceApi : IUtilMaintenanceApi
     {
-        private readonly KnetikCoroutine mDeleteMaintenanceCoroutine;
-        private DateTime mDeleteMaintenanceStartTime;
-        private string mDeleteMaintenancePath;
-        private readonly KnetikCoroutine mGetMaintenanceCoroutine;
-        private DateTime mGetMaintenanceStartTime;
-        private string mGetMaintenancePath;
-        private readonly KnetikCoroutine mSetMaintenanceCoroutine;
-        private DateTime mSetMaintenanceStartTime;
-        private string mSetMaintenancePath;
-        private readonly KnetikCoroutine mUpdateMaintenanceCoroutine;
-        private DateTime mUpdateMaintenanceStartTime;
-        private string mUpdateMaintenancePath;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
 
-        public delegate void DeleteMaintenanceCompleteDelegate();
+        private readonly KnetikResponseContext mDeleteMaintenanceResponseContext;
+        private DateTime mDeleteMaintenanceStartTime;
+        private readonly KnetikResponseContext mGetMaintenanceResponseContext;
+        private DateTime mGetMaintenanceStartTime;
+        private readonly KnetikResponseContext mSetMaintenanceResponseContext;
+        private DateTime mSetMaintenanceStartTime;
+        private readonly KnetikResponseContext mUpdateMaintenanceResponseContext;
+        private DateTime mUpdateMaintenanceStartTime;
+
+        public delegate void DeleteMaintenanceCompleteDelegate(long responseCode);
         public DeleteMaintenanceCompleteDelegate DeleteMaintenanceComplete;
 
         public Maintenance GetMaintenanceData { get; private set; }
-        public delegate void GetMaintenanceCompleteDelegate(Maintenance response);
+        public delegate void GetMaintenanceCompleteDelegate(long responseCode, Maintenance response);
         public GetMaintenanceCompleteDelegate GetMaintenanceComplete;
 
-        public delegate void SetMaintenanceCompleteDelegate();
+        public delegate void SetMaintenanceCompleteDelegate(long responseCode);
         public SetMaintenanceCompleteDelegate SetMaintenanceComplete;
 
-        public delegate void UpdateMaintenanceCompleteDelegate();
+        public delegate void UpdateMaintenanceCompleteDelegate(long responseCode);
         public UpdateMaintenanceCompleteDelegate UpdateMaintenanceComplete;
 
         /// <summary>
@@ -82,10 +84,14 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public UtilMaintenanceApi()
         {
-            mDeleteMaintenanceCoroutine = new KnetikCoroutine();
-            mGetMaintenanceCoroutine = new KnetikCoroutine();
-            mSetMaintenanceCoroutine = new KnetikCoroutine();
-            mUpdateMaintenanceCoroutine = new KnetikCoroutine();
+            mDeleteMaintenanceResponseContext = new KnetikResponseContext();
+            mDeleteMaintenanceResponseContext.ResponseReceived += OnDeleteMaintenanceResponse;
+            mGetMaintenanceResponseContext = new KnetikResponseContext();
+            mGetMaintenanceResponseContext.ResponseReceived += OnGetMaintenanceResponse;
+            mSetMaintenanceResponseContext = new KnetikResponseContext();
+            mSetMaintenanceResponseContext.ResponseReceived += OnSetMaintenanceResponse;
+            mUpdateMaintenanceResponseContext = new KnetikResponseContext();
+            mUpdateMaintenanceResponseContext.ResponseReceived += OnUpdateMaintenanceResponse;
         }
     
         /// <inheritdoc />
@@ -95,44 +101,43 @@ namespace com.knetikcloud.Api
         public void DeleteMaintenance()
         {
             
-            mDeleteMaintenancePath = "/maintenance";
-            if (!string.IsNullOrEmpty(mDeleteMaintenancePath))
+            mWebCallEvent.WebPath = "/maintenance";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteMaintenancePath = mDeleteMaintenancePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteMaintenanceStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteMaintenanceStartTime, mDeleteMaintenancePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteMaintenanceCoroutine.ResponseReceived += DeleteMaintenanceCallback;
-            mDeleteMaintenanceCoroutine.Start(mDeleteMaintenancePath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteMaintenanceStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteMaintenanceResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteMaintenanceStartTime, "DeleteMaintenance", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteMaintenanceCallback(IRestResponse response)
+        private void OnDeleteMaintenanceResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteMaintenance: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteMaintenance: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteMaintenance: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteMaintenanceStartTime, mDeleteMaintenancePath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteMaintenanceStartTime, "DeleteMaintenance", "Response received successfully.");
             if (DeleteMaintenanceComplete != null)
             {
-                DeleteMaintenanceComplete();
+                DeleteMaintenanceComplete(response.ResponseCode);
             }
         }
 
@@ -143,46 +148,45 @@ namespace com.knetikcloud.Api
         public void GetMaintenance()
         {
             
-            mGetMaintenancePath = "/maintenance";
-            if (!string.IsNullOrEmpty(mGetMaintenancePath))
+            mWebCallEvent.WebPath = "/maintenance";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetMaintenancePath = mGetMaintenancePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetMaintenanceStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetMaintenanceStartTime, mGetMaintenancePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetMaintenanceCoroutine.ResponseReceived += GetMaintenanceCallback;
-            mGetMaintenanceCoroutine.Start(mGetMaintenancePath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetMaintenanceStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetMaintenanceResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetMaintenanceStartTime, "GetMaintenance", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetMaintenanceCallback(IRestResponse response)
+        private void OnGetMaintenanceResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetMaintenance: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetMaintenance: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetMaintenance: " + response.Error);
             }
 
-            GetMaintenanceData = (Maintenance) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(Maintenance), response.Headers);
-            KnetikLogger.LogResponse(mGetMaintenanceStartTime, mGetMaintenancePath, string.Format("Response received successfully:\n{0}", GetMaintenanceData.ToString()));
+            GetMaintenanceData = (Maintenance) KnetikClient.Deserialize(response.Content, typeof(Maintenance), response.Headers);
+            KnetikLogger.LogResponse(mGetMaintenanceStartTime, "GetMaintenance", string.Format("Response received successfully:\n{0}", GetMaintenanceData));
 
             if (GetMaintenanceComplete != null)
             {
-                GetMaintenanceComplete(GetMaintenanceData);
+                GetMaintenanceComplete(response.ResponseCode, GetMaintenanceData);
             }
         }
 
@@ -194,46 +198,45 @@ namespace com.knetikcloud.Api
         public void SetMaintenance(Maintenance maintenance)
         {
             
-            mSetMaintenancePath = "/maintenance";
-            if (!string.IsNullOrEmpty(mSetMaintenancePath))
+            mWebCallEvent.WebPath = "/maintenance";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mSetMaintenancePath = mSetMaintenancePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(maintenance); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(maintenance); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mSetMaintenanceStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mSetMaintenanceStartTime, mSetMaintenancePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mSetMaintenanceCoroutine.ResponseReceived += SetMaintenanceCallback;
-            mSetMaintenanceCoroutine.Start(mSetMaintenancePath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mSetMaintenanceStartTime = DateTime.Now;
+            mWebCallEvent.Context = mSetMaintenanceResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mSetMaintenanceStartTime, "SetMaintenance", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void SetMaintenanceCallback(IRestResponse response)
+        private void OnSetMaintenanceResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling SetMaintenance: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling SetMaintenance: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling SetMaintenance: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mSetMaintenanceStartTime, mSetMaintenancePath, "Response received successfully.");
+            KnetikLogger.LogResponse(mSetMaintenanceStartTime, "SetMaintenance", "Response received successfully.");
             if (SetMaintenanceComplete != null)
             {
-                SetMaintenanceComplete();
+                SetMaintenanceComplete(response.ResponseCode);
             }
         }
 
@@ -245,46 +248,45 @@ namespace com.knetikcloud.Api
         public void UpdateMaintenance(Maintenance maintenance)
         {
             
-            mUpdateMaintenancePath = "/maintenance";
-            if (!string.IsNullOrEmpty(mUpdateMaintenancePath))
+            mWebCallEvent.WebPath = "/maintenance";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateMaintenancePath = mUpdateMaintenancePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(maintenance); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(maintenance); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateMaintenanceStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateMaintenanceStartTime, mUpdateMaintenancePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateMaintenanceCoroutine.ResponseReceived += UpdateMaintenanceCallback;
-            mUpdateMaintenanceCoroutine.Start(mUpdateMaintenancePath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateMaintenanceStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateMaintenanceResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateMaintenanceStartTime, "UpdateMaintenance", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateMaintenanceCallback(IRestResponse response)
+        private void OnUpdateMaintenanceResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateMaintenance: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateMaintenance: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateMaintenance: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mUpdateMaintenanceStartTime, mUpdateMaintenancePath, "Response received successfully.");
+            KnetikLogger.LogResponse(mUpdateMaintenanceStartTime, "UpdateMaintenance", "Response received successfully.");
             if (UpdateMaintenanceComplete != null)
             {
-                UpdateMaintenanceComplete();
+                UpdateMaintenanceComplete(response.ResponseCode);
             }
         }
 

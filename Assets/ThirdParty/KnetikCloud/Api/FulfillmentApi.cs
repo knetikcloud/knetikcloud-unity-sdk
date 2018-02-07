@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,16 +18,13 @@ namespace com.knetikcloud.Api
     {
         FulfillmentType CreateFulfillmentTypeData { get; }
 
-        FulfillmentType GetFulfillmentTypeData { get; }
-
-        PageResourceFulfillmentType GetFulfillmentTypesData { get; }
-
-        
         /// <summary>
         /// Create a fulfillment type 
         /// </summary>
         /// <param name="type">The fulfillment type</param>
         void CreateFulfillmentType(FulfillmentType type);
+
+        
 
         /// <summary>
         /// Delete a fulfillment type 
@@ -36,11 +32,15 @@ namespace com.knetikcloud.Api
         /// <param name="id">The id</param>
         void DeleteFulfillmentType(int? id);
 
+        FulfillmentType GetFulfillmentTypeData { get; }
+
         /// <summary>
         /// Get a single fulfillment type 
         /// </summary>
         /// <param name="id">The id</param>
         void GetFulfillmentType(int? id);
+
+        PageResourceFulfillmentType GetFulfillmentTypesData { get; }
 
         /// <summary>
         /// List and search fulfillment types 
@@ -49,6 +49,8 @@ namespace com.knetikcloud.Api
         /// <param name="page">The number of the page returned, starting with 1</param>
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
         void GetFulfillmentTypes(int? size, int? page, string order);
+
+        
 
         /// <summary>
         /// Update a fulfillment type 
@@ -65,38 +67,35 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class FulfillmentApi : IFulfillmentApi
     {
-        private readonly KnetikCoroutine mCreateFulfillmentTypeCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mCreateFulfillmentTypeResponseContext;
         private DateTime mCreateFulfillmentTypeStartTime;
-        private string mCreateFulfillmentTypePath;
-        private readonly KnetikCoroutine mDeleteFulfillmentTypeCoroutine;
+        private readonly KnetikResponseContext mDeleteFulfillmentTypeResponseContext;
         private DateTime mDeleteFulfillmentTypeStartTime;
-        private string mDeleteFulfillmentTypePath;
-        private readonly KnetikCoroutine mGetFulfillmentTypeCoroutine;
+        private readonly KnetikResponseContext mGetFulfillmentTypeResponseContext;
         private DateTime mGetFulfillmentTypeStartTime;
-        private string mGetFulfillmentTypePath;
-        private readonly KnetikCoroutine mGetFulfillmentTypesCoroutine;
+        private readonly KnetikResponseContext mGetFulfillmentTypesResponseContext;
         private DateTime mGetFulfillmentTypesStartTime;
-        private string mGetFulfillmentTypesPath;
-        private readonly KnetikCoroutine mUpdateFulfillmentTypeCoroutine;
+        private readonly KnetikResponseContext mUpdateFulfillmentTypeResponseContext;
         private DateTime mUpdateFulfillmentTypeStartTime;
-        private string mUpdateFulfillmentTypePath;
 
         public FulfillmentType CreateFulfillmentTypeData { get; private set; }
-        public delegate void CreateFulfillmentTypeCompleteDelegate(FulfillmentType response);
+        public delegate void CreateFulfillmentTypeCompleteDelegate(long responseCode, FulfillmentType response);
         public CreateFulfillmentTypeCompleteDelegate CreateFulfillmentTypeComplete;
 
-        public delegate void DeleteFulfillmentTypeCompleteDelegate();
+        public delegate void DeleteFulfillmentTypeCompleteDelegate(long responseCode);
         public DeleteFulfillmentTypeCompleteDelegate DeleteFulfillmentTypeComplete;
 
         public FulfillmentType GetFulfillmentTypeData { get; private set; }
-        public delegate void GetFulfillmentTypeCompleteDelegate(FulfillmentType response);
+        public delegate void GetFulfillmentTypeCompleteDelegate(long responseCode, FulfillmentType response);
         public GetFulfillmentTypeCompleteDelegate GetFulfillmentTypeComplete;
 
         public PageResourceFulfillmentType GetFulfillmentTypesData { get; private set; }
-        public delegate void GetFulfillmentTypesCompleteDelegate(PageResourceFulfillmentType response);
+        public delegate void GetFulfillmentTypesCompleteDelegate(long responseCode, PageResourceFulfillmentType response);
         public GetFulfillmentTypesCompleteDelegate GetFulfillmentTypesComplete;
 
-        public delegate void UpdateFulfillmentTypeCompleteDelegate();
+        public delegate void UpdateFulfillmentTypeCompleteDelegate(long responseCode);
         public UpdateFulfillmentTypeCompleteDelegate UpdateFulfillmentTypeComplete;
 
         /// <summary>
@@ -105,11 +104,16 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public FulfillmentApi()
         {
-            mCreateFulfillmentTypeCoroutine = new KnetikCoroutine();
-            mDeleteFulfillmentTypeCoroutine = new KnetikCoroutine();
-            mGetFulfillmentTypeCoroutine = new KnetikCoroutine();
-            mGetFulfillmentTypesCoroutine = new KnetikCoroutine();
-            mUpdateFulfillmentTypeCoroutine = new KnetikCoroutine();
+            mCreateFulfillmentTypeResponseContext = new KnetikResponseContext();
+            mCreateFulfillmentTypeResponseContext.ResponseReceived += OnCreateFulfillmentTypeResponse;
+            mDeleteFulfillmentTypeResponseContext = new KnetikResponseContext();
+            mDeleteFulfillmentTypeResponseContext.ResponseReceived += OnDeleteFulfillmentTypeResponse;
+            mGetFulfillmentTypeResponseContext = new KnetikResponseContext();
+            mGetFulfillmentTypeResponseContext.ResponseReceived += OnGetFulfillmentTypeResponse;
+            mGetFulfillmentTypesResponseContext = new KnetikResponseContext();
+            mGetFulfillmentTypesResponseContext.ResponseReceived += OnGetFulfillmentTypesResponse;
+            mUpdateFulfillmentTypeResponseContext = new KnetikResponseContext();
+            mUpdateFulfillmentTypeResponseContext.ResponseReceived += OnUpdateFulfillmentTypeResponse;
         }
     
         /// <inheritdoc />
@@ -120,48 +124,47 @@ namespace com.knetikcloud.Api
         public void CreateFulfillmentType(FulfillmentType type)
         {
             
-            mCreateFulfillmentTypePath = "/store/fulfillment/types";
-            if (!string.IsNullOrEmpty(mCreateFulfillmentTypePath))
+            mWebCallEvent.WebPath = "/store/fulfillment/types";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mCreateFulfillmentTypePath = mCreateFulfillmentTypePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(type); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(type); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mCreateFulfillmentTypeStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mCreateFulfillmentTypeStartTime, mCreateFulfillmentTypePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mCreateFulfillmentTypeCoroutine.ResponseReceived += CreateFulfillmentTypeCallback;
-            mCreateFulfillmentTypeCoroutine.Start(mCreateFulfillmentTypePath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mCreateFulfillmentTypeStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreateFulfillmentTypeResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreateFulfillmentTypeStartTime, "CreateFulfillmentType", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void CreateFulfillmentTypeCallback(IRestResponse response)
+        private void OnCreateFulfillmentTypeResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateFulfillmentType: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateFulfillmentType: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling CreateFulfillmentType: " + response.Error);
             }
 
-            CreateFulfillmentTypeData = (FulfillmentType) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(FulfillmentType), response.Headers);
-            KnetikLogger.LogResponse(mCreateFulfillmentTypeStartTime, mCreateFulfillmentTypePath, string.Format("Response received successfully:\n{0}", CreateFulfillmentTypeData.ToString()));
+            CreateFulfillmentTypeData = (FulfillmentType) KnetikClient.Deserialize(response.Content, typeof(FulfillmentType), response.Headers);
+            KnetikLogger.LogResponse(mCreateFulfillmentTypeStartTime, "CreateFulfillmentType", string.Format("Response received successfully:\n{0}", CreateFulfillmentTypeData));
 
             if (CreateFulfillmentTypeComplete != null)
             {
-                CreateFulfillmentTypeComplete(CreateFulfillmentTypeData);
+                CreateFulfillmentTypeComplete(response.ResponseCode, CreateFulfillmentTypeData);
             }
         }
 
@@ -178,45 +181,44 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeleteFulfillmentType");
             }
             
-            mDeleteFulfillmentTypePath = "/store/fulfillment/types/{id}";
-            if (!string.IsNullOrEmpty(mDeleteFulfillmentTypePath))
+            mWebCallEvent.WebPath = "/store/fulfillment/types/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteFulfillmentTypePath = mDeleteFulfillmentTypePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteFulfillmentTypePath = mDeleteFulfillmentTypePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteFulfillmentTypeStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteFulfillmentTypeStartTime, mDeleteFulfillmentTypePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteFulfillmentTypeCoroutine.ResponseReceived += DeleteFulfillmentTypeCallback;
-            mDeleteFulfillmentTypeCoroutine.Start(mDeleteFulfillmentTypePath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteFulfillmentTypeStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteFulfillmentTypeResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteFulfillmentTypeStartTime, "DeleteFulfillmentType", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteFulfillmentTypeCallback(IRestResponse response)
+        private void OnDeleteFulfillmentTypeResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteFulfillmentType: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteFulfillmentType: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteFulfillmentType: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteFulfillmentTypeStartTime, mDeleteFulfillmentTypePath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteFulfillmentTypeStartTime, "DeleteFulfillmentType", "Response received successfully.");
             if (DeleteFulfillmentTypeComplete != null)
             {
-                DeleteFulfillmentTypeComplete();
+                DeleteFulfillmentTypeComplete(response.ResponseCode);
             }
         }
 
@@ -233,47 +235,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetFulfillmentType");
             }
             
-            mGetFulfillmentTypePath = "/store/fulfillment/types/{id}";
-            if (!string.IsNullOrEmpty(mGetFulfillmentTypePath))
+            mWebCallEvent.WebPath = "/store/fulfillment/types/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetFulfillmentTypePath = mGetFulfillmentTypePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetFulfillmentTypePath = mGetFulfillmentTypePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetFulfillmentTypeStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetFulfillmentTypeStartTime, mGetFulfillmentTypePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetFulfillmentTypeCoroutine.ResponseReceived += GetFulfillmentTypeCallback;
-            mGetFulfillmentTypeCoroutine.Start(mGetFulfillmentTypePath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetFulfillmentTypeStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetFulfillmentTypeResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetFulfillmentTypeStartTime, "GetFulfillmentType", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetFulfillmentTypeCallback(IRestResponse response)
+        private void OnGetFulfillmentTypeResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetFulfillmentType: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetFulfillmentType: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetFulfillmentType: " + response.Error);
             }
 
-            GetFulfillmentTypeData = (FulfillmentType) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(FulfillmentType), response.Headers);
-            KnetikLogger.LogResponse(mGetFulfillmentTypeStartTime, mGetFulfillmentTypePath, string.Format("Response received successfully:\n{0}", GetFulfillmentTypeData.ToString()));
+            GetFulfillmentTypeData = (FulfillmentType) KnetikClient.Deserialize(response.Content, typeof(FulfillmentType), response.Headers);
+            KnetikLogger.LogResponse(mGetFulfillmentTypeStartTime, "GetFulfillmentType", string.Format("Response received successfully:\n{0}", GetFulfillmentTypeData));
 
             if (GetFulfillmentTypeComplete != null)
             {
-                GetFulfillmentTypeComplete(GetFulfillmentTypeData);
+                GetFulfillmentTypeComplete(response.ResponseCode, GetFulfillmentTypeData);
             }
         }
 
@@ -287,61 +288,60 @@ namespace com.knetikcloud.Api
         public void GetFulfillmentTypes(int? size, int? page, string order)
         {
             
-            mGetFulfillmentTypesPath = "/store/fulfillment/types";
-            if (!string.IsNullOrEmpty(mGetFulfillmentTypesPath))
+            mWebCallEvent.WebPath = "/store/fulfillment/types";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetFulfillmentTypesPath = mGetFulfillmentTypesPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetFulfillmentTypesStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetFulfillmentTypesStartTime, mGetFulfillmentTypesPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetFulfillmentTypesCoroutine.ResponseReceived += GetFulfillmentTypesCallback;
-            mGetFulfillmentTypesCoroutine.Start(mGetFulfillmentTypesPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetFulfillmentTypesStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetFulfillmentTypesResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetFulfillmentTypesStartTime, "GetFulfillmentTypes", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetFulfillmentTypesCallback(IRestResponse response)
+        private void OnGetFulfillmentTypesResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetFulfillmentTypes: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetFulfillmentTypes: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetFulfillmentTypes: " + response.Error);
             }
 
-            GetFulfillmentTypesData = (PageResourceFulfillmentType) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceFulfillmentType), response.Headers);
-            KnetikLogger.LogResponse(mGetFulfillmentTypesStartTime, mGetFulfillmentTypesPath, string.Format("Response received successfully:\n{0}", GetFulfillmentTypesData.ToString()));
+            GetFulfillmentTypesData = (PageResourceFulfillmentType) KnetikClient.Deserialize(response.Content, typeof(PageResourceFulfillmentType), response.Headers);
+            KnetikLogger.LogResponse(mGetFulfillmentTypesStartTime, "GetFulfillmentTypes", string.Format("Response received successfully:\n{0}", GetFulfillmentTypesData));
 
             if (GetFulfillmentTypesComplete != null)
             {
-                GetFulfillmentTypesComplete(GetFulfillmentTypesData);
+                GetFulfillmentTypesComplete(response.ResponseCode, GetFulfillmentTypesData);
             }
         }
 
@@ -359,47 +359,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling UpdateFulfillmentType");
             }
             
-            mUpdateFulfillmentTypePath = "/store/fulfillment/types/{id}";
-            if (!string.IsNullOrEmpty(mUpdateFulfillmentTypePath))
+            mWebCallEvent.WebPath = "/store/fulfillment/types/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateFulfillmentTypePath = mUpdateFulfillmentTypePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateFulfillmentTypePath = mUpdateFulfillmentTypePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(fulfillmentType); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(fulfillmentType); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateFulfillmentTypeStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateFulfillmentTypeStartTime, mUpdateFulfillmentTypePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateFulfillmentTypeCoroutine.ResponseReceived += UpdateFulfillmentTypeCallback;
-            mUpdateFulfillmentTypeCoroutine.Start(mUpdateFulfillmentTypePath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateFulfillmentTypeStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateFulfillmentTypeResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateFulfillmentTypeStartTime, "UpdateFulfillmentType", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateFulfillmentTypeCallback(IRestResponse response)
+        private void OnUpdateFulfillmentTypeResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateFulfillmentType: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateFulfillmentType: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateFulfillmentType: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mUpdateFulfillmentTypeStartTime, mUpdateFulfillmentTypePath, "Response received successfully.");
+            KnetikLogger.LogResponse(mUpdateFulfillmentTypeStartTime, "UpdateFulfillmentType", "Response received successfully.");
             if (UpdateFulfillmentTypeComplete != null)
             {
-                UpdateFulfillmentTypeComplete();
+                UpdateFulfillmentTypeComplete(response.ResponseCode);
             }
         }
 

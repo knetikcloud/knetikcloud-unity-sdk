@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,7 +18,6 @@ namespace com.knetikcloud.Api
     {
         PageResourceAggregateCountResource GetUserRegistrationsData { get; }
 
-        
         /// <summary>
         /// Get user registration info Get user registration counts grouped by time range
         /// </summary>
@@ -38,12 +36,13 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class ReportingUsersApi : IReportingUsersApi
     {
-        private readonly KnetikCoroutine mGetUserRegistrationsCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mGetUserRegistrationsResponseContext;
         private DateTime mGetUserRegistrationsStartTime;
-        private string mGetUserRegistrationsPath;
 
         public PageResourceAggregateCountResource GetUserRegistrationsData { get; private set; }
-        public delegate void GetUserRegistrationsCompleteDelegate(PageResourceAggregateCountResource response);
+        public delegate void GetUserRegistrationsCompleteDelegate(long responseCode, PageResourceAggregateCountResource response);
         public GetUserRegistrationsCompleteDelegate GetUserRegistrationsComplete;
 
         /// <summary>
@@ -52,7 +51,8 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public ReportingUsersApi()
         {
-            mGetUserRegistrationsCoroutine = new KnetikCoroutine();
+            mGetUserRegistrationsResponseContext = new KnetikResponseContext();
+            mGetUserRegistrationsResponseContext.ResponseReceived += OnGetUserRegistrationsResponse;
         }
     
         /// <inheritdoc />
@@ -67,71 +67,70 @@ namespace com.knetikcloud.Api
         public void GetUserRegistrations(string granularity, long? startDate, long? endDate, int? size, int? page)
         {
             
-            mGetUserRegistrationsPath = "/reporting/users/registrations";
-            if (!string.IsNullOrEmpty(mGetUserRegistrationsPath))
+            mWebCallEvent.WebPath = "/reporting/users/registrations";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetUserRegistrationsPath = mGetUserRegistrationsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (granularity != null)
             {
-                queryParams.Add("granularity", KnetikClient.DefaultClient.ParameterToString(granularity));
+                mWebCallEvent.QueryParams["granularity"] = KnetikClient.ParameterToString(granularity);
             }
 
             if (startDate != null)
             {
-                queryParams.Add("start_date", KnetikClient.DefaultClient.ParameterToString(startDate));
+                mWebCallEvent.QueryParams["start_date"] = KnetikClient.ParameterToString(startDate);
             }
 
             if (endDate != null)
             {
-                queryParams.Add("end_date", KnetikClient.DefaultClient.ParameterToString(endDate));
+                mWebCallEvent.QueryParams["end_date"] = KnetikClient.ParameterToString(endDate);
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetUserRegistrationsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetUserRegistrationsStartTime, mGetUserRegistrationsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetUserRegistrationsCoroutine.ResponseReceived += GetUserRegistrationsCallback;
-            mGetUserRegistrationsCoroutine.Start(mGetUserRegistrationsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetUserRegistrationsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetUserRegistrationsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetUserRegistrationsStartTime, "GetUserRegistrations", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetUserRegistrationsCallback(IRestResponse response)
+        private void OnGetUserRegistrationsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUserRegistrations: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUserRegistrations: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetUserRegistrations: " + response.Error);
             }
 
-            GetUserRegistrationsData = (PageResourceAggregateCountResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceAggregateCountResource), response.Headers);
-            KnetikLogger.LogResponse(mGetUserRegistrationsStartTime, mGetUserRegistrationsPath, string.Format("Response received successfully:\n{0}", GetUserRegistrationsData.ToString()));
+            GetUserRegistrationsData = (PageResourceAggregateCountResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceAggregateCountResource), response.Headers);
+            KnetikLogger.LogResponse(mGetUserRegistrationsStartTime, "GetUserRegistrations", string.Format("Response received successfully:\n{0}", GetUserRegistrationsData));
 
             if (GetUserRegistrationsComplete != null)
             {
-                GetUserRegistrationsComplete(GetUserRegistrationsData);
+                GetUserRegistrationsComplete(response.ResponseCode, GetUserRegistrationsData);
             }
         }
 

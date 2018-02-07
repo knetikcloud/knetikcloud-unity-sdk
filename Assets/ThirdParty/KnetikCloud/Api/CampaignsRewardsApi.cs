@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,18 +18,13 @@ namespace com.knetikcloud.Api
     {
         RewardSetResource CreateRewardSetData { get; }
 
-        RewardSetResource GetRewardSetData { get; }
-
-        PageResourceRewardSetResource GetRewardSetsData { get; }
-
-        RewardSetResource UpdateRewardSetData { get; }
-
-        
         /// <summary>
         /// Create a reward set 
         /// </summary>
         /// <param name="rewardSetResource">The reward set resource object</param>
         void CreateRewardSet(RewardSetResource rewardSetResource);
+
+        
 
         /// <summary>
         /// Delete a reward set 
@@ -38,11 +32,15 @@ namespace com.knetikcloud.Api
         /// <param name="id">The reward id</param>
         void DeleteRewardSet(int? id);
 
+        RewardSetResource GetRewardSetData { get; }
+
         /// <summary>
         /// Get a single reward set 
         /// </summary>
         /// <param name="id">The reward id</param>
         void GetRewardSet(int? id);
+
+        PageResourceRewardSetResource GetRewardSetsData { get; }
 
         /// <summary>
         /// List and search reward sets 
@@ -51,6 +49,8 @@ namespace com.knetikcloud.Api
         /// <param name="page">The number of the page returned, starting with 1</param>
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
         void GetRewardSets(int? size, int? page, string order);
+
+        RewardSetResource UpdateRewardSetData { get; }
 
         /// <summary>
         /// Update a reward set 
@@ -67,39 +67,36 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class CampaignsRewardsApi : ICampaignsRewardsApi
     {
-        private readonly KnetikCoroutine mCreateRewardSetCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mCreateRewardSetResponseContext;
         private DateTime mCreateRewardSetStartTime;
-        private string mCreateRewardSetPath;
-        private readonly KnetikCoroutine mDeleteRewardSetCoroutine;
+        private readonly KnetikResponseContext mDeleteRewardSetResponseContext;
         private DateTime mDeleteRewardSetStartTime;
-        private string mDeleteRewardSetPath;
-        private readonly KnetikCoroutine mGetRewardSetCoroutine;
+        private readonly KnetikResponseContext mGetRewardSetResponseContext;
         private DateTime mGetRewardSetStartTime;
-        private string mGetRewardSetPath;
-        private readonly KnetikCoroutine mGetRewardSetsCoroutine;
+        private readonly KnetikResponseContext mGetRewardSetsResponseContext;
         private DateTime mGetRewardSetsStartTime;
-        private string mGetRewardSetsPath;
-        private readonly KnetikCoroutine mUpdateRewardSetCoroutine;
+        private readonly KnetikResponseContext mUpdateRewardSetResponseContext;
         private DateTime mUpdateRewardSetStartTime;
-        private string mUpdateRewardSetPath;
 
         public RewardSetResource CreateRewardSetData { get; private set; }
-        public delegate void CreateRewardSetCompleteDelegate(RewardSetResource response);
+        public delegate void CreateRewardSetCompleteDelegate(long responseCode, RewardSetResource response);
         public CreateRewardSetCompleteDelegate CreateRewardSetComplete;
 
-        public delegate void DeleteRewardSetCompleteDelegate();
+        public delegate void DeleteRewardSetCompleteDelegate(long responseCode);
         public DeleteRewardSetCompleteDelegate DeleteRewardSetComplete;
 
         public RewardSetResource GetRewardSetData { get; private set; }
-        public delegate void GetRewardSetCompleteDelegate(RewardSetResource response);
+        public delegate void GetRewardSetCompleteDelegate(long responseCode, RewardSetResource response);
         public GetRewardSetCompleteDelegate GetRewardSetComplete;
 
         public PageResourceRewardSetResource GetRewardSetsData { get; private set; }
-        public delegate void GetRewardSetsCompleteDelegate(PageResourceRewardSetResource response);
+        public delegate void GetRewardSetsCompleteDelegate(long responseCode, PageResourceRewardSetResource response);
         public GetRewardSetsCompleteDelegate GetRewardSetsComplete;
 
         public RewardSetResource UpdateRewardSetData { get; private set; }
-        public delegate void UpdateRewardSetCompleteDelegate(RewardSetResource response);
+        public delegate void UpdateRewardSetCompleteDelegate(long responseCode, RewardSetResource response);
         public UpdateRewardSetCompleteDelegate UpdateRewardSetComplete;
 
         /// <summary>
@@ -108,11 +105,16 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public CampaignsRewardsApi()
         {
-            mCreateRewardSetCoroutine = new KnetikCoroutine();
-            mDeleteRewardSetCoroutine = new KnetikCoroutine();
-            mGetRewardSetCoroutine = new KnetikCoroutine();
-            mGetRewardSetsCoroutine = new KnetikCoroutine();
-            mUpdateRewardSetCoroutine = new KnetikCoroutine();
+            mCreateRewardSetResponseContext = new KnetikResponseContext();
+            mCreateRewardSetResponseContext.ResponseReceived += OnCreateRewardSetResponse;
+            mDeleteRewardSetResponseContext = new KnetikResponseContext();
+            mDeleteRewardSetResponseContext.ResponseReceived += OnDeleteRewardSetResponse;
+            mGetRewardSetResponseContext = new KnetikResponseContext();
+            mGetRewardSetResponseContext.ResponseReceived += OnGetRewardSetResponse;
+            mGetRewardSetsResponseContext = new KnetikResponseContext();
+            mGetRewardSetsResponseContext.ResponseReceived += OnGetRewardSetsResponse;
+            mUpdateRewardSetResponseContext = new KnetikResponseContext();
+            mUpdateRewardSetResponseContext.ResponseReceived += OnUpdateRewardSetResponse;
         }
     
         /// <inheritdoc />
@@ -123,48 +125,47 @@ namespace com.knetikcloud.Api
         public void CreateRewardSet(RewardSetResource rewardSetResource)
         {
             
-            mCreateRewardSetPath = "/rewards";
-            if (!string.IsNullOrEmpty(mCreateRewardSetPath))
+            mWebCallEvent.WebPath = "/rewards";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mCreateRewardSetPath = mCreateRewardSetPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(rewardSetResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(rewardSetResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mCreateRewardSetStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mCreateRewardSetStartTime, mCreateRewardSetPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mCreateRewardSetCoroutine.ResponseReceived += CreateRewardSetCallback;
-            mCreateRewardSetCoroutine.Start(mCreateRewardSetPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mCreateRewardSetStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreateRewardSetResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreateRewardSetStartTime, "CreateRewardSet", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void CreateRewardSetCallback(IRestResponse response)
+        private void OnCreateRewardSetResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateRewardSet: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateRewardSet: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling CreateRewardSet: " + response.Error);
             }
 
-            CreateRewardSetData = (RewardSetResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(RewardSetResource), response.Headers);
-            KnetikLogger.LogResponse(mCreateRewardSetStartTime, mCreateRewardSetPath, string.Format("Response received successfully:\n{0}", CreateRewardSetData.ToString()));
+            CreateRewardSetData = (RewardSetResource) KnetikClient.Deserialize(response.Content, typeof(RewardSetResource), response.Headers);
+            KnetikLogger.LogResponse(mCreateRewardSetStartTime, "CreateRewardSet", string.Format("Response received successfully:\n{0}", CreateRewardSetData));
 
             if (CreateRewardSetComplete != null)
             {
-                CreateRewardSetComplete(CreateRewardSetData);
+                CreateRewardSetComplete(response.ResponseCode, CreateRewardSetData);
             }
         }
 
@@ -181,45 +182,44 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeleteRewardSet");
             }
             
-            mDeleteRewardSetPath = "/rewards/{id}";
-            if (!string.IsNullOrEmpty(mDeleteRewardSetPath))
+            mWebCallEvent.WebPath = "/rewards/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteRewardSetPath = mDeleteRewardSetPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteRewardSetPath = mDeleteRewardSetPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteRewardSetStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteRewardSetStartTime, mDeleteRewardSetPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteRewardSetCoroutine.ResponseReceived += DeleteRewardSetCallback;
-            mDeleteRewardSetCoroutine.Start(mDeleteRewardSetPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteRewardSetStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteRewardSetResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteRewardSetStartTime, "DeleteRewardSet", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteRewardSetCallback(IRestResponse response)
+        private void OnDeleteRewardSetResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteRewardSet: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteRewardSet: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteRewardSet: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteRewardSetStartTime, mDeleteRewardSetPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteRewardSetStartTime, "DeleteRewardSet", "Response received successfully.");
             if (DeleteRewardSetComplete != null)
             {
-                DeleteRewardSetComplete();
+                DeleteRewardSetComplete(response.ResponseCode);
             }
         }
 
@@ -236,47 +236,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetRewardSet");
             }
             
-            mGetRewardSetPath = "/rewards/{id}";
-            if (!string.IsNullOrEmpty(mGetRewardSetPath))
+            mWebCallEvent.WebPath = "/rewards/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetRewardSetPath = mGetRewardSetPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetRewardSetPath = mGetRewardSetPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetRewardSetStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetRewardSetStartTime, mGetRewardSetPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetRewardSetCoroutine.ResponseReceived += GetRewardSetCallback;
-            mGetRewardSetCoroutine.Start(mGetRewardSetPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetRewardSetStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetRewardSetResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetRewardSetStartTime, "GetRewardSet", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetRewardSetCallback(IRestResponse response)
+        private void OnGetRewardSetResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetRewardSet: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetRewardSet: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetRewardSet: " + response.Error);
             }
 
-            GetRewardSetData = (RewardSetResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(RewardSetResource), response.Headers);
-            KnetikLogger.LogResponse(mGetRewardSetStartTime, mGetRewardSetPath, string.Format("Response received successfully:\n{0}", GetRewardSetData.ToString()));
+            GetRewardSetData = (RewardSetResource) KnetikClient.Deserialize(response.Content, typeof(RewardSetResource), response.Headers);
+            KnetikLogger.LogResponse(mGetRewardSetStartTime, "GetRewardSet", string.Format("Response received successfully:\n{0}", GetRewardSetData));
 
             if (GetRewardSetComplete != null)
             {
-                GetRewardSetComplete(GetRewardSetData);
+                GetRewardSetComplete(response.ResponseCode, GetRewardSetData);
             }
         }
 
@@ -290,61 +289,60 @@ namespace com.knetikcloud.Api
         public void GetRewardSets(int? size, int? page, string order)
         {
             
-            mGetRewardSetsPath = "/rewards";
-            if (!string.IsNullOrEmpty(mGetRewardSetsPath))
+            mWebCallEvent.WebPath = "/rewards";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetRewardSetsPath = mGetRewardSetsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetRewardSetsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetRewardSetsStartTime, mGetRewardSetsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetRewardSetsCoroutine.ResponseReceived += GetRewardSetsCallback;
-            mGetRewardSetsCoroutine.Start(mGetRewardSetsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetRewardSetsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetRewardSetsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetRewardSetsStartTime, "GetRewardSets", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetRewardSetsCallback(IRestResponse response)
+        private void OnGetRewardSetsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetRewardSets: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetRewardSets: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetRewardSets: " + response.Error);
             }
 
-            GetRewardSetsData = (PageResourceRewardSetResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceRewardSetResource), response.Headers);
-            KnetikLogger.LogResponse(mGetRewardSetsStartTime, mGetRewardSetsPath, string.Format("Response received successfully:\n{0}", GetRewardSetsData.ToString()));
+            GetRewardSetsData = (PageResourceRewardSetResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceRewardSetResource), response.Headers);
+            KnetikLogger.LogResponse(mGetRewardSetsStartTime, "GetRewardSets", string.Format("Response received successfully:\n{0}", GetRewardSetsData));
 
             if (GetRewardSetsComplete != null)
             {
-                GetRewardSetsComplete(GetRewardSetsData);
+                GetRewardSetsComplete(response.ResponseCode, GetRewardSetsData);
             }
         }
 
@@ -362,49 +360,48 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling UpdateRewardSet");
             }
             
-            mUpdateRewardSetPath = "/rewards/{id}";
-            if (!string.IsNullOrEmpty(mUpdateRewardSetPath))
+            mWebCallEvent.WebPath = "/rewards/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateRewardSetPath = mUpdateRewardSetPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateRewardSetPath = mUpdateRewardSetPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(rewardSetResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(rewardSetResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateRewardSetStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateRewardSetStartTime, mUpdateRewardSetPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateRewardSetCoroutine.ResponseReceived += UpdateRewardSetCallback;
-            mUpdateRewardSetCoroutine.Start(mUpdateRewardSetPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateRewardSetStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateRewardSetResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateRewardSetStartTime, "UpdateRewardSet", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateRewardSetCallback(IRestResponse response)
+        private void OnUpdateRewardSetResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateRewardSet: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateRewardSet: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateRewardSet: " + response.Error);
             }
 
-            UpdateRewardSetData = (RewardSetResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(RewardSetResource), response.Headers);
-            KnetikLogger.LogResponse(mUpdateRewardSetStartTime, mUpdateRewardSetPath, string.Format("Response received successfully:\n{0}", UpdateRewardSetData.ToString()));
+            UpdateRewardSetData = (RewardSetResource) KnetikClient.Deserialize(response.Content, typeof(RewardSetResource), response.Headers);
+            KnetikLogger.LogResponse(mUpdateRewardSetStartTime, "UpdateRewardSet", string.Format("Response received successfully:\n{0}", UpdateRewardSetData));
 
             if (UpdateRewardSetComplete != null)
             {
-                UpdateRewardSetComplete(UpdateRewardSetData);
+                UpdateRewardSetComplete(response.ResponseCode, UpdateRewardSetData);
             }
         }
 

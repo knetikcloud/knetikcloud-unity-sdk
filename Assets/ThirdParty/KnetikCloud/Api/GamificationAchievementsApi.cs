@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,42 +18,13 @@ namespace com.knetikcloud.Api
     {
         AchievementDefinitionResource CreateAchievementData { get; }
 
-        TemplateResource CreateAchievementTemplateData { get; }
-
-        AchievementDefinitionResource GetAchievementData { get; }
-
-        TemplateResource GetAchievementTemplateData { get; }
-
-        PageResourceTemplateResource GetAchievementTemplatesData { get; }
-
-        List<BreTriggerResource> GetAchievementTriggersData { get; }
-
-        PageResourceAchievementDefinitionResource GetAchievementsData { get; }
-
-        List<AchievementDefinitionResource> GetDerivedAchievementsData { get; }
-
-        UserAchievementGroupResource GetUserAchievementProgressData { get; }
-
-        PageResourceUserAchievementGroupResource GetUserAchievementsProgressData { get; }
-
-        PageResourceUserAchievementGroupResource GetUsersAchievementProgressData { get; }
-
-        PageResourceUserAchievementGroupResource GetUsersAchievementsProgressData { get; }
-
-        UserAchievementGroupResource IncrementAchievementProgressData { get; }
-
-        UserAchievementGroupResource SetAchievementProgressData { get; }
-
-        AchievementDefinitionResource UpdateAchievementData { get; }
-
-        TemplateResource UpdateAchievementTemplateData { get; }
-
-        
         /// <summary>
         /// Create a new achievement definition If the definition contains a trigger event name, a BRE rule is created, so that tracking logic is executed when the triggering event occurs. If no trigger event name is specified, the user&#39;s achievement status must manually be updated via the API.
         /// </summary>
         /// <param name="achievement">The achievement definition</param>
         void CreateAchievement(AchievementDefinitionResource achievement);
+
+        TemplateResource CreateAchievementTemplateData { get; }
 
         /// <summary>
         /// Create an achievement template Achievement templates define a type of achievement and the properties they have
@@ -62,11 +32,15 @@ namespace com.knetikcloud.Api
         /// <param name="template">The achievement template to be created</param>
         void CreateAchievementTemplate(TemplateResource template);
 
+        
+
         /// <summary>
         /// Delete an achievement definition Will also disable the associated generated rule, if any.
         /// </summary>
         /// <param name="name">The name of the achievement</param>
         void DeleteAchievement(string name);
+
+        
 
         /// <summary>
         /// Delete an achievement template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
@@ -75,17 +49,23 @@ namespace com.knetikcloud.Api
         /// <param name="cascade">The value needed to delete used templates</param>
         void DeleteAchievementTemplate(string id, string cascade);
 
+        AchievementDefinitionResource GetAchievementData { get; }
+
         /// <summary>
         /// Get a single achievement definition 
         /// </summary>
         /// <param name="name">The name of the achievement</param>
         void GetAchievement(string name);
 
+        TemplateResource GetAchievementTemplateData { get; }
+
         /// <summary>
         /// Get a single achievement template 
         /// </summary>
         /// <param name="id">The id of the template</param>
         void GetAchievementTemplate(string id);
+
+        PageResourceTemplateResource GetAchievementTemplatesData { get; }
 
         /// <summary>
         /// List and search achievement templates 
@@ -95,10 +75,14 @@ namespace com.knetikcloud.Api
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
         void GetAchievementTemplates(int? size, int? page, string order);
 
+        List<BreTriggerResource> GetAchievementTriggersData { get; }
+
         /// <summary>
         /// Get the list of triggers that can be used to trigger an achievement progress update 
         /// </summary>
         void GetAchievementTriggers();
+
+        PageResourceAchievementDefinitionResource GetAchievementsData { get; }
 
         /// <summary>
         /// Get all achievement definitions in the system 
@@ -112,11 +96,15 @@ namespace com.knetikcloud.Api
         /// <param name="filterDerived">Filter for achievements that are derived from other services</param>
         void GetAchievements(string filterTagset, string filterName, bool? filterHidden, int? size, int? page, string order, bool? filterDerived);
 
+        List<AchievementDefinitionResource> GetDerivedAchievementsData { get; }
+
         /// <summary>
         /// Get a list of derived achievements Used by other services that depend on achievements
         /// </summary>
         /// <param name="name">The name of the derived achievement</param>
         void GetDerivedAchievements(string name);
+
+        UserAchievementGroupResource GetUserAchievementProgressData { get; }
 
         /// <summary>
         /// Retrieve progress on a given achievement for a given user Assets will not be filled in on the resources returned. Use &#39;Get a single poll&#39; to retrieve the full resource with assets for a given item as needed.
@@ -124,6 +112,8 @@ namespace com.knetikcloud.Api
         /// <param name="userId">The user&#39;s id</param>
         /// <param name="achievementName">The achievement&#39;s name</param>
         void GetUserAchievementProgress(int? userId, string achievementName);
+
+        PageResourceUserAchievementGroupResource GetUserAchievementsProgressData { get; }
 
         /// <summary>
         /// Retrieve progress on achievements for a given user Assets will not be filled in on the resources returned. Use &#39;Get a single poll&#39; to retrieve the full resource with assets for a given item as needed.
@@ -136,6 +126,8 @@ namespace com.knetikcloud.Api
         /// <param name="page">The number of the page returned, starting with 1</param>
         void GetUserAchievementsProgress(int? userId, bool? filterAchievementDerived, string filterAchievementTagset, string filterAchievementName, int? size, int? page);
 
+        PageResourceUserAchievementGroupResource GetUsersAchievementProgressData { get; }
+
         /// <summary>
         /// Retrieve progress on a given achievement for all users Assets will not be filled in on the resources returned. Use &#39;Get single achievement progress for user&#39; to retrieve the full resource with assets for a given user as needed.
         /// </summary>
@@ -147,6 +139,8 @@ namespace com.knetikcloud.Api
         /// <param name="page">The number of the page returned, starting with 1</param>
         void GetUsersAchievementProgress(string achievementName, bool? filterAchievementDerived, string filterAchievementTagset, string filterAchievementName, int? size, int? page);
 
+        PageResourceUserAchievementGroupResource GetUsersAchievementsProgressData { get; }
+
         /// <summary>
         /// Retrieve progress on achievements for all users Assets will not be filled in on the resources returned. Use &#39;Get single achievement progress for user&#39; to retrieve the full resource with assets for a given user as needed.
         /// </summary>
@@ -157,6 +151,8 @@ namespace com.knetikcloud.Api
         /// <param name="page">The number of the page returned, starting with 1</param>
         void GetUsersAchievementsProgress(bool? filterAchievementDerived, string filterAchievementTagset, string filterAchievementName, int? size, int? page);
 
+        UserAchievementGroupResource IncrementAchievementProgressData { get; }
+
         /// <summary>
         /// Increment an achievement progress record for a user If no progress record yet exists for the user, it will be created. Otherwise it will be updated and the provided value added to the existing progress. May be negative. If progress meets or exceeds the achievement&#39;s max_value it will be marked as earned and a BRE event will be triggered for the &lt;code&gt;BreAchievementEarnedTrigger&lt;/code&gt;.
         /// </summary>
@@ -164,6 +160,8 @@ namespace com.knetikcloud.Api
         /// <param name="achievementName">The achievement&#39;s name</param>
         /// <param name="progress">The amount to add to the progress value</param>
         void IncrementAchievementProgress(int? userId, string achievementName, IntWrapper progress);
+
+        UserAchievementGroupResource SetAchievementProgressData { get; }
 
         /// <summary>
         /// Set an achievement progress record for a user If no progress record yet exists for the user, it will be created. Otherwise it will be updated and progress set to the provided value. If progress meets or exceeds the achievement&#39;s max_value it will be marked as earned and a BRE event will be triggered for the &lt;code&gt;BreAchievementEarnedTrigger&lt;/code&gt;.
@@ -173,12 +171,16 @@ namespace com.knetikcloud.Api
         /// <param name="progress">The new progress value</param>
         void SetAchievementProgress(int? userId, string achievementName, IntWrapper progress);
 
+        AchievementDefinitionResource UpdateAchievementData { get; }
+
         /// <summary>
         /// Update an achievement definition The existing generated rule, if any, will be deleted. A new rule will be created if a trigger event name is specified in the new version.
         /// </summary>
         /// <param name="name">The name of the achievement</param>
         /// <param name="achievement">The achievement definition</param>
         void UpdateAchievement(string name, AchievementDefinitionResource achievement);
+
+        TemplateResource UpdateAchievementTemplateData { get; }
 
         /// <summary>
         /// Update an achievement template 
@@ -195,129 +197,113 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class GamificationAchievementsApi : IGamificationAchievementsApi
     {
-        private readonly KnetikCoroutine mCreateAchievementCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mCreateAchievementResponseContext;
         private DateTime mCreateAchievementStartTime;
-        private string mCreateAchievementPath;
-        private readonly KnetikCoroutine mCreateAchievementTemplateCoroutine;
+        private readonly KnetikResponseContext mCreateAchievementTemplateResponseContext;
         private DateTime mCreateAchievementTemplateStartTime;
-        private string mCreateAchievementTemplatePath;
-        private readonly KnetikCoroutine mDeleteAchievementCoroutine;
+        private readonly KnetikResponseContext mDeleteAchievementResponseContext;
         private DateTime mDeleteAchievementStartTime;
-        private string mDeleteAchievementPath;
-        private readonly KnetikCoroutine mDeleteAchievementTemplateCoroutine;
+        private readonly KnetikResponseContext mDeleteAchievementTemplateResponseContext;
         private DateTime mDeleteAchievementTemplateStartTime;
-        private string mDeleteAchievementTemplatePath;
-        private readonly KnetikCoroutine mGetAchievementCoroutine;
+        private readonly KnetikResponseContext mGetAchievementResponseContext;
         private DateTime mGetAchievementStartTime;
-        private string mGetAchievementPath;
-        private readonly KnetikCoroutine mGetAchievementTemplateCoroutine;
+        private readonly KnetikResponseContext mGetAchievementTemplateResponseContext;
         private DateTime mGetAchievementTemplateStartTime;
-        private string mGetAchievementTemplatePath;
-        private readonly KnetikCoroutine mGetAchievementTemplatesCoroutine;
+        private readonly KnetikResponseContext mGetAchievementTemplatesResponseContext;
         private DateTime mGetAchievementTemplatesStartTime;
-        private string mGetAchievementTemplatesPath;
-        private readonly KnetikCoroutine mGetAchievementTriggersCoroutine;
+        private readonly KnetikResponseContext mGetAchievementTriggersResponseContext;
         private DateTime mGetAchievementTriggersStartTime;
-        private string mGetAchievementTriggersPath;
-        private readonly KnetikCoroutine mGetAchievementsCoroutine;
+        private readonly KnetikResponseContext mGetAchievementsResponseContext;
         private DateTime mGetAchievementsStartTime;
-        private string mGetAchievementsPath;
-        private readonly KnetikCoroutine mGetDerivedAchievementsCoroutine;
+        private readonly KnetikResponseContext mGetDerivedAchievementsResponseContext;
         private DateTime mGetDerivedAchievementsStartTime;
-        private string mGetDerivedAchievementsPath;
-        private readonly KnetikCoroutine mGetUserAchievementProgressCoroutine;
+        private readonly KnetikResponseContext mGetUserAchievementProgressResponseContext;
         private DateTime mGetUserAchievementProgressStartTime;
-        private string mGetUserAchievementProgressPath;
-        private readonly KnetikCoroutine mGetUserAchievementsProgressCoroutine;
+        private readonly KnetikResponseContext mGetUserAchievementsProgressResponseContext;
         private DateTime mGetUserAchievementsProgressStartTime;
-        private string mGetUserAchievementsProgressPath;
-        private readonly KnetikCoroutine mGetUsersAchievementProgressCoroutine;
+        private readonly KnetikResponseContext mGetUsersAchievementProgressResponseContext;
         private DateTime mGetUsersAchievementProgressStartTime;
-        private string mGetUsersAchievementProgressPath;
-        private readonly KnetikCoroutine mGetUsersAchievementsProgressCoroutine;
+        private readonly KnetikResponseContext mGetUsersAchievementsProgressResponseContext;
         private DateTime mGetUsersAchievementsProgressStartTime;
-        private string mGetUsersAchievementsProgressPath;
-        private readonly KnetikCoroutine mIncrementAchievementProgressCoroutine;
+        private readonly KnetikResponseContext mIncrementAchievementProgressResponseContext;
         private DateTime mIncrementAchievementProgressStartTime;
-        private string mIncrementAchievementProgressPath;
-        private readonly KnetikCoroutine mSetAchievementProgressCoroutine;
+        private readonly KnetikResponseContext mSetAchievementProgressResponseContext;
         private DateTime mSetAchievementProgressStartTime;
-        private string mSetAchievementProgressPath;
-        private readonly KnetikCoroutine mUpdateAchievementCoroutine;
+        private readonly KnetikResponseContext mUpdateAchievementResponseContext;
         private DateTime mUpdateAchievementStartTime;
-        private string mUpdateAchievementPath;
-        private readonly KnetikCoroutine mUpdateAchievementTemplateCoroutine;
+        private readonly KnetikResponseContext mUpdateAchievementTemplateResponseContext;
         private DateTime mUpdateAchievementTemplateStartTime;
-        private string mUpdateAchievementTemplatePath;
 
         public AchievementDefinitionResource CreateAchievementData { get; private set; }
-        public delegate void CreateAchievementCompleteDelegate(AchievementDefinitionResource response);
+        public delegate void CreateAchievementCompleteDelegate(long responseCode, AchievementDefinitionResource response);
         public CreateAchievementCompleteDelegate CreateAchievementComplete;
 
         public TemplateResource CreateAchievementTemplateData { get; private set; }
-        public delegate void CreateAchievementTemplateCompleteDelegate(TemplateResource response);
+        public delegate void CreateAchievementTemplateCompleteDelegate(long responseCode, TemplateResource response);
         public CreateAchievementTemplateCompleteDelegate CreateAchievementTemplateComplete;
 
-        public delegate void DeleteAchievementCompleteDelegate();
+        public delegate void DeleteAchievementCompleteDelegate(long responseCode);
         public DeleteAchievementCompleteDelegate DeleteAchievementComplete;
 
-        public delegate void DeleteAchievementTemplateCompleteDelegate();
+        public delegate void DeleteAchievementTemplateCompleteDelegate(long responseCode);
         public DeleteAchievementTemplateCompleteDelegate DeleteAchievementTemplateComplete;
 
         public AchievementDefinitionResource GetAchievementData { get; private set; }
-        public delegate void GetAchievementCompleteDelegate(AchievementDefinitionResource response);
+        public delegate void GetAchievementCompleteDelegate(long responseCode, AchievementDefinitionResource response);
         public GetAchievementCompleteDelegate GetAchievementComplete;
 
         public TemplateResource GetAchievementTemplateData { get; private set; }
-        public delegate void GetAchievementTemplateCompleteDelegate(TemplateResource response);
+        public delegate void GetAchievementTemplateCompleteDelegate(long responseCode, TemplateResource response);
         public GetAchievementTemplateCompleteDelegate GetAchievementTemplateComplete;
 
         public PageResourceTemplateResource GetAchievementTemplatesData { get; private set; }
-        public delegate void GetAchievementTemplatesCompleteDelegate(PageResourceTemplateResource response);
+        public delegate void GetAchievementTemplatesCompleteDelegate(long responseCode, PageResourceTemplateResource response);
         public GetAchievementTemplatesCompleteDelegate GetAchievementTemplatesComplete;
 
         public List<BreTriggerResource> GetAchievementTriggersData { get; private set; }
-        public delegate void GetAchievementTriggersCompleteDelegate(List<BreTriggerResource> response);
+        public delegate void GetAchievementTriggersCompleteDelegate(long responseCode, List<BreTriggerResource> response);
         public GetAchievementTriggersCompleteDelegate GetAchievementTriggersComplete;
 
         public PageResourceAchievementDefinitionResource GetAchievementsData { get; private set; }
-        public delegate void GetAchievementsCompleteDelegate(PageResourceAchievementDefinitionResource response);
+        public delegate void GetAchievementsCompleteDelegate(long responseCode, PageResourceAchievementDefinitionResource response);
         public GetAchievementsCompleteDelegate GetAchievementsComplete;
 
         public List<AchievementDefinitionResource> GetDerivedAchievementsData { get; private set; }
-        public delegate void GetDerivedAchievementsCompleteDelegate(List<AchievementDefinitionResource> response);
+        public delegate void GetDerivedAchievementsCompleteDelegate(long responseCode, List<AchievementDefinitionResource> response);
         public GetDerivedAchievementsCompleteDelegate GetDerivedAchievementsComplete;
 
         public UserAchievementGroupResource GetUserAchievementProgressData { get; private set; }
-        public delegate void GetUserAchievementProgressCompleteDelegate(UserAchievementGroupResource response);
+        public delegate void GetUserAchievementProgressCompleteDelegate(long responseCode, UserAchievementGroupResource response);
         public GetUserAchievementProgressCompleteDelegate GetUserAchievementProgressComplete;
 
         public PageResourceUserAchievementGroupResource GetUserAchievementsProgressData { get; private set; }
-        public delegate void GetUserAchievementsProgressCompleteDelegate(PageResourceUserAchievementGroupResource response);
+        public delegate void GetUserAchievementsProgressCompleteDelegate(long responseCode, PageResourceUserAchievementGroupResource response);
         public GetUserAchievementsProgressCompleteDelegate GetUserAchievementsProgressComplete;
 
         public PageResourceUserAchievementGroupResource GetUsersAchievementProgressData { get; private set; }
-        public delegate void GetUsersAchievementProgressCompleteDelegate(PageResourceUserAchievementGroupResource response);
+        public delegate void GetUsersAchievementProgressCompleteDelegate(long responseCode, PageResourceUserAchievementGroupResource response);
         public GetUsersAchievementProgressCompleteDelegate GetUsersAchievementProgressComplete;
 
         public PageResourceUserAchievementGroupResource GetUsersAchievementsProgressData { get; private set; }
-        public delegate void GetUsersAchievementsProgressCompleteDelegate(PageResourceUserAchievementGroupResource response);
+        public delegate void GetUsersAchievementsProgressCompleteDelegate(long responseCode, PageResourceUserAchievementGroupResource response);
         public GetUsersAchievementsProgressCompleteDelegate GetUsersAchievementsProgressComplete;
 
         public UserAchievementGroupResource IncrementAchievementProgressData { get; private set; }
-        public delegate void IncrementAchievementProgressCompleteDelegate(UserAchievementGroupResource response);
+        public delegate void IncrementAchievementProgressCompleteDelegate(long responseCode, UserAchievementGroupResource response);
         public IncrementAchievementProgressCompleteDelegate IncrementAchievementProgressComplete;
 
         public UserAchievementGroupResource SetAchievementProgressData { get; private set; }
-        public delegate void SetAchievementProgressCompleteDelegate(UserAchievementGroupResource response);
+        public delegate void SetAchievementProgressCompleteDelegate(long responseCode, UserAchievementGroupResource response);
         public SetAchievementProgressCompleteDelegate SetAchievementProgressComplete;
 
         public AchievementDefinitionResource UpdateAchievementData { get; private set; }
-        public delegate void UpdateAchievementCompleteDelegate(AchievementDefinitionResource response);
+        public delegate void UpdateAchievementCompleteDelegate(long responseCode, AchievementDefinitionResource response);
         public UpdateAchievementCompleteDelegate UpdateAchievementComplete;
 
         public TemplateResource UpdateAchievementTemplateData { get; private set; }
-        public delegate void UpdateAchievementTemplateCompleteDelegate(TemplateResource response);
+        public delegate void UpdateAchievementTemplateCompleteDelegate(long responseCode, TemplateResource response);
         public UpdateAchievementTemplateCompleteDelegate UpdateAchievementTemplateComplete;
 
         /// <summary>
@@ -326,24 +312,42 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public GamificationAchievementsApi()
         {
-            mCreateAchievementCoroutine = new KnetikCoroutine();
-            mCreateAchievementTemplateCoroutine = new KnetikCoroutine();
-            mDeleteAchievementCoroutine = new KnetikCoroutine();
-            mDeleteAchievementTemplateCoroutine = new KnetikCoroutine();
-            mGetAchievementCoroutine = new KnetikCoroutine();
-            mGetAchievementTemplateCoroutine = new KnetikCoroutine();
-            mGetAchievementTemplatesCoroutine = new KnetikCoroutine();
-            mGetAchievementTriggersCoroutine = new KnetikCoroutine();
-            mGetAchievementsCoroutine = new KnetikCoroutine();
-            mGetDerivedAchievementsCoroutine = new KnetikCoroutine();
-            mGetUserAchievementProgressCoroutine = new KnetikCoroutine();
-            mGetUserAchievementsProgressCoroutine = new KnetikCoroutine();
-            mGetUsersAchievementProgressCoroutine = new KnetikCoroutine();
-            mGetUsersAchievementsProgressCoroutine = new KnetikCoroutine();
-            mIncrementAchievementProgressCoroutine = new KnetikCoroutine();
-            mSetAchievementProgressCoroutine = new KnetikCoroutine();
-            mUpdateAchievementCoroutine = new KnetikCoroutine();
-            mUpdateAchievementTemplateCoroutine = new KnetikCoroutine();
+            mCreateAchievementResponseContext = new KnetikResponseContext();
+            mCreateAchievementResponseContext.ResponseReceived += OnCreateAchievementResponse;
+            mCreateAchievementTemplateResponseContext = new KnetikResponseContext();
+            mCreateAchievementTemplateResponseContext.ResponseReceived += OnCreateAchievementTemplateResponse;
+            mDeleteAchievementResponseContext = new KnetikResponseContext();
+            mDeleteAchievementResponseContext.ResponseReceived += OnDeleteAchievementResponse;
+            mDeleteAchievementTemplateResponseContext = new KnetikResponseContext();
+            mDeleteAchievementTemplateResponseContext.ResponseReceived += OnDeleteAchievementTemplateResponse;
+            mGetAchievementResponseContext = new KnetikResponseContext();
+            mGetAchievementResponseContext.ResponseReceived += OnGetAchievementResponse;
+            mGetAchievementTemplateResponseContext = new KnetikResponseContext();
+            mGetAchievementTemplateResponseContext.ResponseReceived += OnGetAchievementTemplateResponse;
+            mGetAchievementTemplatesResponseContext = new KnetikResponseContext();
+            mGetAchievementTemplatesResponseContext.ResponseReceived += OnGetAchievementTemplatesResponse;
+            mGetAchievementTriggersResponseContext = new KnetikResponseContext();
+            mGetAchievementTriggersResponseContext.ResponseReceived += OnGetAchievementTriggersResponse;
+            mGetAchievementsResponseContext = new KnetikResponseContext();
+            mGetAchievementsResponseContext.ResponseReceived += OnGetAchievementsResponse;
+            mGetDerivedAchievementsResponseContext = new KnetikResponseContext();
+            mGetDerivedAchievementsResponseContext.ResponseReceived += OnGetDerivedAchievementsResponse;
+            mGetUserAchievementProgressResponseContext = new KnetikResponseContext();
+            mGetUserAchievementProgressResponseContext.ResponseReceived += OnGetUserAchievementProgressResponse;
+            mGetUserAchievementsProgressResponseContext = new KnetikResponseContext();
+            mGetUserAchievementsProgressResponseContext.ResponseReceived += OnGetUserAchievementsProgressResponse;
+            mGetUsersAchievementProgressResponseContext = new KnetikResponseContext();
+            mGetUsersAchievementProgressResponseContext.ResponseReceived += OnGetUsersAchievementProgressResponse;
+            mGetUsersAchievementsProgressResponseContext = new KnetikResponseContext();
+            mGetUsersAchievementsProgressResponseContext.ResponseReceived += OnGetUsersAchievementsProgressResponse;
+            mIncrementAchievementProgressResponseContext = new KnetikResponseContext();
+            mIncrementAchievementProgressResponseContext.ResponseReceived += OnIncrementAchievementProgressResponse;
+            mSetAchievementProgressResponseContext = new KnetikResponseContext();
+            mSetAchievementProgressResponseContext.ResponseReceived += OnSetAchievementProgressResponse;
+            mUpdateAchievementResponseContext = new KnetikResponseContext();
+            mUpdateAchievementResponseContext.ResponseReceived += OnUpdateAchievementResponse;
+            mUpdateAchievementTemplateResponseContext = new KnetikResponseContext();
+            mUpdateAchievementTemplateResponseContext.ResponseReceived += OnUpdateAchievementTemplateResponse;
         }
     
         /// <inheritdoc />
@@ -354,48 +358,47 @@ namespace com.knetikcloud.Api
         public void CreateAchievement(AchievementDefinitionResource achievement)
         {
             
-            mCreateAchievementPath = "/achievements";
-            if (!string.IsNullOrEmpty(mCreateAchievementPath))
+            mWebCallEvent.WebPath = "/achievements";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mCreateAchievementPath = mCreateAchievementPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(achievement); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(achievement); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mCreateAchievementStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mCreateAchievementStartTime, mCreateAchievementPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mCreateAchievementCoroutine.ResponseReceived += CreateAchievementCallback;
-            mCreateAchievementCoroutine.Start(mCreateAchievementPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mCreateAchievementStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreateAchievementResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreateAchievementStartTime, "CreateAchievement", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void CreateAchievementCallback(IRestResponse response)
+        private void OnCreateAchievementResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateAchievement: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateAchievement: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling CreateAchievement: " + response.Error);
             }
 
-            CreateAchievementData = (AchievementDefinitionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(AchievementDefinitionResource), response.Headers);
-            KnetikLogger.LogResponse(mCreateAchievementStartTime, mCreateAchievementPath, string.Format("Response received successfully:\n{0}", CreateAchievementData.ToString()));
+            CreateAchievementData = (AchievementDefinitionResource) KnetikClient.Deserialize(response.Content, typeof(AchievementDefinitionResource), response.Headers);
+            KnetikLogger.LogResponse(mCreateAchievementStartTime, "CreateAchievement", string.Format("Response received successfully:\n{0}", CreateAchievementData));
 
             if (CreateAchievementComplete != null)
             {
-                CreateAchievementComplete(CreateAchievementData);
+                CreateAchievementComplete(response.ResponseCode, CreateAchievementData);
             }
         }
 
@@ -407,48 +410,47 @@ namespace com.knetikcloud.Api
         public void CreateAchievementTemplate(TemplateResource template)
         {
             
-            mCreateAchievementTemplatePath = "/achievements/templates";
-            if (!string.IsNullOrEmpty(mCreateAchievementTemplatePath))
+            mWebCallEvent.WebPath = "/achievements/templates";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mCreateAchievementTemplatePath = mCreateAchievementTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(template); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(template); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mCreateAchievementTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mCreateAchievementTemplateStartTime, mCreateAchievementTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mCreateAchievementTemplateCoroutine.ResponseReceived += CreateAchievementTemplateCallback;
-            mCreateAchievementTemplateCoroutine.Start(mCreateAchievementTemplatePath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mCreateAchievementTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreateAchievementTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreateAchievementTemplateStartTime, "CreateAchievementTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void CreateAchievementTemplateCallback(IRestResponse response)
+        private void OnCreateAchievementTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateAchievementTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateAchievementTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling CreateAchievementTemplate: " + response.Error);
             }
 
-            CreateAchievementTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mCreateAchievementTemplateStartTime, mCreateAchievementTemplatePath, string.Format("Response received successfully:\n{0}", CreateAchievementTemplateData.ToString()));
+            CreateAchievementTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mCreateAchievementTemplateStartTime, "CreateAchievementTemplate", string.Format("Response received successfully:\n{0}", CreateAchievementTemplateData));
 
             if (CreateAchievementTemplateComplete != null)
             {
-                CreateAchievementTemplateComplete(CreateAchievementTemplateData);
+                CreateAchievementTemplateComplete(response.ResponseCode, CreateAchievementTemplateData);
             }
         }
 
@@ -465,45 +467,44 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'name' when calling DeleteAchievement");
             }
             
-            mDeleteAchievementPath = "/achievements/{name}";
-            if (!string.IsNullOrEmpty(mDeleteAchievementPath))
+            mWebCallEvent.WebPath = "/achievements/{name}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteAchievementPath = mDeleteAchievementPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteAchievementPath = mDeleteAchievementPath.Replace("{" + "name" + "}", KnetikClient.DefaultClient.ParameterToString(name));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "name" + "}", KnetikClient.ParameterToString(name));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteAchievementStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteAchievementStartTime, mDeleteAchievementPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteAchievementCoroutine.ResponseReceived += DeleteAchievementCallback;
-            mDeleteAchievementCoroutine.Start(mDeleteAchievementPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteAchievementStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteAchievementResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteAchievementStartTime, "DeleteAchievement", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteAchievementCallback(IRestResponse response)
+        private void OnDeleteAchievementResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteAchievement: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteAchievement: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteAchievement: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteAchievementStartTime, mDeleteAchievementPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteAchievementStartTime, "DeleteAchievement", "Response received successfully.");
             if (DeleteAchievementComplete != null)
             {
-                DeleteAchievementComplete();
+                DeleteAchievementComplete(response.ResponseCode);
             }
         }
 
@@ -521,50 +522,49 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeleteAchievementTemplate");
             }
             
-            mDeleteAchievementTemplatePath = "/achievements/templates/{id}";
-            if (!string.IsNullOrEmpty(mDeleteAchievementTemplatePath))
+            mWebCallEvent.WebPath = "/achievements/templates/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteAchievementTemplatePath = mDeleteAchievementTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteAchievementTemplatePath = mDeleteAchievementTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
+                mWebCallEvent.QueryParams["cascade"] = KnetikClient.ParameterToString(cascade);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteAchievementTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteAchievementTemplateStartTime, mDeleteAchievementTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteAchievementTemplateCoroutine.ResponseReceived += DeleteAchievementTemplateCallback;
-            mDeleteAchievementTemplateCoroutine.Start(mDeleteAchievementTemplatePath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteAchievementTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteAchievementTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteAchievementTemplateStartTime, "DeleteAchievementTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteAchievementTemplateCallback(IRestResponse response)
+        private void OnDeleteAchievementTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteAchievementTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteAchievementTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteAchievementTemplate: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteAchievementTemplateStartTime, mDeleteAchievementTemplatePath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteAchievementTemplateStartTime, "DeleteAchievementTemplate", "Response received successfully.");
             if (DeleteAchievementTemplateComplete != null)
             {
-                DeleteAchievementTemplateComplete();
+                DeleteAchievementTemplateComplete(response.ResponseCode);
             }
         }
 
@@ -581,47 +581,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'name' when calling GetAchievement");
             }
             
-            mGetAchievementPath = "/achievements/{name}";
-            if (!string.IsNullOrEmpty(mGetAchievementPath))
+            mWebCallEvent.WebPath = "/achievements/{name}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetAchievementPath = mGetAchievementPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetAchievementPath = mGetAchievementPath.Replace("{" + "name" + "}", KnetikClient.DefaultClient.ParameterToString(name));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "name" + "}", KnetikClient.ParameterToString(name));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetAchievementStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetAchievementStartTime, mGetAchievementPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetAchievementCoroutine.ResponseReceived += GetAchievementCallback;
-            mGetAchievementCoroutine.Start(mGetAchievementPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetAchievementStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetAchievementResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetAchievementStartTime, "GetAchievement", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetAchievementCallback(IRestResponse response)
+        private void OnGetAchievementResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetAchievement: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetAchievement: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetAchievement: " + response.Error);
             }
 
-            GetAchievementData = (AchievementDefinitionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(AchievementDefinitionResource), response.Headers);
-            KnetikLogger.LogResponse(mGetAchievementStartTime, mGetAchievementPath, string.Format("Response received successfully:\n{0}", GetAchievementData.ToString()));
+            GetAchievementData = (AchievementDefinitionResource) KnetikClient.Deserialize(response.Content, typeof(AchievementDefinitionResource), response.Headers);
+            KnetikLogger.LogResponse(mGetAchievementStartTime, "GetAchievement", string.Format("Response received successfully:\n{0}", GetAchievementData));
 
             if (GetAchievementComplete != null)
             {
-                GetAchievementComplete(GetAchievementData);
+                GetAchievementComplete(response.ResponseCode, GetAchievementData);
             }
         }
 
@@ -638,47 +637,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetAchievementTemplate");
             }
             
-            mGetAchievementTemplatePath = "/achievements/templates/{id}";
-            if (!string.IsNullOrEmpty(mGetAchievementTemplatePath))
+            mWebCallEvent.WebPath = "/achievements/templates/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetAchievementTemplatePath = mGetAchievementTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetAchievementTemplatePath = mGetAchievementTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetAchievementTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetAchievementTemplateStartTime, mGetAchievementTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetAchievementTemplateCoroutine.ResponseReceived += GetAchievementTemplateCallback;
-            mGetAchievementTemplateCoroutine.Start(mGetAchievementTemplatePath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetAchievementTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetAchievementTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetAchievementTemplateStartTime, "GetAchievementTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetAchievementTemplateCallback(IRestResponse response)
+        private void OnGetAchievementTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetAchievementTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetAchievementTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetAchievementTemplate: " + response.Error);
             }
 
-            GetAchievementTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mGetAchievementTemplateStartTime, mGetAchievementTemplatePath, string.Format("Response received successfully:\n{0}", GetAchievementTemplateData.ToString()));
+            GetAchievementTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mGetAchievementTemplateStartTime, "GetAchievementTemplate", string.Format("Response received successfully:\n{0}", GetAchievementTemplateData));
 
             if (GetAchievementTemplateComplete != null)
             {
-                GetAchievementTemplateComplete(GetAchievementTemplateData);
+                GetAchievementTemplateComplete(response.ResponseCode, GetAchievementTemplateData);
             }
         }
 
@@ -692,61 +690,60 @@ namespace com.knetikcloud.Api
         public void GetAchievementTemplates(int? size, int? page, string order)
         {
             
-            mGetAchievementTemplatesPath = "/achievements/templates";
-            if (!string.IsNullOrEmpty(mGetAchievementTemplatesPath))
+            mWebCallEvent.WebPath = "/achievements/templates";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetAchievementTemplatesPath = mGetAchievementTemplatesPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetAchievementTemplatesStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetAchievementTemplatesStartTime, mGetAchievementTemplatesPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetAchievementTemplatesCoroutine.ResponseReceived += GetAchievementTemplatesCallback;
-            mGetAchievementTemplatesCoroutine.Start(mGetAchievementTemplatesPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetAchievementTemplatesStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetAchievementTemplatesResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetAchievementTemplatesStartTime, "GetAchievementTemplates", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetAchievementTemplatesCallback(IRestResponse response)
+        private void OnGetAchievementTemplatesResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetAchievementTemplates: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetAchievementTemplates: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetAchievementTemplates: " + response.Error);
             }
 
-            GetAchievementTemplatesData = (PageResourceTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceTemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mGetAchievementTemplatesStartTime, mGetAchievementTemplatesPath, string.Format("Response received successfully:\n{0}", GetAchievementTemplatesData.ToString()));
+            GetAchievementTemplatesData = (PageResourceTemplateResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceTemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mGetAchievementTemplatesStartTime, "GetAchievementTemplates", string.Format("Response received successfully:\n{0}", GetAchievementTemplatesData));
 
             if (GetAchievementTemplatesComplete != null)
             {
-                GetAchievementTemplatesComplete(GetAchievementTemplatesData);
+                GetAchievementTemplatesComplete(response.ResponseCode, GetAchievementTemplatesData);
             }
         }
 
@@ -757,46 +754,45 @@ namespace com.knetikcloud.Api
         public void GetAchievementTriggers()
         {
             
-            mGetAchievementTriggersPath = "/achievements/triggers";
-            if (!string.IsNullOrEmpty(mGetAchievementTriggersPath))
+            mWebCallEvent.WebPath = "/achievements/triggers";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetAchievementTriggersPath = mGetAchievementTriggersPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetAchievementTriggersStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetAchievementTriggersStartTime, mGetAchievementTriggersPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetAchievementTriggersCoroutine.ResponseReceived += GetAchievementTriggersCallback;
-            mGetAchievementTriggersCoroutine.Start(mGetAchievementTriggersPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetAchievementTriggersStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetAchievementTriggersResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetAchievementTriggersStartTime, "GetAchievementTriggers", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetAchievementTriggersCallback(IRestResponse response)
+        private void OnGetAchievementTriggersResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetAchievementTriggers: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetAchievementTriggers: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetAchievementTriggers: " + response.Error);
             }
 
-            GetAchievementTriggersData = (List<BreTriggerResource>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<BreTriggerResource>), response.Headers);
-            KnetikLogger.LogResponse(mGetAchievementTriggersStartTime, mGetAchievementTriggersPath, string.Format("Response received successfully:\n{0}", GetAchievementTriggersData.ToString()));
+            GetAchievementTriggersData = (List<BreTriggerResource>) KnetikClient.Deserialize(response.Content, typeof(List<BreTriggerResource>), response.Headers);
+            KnetikLogger.LogResponse(mGetAchievementTriggersStartTime, "GetAchievementTriggers", string.Format("Response received successfully:\n{0}", GetAchievementTriggersData));
 
             if (GetAchievementTriggersComplete != null)
             {
-                GetAchievementTriggersComplete(GetAchievementTriggersData);
+                GetAchievementTriggersComplete(response.ResponseCode, GetAchievementTriggersData);
             }
         }
 
@@ -814,81 +810,80 @@ namespace com.knetikcloud.Api
         public void GetAchievements(string filterTagset, string filterName, bool? filterHidden, int? size, int? page, string order, bool? filterDerived)
         {
             
-            mGetAchievementsPath = "/achievements";
-            if (!string.IsNullOrEmpty(mGetAchievementsPath))
+            mWebCallEvent.WebPath = "/achievements";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetAchievementsPath = mGetAchievementsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (filterTagset != null)
             {
-                queryParams.Add("filter_tagset", KnetikClient.DefaultClient.ParameterToString(filterTagset));
+                mWebCallEvent.QueryParams["filter_tagset"] = KnetikClient.ParameterToString(filterTagset);
             }
 
             if (filterName != null)
             {
-                queryParams.Add("filter_name", KnetikClient.DefaultClient.ParameterToString(filterName));
+                mWebCallEvent.QueryParams["filter_name"] = KnetikClient.ParameterToString(filterName);
             }
 
             if (filterHidden != null)
             {
-                queryParams.Add("filter_hidden", KnetikClient.DefaultClient.ParameterToString(filterHidden));
+                mWebCallEvent.QueryParams["filter_hidden"] = KnetikClient.ParameterToString(filterHidden);
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
             if (filterDerived != null)
             {
-                queryParams.Add("filter_derived", KnetikClient.DefaultClient.ParameterToString(filterDerived));
+                mWebCallEvent.QueryParams["filter_derived"] = KnetikClient.ParameterToString(filterDerived);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetAchievementsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetAchievementsStartTime, mGetAchievementsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetAchievementsCoroutine.ResponseReceived += GetAchievementsCallback;
-            mGetAchievementsCoroutine.Start(mGetAchievementsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetAchievementsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetAchievementsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetAchievementsStartTime, "GetAchievements", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetAchievementsCallback(IRestResponse response)
+        private void OnGetAchievementsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetAchievements: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetAchievements: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetAchievements: " + response.Error);
             }
 
-            GetAchievementsData = (PageResourceAchievementDefinitionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceAchievementDefinitionResource), response.Headers);
-            KnetikLogger.LogResponse(mGetAchievementsStartTime, mGetAchievementsPath, string.Format("Response received successfully:\n{0}", GetAchievementsData.ToString()));
+            GetAchievementsData = (PageResourceAchievementDefinitionResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceAchievementDefinitionResource), response.Headers);
+            KnetikLogger.LogResponse(mGetAchievementsStartTime, "GetAchievements", string.Format("Response received successfully:\n{0}", GetAchievementsData));
 
             if (GetAchievementsComplete != null)
             {
-                GetAchievementsComplete(GetAchievementsData);
+                GetAchievementsComplete(response.ResponseCode, GetAchievementsData);
             }
         }
 
@@ -905,47 +900,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'name' when calling GetDerivedAchievements");
             }
             
-            mGetDerivedAchievementsPath = "/achievements/derived/{name}";
-            if (!string.IsNullOrEmpty(mGetDerivedAchievementsPath))
+            mWebCallEvent.WebPath = "/achievements/derived/{name}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetDerivedAchievementsPath = mGetDerivedAchievementsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetDerivedAchievementsPath = mGetDerivedAchievementsPath.Replace("{" + "name" + "}", KnetikClient.DefaultClient.ParameterToString(name));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "name" + "}", KnetikClient.ParameterToString(name));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetDerivedAchievementsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetDerivedAchievementsStartTime, mGetDerivedAchievementsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetDerivedAchievementsCoroutine.ResponseReceived += GetDerivedAchievementsCallback;
-            mGetDerivedAchievementsCoroutine.Start(mGetDerivedAchievementsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetDerivedAchievementsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetDerivedAchievementsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetDerivedAchievementsStartTime, "GetDerivedAchievements", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetDerivedAchievementsCallback(IRestResponse response)
+        private void OnGetDerivedAchievementsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetDerivedAchievements: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetDerivedAchievements: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetDerivedAchievements: " + response.Error);
             }
 
-            GetDerivedAchievementsData = (List<AchievementDefinitionResource>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<AchievementDefinitionResource>), response.Headers);
-            KnetikLogger.LogResponse(mGetDerivedAchievementsStartTime, mGetDerivedAchievementsPath, string.Format("Response received successfully:\n{0}", GetDerivedAchievementsData.ToString()));
+            GetDerivedAchievementsData = (List<AchievementDefinitionResource>) KnetikClient.Deserialize(response.Content, typeof(List<AchievementDefinitionResource>), response.Headers);
+            KnetikLogger.LogResponse(mGetDerivedAchievementsStartTime, "GetDerivedAchievements", string.Format("Response received successfully:\n{0}", GetDerivedAchievementsData));
 
             if (GetDerivedAchievementsComplete != null)
             {
-                GetDerivedAchievementsComplete(GetDerivedAchievementsData);
+                GetDerivedAchievementsComplete(response.ResponseCode, GetDerivedAchievementsData);
             }
         }
 
@@ -968,48 +962,47 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'achievementName' when calling GetUserAchievementProgress");
             }
             
-            mGetUserAchievementProgressPath = "/users/{user_id}/achievements/{achievement_name}";
-            if (!string.IsNullOrEmpty(mGetUserAchievementProgressPath))
+            mWebCallEvent.WebPath = "/users/{user_id}/achievements/{achievement_name}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetUserAchievementProgressPath = mGetUserAchievementProgressPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetUserAchievementProgressPath = mGetUserAchievementProgressPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
-mGetUserAchievementProgressPath = mGetUserAchievementProgressPath.Replace("{" + "achievement_name" + "}", KnetikClient.DefaultClient.ParameterToString(achievementName));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "achievement_name" + "}", KnetikClient.ParameterToString(achievementName));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetUserAchievementProgressStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetUserAchievementProgressStartTime, mGetUserAchievementProgressPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetUserAchievementProgressCoroutine.ResponseReceived += GetUserAchievementProgressCallback;
-            mGetUserAchievementProgressCoroutine.Start(mGetUserAchievementProgressPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetUserAchievementProgressStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetUserAchievementProgressResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetUserAchievementProgressStartTime, "GetUserAchievementProgress", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetUserAchievementProgressCallback(IRestResponse response)
+        private void OnGetUserAchievementProgressResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUserAchievementProgress: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUserAchievementProgress: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetUserAchievementProgress: " + response.Error);
             }
 
-            GetUserAchievementProgressData = (UserAchievementGroupResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(UserAchievementGroupResource), response.Headers);
-            KnetikLogger.LogResponse(mGetUserAchievementProgressStartTime, mGetUserAchievementProgressPath, string.Format("Response received successfully:\n{0}", GetUserAchievementProgressData.ToString()));
+            GetUserAchievementProgressData = (UserAchievementGroupResource) KnetikClient.Deserialize(response.Content, typeof(UserAchievementGroupResource), response.Headers);
+            KnetikLogger.LogResponse(mGetUserAchievementProgressStartTime, "GetUserAchievementProgress", string.Format("Response received successfully:\n{0}", GetUserAchievementProgressData));
 
             if (GetUserAchievementProgressComplete != null)
             {
-                GetUserAchievementProgressComplete(GetUserAchievementProgressData);
+                GetUserAchievementProgressComplete(response.ResponseCode, GetUserAchievementProgressData);
             }
         }
 
@@ -1031,72 +1024,71 @@ mGetUserAchievementProgressPath = mGetUserAchievementProgressPath.Replace("{" + 
                 throw new KnetikException(400, "Missing required parameter 'userId' when calling GetUserAchievementsProgress");
             }
             
-            mGetUserAchievementsProgressPath = "/users/{user_id}/achievements";
-            if (!string.IsNullOrEmpty(mGetUserAchievementsProgressPath))
+            mWebCallEvent.WebPath = "/users/{user_id}/achievements";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetUserAchievementsProgressPath = mGetUserAchievementsProgressPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetUserAchievementsProgressPath = mGetUserAchievementsProgressPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (filterAchievementDerived != null)
             {
-                queryParams.Add("filter_achievement_derived", KnetikClient.DefaultClient.ParameterToString(filterAchievementDerived));
+                mWebCallEvent.QueryParams["filter_achievement_derived"] = KnetikClient.ParameterToString(filterAchievementDerived);
             }
 
             if (filterAchievementTagset != null)
             {
-                queryParams.Add("filter_achievement_tagset", KnetikClient.DefaultClient.ParameterToString(filterAchievementTagset));
+                mWebCallEvent.QueryParams["filter_achievement_tagset"] = KnetikClient.ParameterToString(filterAchievementTagset);
             }
 
             if (filterAchievementName != null)
             {
-                queryParams.Add("filter_achievement_name", KnetikClient.DefaultClient.ParameterToString(filterAchievementName));
+                mWebCallEvent.QueryParams["filter_achievement_name"] = KnetikClient.ParameterToString(filterAchievementName);
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetUserAchievementsProgressStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetUserAchievementsProgressStartTime, mGetUserAchievementsProgressPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetUserAchievementsProgressCoroutine.ResponseReceived += GetUserAchievementsProgressCallback;
-            mGetUserAchievementsProgressCoroutine.Start(mGetUserAchievementsProgressPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetUserAchievementsProgressStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetUserAchievementsProgressResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetUserAchievementsProgressStartTime, "GetUserAchievementsProgress", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetUserAchievementsProgressCallback(IRestResponse response)
+        private void OnGetUserAchievementsProgressResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUserAchievementsProgress: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUserAchievementsProgress: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetUserAchievementsProgress: " + response.Error);
             }
 
-            GetUserAchievementsProgressData = (PageResourceUserAchievementGroupResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceUserAchievementGroupResource), response.Headers);
-            KnetikLogger.LogResponse(mGetUserAchievementsProgressStartTime, mGetUserAchievementsProgressPath, string.Format("Response received successfully:\n{0}", GetUserAchievementsProgressData.ToString()));
+            GetUserAchievementsProgressData = (PageResourceUserAchievementGroupResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceUserAchievementGroupResource), response.Headers);
+            KnetikLogger.LogResponse(mGetUserAchievementsProgressStartTime, "GetUserAchievementsProgress", string.Format("Response received successfully:\n{0}", GetUserAchievementsProgressData));
 
             if (GetUserAchievementsProgressComplete != null)
             {
-                GetUserAchievementsProgressComplete(GetUserAchievementsProgressData);
+                GetUserAchievementsProgressComplete(response.ResponseCode, GetUserAchievementsProgressData);
             }
         }
 
@@ -1118,72 +1110,71 @@ mGetUserAchievementProgressPath = mGetUserAchievementProgressPath.Replace("{" + 
                 throw new KnetikException(400, "Missing required parameter 'achievementName' when calling GetUsersAchievementProgress");
             }
             
-            mGetUsersAchievementProgressPath = "/users/achievements/{achievement_name}";
-            if (!string.IsNullOrEmpty(mGetUsersAchievementProgressPath))
+            mWebCallEvent.WebPath = "/users/achievements/{achievement_name}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetUsersAchievementProgressPath = mGetUsersAchievementProgressPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetUsersAchievementProgressPath = mGetUsersAchievementProgressPath.Replace("{" + "achievement_name" + "}", KnetikClient.DefaultClient.ParameterToString(achievementName));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "achievement_name" + "}", KnetikClient.ParameterToString(achievementName));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (filterAchievementDerived != null)
             {
-                queryParams.Add("filter_achievement_derived", KnetikClient.DefaultClient.ParameterToString(filterAchievementDerived));
+                mWebCallEvent.QueryParams["filter_achievement_derived"] = KnetikClient.ParameterToString(filterAchievementDerived);
             }
 
             if (filterAchievementTagset != null)
             {
-                queryParams.Add("filter_achievement_tagset", KnetikClient.DefaultClient.ParameterToString(filterAchievementTagset));
+                mWebCallEvent.QueryParams["filter_achievement_tagset"] = KnetikClient.ParameterToString(filterAchievementTagset);
             }
 
             if (filterAchievementName != null)
             {
-                queryParams.Add("filter_achievement_name", KnetikClient.DefaultClient.ParameterToString(filterAchievementName));
+                mWebCallEvent.QueryParams["filter_achievement_name"] = KnetikClient.ParameterToString(filterAchievementName);
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetUsersAchievementProgressStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetUsersAchievementProgressStartTime, mGetUsersAchievementProgressPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetUsersAchievementProgressCoroutine.ResponseReceived += GetUsersAchievementProgressCallback;
-            mGetUsersAchievementProgressCoroutine.Start(mGetUsersAchievementProgressPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetUsersAchievementProgressStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetUsersAchievementProgressResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetUsersAchievementProgressStartTime, "GetUsersAchievementProgress", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetUsersAchievementProgressCallback(IRestResponse response)
+        private void OnGetUsersAchievementProgressResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUsersAchievementProgress: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUsersAchievementProgress: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetUsersAchievementProgress: " + response.Error);
             }
 
-            GetUsersAchievementProgressData = (PageResourceUserAchievementGroupResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceUserAchievementGroupResource), response.Headers);
-            KnetikLogger.LogResponse(mGetUsersAchievementProgressStartTime, mGetUsersAchievementProgressPath, string.Format("Response received successfully:\n{0}", GetUsersAchievementProgressData.ToString()));
+            GetUsersAchievementProgressData = (PageResourceUserAchievementGroupResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceUserAchievementGroupResource), response.Headers);
+            KnetikLogger.LogResponse(mGetUsersAchievementProgressStartTime, "GetUsersAchievementProgress", string.Format("Response received successfully:\n{0}", GetUsersAchievementProgressData));
 
             if (GetUsersAchievementProgressComplete != null)
             {
-                GetUsersAchievementProgressComplete(GetUsersAchievementProgressData);
+                GetUsersAchievementProgressComplete(response.ResponseCode, GetUsersAchievementProgressData);
             }
         }
 
@@ -1199,71 +1190,70 @@ mGetUserAchievementProgressPath = mGetUserAchievementProgressPath.Replace("{" + 
         public void GetUsersAchievementsProgress(bool? filterAchievementDerived, string filterAchievementTagset, string filterAchievementName, int? size, int? page)
         {
             
-            mGetUsersAchievementsProgressPath = "/users/achievements";
-            if (!string.IsNullOrEmpty(mGetUsersAchievementsProgressPath))
+            mWebCallEvent.WebPath = "/users/achievements";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetUsersAchievementsProgressPath = mGetUsersAchievementsProgressPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (filterAchievementDerived != null)
             {
-                queryParams.Add("filter_achievement_derived", KnetikClient.DefaultClient.ParameterToString(filterAchievementDerived));
+                mWebCallEvent.QueryParams["filter_achievement_derived"] = KnetikClient.ParameterToString(filterAchievementDerived);
             }
 
             if (filterAchievementTagset != null)
             {
-                queryParams.Add("filter_achievement_tagset", KnetikClient.DefaultClient.ParameterToString(filterAchievementTagset));
+                mWebCallEvent.QueryParams["filter_achievement_tagset"] = KnetikClient.ParameterToString(filterAchievementTagset);
             }
 
             if (filterAchievementName != null)
             {
-                queryParams.Add("filter_achievement_name", KnetikClient.DefaultClient.ParameterToString(filterAchievementName));
+                mWebCallEvent.QueryParams["filter_achievement_name"] = KnetikClient.ParameterToString(filterAchievementName);
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetUsersAchievementsProgressStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetUsersAchievementsProgressStartTime, mGetUsersAchievementsProgressPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetUsersAchievementsProgressCoroutine.ResponseReceived += GetUsersAchievementsProgressCallback;
-            mGetUsersAchievementsProgressCoroutine.Start(mGetUsersAchievementsProgressPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetUsersAchievementsProgressStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetUsersAchievementsProgressResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetUsersAchievementsProgressStartTime, "GetUsersAchievementsProgress", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetUsersAchievementsProgressCallback(IRestResponse response)
+        private void OnGetUsersAchievementsProgressResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUsersAchievementsProgress: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetUsersAchievementsProgress: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetUsersAchievementsProgress: " + response.Error);
             }
 
-            GetUsersAchievementsProgressData = (PageResourceUserAchievementGroupResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceUserAchievementGroupResource), response.Headers);
-            KnetikLogger.LogResponse(mGetUsersAchievementsProgressStartTime, mGetUsersAchievementsProgressPath, string.Format("Response received successfully:\n{0}", GetUsersAchievementsProgressData.ToString()));
+            GetUsersAchievementsProgressData = (PageResourceUserAchievementGroupResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceUserAchievementGroupResource), response.Headers);
+            KnetikLogger.LogResponse(mGetUsersAchievementsProgressStartTime, "GetUsersAchievementsProgress", string.Format("Response received successfully:\n{0}", GetUsersAchievementsProgressData));
 
             if (GetUsersAchievementsProgressComplete != null)
             {
-                GetUsersAchievementsProgressComplete(GetUsersAchievementsProgressData);
+                GetUsersAchievementsProgressComplete(response.ResponseCode, GetUsersAchievementsProgressData);
             }
         }
 
@@ -1287,50 +1277,49 @@ mGetUserAchievementProgressPath = mGetUserAchievementProgressPath.Replace("{" + 
                 throw new KnetikException(400, "Missing required parameter 'achievementName' when calling IncrementAchievementProgress");
             }
             
-            mIncrementAchievementProgressPath = "/users/{user_id}/achievements/{achievement_name}/progress";
-            if (!string.IsNullOrEmpty(mIncrementAchievementProgressPath))
+            mWebCallEvent.WebPath = "/users/{user_id}/achievements/{achievement_name}/progress";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mIncrementAchievementProgressPath = mIncrementAchievementProgressPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mIncrementAchievementProgressPath = mIncrementAchievementProgressPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
-mIncrementAchievementProgressPath = mIncrementAchievementProgressPath.Replace("{" + "achievement_name" + "}", KnetikClient.DefaultClient.ParameterToString(achievementName));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "achievement_name" + "}", KnetikClient.ParameterToString(achievementName));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(progress); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(progress); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mIncrementAchievementProgressStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mIncrementAchievementProgressStartTime, mIncrementAchievementProgressPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mIncrementAchievementProgressCoroutine.ResponseReceived += IncrementAchievementProgressCallback;
-            mIncrementAchievementProgressCoroutine.Start(mIncrementAchievementProgressPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mIncrementAchievementProgressStartTime = DateTime.Now;
+            mWebCallEvent.Context = mIncrementAchievementProgressResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mIncrementAchievementProgressStartTime, "IncrementAchievementProgress", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void IncrementAchievementProgressCallback(IRestResponse response)
+        private void OnIncrementAchievementProgressResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling IncrementAchievementProgress: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling IncrementAchievementProgress: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling IncrementAchievementProgress: " + response.Error);
             }
 
-            IncrementAchievementProgressData = (UserAchievementGroupResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(UserAchievementGroupResource), response.Headers);
-            KnetikLogger.LogResponse(mIncrementAchievementProgressStartTime, mIncrementAchievementProgressPath, string.Format("Response received successfully:\n{0}", IncrementAchievementProgressData.ToString()));
+            IncrementAchievementProgressData = (UserAchievementGroupResource) KnetikClient.Deserialize(response.Content, typeof(UserAchievementGroupResource), response.Headers);
+            KnetikLogger.LogResponse(mIncrementAchievementProgressStartTime, "IncrementAchievementProgress", string.Format("Response received successfully:\n{0}", IncrementAchievementProgressData));
 
             if (IncrementAchievementProgressComplete != null)
             {
-                IncrementAchievementProgressComplete(IncrementAchievementProgressData);
+                IncrementAchievementProgressComplete(response.ResponseCode, IncrementAchievementProgressData);
             }
         }
 
@@ -1354,50 +1343,49 @@ mIncrementAchievementProgressPath = mIncrementAchievementProgressPath.Replace("{
                 throw new KnetikException(400, "Missing required parameter 'achievementName' when calling SetAchievementProgress");
             }
             
-            mSetAchievementProgressPath = "/users/{user_id}/achievements/{achievement_name}/progress";
-            if (!string.IsNullOrEmpty(mSetAchievementProgressPath))
+            mWebCallEvent.WebPath = "/users/{user_id}/achievements/{achievement_name}/progress";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mSetAchievementProgressPath = mSetAchievementProgressPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mSetAchievementProgressPath = mSetAchievementProgressPath.Replace("{" + "user_id" + "}", KnetikClient.DefaultClient.ParameterToString(userId));
-mSetAchievementProgressPath = mSetAchievementProgressPath.Replace("{" + "achievement_name" + "}", KnetikClient.DefaultClient.ParameterToString(achievementName));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "achievement_name" + "}", KnetikClient.ParameterToString(achievementName));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(progress); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(progress); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mSetAchievementProgressStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mSetAchievementProgressStartTime, mSetAchievementProgressPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mSetAchievementProgressCoroutine.ResponseReceived += SetAchievementProgressCallback;
-            mSetAchievementProgressCoroutine.Start(mSetAchievementProgressPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mSetAchievementProgressStartTime = DateTime.Now;
+            mWebCallEvent.Context = mSetAchievementProgressResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mSetAchievementProgressStartTime, "SetAchievementProgress", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void SetAchievementProgressCallback(IRestResponse response)
+        private void OnSetAchievementProgressResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling SetAchievementProgress: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling SetAchievementProgress: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling SetAchievementProgress: " + response.Error);
             }
 
-            SetAchievementProgressData = (UserAchievementGroupResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(UserAchievementGroupResource), response.Headers);
-            KnetikLogger.LogResponse(mSetAchievementProgressStartTime, mSetAchievementProgressPath, string.Format("Response received successfully:\n{0}", SetAchievementProgressData.ToString()));
+            SetAchievementProgressData = (UserAchievementGroupResource) KnetikClient.Deserialize(response.Content, typeof(UserAchievementGroupResource), response.Headers);
+            KnetikLogger.LogResponse(mSetAchievementProgressStartTime, "SetAchievementProgress", string.Format("Response received successfully:\n{0}", SetAchievementProgressData));
 
             if (SetAchievementProgressComplete != null)
             {
-                SetAchievementProgressComplete(SetAchievementProgressData);
+                SetAchievementProgressComplete(response.ResponseCode, SetAchievementProgressData);
             }
         }
 
@@ -1415,49 +1403,48 @@ mSetAchievementProgressPath = mSetAchievementProgressPath.Replace("{" + "achieve
                 throw new KnetikException(400, "Missing required parameter 'name' when calling UpdateAchievement");
             }
             
-            mUpdateAchievementPath = "/achievements/{name}";
-            if (!string.IsNullOrEmpty(mUpdateAchievementPath))
+            mWebCallEvent.WebPath = "/achievements/{name}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateAchievementPath = mUpdateAchievementPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateAchievementPath = mUpdateAchievementPath.Replace("{" + "name" + "}", KnetikClient.DefaultClient.ParameterToString(name));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "name" + "}", KnetikClient.ParameterToString(name));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(achievement); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(achievement); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateAchievementStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateAchievementStartTime, mUpdateAchievementPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateAchievementCoroutine.ResponseReceived += UpdateAchievementCallback;
-            mUpdateAchievementCoroutine.Start(mUpdateAchievementPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateAchievementStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateAchievementResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateAchievementStartTime, "UpdateAchievement", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateAchievementCallback(IRestResponse response)
+        private void OnUpdateAchievementResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateAchievement: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateAchievement: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateAchievement: " + response.Error);
             }
 
-            UpdateAchievementData = (AchievementDefinitionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(AchievementDefinitionResource), response.Headers);
-            KnetikLogger.LogResponse(mUpdateAchievementStartTime, mUpdateAchievementPath, string.Format("Response received successfully:\n{0}", UpdateAchievementData.ToString()));
+            UpdateAchievementData = (AchievementDefinitionResource) KnetikClient.Deserialize(response.Content, typeof(AchievementDefinitionResource), response.Headers);
+            KnetikLogger.LogResponse(mUpdateAchievementStartTime, "UpdateAchievement", string.Format("Response received successfully:\n{0}", UpdateAchievementData));
 
             if (UpdateAchievementComplete != null)
             {
-                UpdateAchievementComplete(UpdateAchievementData);
+                UpdateAchievementComplete(response.ResponseCode, UpdateAchievementData);
             }
         }
 
@@ -1475,49 +1462,48 @@ mSetAchievementProgressPath = mSetAchievementProgressPath.Replace("{" + "achieve
                 throw new KnetikException(400, "Missing required parameter 'id' when calling UpdateAchievementTemplate");
             }
             
-            mUpdateAchievementTemplatePath = "/achievements/templates/{id}";
-            if (!string.IsNullOrEmpty(mUpdateAchievementTemplatePath))
+            mWebCallEvent.WebPath = "/achievements/templates/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateAchievementTemplatePath = mUpdateAchievementTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateAchievementTemplatePath = mUpdateAchievementTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(template); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(template); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateAchievementTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateAchievementTemplateStartTime, mUpdateAchievementTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateAchievementTemplateCoroutine.ResponseReceived += UpdateAchievementTemplateCallback;
-            mUpdateAchievementTemplateCoroutine.Start(mUpdateAchievementTemplatePath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateAchievementTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateAchievementTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateAchievementTemplateStartTime, "UpdateAchievementTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateAchievementTemplateCallback(IRestResponse response)
+        private void OnUpdateAchievementTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateAchievementTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateAchievementTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateAchievementTemplate: " + response.Error);
             }
 
-            UpdateAchievementTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mUpdateAchievementTemplateStartTime, mUpdateAchievementTemplatePath, string.Format("Response received successfully:\n{0}", UpdateAchievementTemplateData.ToString()));
+            UpdateAchievementTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mUpdateAchievementTemplateStartTime, "UpdateAchievementTemplate", string.Format("Response received successfully:\n{0}", UpdateAchievementTemplateData));
 
             if (UpdateAchievementTemplateComplete != null)
             {
-                UpdateAchievementTemplateComplete(UpdateAchievementTemplateData);
+                UpdateAchievementTemplateComplete(response.ResponseCode, UpdateAchievementTemplateData);
             }
         }
 

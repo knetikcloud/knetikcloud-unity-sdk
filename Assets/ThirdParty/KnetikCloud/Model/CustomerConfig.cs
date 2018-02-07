@@ -2,8 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using com.knetikcloud.Attributes;
-using com.knetikcloud.Serialization;
+using KnetikUnity.Attributes;
+using KnetikUnity.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -29,12 +29,6 @@ namespace com.knetikcloud.Model
         public DatabaseConfig Database;
 
         /// <summary>
-        /// Gets or Sets Io
-        /// </summary>
-        [JsonProperty(PropertyName = "io")]
-        public IOConfig Io;
-
-        /// <summary>
         /// Gets or Sets Name
         /// </summary>
         [JsonProperty(PropertyName = "name")]
@@ -57,7 +51,6 @@ namespace com.knetikcloud.Model
             sb.Append("class CustomerConfig {\n");
             sb.Append("  Aliases: ").Append(Aliases).Append("\n");
             sb.Append("  Database: ").Append(Database).Append("\n");
-            sb.Append("  Io: ").Append(Io).Append("\n");
             sb.Append("  Name: ").Append(Name).Append("\n");
             sb.Append("  S3Config: ").Append(S3Config).Append("\n");
             sb.Append("}\n");

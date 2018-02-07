@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,18 +18,13 @@ namespace com.knetikcloud.Api
     {
         CatalogSale CreateCatalogSaleData { get; }
 
-        CatalogSale GetCatalogSaleData { get; }
-
-        PageResourceCatalogSale GetCatalogSalesData { get; }
-
-        CatalogSale UpdateCatalogSaleData { get; }
-
-        
         /// <summary>
         /// Create a sale 
         /// </summary>
         /// <param name="catalogSale">The catalog sale object</param>
         void CreateCatalogSale(CatalogSale catalogSale);
+
+        
 
         /// <summary>
         /// Delete a sale 
@@ -38,11 +32,15 @@ namespace com.knetikcloud.Api
         /// <param name="id">The id of the sale</param>
         void DeleteCatalogSale(int? id);
 
+        CatalogSale GetCatalogSaleData { get; }
+
         /// <summary>
         /// Get a single sale 
         /// </summary>
         /// <param name="id">The id of the sale</param>
         void GetCatalogSale(int? id);
+
+        PageResourceCatalogSale GetCatalogSalesData { get; }
 
         /// <summary>
         /// List and search sales 
@@ -51,6 +49,8 @@ namespace com.knetikcloud.Api
         /// <param name="page">The number of the page returned, starting with 1</param>
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
         void GetCatalogSales(int? size, int? page, string order);
+
+        CatalogSale UpdateCatalogSaleData { get; }
 
         /// <summary>
         /// Update a sale 
@@ -67,39 +67,36 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class StoreSalesApi : IStoreSalesApi
     {
-        private readonly KnetikCoroutine mCreateCatalogSaleCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mCreateCatalogSaleResponseContext;
         private DateTime mCreateCatalogSaleStartTime;
-        private string mCreateCatalogSalePath;
-        private readonly KnetikCoroutine mDeleteCatalogSaleCoroutine;
+        private readonly KnetikResponseContext mDeleteCatalogSaleResponseContext;
         private DateTime mDeleteCatalogSaleStartTime;
-        private string mDeleteCatalogSalePath;
-        private readonly KnetikCoroutine mGetCatalogSaleCoroutine;
+        private readonly KnetikResponseContext mGetCatalogSaleResponseContext;
         private DateTime mGetCatalogSaleStartTime;
-        private string mGetCatalogSalePath;
-        private readonly KnetikCoroutine mGetCatalogSalesCoroutine;
+        private readonly KnetikResponseContext mGetCatalogSalesResponseContext;
         private DateTime mGetCatalogSalesStartTime;
-        private string mGetCatalogSalesPath;
-        private readonly KnetikCoroutine mUpdateCatalogSaleCoroutine;
+        private readonly KnetikResponseContext mUpdateCatalogSaleResponseContext;
         private DateTime mUpdateCatalogSaleStartTime;
-        private string mUpdateCatalogSalePath;
 
         public CatalogSale CreateCatalogSaleData { get; private set; }
-        public delegate void CreateCatalogSaleCompleteDelegate(CatalogSale response);
+        public delegate void CreateCatalogSaleCompleteDelegate(long responseCode, CatalogSale response);
         public CreateCatalogSaleCompleteDelegate CreateCatalogSaleComplete;
 
-        public delegate void DeleteCatalogSaleCompleteDelegate();
+        public delegate void DeleteCatalogSaleCompleteDelegate(long responseCode);
         public DeleteCatalogSaleCompleteDelegate DeleteCatalogSaleComplete;
 
         public CatalogSale GetCatalogSaleData { get; private set; }
-        public delegate void GetCatalogSaleCompleteDelegate(CatalogSale response);
+        public delegate void GetCatalogSaleCompleteDelegate(long responseCode, CatalogSale response);
         public GetCatalogSaleCompleteDelegate GetCatalogSaleComplete;
 
         public PageResourceCatalogSale GetCatalogSalesData { get; private set; }
-        public delegate void GetCatalogSalesCompleteDelegate(PageResourceCatalogSale response);
+        public delegate void GetCatalogSalesCompleteDelegate(long responseCode, PageResourceCatalogSale response);
         public GetCatalogSalesCompleteDelegate GetCatalogSalesComplete;
 
         public CatalogSale UpdateCatalogSaleData { get; private set; }
-        public delegate void UpdateCatalogSaleCompleteDelegate(CatalogSale response);
+        public delegate void UpdateCatalogSaleCompleteDelegate(long responseCode, CatalogSale response);
         public UpdateCatalogSaleCompleteDelegate UpdateCatalogSaleComplete;
 
         /// <summary>
@@ -108,11 +105,16 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public StoreSalesApi()
         {
-            mCreateCatalogSaleCoroutine = new KnetikCoroutine();
-            mDeleteCatalogSaleCoroutine = new KnetikCoroutine();
-            mGetCatalogSaleCoroutine = new KnetikCoroutine();
-            mGetCatalogSalesCoroutine = new KnetikCoroutine();
-            mUpdateCatalogSaleCoroutine = new KnetikCoroutine();
+            mCreateCatalogSaleResponseContext = new KnetikResponseContext();
+            mCreateCatalogSaleResponseContext.ResponseReceived += OnCreateCatalogSaleResponse;
+            mDeleteCatalogSaleResponseContext = new KnetikResponseContext();
+            mDeleteCatalogSaleResponseContext.ResponseReceived += OnDeleteCatalogSaleResponse;
+            mGetCatalogSaleResponseContext = new KnetikResponseContext();
+            mGetCatalogSaleResponseContext.ResponseReceived += OnGetCatalogSaleResponse;
+            mGetCatalogSalesResponseContext = new KnetikResponseContext();
+            mGetCatalogSalesResponseContext.ResponseReceived += OnGetCatalogSalesResponse;
+            mUpdateCatalogSaleResponseContext = new KnetikResponseContext();
+            mUpdateCatalogSaleResponseContext.ResponseReceived += OnUpdateCatalogSaleResponse;
         }
     
         /// <inheritdoc />
@@ -123,48 +125,47 @@ namespace com.knetikcloud.Api
         public void CreateCatalogSale(CatalogSale catalogSale)
         {
             
-            mCreateCatalogSalePath = "/store/sales";
-            if (!string.IsNullOrEmpty(mCreateCatalogSalePath))
+            mWebCallEvent.WebPath = "/store/sales";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mCreateCatalogSalePath = mCreateCatalogSalePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(catalogSale); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(catalogSale); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mCreateCatalogSaleStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mCreateCatalogSaleStartTime, mCreateCatalogSalePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mCreateCatalogSaleCoroutine.ResponseReceived += CreateCatalogSaleCallback;
-            mCreateCatalogSaleCoroutine.Start(mCreateCatalogSalePath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mCreateCatalogSaleStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreateCatalogSaleResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreateCatalogSaleStartTime, "CreateCatalogSale", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void CreateCatalogSaleCallback(IRestResponse response)
+        private void OnCreateCatalogSaleResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateCatalogSale: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateCatalogSale: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling CreateCatalogSale: " + response.Error);
             }
 
-            CreateCatalogSaleData = (CatalogSale) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CatalogSale), response.Headers);
-            KnetikLogger.LogResponse(mCreateCatalogSaleStartTime, mCreateCatalogSalePath, string.Format("Response received successfully:\n{0}", CreateCatalogSaleData.ToString()));
+            CreateCatalogSaleData = (CatalogSale) KnetikClient.Deserialize(response.Content, typeof(CatalogSale), response.Headers);
+            KnetikLogger.LogResponse(mCreateCatalogSaleStartTime, "CreateCatalogSale", string.Format("Response received successfully:\n{0}", CreateCatalogSaleData));
 
             if (CreateCatalogSaleComplete != null)
             {
-                CreateCatalogSaleComplete(CreateCatalogSaleData);
+                CreateCatalogSaleComplete(response.ResponseCode, CreateCatalogSaleData);
             }
         }
 
@@ -181,45 +182,44 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeleteCatalogSale");
             }
             
-            mDeleteCatalogSalePath = "/store/sales/{id}";
-            if (!string.IsNullOrEmpty(mDeleteCatalogSalePath))
+            mWebCallEvent.WebPath = "/store/sales/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteCatalogSalePath = mDeleteCatalogSalePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteCatalogSalePath = mDeleteCatalogSalePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteCatalogSaleStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteCatalogSaleStartTime, mDeleteCatalogSalePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteCatalogSaleCoroutine.ResponseReceived += DeleteCatalogSaleCallback;
-            mDeleteCatalogSaleCoroutine.Start(mDeleteCatalogSalePath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteCatalogSaleStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteCatalogSaleResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteCatalogSaleStartTime, "DeleteCatalogSale", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteCatalogSaleCallback(IRestResponse response)
+        private void OnDeleteCatalogSaleResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteCatalogSale: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteCatalogSale: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteCatalogSale: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteCatalogSaleStartTime, mDeleteCatalogSalePath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteCatalogSaleStartTime, "DeleteCatalogSale", "Response received successfully.");
             if (DeleteCatalogSaleComplete != null)
             {
-                DeleteCatalogSaleComplete();
+                DeleteCatalogSaleComplete(response.ResponseCode);
             }
         }
 
@@ -236,47 +236,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetCatalogSale");
             }
             
-            mGetCatalogSalePath = "/store/sales/{id}";
-            if (!string.IsNullOrEmpty(mGetCatalogSalePath))
+            mWebCallEvent.WebPath = "/store/sales/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetCatalogSalePath = mGetCatalogSalePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetCatalogSalePath = mGetCatalogSalePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetCatalogSaleStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetCatalogSaleStartTime, mGetCatalogSalePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetCatalogSaleCoroutine.ResponseReceived += GetCatalogSaleCallback;
-            mGetCatalogSaleCoroutine.Start(mGetCatalogSalePath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetCatalogSaleStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetCatalogSaleResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetCatalogSaleStartTime, "GetCatalogSale", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetCatalogSaleCallback(IRestResponse response)
+        private void OnGetCatalogSaleResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCatalogSale: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCatalogSale: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetCatalogSale: " + response.Error);
             }
 
-            GetCatalogSaleData = (CatalogSale) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CatalogSale), response.Headers);
-            KnetikLogger.LogResponse(mGetCatalogSaleStartTime, mGetCatalogSalePath, string.Format("Response received successfully:\n{0}", GetCatalogSaleData.ToString()));
+            GetCatalogSaleData = (CatalogSale) KnetikClient.Deserialize(response.Content, typeof(CatalogSale), response.Headers);
+            KnetikLogger.LogResponse(mGetCatalogSaleStartTime, "GetCatalogSale", string.Format("Response received successfully:\n{0}", GetCatalogSaleData));
 
             if (GetCatalogSaleComplete != null)
             {
-                GetCatalogSaleComplete(GetCatalogSaleData);
+                GetCatalogSaleComplete(response.ResponseCode, GetCatalogSaleData);
             }
         }
 
@@ -290,61 +289,60 @@ namespace com.knetikcloud.Api
         public void GetCatalogSales(int? size, int? page, string order)
         {
             
-            mGetCatalogSalesPath = "/store/sales";
-            if (!string.IsNullOrEmpty(mGetCatalogSalesPath))
+            mWebCallEvent.WebPath = "/store/sales";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetCatalogSalesPath = mGetCatalogSalesPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetCatalogSalesStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetCatalogSalesStartTime, mGetCatalogSalesPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetCatalogSalesCoroutine.ResponseReceived += GetCatalogSalesCallback;
-            mGetCatalogSalesCoroutine.Start(mGetCatalogSalesPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetCatalogSalesStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetCatalogSalesResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetCatalogSalesStartTime, "GetCatalogSales", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetCatalogSalesCallback(IRestResponse response)
+        private void OnGetCatalogSalesResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCatalogSales: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCatalogSales: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetCatalogSales: " + response.Error);
             }
 
-            GetCatalogSalesData = (PageResourceCatalogSale) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceCatalogSale), response.Headers);
-            KnetikLogger.LogResponse(mGetCatalogSalesStartTime, mGetCatalogSalesPath, string.Format("Response received successfully:\n{0}", GetCatalogSalesData.ToString()));
+            GetCatalogSalesData = (PageResourceCatalogSale) KnetikClient.Deserialize(response.Content, typeof(PageResourceCatalogSale), response.Headers);
+            KnetikLogger.LogResponse(mGetCatalogSalesStartTime, "GetCatalogSales", string.Format("Response received successfully:\n{0}", GetCatalogSalesData));
 
             if (GetCatalogSalesComplete != null)
             {
-                GetCatalogSalesComplete(GetCatalogSalesData);
+                GetCatalogSalesComplete(response.ResponseCode, GetCatalogSalesData);
             }
         }
 
@@ -362,49 +360,48 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling UpdateCatalogSale");
             }
             
-            mUpdateCatalogSalePath = "/store/sales/{id}";
-            if (!string.IsNullOrEmpty(mUpdateCatalogSalePath))
+            mWebCallEvent.WebPath = "/store/sales/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateCatalogSalePath = mUpdateCatalogSalePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateCatalogSalePath = mUpdateCatalogSalePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(catalogSale); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(catalogSale); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateCatalogSaleStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateCatalogSaleStartTime, mUpdateCatalogSalePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateCatalogSaleCoroutine.ResponseReceived += UpdateCatalogSaleCallback;
-            mUpdateCatalogSaleCoroutine.Start(mUpdateCatalogSalePath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateCatalogSaleStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateCatalogSaleResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateCatalogSaleStartTime, "UpdateCatalogSale", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateCatalogSaleCallback(IRestResponse response)
+        private void OnUpdateCatalogSaleResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateCatalogSale: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateCatalogSale: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateCatalogSale: " + response.Error);
             }
 
-            UpdateCatalogSaleData = (CatalogSale) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CatalogSale), response.Headers);
-            KnetikLogger.LogResponse(mUpdateCatalogSaleStartTime, mUpdateCatalogSalePath, string.Format("Response received successfully:\n{0}", UpdateCatalogSaleData.ToString()));
+            UpdateCatalogSaleData = (CatalogSale) KnetikClient.Deserialize(response.Content, typeof(CatalogSale), response.Headers);
+            KnetikLogger.LogResponse(mUpdateCatalogSaleStartTime, "UpdateCatalogSale", string.Format("Response received successfully:\n{0}", UpdateCatalogSaleData));
 
             if (UpdateCatalogSaleComplete != null)
             {
-                UpdateCatalogSaleComplete(UpdateCatalogSaleData);
+                UpdateCatalogSaleComplete(response.ResponseCode, UpdateCatalogSaleData);
             }
         }
 

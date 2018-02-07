@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,25 +18,6 @@ namespace com.knetikcloud.Api
     {
         PollResponseResource AnswerPollData { get; }
 
-        PollResource CreatePollData { get; }
-
-        TemplateResource CreatePollTemplateData { get; }
-
-        PollResource GetPollData { get; }
-
-        PollResponseResource GetPollAnswerData { get; }
-
-        TemplateResource GetPollTemplateData { get; }
-
-        PageResourceTemplateResource GetPollTemplatesData { get; }
-
-        PageResourcePollResource GetPollsData { get; }
-
-        PollResource UpdatePollData { get; }
-
-        TemplateResource UpdatePollTemplateData { get; }
-
-        
         /// <summary>
         /// Add your vote to a poll 
         /// </summary>
@@ -45,11 +25,15 @@ namespace com.knetikcloud.Api
         /// <param name="answerKey">The answer key</param>
         void AnswerPoll(string id, StringWrapper answerKey);
 
+        PollResource CreatePollData { get; }
+
         /// <summary>
         /// Create a new poll Polls are blobs of text with titles, a category and assets. Formatting and display of the text is in the hands of the front end.
         /// </summary>
         /// <param name="pollResource">The poll object</param>
         void CreatePoll(PollResource pollResource);
+
+        TemplateResource CreatePollTemplateData { get; }
 
         /// <summary>
         /// Create a poll template Poll templates define a type of poll and the properties they have
@@ -57,11 +41,15 @@ namespace com.knetikcloud.Api
         /// <param name="pollTemplateResource">The poll template resource object</param>
         void CreatePollTemplate(TemplateResource pollTemplateResource);
 
+        
+
         /// <summary>
         /// Delete an existing poll 
         /// </summary>
         /// <param name="id">The poll id</param>
         void DeletePoll(string id);
+
+        
 
         /// <summary>
         /// Delete a poll template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
@@ -70,11 +58,15 @@ namespace com.knetikcloud.Api
         /// <param name="cascade">The value needed to delete used templates</param>
         void DeletePollTemplate(string id, string cascade);
 
+        PollResource GetPollData { get; }
+
         /// <summary>
         /// Get a single poll 
         /// </summary>
         /// <param name="id">The poll id</param>
         void GetPoll(string id);
+
+        PollResponseResource GetPollAnswerData { get; }
 
         /// <summary>
         /// Get poll answer 
@@ -82,11 +74,15 @@ namespace com.knetikcloud.Api
         /// <param name="id">The poll id</param>
         void GetPollAnswer(string id);
 
+        TemplateResource GetPollTemplateData { get; }
+
         /// <summary>
         /// Get a single poll template 
         /// </summary>
         /// <param name="id">The id of the template</param>
         void GetPollTemplate(string id);
+
+        PageResourceTemplateResource GetPollTemplatesData { get; }
 
         /// <summary>
         /// List and search poll templates 
@@ -95,6 +91,8 @@ namespace com.knetikcloud.Api
         /// <param name="page">The number of the page returned, starting with 1</param>
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
         void GetPollTemplates(int? size, int? page, string order);
+
+        PageResourcePollResource GetPollsData { get; }
 
         /// <summary>
         /// List and search polls Get a list of polls with optional filtering. Assets will not be filled in on the resources returned. Use &#39;Get a single poll&#39; to retrieve the full resource with assets for a given item as needed.
@@ -107,12 +105,16 @@ namespace com.knetikcloud.Api
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
         void GetPolls(string filterCategory, string filterTagset, string filterText, int? size, int? page, string order);
 
+        PollResource UpdatePollData { get; }
+
         /// <summary>
         /// Update an existing poll 
         /// </summary>
         /// <param name="id">The poll id</param>
         /// <param name="pollResource">The poll object</param>
         void UpdatePoll(string id, PollResource pollResource);
+
+        TemplateResource UpdatePollTemplateData { get; }
 
         /// <summary>
         /// Update a poll template 
@@ -129,87 +131,77 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class ContentPollsApi : IContentPollsApi
     {
-        private readonly KnetikCoroutine mAnswerPollCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mAnswerPollResponseContext;
         private DateTime mAnswerPollStartTime;
-        private string mAnswerPollPath;
-        private readonly KnetikCoroutine mCreatePollCoroutine;
+        private readonly KnetikResponseContext mCreatePollResponseContext;
         private DateTime mCreatePollStartTime;
-        private string mCreatePollPath;
-        private readonly KnetikCoroutine mCreatePollTemplateCoroutine;
+        private readonly KnetikResponseContext mCreatePollTemplateResponseContext;
         private DateTime mCreatePollTemplateStartTime;
-        private string mCreatePollTemplatePath;
-        private readonly KnetikCoroutine mDeletePollCoroutine;
+        private readonly KnetikResponseContext mDeletePollResponseContext;
         private DateTime mDeletePollStartTime;
-        private string mDeletePollPath;
-        private readonly KnetikCoroutine mDeletePollTemplateCoroutine;
+        private readonly KnetikResponseContext mDeletePollTemplateResponseContext;
         private DateTime mDeletePollTemplateStartTime;
-        private string mDeletePollTemplatePath;
-        private readonly KnetikCoroutine mGetPollCoroutine;
+        private readonly KnetikResponseContext mGetPollResponseContext;
         private DateTime mGetPollStartTime;
-        private string mGetPollPath;
-        private readonly KnetikCoroutine mGetPollAnswerCoroutine;
+        private readonly KnetikResponseContext mGetPollAnswerResponseContext;
         private DateTime mGetPollAnswerStartTime;
-        private string mGetPollAnswerPath;
-        private readonly KnetikCoroutine mGetPollTemplateCoroutine;
+        private readonly KnetikResponseContext mGetPollTemplateResponseContext;
         private DateTime mGetPollTemplateStartTime;
-        private string mGetPollTemplatePath;
-        private readonly KnetikCoroutine mGetPollTemplatesCoroutine;
+        private readonly KnetikResponseContext mGetPollTemplatesResponseContext;
         private DateTime mGetPollTemplatesStartTime;
-        private string mGetPollTemplatesPath;
-        private readonly KnetikCoroutine mGetPollsCoroutine;
+        private readonly KnetikResponseContext mGetPollsResponseContext;
         private DateTime mGetPollsStartTime;
-        private string mGetPollsPath;
-        private readonly KnetikCoroutine mUpdatePollCoroutine;
+        private readonly KnetikResponseContext mUpdatePollResponseContext;
         private DateTime mUpdatePollStartTime;
-        private string mUpdatePollPath;
-        private readonly KnetikCoroutine mUpdatePollTemplateCoroutine;
+        private readonly KnetikResponseContext mUpdatePollTemplateResponseContext;
         private DateTime mUpdatePollTemplateStartTime;
-        private string mUpdatePollTemplatePath;
 
         public PollResponseResource AnswerPollData { get; private set; }
-        public delegate void AnswerPollCompleteDelegate(PollResponseResource response);
+        public delegate void AnswerPollCompleteDelegate(long responseCode, PollResponseResource response);
         public AnswerPollCompleteDelegate AnswerPollComplete;
 
         public PollResource CreatePollData { get; private set; }
-        public delegate void CreatePollCompleteDelegate(PollResource response);
+        public delegate void CreatePollCompleteDelegate(long responseCode, PollResource response);
         public CreatePollCompleteDelegate CreatePollComplete;
 
         public TemplateResource CreatePollTemplateData { get; private set; }
-        public delegate void CreatePollTemplateCompleteDelegate(TemplateResource response);
+        public delegate void CreatePollTemplateCompleteDelegate(long responseCode, TemplateResource response);
         public CreatePollTemplateCompleteDelegate CreatePollTemplateComplete;
 
-        public delegate void DeletePollCompleteDelegate();
+        public delegate void DeletePollCompleteDelegate(long responseCode);
         public DeletePollCompleteDelegate DeletePollComplete;
 
-        public delegate void DeletePollTemplateCompleteDelegate();
+        public delegate void DeletePollTemplateCompleteDelegate(long responseCode);
         public DeletePollTemplateCompleteDelegate DeletePollTemplateComplete;
 
         public PollResource GetPollData { get; private set; }
-        public delegate void GetPollCompleteDelegate(PollResource response);
+        public delegate void GetPollCompleteDelegate(long responseCode, PollResource response);
         public GetPollCompleteDelegate GetPollComplete;
 
         public PollResponseResource GetPollAnswerData { get; private set; }
-        public delegate void GetPollAnswerCompleteDelegate(PollResponseResource response);
+        public delegate void GetPollAnswerCompleteDelegate(long responseCode, PollResponseResource response);
         public GetPollAnswerCompleteDelegate GetPollAnswerComplete;
 
         public TemplateResource GetPollTemplateData { get; private set; }
-        public delegate void GetPollTemplateCompleteDelegate(TemplateResource response);
+        public delegate void GetPollTemplateCompleteDelegate(long responseCode, TemplateResource response);
         public GetPollTemplateCompleteDelegate GetPollTemplateComplete;
 
         public PageResourceTemplateResource GetPollTemplatesData { get; private set; }
-        public delegate void GetPollTemplatesCompleteDelegate(PageResourceTemplateResource response);
+        public delegate void GetPollTemplatesCompleteDelegate(long responseCode, PageResourceTemplateResource response);
         public GetPollTemplatesCompleteDelegate GetPollTemplatesComplete;
 
         public PageResourcePollResource GetPollsData { get; private set; }
-        public delegate void GetPollsCompleteDelegate(PageResourcePollResource response);
+        public delegate void GetPollsCompleteDelegate(long responseCode, PageResourcePollResource response);
         public GetPollsCompleteDelegate GetPollsComplete;
 
         public PollResource UpdatePollData { get; private set; }
-        public delegate void UpdatePollCompleteDelegate(PollResource response);
+        public delegate void UpdatePollCompleteDelegate(long responseCode, PollResource response);
         public UpdatePollCompleteDelegate UpdatePollComplete;
 
         public TemplateResource UpdatePollTemplateData { get; private set; }
-        public delegate void UpdatePollTemplateCompleteDelegate(TemplateResource response);
+        public delegate void UpdatePollTemplateCompleteDelegate(long responseCode, TemplateResource response);
         public UpdatePollTemplateCompleteDelegate UpdatePollTemplateComplete;
 
         /// <summary>
@@ -218,18 +210,30 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public ContentPollsApi()
         {
-            mAnswerPollCoroutine = new KnetikCoroutine();
-            mCreatePollCoroutine = new KnetikCoroutine();
-            mCreatePollTemplateCoroutine = new KnetikCoroutine();
-            mDeletePollCoroutine = new KnetikCoroutine();
-            mDeletePollTemplateCoroutine = new KnetikCoroutine();
-            mGetPollCoroutine = new KnetikCoroutine();
-            mGetPollAnswerCoroutine = new KnetikCoroutine();
-            mGetPollTemplateCoroutine = new KnetikCoroutine();
-            mGetPollTemplatesCoroutine = new KnetikCoroutine();
-            mGetPollsCoroutine = new KnetikCoroutine();
-            mUpdatePollCoroutine = new KnetikCoroutine();
-            mUpdatePollTemplateCoroutine = new KnetikCoroutine();
+            mAnswerPollResponseContext = new KnetikResponseContext();
+            mAnswerPollResponseContext.ResponseReceived += OnAnswerPollResponse;
+            mCreatePollResponseContext = new KnetikResponseContext();
+            mCreatePollResponseContext.ResponseReceived += OnCreatePollResponse;
+            mCreatePollTemplateResponseContext = new KnetikResponseContext();
+            mCreatePollTemplateResponseContext.ResponseReceived += OnCreatePollTemplateResponse;
+            mDeletePollResponseContext = new KnetikResponseContext();
+            mDeletePollResponseContext.ResponseReceived += OnDeletePollResponse;
+            mDeletePollTemplateResponseContext = new KnetikResponseContext();
+            mDeletePollTemplateResponseContext.ResponseReceived += OnDeletePollTemplateResponse;
+            mGetPollResponseContext = new KnetikResponseContext();
+            mGetPollResponseContext.ResponseReceived += OnGetPollResponse;
+            mGetPollAnswerResponseContext = new KnetikResponseContext();
+            mGetPollAnswerResponseContext.ResponseReceived += OnGetPollAnswerResponse;
+            mGetPollTemplateResponseContext = new KnetikResponseContext();
+            mGetPollTemplateResponseContext.ResponseReceived += OnGetPollTemplateResponse;
+            mGetPollTemplatesResponseContext = new KnetikResponseContext();
+            mGetPollTemplatesResponseContext.ResponseReceived += OnGetPollTemplatesResponse;
+            mGetPollsResponseContext = new KnetikResponseContext();
+            mGetPollsResponseContext.ResponseReceived += OnGetPollsResponse;
+            mUpdatePollResponseContext = new KnetikResponseContext();
+            mUpdatePollResponseContext.ResponseReceived += OnUpdatePollResponse;
+            mUpdatePollTemplateResponseContext = new KnetikResponseContext();
+            mUpdatePollTemplateResponseContext.ResponseReceived += OnUpdatePollTemplateResponse;
         }
     
         /// <inheritdoc />
@@ -246,49 +250,48 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling AnswerPoll");
             }
             
-            mAnswerPollPath = "/media/polls/{id}/response";
-            if (!string.IsNullOrEmpty(mAnswerPollPath))
+            mWebCallEvent.WebPath = "/media/polls/{id}/response";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mAnswerPollPath = mAnswerPollPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mAnswerPollPath = mAnswerPollPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(answerKey); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(answerKey); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mAnswerPollStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mAnswerPollStartTime, mAnswerPollPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mAnswerPollCoroutine.ResponseReceived += AnswerPollCallback;
-            mAnswerPollCoroutine.Start(mAnswerPollPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mAnswerPollStartTime = DateTime.Now;
+            mWebCallEvent.Context = mAnswerPollResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mAnswerPollStartTime, "AnswerPoll", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void AnswerPollCallback(IRestResponse response)
+        private void OnAnswerPollResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling AnswerPoll: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling AnswerPoll: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling AnswerPoll: " + response.Error);
             }
 
-            AnswerPollData = (PollResponseResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PollResponseResource), response.Headers);
-            KnetikLogger.LogResponse(mAnswerPollStartTime, mAnswerPollPath, string.Format("Response received successfully:\n{0}", AnswerPollData.ToString()));
+            AnswerPollData = (PollResponseResource) KnetikClient.Deserialize(response.Content, typeof(PollResponseResource), response.Headers);
+            KnetikLogger.LogResponse(mAnswerPollStartTime, "AnswerPoll", string.Format("Response received successfully:\n{0}", AnswerPollData));
 
             if (AnswerPollComplete != null)
             {
-                AnswerPollComplete(AnswerPollData);
+                AnswerPollComplete(response.ResponseCode, AnswerPollData);
             }
         }
 
@@ -300,48 +303,47 @@ namespace com.knetikcloud.Api
         public void CreatePoll(PollResource pollResource)
         {
             
-            mCreatePollPath = "/media/polls";
-            if (!string.IsNullOrEmpty(mCreatePollPath))
+            mWebCallEvent.WebPath = "/media/polls";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mCreatePollPath = mCreatePollPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(pollResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(pollResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mCreatePollStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mCreatePollStartTime, mCreatePollPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mCreatePollCoroutine.ResponseReceived += CreatePollCallback;
-            mCreatePollCoroutine.Start(mCreatePollPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mCreatePollStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreatePollResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreatePollStartTime, "CreatePoll", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void CreatePollCallback(IRestResponse response)
+        private void OnCreatePollResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreatePoll: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreatePoll: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling CreatePoll: " + response.Error);
             }
 
-            CreatePollData = (PollResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PollResource), response.Headers);
-            KnetikLogger.LogResponse(mCreatePollStartTime, mCreatePollPath, string.Format("Response received successfully:\n{0}", CreatePollData.ToString()));
+            CreatePollData = (PollResource) KnetikClient.Deserialize(response.Content, typeof(PollResource), response.Headers);
+            KnetikLogger.LogResponse(mCreatePollStartTime, "CreatePoll", string.Format("Response received successfully:\n{0}", CreatePollData));
 
             if (CreatePollComplete != null)
             {
-                CreatePollComplete(CreatePollData);
+                CreatePollComplete(response.ResponseCode, CreatePollData);
             }
         }
 
@@ -353,48 +355,47 @@ namespace com.knetikcloud.Api
         public void CreatePollTemplate(TemplateResource pollTemplateResource)
         {
             
-            mCreatePollTemplatePath = "/media/polls/templates";
-            if (!string.IsNullOrEmpty(mCreatePollTemplatePath))
+            mWebCallEvent.WebPath = "/media/polls/templates";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mCreatePollTemplatePath = mCreatePollTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(pollTemplateResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(pollTemplateResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mCreatePollTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mCreatePollTemplateStartTime, mCreatePollTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mCreatePollTemplateCoroutine.ResponseReceived += CreatePollTemplateCallback;
-            mCreatePollTemplateCoroutine.Start(mCreatePollTemplatePath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mCreatePollTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreatePollTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreatePollTemplateStartTime, "CreatePollTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void CreatePollTemplateCallback(IRestResponse response)
+        private void OnCreatePollTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreatePollTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreatePollTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling CreatePollTemplate: " + response.Error);
             }
 
-            CreatePollTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mCreatePollTemplateStartTime, mCreatePollTemplatePath, string.Format("Response received successfully:\n{0}", CreatePollTemplateData.ToString()));
+            CreatePollTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mCreatePollTemplateStartTime, "CreatePollTemplate", string.Format("Response received successfully:\n{0}", CreatePollTemplateData));
 
             if (CreatePollTemplateComplete != null)
             {
-                CreatePollTemplateComplete(CreatePollTemplateData);
+                CreatePollTemplateComplete(response.ResponseCode, CreatePollTemplateData);
             }
         }
 
@@ -411,45 +412,44 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeletePoll");
             }
             
-            mDeletePollPath = "/media/polls/{id}";
-            if (!string.IsNullOrEmpty(mDeletePollPath))
+            mWebCallEvent.WebPath = "/media/polls/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeletePollPath = mDeletePollPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeletePollPath = mDeletePollPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeletePollStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeletePollStartTime, mDeletePollPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeletePollCoroutine.ResponseReceived += DeletePollCallback;
-            mDeletePollCoroutine.Start(mDeletePollPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeletePollStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeletePollResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeletePollStartTime, "DeletePoll", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeletePollCallback(IRestResponse response)
+        private void OnDeletePollResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeletePoll: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeletePoll: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeletePoll: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeletePollStartTime, mDeletePollPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeletePollStartTime, "DeletePoll", "Response received successfully.");
             if (DeletePollComplete != null)
             {
-                DeletePollComplete();
+                DeletePollComplete(response.ResponseCode);
             }
         }
 
@@ -467,50 +467,49 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeletePollTemplate");
             }
             
-            mDeletePollTemplatePath = "/media/polls/templates/{id}";
-            if (!string.IsNullOrEmpty(mDeletePollTemplatePath))
+            mWebCallEvent.WebPath = "/media/polls/templates/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeletePollTemplatePath = mDeletePollTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeletePollTemplatePath = mDeletePollTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
+                mWebCallEvent.QueryParams["cascade"] = KnetikClient.ParameterToString(cascade);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeletePollTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeletePollTemplateStartTime, mDeletePollTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeletePollTemplateCoroutine.ResponseReceived += DeletePollTemplateCallback;
-            mDeletePollTemplateCoroutine.Start(mDeletePollTemplatePath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeletePollTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeletePollTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeletePollTemplateStartTime, "DeletePollTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeletePollTemplateCallback(IRestResponse response)
+        private void OnDeletePollTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeletePollTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeletePollTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeletePollTemplate: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeletePollTemplateStartTime, mDeletePollTemplatePath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeletePollTemplateStartTime, "DeletePollTemplate", "Response received successfully.");
             if (DeletePollTemplateComplete != null)
             {
-                DeletePollTemplateComplete();
+                DeletePollTemplateComplete(response.ResponseCode);
             }
         }
 
@@ -527,47 +526,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetPoll");
             }
             
-            mGetPollPath = "/media/polls/{id}";
-            if (!string.IsNullOrEmpty(mGetPollPath))
+            mWebCallEvent.WebPath = "/media/polls/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetPollPath = mGetPollPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetPollPath = mGetPollPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetPollStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetPollStartTime, mGetPollPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetPollCoroutine.ResponseReceived += GetPollCallback;
-            mGetPollCoroutine.Start(mGetPollPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetPollStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetPollResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetPollStartTime, "GetPoll", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetPollCallback(IRestResponse response)
+        private void OnGetPollResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetPoll: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetPoll: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetPoll: " + response.Error);
             }
 
-            GetPollData = (PollResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PollResource), response.Headers);
-            KnetikLogger.LogResponse(mGetPollStartTime, mGetPollPath, string.Format("Response received successfully:\n{0}", GetPollData.ToString()));
+            GetPollData = (PollResource) KnetikClient.Deserialize(response.Content, typeof(PollResource), response.Headers);
+            KnetikLogger.LogResponse(mGetPollStartTime, "GetPoll", string.Format("Response received successfully:\n{0}", GetPollData));
 
             if (GetPollComplete != null)
             {
-                GetPollComplete(GetPollData);
+                GetPollComplete(response.ResponseCode, GetPollData);
             }
         }
 
@@ -584,47 +582,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetPollAnswer");
             }
             
-            mGetPollAnswerPath = "/media/polls/{id}/response";
-            if (!string.IsNullOrEmpty(mGetPollAnswerPath))
+            mWebCallEvent.WebPath = "/media/polls/{id}/response";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetPollAnswerPath = mGetPollAnswerPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetPollAnswerPath = mGetPollAnswerPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetPollAnswerStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetPollAnswerStartTime, mGetPollAnswerPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetPollAnswerCoroutine.ResponseReceived += GetPollAnswerCallback;
-            mGetPollAnswerCoroutine.Start(mGetPollAnswerPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetPollAnswerStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetPollAnswerResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetPollAnswerStartTime, "GetPollAnswer", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetPollAnswerCallback(IRestResponse response)
+        private void OnGetPollAnswerResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetPollAnswer: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetPollAnswer: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetPollAnswer: " + response.Error);
             }
 
-            GetPollAnswerData = (PollResponseResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PollResponseResource), response.Headers);
-            KnetikLogger.LogResponse(mGetPollAnswerStartTime, mGetPollAnswerPath, string.Format("Response received successfully:\n{0}", GetPollAnswerData.ToString()));
+            GetPollAnswerData = (PollResponseResource) KnetikClient.Deserialize(response.Content, typeof(PollResponseResource), response.Headers);
+            KnetikLogger.LogResponse(mGetPollAnswerStartTime, "GetPollAnswer", string.Format("Response received successfully:\n{0}", GetPollAnswerData));
 
             if (GetPollAnswerComplete != null)
             {
-                GetPollAnswerComplete(GetPollAnswerData);
+                GetPollAnswerComplete(response.ResponseCode, GetPollAnswerData);
             }
         }
 
@@ -641,47 +638,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetPollTemplate");
             }
             
-            mGetPollTemplatePath = "/media/polls/templates/{id}";
-            if (!string.IsNullOrEmpty(mGetPollTemplatePath))
+            mWebCallEvent.WebPath = "/media/polls/templates/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetPollTemplatePath = mGetPollTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetPollTemplatePath = mGetPollTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetPollTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetPollTemplateStartTime, mGetPollTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetPollTemplateCoroutine.ResponseReceived += GetPollTemplateCallback;
-            mGetPollTemplateCoroutine.Start(mGetPollTemplatePath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetPollTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetPollTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetPollTemplateStartTime, "GetPollTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetPollTemplateCallback(IRestResponse response)
+        private void OnGetPollTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetPollTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetPollTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetPollTemplate: " + response.Error);
             }
 
-            GetPollTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mGetPollTemplateStartTime, mGetPollTemplatePath, string.Format("Response received successfully:\n{0}", GetPollTemplateData.ToString()));
+            GetPollTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mGetPollTemplateStartTime, "GetPollTemplate", string.Format("Response received successfully:\n{0}", GetPollTemplateData));
 
             if (GetPollTemplateComplete != null)
             {
-                GetPollTemplateComplete(GetPollTemplateData);
+                GetPollTemplateComplete(response.ResponseCode, GetPollTemplateData);
             }
         }
 
@@ -695,61 +691,60 @@ namespace com.knetikcloud.Api
         public void GetPollTemplates(int? size, int? page, string order)
         {
             
-            mGetPollTemplatesPath = "/media/polls/templates";
-            if (!string.IsNullOrEmpty(mGetPollTemplatesPath))
+            mWebCallEvent.WebPath = "/media/polls/templates";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetPollTemplatesPath = mGetPollTemplatesPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetPollTemplatesStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetPollTemplatesStartTime, mGetPollTemplatesPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetPollTemplatesCoroutine.ResponseReceived += GetPollTemplatesCallback;
-            mGetPollTemplatesCoroutine.Start(mGetPollTemplatesPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetPollTemplatesStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetPollTemplatesResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetPollTemplatesStartTime, "GetPollTemplates", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetPollTemplatesCallback(IRestResponse response)
+        private void OnGetPollTemplatesResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetPollTemplates: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetPollTemplates: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetPollTemplates: " + response.Error);
             }
 
-            GetPollTemplatesData = (PageResourceTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceTemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mGetPollTemplatesStartTime, mGetPollTemplatesPath, string.Format("Response received successfully:\n{0}", GetPollTemplatesData.ToString()));
+            GetPollTemplatesData = (PageResourceTemplateResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceTemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mGetPollTemplatesStartTime, "GetPollTemplates", string.Format("Response received successfully:\n{0}", GetPollTemplatesData));
 
             if (GetPollTemplatesComplete != null)
             {
-                GetPollTemplatesComplete(GetPollTemplatesData);
+                GetPollTemplatesComplete(response.ResponseCode, GetPollTemplatesData);
             }
         }
 
@@ -766,76 +761,75 @@ namespace com.knetikcloud.Api
         public void GetPolls(string filterCategory, string filterTagset, string filterText, int? size, int? page, string order)
         {
             
-            mGetPollsPath = "/media/polls";
-            if (!string.IsNullOrEmpty(mGetPollsPath))
+            mWebCallEvent.WebPath = "/media/polls";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetPollsPath = mGetPollsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (filterCategory != null)
             {
-                queryParams.Add("filter_category", KnetikClient.DefaultClient.ParameterToString(filterCategory));
+                mWebCallEvent.QueryParams["filter_category"] = KnetikClient.ParameterToString(filterCategory);
             }
 
             if (filterTagset != null)
             {
-                queryParams.Add("filter_tagset", KnetikClient.DefaultClient.ParameterToString(filterTagset));
+                mWebCallEvent.QueryParams["filter_tagset"] = KnetikClient.ParameterToString(filterTagset);
             }
 
             if (filterText != null)
             {
-                queryParams.Add("filter_text", KnetikClient.DefaultClient.ParameterToString(filterText));
+                mWebCallEvent.QueryParams["filter_text"] = KnetikClient.ParameterToString(filterText);
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetPollsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetPollsStartTime, mGetPollsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetPollsCoroutine.ResponseReceived += GetPollsCallback;
-            mGetPollsCoroutine.Start(mGetPollsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetPollsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetPollsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetPollsStartTime, "GetPolls", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetPollsCallback(IRestResponse response)
+        private void OnGetPollsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetPolls: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetPolls: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetPolls: " + response.Error);
             }
 
-            GetPollsData = (PageResourcePollResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourcePollResource), response.Headers);
-            KnetikLogger.LogResponse(mGetPollsStartTime, mGetPollsPath, string.Format("Response received successfully:\n{0}", GetPollsData.ToString()));
+            GetPollsData = (PageResourcePollResource) KnetikClient.Deserialize(response.Content, typeof(PageResourcePollResource), response.Headers);
+            KnetikLogger.LogResponse(mGetPollsStartTime, "GetPolls", string.Format("Response received successfully:\n{0}", GetPollsData));
 
             if (GetPollsComplete != null)
             {
-                GetPollsComplete(GetPollsData);
+                GetPollsComplete(response.ResponseCode, GetPollsData);
             }
         }
 
@@ -853,49 +847,48 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling UpdatePoll");
             }
             
-            mUpdatePollPath = "/media/polls/{id}";
-            if (!string.IsNullOrEmpty(mUpdatePollPath))
+            mWebCallEvent.WebPath = "/media/polls/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdatePollPath = mUpdatePollPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdatePollPath = mUpdatePollPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(pollResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(pollResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdatePollStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdatePollStartTime, mUpdatePollPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdatePollCoroutine.ResponseReceived += UpdatePollCallback;
-            mUpdatePollCoroutine.Start(mUpdatePollPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdatePollStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdatePollResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdatePollStartTime, "UpdatePoll", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdatePollCallback(IRestResponse response)
+        private void OnUpdatePollResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdatePoll: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdatePoll: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdatePoll: " + response.Error);
             }
 
-            UpdatePollData = (PollResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PollResource), response.Headers);
-            KnetikLogger.LogResponse(mUpdatePollStartTime, mUpdatePollPath, string.Format("Response received successfully:\n{0}", UpdatePollData.ToString()));
+            UpdatePollData = (PollResource) KnetikClient.Deserialize(response.Content, typeof(PollResource), response.Headers);
+            KnetikLogger.LogResponse(mUpdatePollStartTime, "UpdatePoll", string.Format("Response received successfully:\n{0}", UpdatePollData));
 
             if (UpdatePollComplete != null)
             {
-                UpdatePollComplete(UpdatePollData);
+                UpdatePollComplete(response.ResponseCode, UpdatePollData);
             }
         }
 
@@ -913,49 +906,48 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling UpdatePollTemplate");
             }
             
-            mUpdatePollTemplatePath = "/media/polls/templates/{id}";
-            if (!string.IsNullOrEmpty(mUpdatePollTemplatePath))
+            mWebCallEvent.WebPath = "/media/polls/templates/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdatePollTemplatePath = mUpdatePollTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdatePollTemplatePath = mUpdatePollTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(pollTemplateResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(pollTemplateResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdatePollTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdatePollTemplateStartTime, mUpdatePollTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdatePollTemplateCoroutine.ResponseReceived += UpdatePollTemplateCallback;
-            mUpdatePollTemplateCoroutine.Start(mUpdatePollTemplatePath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdatePollTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdatePollTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdatePollTemplateStartTime, "UpdatePollTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdatePollTemplateCallback(IRestResponse response)
+        private void OnUpdatePollTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdatePollTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdatePollTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdatePollTemplate: " + response.Error);
             }
 
-            UpdatePollTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mUpdatePollTemplateStartTime, mUpdatePollTemplatePath, string.Format("Response received successfully:\n{0}", UpdatePollTemplateData.ToString()));
+            UpdatePollTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mUpdatePollTemplateStartTime, "UpdatePollTemplate", string.Format("Response received successfully:\n{0}", UpdatePollTemplateData));
 
             if (UpdatePollTemplateComplete != null)
             {
-                UpdatePollTemplateComplete(UpdatePollTemplateData);
+                UpdatePollTemplateComplete(response.ResponseCode, UpdatePollTemplateData);
             }
         }
 

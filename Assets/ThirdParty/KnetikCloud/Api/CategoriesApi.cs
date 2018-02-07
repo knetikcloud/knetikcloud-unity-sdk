@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,28 +18,13 @@ namespace com.knetikcloud.Api
     {
         CategoryResource CreateCategoryData { get; }
 
-        TemplateResource CreateCategoryTemplateData { get; }
-
-        PageResourceCategoryResource GetCategoriesData { get; }
-
-        CategoryResource GetCategoryData { get; }
-
-        TemplateResource GetCategoryTemplateData { get; }
-
-        PageResourceTemplateResource GetCategoryTemplatesData { get; }
-
-        PageResourcestring GetTagsData { get; }
-
-        CategoryResource UpdateCategoryData { get; }
-
-        TemplateResource UpdateCategoryTemplateData { get; }
-
-        
         /// <summary>
         /// Create a new category 
         /// </summary>
         /// <param name="category">The category to create</param>
         void CreateCategory(CategoryResource category);
+
+        TemplateResource CreateCategoryTemplateData { get; }
 
         /// <summary>
         /// Create a category template Templates define a type of category and the properties they have
@@ -48,11 +32,15 @@ namespace com.knetikcloud.Api
         /// <param name="template">The template to create</param>
         void CreateCategoryTemplate(TemplateResource template);
 
+        
+
         /// <summary>
         /// Delete an existing category 
         /// </summary>
         /// <param name="id">The id of the category to be deleted</param>
         void DeleteCategory(string id);
+
+        
 
         /// <summary>
         /// Delete a category template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
@@ -60,6 +48,8 @@ namespace com.knetikcloud.Api
         /// <param name="id">The id of the template</param>
         /// <param name="cascade">The value needed to delete used templates</param>
         void DeleteCategoryTemplate(string id, string cascade);
+
+        PageResourceCategoryResource GetCategoriesData { get; }
 
         /// <summary>
         /// List and search categories with optional filters 
@@ -71,17 +61,23 @@ namespace com.knetikcloud.Api
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
         void GetCategories(string filterSearch, bool? filterActive, int? size, int? page, string order);
 
+        CategoryResource GetCategoryData { get; }
+
         /// <summary>
         /// Get a single category 
         /// </summary>
         /// <param name="id">The id of the category to retrieve</param>
         void GetCategory(string id);
 
+        TemplateResource GetCategoryTemplateData { get; }
+
         /// <summary>
         /// Get a single category template 
         /// </summary>
         /// <param name="id">The id of the template</param>
         void GetCategoryTemplate(string id);
+
+        PageResourceTemplateResource GetCategoryTemplatesData { get; }
 
         /// <summary>
         /// List and search category templates 
@@ -91,6 +87,8 @@ namespace com.knetikcloud.Api
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
         void GetCategoryTemplates(int? size, int? page, string order);
 
+        PageResourcestring GetTagsData { get; }
+
         /// <summary>
         /// List all trivia tags in the system 
         /// </summary>
@@ -98,12 +96,16 @@ namespace com.knetikcloud.Api
         /// <param name="page">The number of the page returned, starting with 1</param>
         void GetTags(int? size, int? page);
 
+        CategoryResource UpdateCategoryData { get; }
+
         /// <summary>
         /// Update an existing category 
         /// </summary>
         /// <param name="id">The id of the category</param>
         /// <param name="category">The category to update</param>
         void UpdateCategory(string id, CategoryResource category);
+
+        TemplateResource UpdateCategoryTemplateData { get; }
 
         /// <summary>
         /// Update a category template 
@@ -120,80 +122,71 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class CategoriesApi : ICategoriesApi
     {
-        private readonly KnetikCoroutine mCreateCategoryCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mCreateCategoryResponseContext;
         private DateTime mCreateCategoryStartTime;
-        private string mCreateCategoryPath;
-        private readonly KnetikCoroutine mCreateCategoryTemplateCoroutine;
+        private readonly KnetikResponseContext mCreateCategoryTemplateResponseContext;
         private DateTime mCreateCategoryTemplateStartTime;
-        private string mCreateCategoryTemplatePath;
-        private readonly KnetikCoroutine mDeleteCategoryCoroutine;
+        private readonly KnetikResponseContext mDeleteCategoryResponseContext;
         private DateTime mDeleteCategoryStartTime;
-        private string mDeleteCategoryPath;
-        private readonly KnetikCoroutine mDeleteCategoryTemplateCoroutine;
+        private readonly KnetikResponseContext mDeleteCategoryTemplateResponseContext;
         private DateTime mDeleteCategoryTemplateStartTime;
-        private string mDeleteCategoryTemplatePath;
-        private readonly KnetikCoroutine mGetCategoriesCoroutine;
+        private readonly KnetikResponseContext mGetCategoriesResponseContext;
         private DateTime mGetCategoriesStartTime;
-        private string mGetCategoriesPath;
-        private readonly KnetikCoroutine mGetCategoryCoroutine;
+        private readonly KnetikResponseContext mGetCategoryResponseContext;
         private DateTime mGetCategoryStartTime;
-        private string mGetCategoryPath;
-        private readonly KnetikCoroutine mGetCategoryTemplateCoroutine;
+        private readonly KnetikResponseContext mGetCategoryTemplateResponseContext;
         private DateTime mGetCategoryTemplateStartTime;
-        private string mGetCategoryTemplatePath;
-        private readonly KnetikCoroutine mGetCategoryTemplatesCoroutine;
+        private readonly KnetikResponseContext mGetCategoryTemplatesResponseContext;
         private DateTime mGetCategoryTemplatesStartTime;
-        private string mGetCategoryTemplatesPath;
-        private readonly KnetikCoroutine mGetTagsCoroutine;
+        private readonly KnetikResponseContext mGetTagsResponseContext;
         private DateTime mGetTagsStartTime;
-        private string mGetTagsPath;
-        private readonly KnetikCoroutine mUpdateCategoryCoroutine;
+        private readonly KnetikResponseContext mUpdateCategoryResponseContext;
         private DateTime mUpdateCategoryStartTime;
-        private string mUpdateCategoryPath;
-        private readonly KnetikCoroutine mUpdateCategoryTemplateCoroutine;
+        private readonly KnetikResponseContext mUpdateCategoryTemplateResponseContext;
         private DateTime mUpdateCategoryTemplateStartTime;
-        private string mUpdateCategoryTemplatePath;
 
         public CategoryResource CreateCategoryData { get; private set; }
-        public delegate void CreateCategoryCompleteDelegate(CategoryResource response);
+        public delegate void CreateCategoryCompleteDelegate(long responseCode, CategoryResource response);
         public CreateCategoryCompleteDelegate CreateCategoryComplete;
 
         public TemplateResource CreateCategoryTemplateData { get; private set; }
-        public delegate void CreateCategoryTemplateCompleteDelegate(TemplateResource response);
+        public delegate void CreateCategoryTemplateCompleteDelegate(long responseCode, TemplateResource response);
         public CreateCategoryTemplateCompleteDelegate CreateCategoryTemplateComplete;
 
-        public delegate void DeleteCategoryCompleteDelegate();
+        public delegate void DeleteCategoryCompleteDelegate(long responseCode);
         public DeleteCategoryCompleteDelegate DeleteCategoryComplete;
 
-        public delegate void DeleteCategoryTemplateCompleteDelegate();
+        public delegate void DeleteCategoryTemplateCompleteDelegate(long responseCode);
         public DeleteCategoryTemplateCompleteDelegate DeleteCategoryTemplateComplete;
 
         public PageResourceCategoryResource GetCategoriesData { get; private set; }
-        public delegate void GetCategoriesCompleteDelegate(PageResourceCategoryResource response);
+        public delegate void GetCategoriesCompleteDelegate(long responseCode, PageResourceCategoryResource response);
         public GetCategoriesCompleteDelegate GetCategoriesComplete;
 
         public CategoryResource GetCategoryData { get; private set; }
-        public delegate void GetCategoryCompleteDelegate(CategoryResource response);
+        public delegate void GetCategoryCompleteDelegate(long responseCode, CategoryResource response);
         public GetCategoryCompleteDelegate GetCategoryComplete;
 
         public TemplateResource GetCategoryTemplateData { get; private set; }
-        public delegate void GetCategoryTemplateCompleteDelegate(TemplateResource response);
+        public delegate void GetCategoryTemplateCompleteDelegate(long responseCode, TemplateResource response);
         public GetCategoryTemplateCompleteDelegate GetCategoryTemplateComplete;
 
         public PageResourceTemplateResource GetCategoryTemplatesData { get; private set; }
-        public delegate void GetCategoryTemplatesCompleteDelegate(PageResourceTemplateResource response);
+        public delegate void GetCategoryTemplatesCompleteDelegate(long responseCode, PageResourceTemplateResource response);
         public GetCategoryTemplatesCompleteDelegate GetCategoryTemplatesComplete;
 
         public PageResourcestring GetTagsData { get; private set; }
-        public delegate void GetTagsCompleteDelegate(PageResourcestring response);
+        public delegate void GetTagsCompleteDelegate(long responseCode, PageResourcestring response);
         public GetTagsCompleteDelegate GetTagsComplete;
 
         public CategoryResource UpdateCategoryData { get; private set; }
-        public delegate void UpdateCategoryCompleteDelegate(CategoryResource response);
+        public delegate void UpdateCategoryCompleteDelegate(long responseCode, CategoryResource response);
         public UpdateCategoryCompleteDelegate UpdateCategoryComplete;
 
         public TemplateResource UpdateCategoryTemplateData { get; private set; }
-        public delegate void UpdateCategoryTemplateCompleteDelegate(TemplateResource response);
+        public delegate void UpdateCategoryTemplateCompleteDelegate(long responseCode, TemplateResource response);
         public UpdateCategoryTemplateCompleteDelegate UpdateCategoryTemplateComplete;
 
         /// <summary>
@@ -202,17 +195,28 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public CategoriesApi()
         {
-            mCreateCategoryCoroutine = new KnetikCoroutine();
-            mCreateCategoryTemplateCoroutine = new KnetikCoroutine();
-            mDeleteCategoryCoroutine = new KnetikCoroutine();
-            mDeleteCategoryTemplateCoroutine = new KnetikCoroutine();
-            mGetCategoriesCoroutine = new KnetikCoroutine();
-            mGetCategoryCoroutine = new KnetikCoroutine();
-            mGetCategoryTemplateCoroutine = new KnetikCoroutine();
-            mGetCategoryTemplatesCoroutine = new KnetikCoroutine();
-            mGetTagsCoroutine = new KnetikCoroutine();
-            mUpdateCategoryCoroutine = new KnetikCoroutine();
-            mUpdateCategoryTemplateCoroutine = new KnetikCoroutine();
+            mCreateCategoryResponseContext = new KnetikResponseContext();
+            mCreateCategoryResponseContext.ResponseReceived += OnCreateCategoryResponse;
+            mCreateCategoryTemplateResponseContext = new KnetikResponseContext();
+            mCreateCategoryTemplateResponseContext.ResponseReceived += OnCreateCategoryTemplateResponse;
+            mDeleteCategoryResponseContext = new KnetikResponseContext();
+            mDeleteCategoryResponseContext.ResponseReceived += OnDeleteCategoryResponse;
+            mDeleteCategoryTemplateResponseContext = new KnetikResponseContext();
+            mDeleteCategoryTemplateResponseContext.ResponseReceived += OnDeleteCategoryTemplateResponse;
+            mGetCategoriesResponseContext = new KnetikResponseContext();
+            mGetCategoriesResponseContext.ResponseReceived += OnGetCategoriesResponse;
+            mGetCategoryResponseContext = new KnetikResponseContext();
+            mGetCategoryResponseContext.ResponseReceived += OnGetCategoryResponse;
+            mGetCategoryTemplateResponseContext = new KnetikResponseContext();
+            mGetCategoryTemplateResponseContext.ResponseReceived += OnGetCategoryTemplateResponse;
+            mGetCategoryTemplatesResponseContext = new KnetikResponseContext();
+            mGetCategoryTemplatesResponseContext.ResponseReceived += OnGetCategoryTemplatesResponse;
+            mGetTagsResponseContext = new KnetikResponseContext();
+            mGetTagsResponseContext.ResponseReceived += OnGetTagsResponse;
+            mUpdateCategoryResponseContext = new KnetikResponseContext();
+            mUpdateCategoryResponseContext.ResponseReceived += OnUpdateCategoryResponse;
+            mUpdateCategoryTemplateResponseContext = new KnetikResponseContext();
+            mUpdateCategoryTemplateResponseContext.ResponseReceived += OnUpdateCategoryTemplateResponse;
         }
     
         /// <inheritdoc />
@@ -223,48 +227,47 @@ namespace com.knetikcloud.Api
         public void CreateCategory(CategoryResource category)
         {
             
-            mCreateCategoryPath = "/categories";
-            if (!string.IsNullOrEmpty(mCreateCategoryPath))
+            mWebCallEvent.WebPath = "/categories";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mCreateCategoryPath = mCreateCategoryPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(category); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(category); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mCreateCategoryStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mCreateCategoryStartTime, mCreateCategoryPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mCreateCategoryCoroutine.ResponseReceived += CreateCategoryCallback;
-            mCreateCategoryCoroutine.Start(mCreateCategoryPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mCreateCategoryStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreateCategoryResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreateCategoryStartTime, "CreateCategory", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void CreateCategoryCallback(IRestResponse response)
+        private void OnCreateCategoryResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateCategory: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateCategory: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling CreateCategory: " + response.Error);
             }
 
-            CreateCategoryData = (CategoryResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CategoryResource), response.Headers);
-            KnetikLogger.LogResponse(mCreateCategoryStartTime, mCreateCategoryPath, string.Format("Response received successfully:\n{0}", CreateCategoryData.ToString()));
+            CreateCategoryData = (CategoryResource) KnetikClient.Deserialize(response.Content, typeof(CategoryResource), response.Headers);
+            KnetikLogger.LogResponse(mCreateCategoryStartTime, "CreateCategory", string.Format("Response received successfully:\n{0}", CreateCategoryData));
 
             if (CreateCategoryComplete != null)
             {
-                CreateCategoryComplete(CreateCategoryData);
+                CreateCategoryComplete(response.ResponseCode, CreateCategoryData);
             }
         }
 
@@ -276,48 +279,47 @@ namespace com.knetikcloud.Api
         public void CreateCategoryTemplate(TemplateResource template)
         {
             
-            mCreateCategoryTemplatePath = "/categories/templates";
-            if (!string.IsNullOrEmpty(mCreateCategoryTemplatePath))
+            mWebCallEvent.WebPath = "/categories/templates";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mCreateCategoryTemplatePath = mCreateCategoryTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(template); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(template); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mCreateCategoryTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mCreateCategoryTemplateStartTime, mCreateCategoryTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mCreateCategoryTemplateCoroutine.ResponseReceived += CreateCategoryTemplateCallback;
-            mCreateCategoryTemplateCoroutine.Start(mCreateCategoryTemplatePath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mCreateCategoryTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreateCategoryTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreateCategoryTemplateStartTime, "CreateCategoryTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void CreateCategoryTemplateCallback(IRestResponse response)
+        private void OnCreateCategoryTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateCategoryTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateCategoryTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling CreateCategoryTemplate: " + response.Error);
             }
 
-            CreateCategoryTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mCreateCategoryTemplateStartTime, mCreateCategoryTemplatePath, string.Format("Response received successfully:\n{0}", CreateCategoryTemplateData.ToString()));
+            CreateCategoryTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mCreateCategoryTemplateStartTime, "CreateCategoryTemplate", string.Format("Response received successfully:\n{0}", CreateCategoryTemplateData));
 
             if (CreateCategoryTemplateComplete != null)
             {
-                CreateCategoryTemplateComplete(CreateCategoryTemplateData);
+                CreateCategoryTemplateComplete(response.ResponseCode, CreateCategoryTemplateData);
             }
         }
 
@@ -334,45 +336,44 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeleteCategory");
             }
             
-            mDeleteCategoryPath = "/categories/{id}";
-            if (!string.IsNullOrEmpty(mDeleteCategoryPath))
+            mWebCallEvent.WebPath = "/categories/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteCategoryPath = mDeleteCategoryPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteCategoryPath = mDeleteCategoryPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteCategoryStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteCategoryStartTime, mDeleteCategoryPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteCategoryCoroutine.ResponseReceived += DeleteCategoryCallback;
-            mDeleteCategoryCoroutine.Start(mDeleteCategoryPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteCategoryStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteCategoryResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteCategoryStartTime, "DeleteCategory", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteCategoryCallback(IRestResponse response)
+        private void OnDeleteCategoryResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteCategory: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteCategory: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteCategory: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteCategoryStartTime, mDeleteCategoryPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteCategoryStartTime, "DeleteCategory", "Response received successfully.");
             if (DeleteCategoryComplete != null)
             {
-                DeleteCategoryComplete();
+                DeleteCategoryComplete(response.ResponseCode);
             }
         }
 
@@ -390,50 +391,49 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeleteCategoryTemplate");
             }
             
-            mDeleteCategoryTemplatePath = "/categories/templates/{id}";
-            if (!string.IsNullOrEmpty(mDeleteCategoryTemplatePath))
+            mWebCallEvent.WebPath = "/categories/templates/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteCategoryTemplatePath = mDeleteCategoryTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteCategoryTemplatePath = mDeleteCategoryTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
+                mWebCallEvent.QueryParams["cascade"] = KnetikClient.ParameterToString(cascade);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteCategoryTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteCategoryTemplateStartTime, mDeleteCategoryTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteCategoryTemplateCoroutine.ResponseReceived += DeleteCategoryTemplateCallback;
-            mDeleteCategoryTemplateCoroutine.Start(mDeleteCategoryTemplatePath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteCategoryTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteCategoryTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteCategoryTemplateStartTime, "DeleteCategoryTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteCategoryTemplateCallback(IRestResponse response)
+        private void OnDeleteCategoryTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteCategoryTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteCategoryTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteCategoryTemplate: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteCategoryTemplateStartTime, mDeleteCategoryTemplatePath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteCategoryTemplateStartTime, "DeleteCategoryTemplate", "Response received successfully.");
             if (DeleteCategoryTemplateComplete != null)
             {
-                DeleteCategoryTemplateComplete();
+                DeleteCategoryTemplateComplete(response.ResponseCode);
             }
         }
 
@@ -449,71 +449,70 @@ namespace com.knetikcloud.Api
         public void GetCategories(string filterSearch, bool? filterActive, int? size, int? page, string order)
         {
             
-            mGetCategoriesPath = "/categories";
-            if (!string.IsNullOrEmpty(mGetCategoriesPath))
+            mWebCallEvent.WebPath = "/categories";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetCategoriesPath = mGetCategoriesPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (filterSearch != null)
             {
-                queryParams.Add("filter_search", KnetikClient.DefaultClient.ParameterToString(filterSearch));
+                mWebCallEvent.QueryParams["filter_search"] = KnetikClient.ParameterToString(filterSearch);
             }
 
             if (filterActive != null)
             {
-                queryParams.Add("filter_active", KnetikClient.DefaultClient.ParameterToString(filterActive));
+                mWebCallEvent.QueryParams["filter_active"] = KnetikClient.ParameterToString(filterActive);
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetCategoriesStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetCategoriesStartTime, mGetCategoriesPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetCategoriesCoroutine.ResponseReceived += GetCategoriesCallback;
-            mGetCategoriesCoroutine.Start(mGetCategoriesPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetCategoriesStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetCategoriesResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetCategoriesStartTime, "GetCategories", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetCategoriesCallback(IRestResponse response)
+        private void OnGetCategoriesResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCategories: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCategories: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetCategories: " + response.Error);
             }
 
-            GetCategoriesData = (PageResourceCategoryResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceCategoryResource), response.Headers);
-            KnetikLogger.LogResponse(mGetCategoriesStartTime, mGetCategoriesPath, string.Format("Response received successfully:\n{0}", GetCategoriesData.ToString()));
+            GetCategoriesData = (PageResourceCategoryResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceCategoryResource), response.Headers);
+            KnetikLogger.LogResponse(mGetCategoriesStartTime, "GetCategories", string.Format("Response received successfully:\n{0}", GetCategoriesData));
 
             if (GetCategoriesComplete != null)
             {
-                GetCategoriesComplete(GetCategoriesData);
+                GetCategoriesComplete(response.ResponseCode, GetCategoriesData);
             }
         }
 
@@ -530,47 +529,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetCategory");
             }
             
-            mGetCategoryPath = "/categories/{id}";
-            if (!string.IsNullOrEmpty(mGetCategoryPath))
+            mWebCallEvent.WebPath = "/categories/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetCategoryPath = mGetCategoryPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetCategoryPath = mGetCategoryPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetCategoryStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetCategoryStartTime, mGetCategoryPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetCategoryCoroutine.ResponseReceived += GetCategoryCallback;
-            mGetCategoryCoroutine.Start(mGetCategoryPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetCategoryStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetCategoryResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetCategoryStartTime, "GetCategory", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetCategoryCallback(IRestResponse response)
+        private void OnGetCategoryResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCategory: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCategory: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetCategory: " + response.Error);
             }
 
-            GetCategoryData = (CategoryResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CategoryResource), response.Headers);
-            KnetikLogger.LogResponse(mGetCategoryStartTime, mGetCategoryPath, string.Format("Response received successfully:\n{0}", GetCategoryData.ToString()));
+            GetCategoryData = (CategoryResource) KnetikClient.Deserialize(response.Content, typeof(CategoryResource), response.Headers);
+            KnetikLogger.LogResponse(mGetCategoryStartTime, "GetCategory", string.Format("Response received successfully:\n{0}", GetCategoryData));
 
             if (GetCategoryComplete != null)
             {
-                GetCategoryComplete(GetCategoryData);
+                GetCategoryComplete(response.ResponseCode, GetCategoryData);
             }
         }
 
@@ -587,47 +585,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetCategoryTemplate");
             }
             
-            mGetCategoryTemplatePath = "/categories/templates/{id}";
-            if (!string.IsNullOrEmpty(mGetCategoryTemplatePath))
+            mWebCallEvent.WebPath = "/categories/templates/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetCategoryTemplatePath = mGetCategoryTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetCategoryTemplatePath = mGetCategoryTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetCategoryTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetCategoryTemplateStartTime, mGetCategoryTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetCategoryTemplateCoroutine.ResponseReceived += GetCategoryTemplateCallback;
-            mGetCategoryTemplateCoroutine.Start(mGetCategoryTemplatePath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetCategoryTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetCategoryTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetCategoryTemplateStartTime, "GetCategoryTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetCategoryTemplateCallback(IRestResponse response)
+        private void OnGetCategoryTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCategoryTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCategoryTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetCategoryTemplate: " + response.Error);
             }
 
-            GetCategoryTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mGetCategoryTemplateStartTime, mGetCategoryTemplatePath, string.Format("Response received successfully:\n{0}", GetCategoryTemplateData.ToString()));
+            GetCategoryTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mGetCategoryTemplateStartTime, "GetCategoryTemplate", string.Format("Response received successfully:\n{0}", GetCategoryTemplateData));
 
             if (GetCategoryTemplateComplete != null)
             {
-                GetCategoryTemplateComplete(GetCategoryTemplateData);
+                GetCategoryTemplateComplete(response.ResponseCode, GetCategoryTemplateData);
             }
         }
 
@@ -641,61 +638,60 @@ namespace com.knetikcloud.Api
         public void GetCategoryTemplates(int? size, int? page, string order)
         {
             
-            mGetCategoryTemplatesPath = "/categories/templates";
-            if (!string.IsNullOrEmpty(mGetCategoryTemplatesPath))
+            mWebCallEvent.WebPath = "/categories/templates";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetCategoryTemplatesPath = mGetCategoryTemplatesPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetCategoryTemplatesStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetCategoryTemplatesStartTime, mGetCategoryTemplatesPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetCategoryTemplatesCoroutine.ResponseReceived += GetCategoryTemplatesCallback;
-            mGetCategoryTemplatesCoroutine.Start(mGetCategoryTemplatesPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetCategoryTemplatesStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetCategoryTemplatesResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetCategoryTemplatesStartTime, "GetCategoryTemplates", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetCategoryTemplatesCallback(IRestResponse response)
+        private void OnGetCategoryTemplatesResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCategoryTemplates: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCategoryTemplates: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetCategoryTemplates: " + response.Error);
             }
 
-            GetCategoryTemplatesData = (PageResourceTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceTemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mGetCategoryTemplatesStartTime, mGetCategoryTemplatesPath, string.Format("Response received successfully:\n{0}", GetCategoryTemplatesData.ToString()));
+            GetCategoryTemplatesData = (PageResourceTemplateResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceTemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mGetCategoryTemplatesStartTime, "GetCategoryTemplates", string.Format("Response received successfully:\n{0}", GetCategoryTemplatesData));
 
             if (GetCategoryTemplatesComplete != null)
             {
-                GetCategoryTemplatesComplete(GetCategoryTemplatesData);
+                GetCategoryTemplatesComplete(response.ResponseCode, GetCategoryTemplatesData);
             }
         }
 
@@ -708,56 +704,55 @@ namespace com.knetikcloud.Api
         public void GetTags(int? size, int? page)
         {
             
-            mGetTagsPath = "/tags";
-            if (!string.IsNullOrEmpty(mGetTagsPath))
+            mWebCallEvent.WebPath = "/tags";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetTagsPath = mGetTagsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetTagsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetTagsStartTime, mGetTagsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetTagsCoroutine.ResponseReceived += GetTagsCallback;
-            mGetTagsCoroutine.Start(mGetTagsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetTagsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetTagsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetTagsStartTime, "GetTags", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetTagsCallback(IRestResponse response)
+        private void OnGetTagsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetTags: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetTags: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetTags: " + response.Error);
             }
 
-            GetTagsData = (PageResourcestring) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourcestring), response.Headers);
-            KnetikLogger.LogResponse(mGetTagsStartTime, mGetTagsPath, string.Format("Response received successfully:\n{0}", GetTagsData.ToString()));
+            GetTagsData = (PageResourcestring) KnetikClient.Deserialize(response.Content, typeof(PageResourcestring), response.Headers);
+            KnetikLogger.LogResponse(mGetTagsStartTime, "GetTags", string.Format("Response received successfully:\n{0}", GetTagsData));
 
             if (GetTagsComplete != null)
             {
-                GetTagsComplete(GetTagsData);
+                GetTagsComplete(response.ResponseCode, GetTagsData);
             }
         }
 
@@ -775,49 +770,48 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling UpdateCategory");
             }
             
-            mUpdateCategoryPath = "/categories/{id}";
-            if (!string.IsNullOrEmpty(mUpdateCategoryPath))
+            mWebCallEvent.WebPath = "/categories/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateCategoryPath = mUpdateCategoryPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateCategoryPath = mUpdateCategoryPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(category); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(category); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateCategoryStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateCategoryStartTime, mUpdateCategoryPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateCategoryCoroutine.ResponseReceived += UpdateCategoryCallback;
-            mUpdateCategoryCoroutine.Start(mUpdateCategoryPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateCategoryStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateCategoryResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateCategoryStartTime, "UpdateCategory", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateCategoryCallback(IRestResponse response)
+        private void OnUpdateCategoryResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateCategory: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateCategory: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateCategory: " + response.Error);
             }
 
-            UpdateCategoryData = (CategoryResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CategoryResource), response.Headers);
-            KnetikLogger.LogResponse(mUpdateCategoryStartTime, mUpdateCategoryPath, string.Format("Response received successfully:\n{0}", UpdateCategoryData.ToString()));
+            UpdateCategoryData = (CategoryResource) KnetikClient.Deserialize(response.Content, typeof(CategoryResource), response.Headers);
+            KnetikLogger.LogResponse(mUpdateCategoryStartTime, "UpdateCategory", string.Format("Response received successfully:\n{0}", UpdateCategoryData));
 
             if (UpdateCategoryComplete != null)
             {
-                UpdateCategoryComplete(UpdateCategoryData);
+                UpdateCategoryComplete(response.ResponseCode, UpdateCategoryData);
             }
         }
 
@@ -835,49 +829,48 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling UpdateCategoryTemplate");
             }
             
-            mUpdateCategoryTemplatePath = "/categories/templates/{id}";
-            if (!string.IsNullOrEmpty(mUpdateCategoryTemplatePath))
+            mWebCallEvent.WebPath = "/categories/templates/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateCategoryTemplatePath = mUpdateCategoryTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateCategoryTemplatePath = mUpdateCategoryTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(template); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(template); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateCategoryTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateCategoryTemplateStartTime, mUpdateCategoryTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateCategoryTemplateCoroutine.ResponseReceived += UpdateCategoryTemplateCallback;
-            mUpdateCategoryTemplateCoroutine.Start(mUpdateCategoryTemplatePath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateCategoryTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateCategoryTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateCategoryTemplateStartTime, "UpdateCategoryTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateCategoryTemplateCallback(IRestResponse response)
+        private void OnUpdateCategoryTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateCategoryTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateCategoryTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateCategoryTemplate: " + response.Error);
             }
 
-            UpdateCategoryTemplateData = (TemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mUpdateCategoryTemplateStartTime, mUpdateCategoryTemplatePath, string.Format("Response received successfully:\n{0}", UpdateCategoryTemplateData.ToString()));
+            UpdateCategoryTemplateData = (TemplateResource) KnetikClient.Deserialize(response.Content, typeof(TemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mUpdateCategoryTemplateStartTime, "UpdateCategoryTemplate", string.Format("Response received successfully:\n{0}", UpdateCategoryTemplateData));
 
             if (UpdateCategoryTemplateComplete != null)
             {
-                UpdateCategoryTemplateComplete(UpdateCategoryTemplateData);
+                UpdateCategoryTemplateComplete(response.ResponseCode, UpdateCategoryTemplateData);
             }
         }
 

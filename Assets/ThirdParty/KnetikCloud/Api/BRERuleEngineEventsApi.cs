@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,7 +18,6 @@ namespace com.knetikcloud.Api
     {
         string SendBREEventData { get; }
 
-        
         /// <summary>
         /// Fire a new event, based on an existing trigger Parameters within the event must match names and types from the trigger. Actual rule execution is asynchornous.  Returns request id, which will be used as the event id
         /// </summary>
@@ -34,12 +32,13 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class BRERuleEngineEventsApi : IBRERuleEngineEventsApi
     {
-        private readonly KnetikCoroutine mSendBREEventCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mSendBREEventResponseContext;
         private DateTime mSendBREEventStartTime;
-        private string mSendBREEventPath;
 
         public string SendBREEventData { get; private set; }
-        public delegate void SendBREEventCompleteDelegate(string response);
+        public delegate void SendBREEventCompleteDelegate(long responseCode, string response);
         public SendBREEventCompleteDelegate SendBREEventComplete;
 
         /// <summary>
@@ -48,7 +47,8 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public BRERuleEngineEventsApi()
         {
-            mSendBREEventCoroutine = new KnetikCoroutine();
+            mSendBREEventResponseContext = new KnetikResponseContext();
+            mSendBREEventResponseContext.ResponseReceived += OnSendBREEventResponse;
         }
     
         /// <inheritdoc />
@@ -59,48 +59,47 @@ namespace com.knetikcloud.Api
         public void SendBREEvent(BreEvent breEvent)
         {
             
-            mSendBREEventPath = "/bre/events";
-            if (!string.IsNullOrEmpty(mSendBREEventPath))
+            mWebCallEvent.WebPath = "/bre/events";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mSendBREEventPath = mSendBREEventPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(breEvent); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(breEvent); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mSendBREEventStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mSendBREEventStartTime, mSendBREEventPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mSendBREEventCoroutine.ResponseReceived += SendBREEventCallback;
-            mSendBREEventCoroutine.Start(mSendBREEventPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mSendBREEventStartTime = DateTime.Now;
+            mWebCallEvent.Context = mSendBREEventResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mSendBREEventStartTime, "SendBREEvent", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void SendBREEventCallback(IRestResponse response)
+        private void OnSendBREEventResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling SendBREEvent: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling SendBREEvent: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling SendBREEvent: " + response.Error);
             }
 
-            SendBREEventData = (string) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(string), response.Headers);
-            KnetikLogger.LogResponse(mSendBREEventStartTime, mSendBREEventPath, string.Format("Response received successfully:\n{0}", SendBREEventData.ToString()));
+            SendBREEventData = (string) KnetikClient.Deserialize(response.Content, typeof(string), response.Headers);
+            KnetikLogger.LogResponse(mSendBREEventStartTime, "SendBREEvent", string.Format("Response received successfully:\n{0}", SendBREEventData));
 
             if (SendBREEventComplete != null)
             {
-                SendBREEventComplete(SendBREEventData);
+                SendBREEventComplete(response.ResponseCode, SendBREEventData);
             }
         }
 

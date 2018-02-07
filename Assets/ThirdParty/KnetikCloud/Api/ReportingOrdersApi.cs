@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,7 +18,6 @@ namespace com.knetikcloud.Api
     {
         PageResourceAggregateInvoiceReportResource GetInvoiceReportsData { get; }
 
-        
         /// <summary>
         /// Retrieve invoice counts aggregated by time ranges 
         /// </summary>
@@ -41,12 +39,13 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class ReportingOrdersApi : IReportingOrdersApi
     {
-        private readonly KnetikCoroutine mGetInvoiceReportsCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mGetInvoiceReportsResponseContext;
         private DateTime mGetInvoiceReportsStartTime;
-        private string mGetInvoiceReportsPath;
 
         public PageResourceAggregateInvoiceReportResource GetInvoiceReportsData { get; private set; }
-        public delegate void GetInvoiceReportsCompleteDelegate(PageResourceAggregateInvoiceReportResource response);
+        public delegate void GetInvoiceReportsCompleteDelegate(long responseCode, PageResourceAggregateInvoiceReportResource response);
         public GetInvoiceReportsCompleteDelegate GetInvoiceReportsComplete;
 
         /// <summary>
@@ -55,7 +54,8 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public ReportingOrdersApi()
         {
-            mGetInvoiceReportsCoroutine = new KnetikCoroutine();
+            mGetInvoiceReportsResponseContext = new KnetikResponseContext();
+            mGetInvoiceReportsResponseContext.ResponseReceived += OnGetInvoiceReportsResponse;
         }
     
         /// <inheritdoc />
@@ -78,82 +78,81 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'currencyCode' when calling GetInvoiceReports");
             }
             
-            mGetInvoiceReportsPath = "/reporting/orders/count/{currency_code}";
-            if (!string.IsNullOrEmpty(mGetInvoiceReportsPath))
+            mWebCallEvent.WebPath = "/reporting/orders/count/{currency_code}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetInvoiceReportsPath = mGetInvoiceReportsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetInvoiceReportsPath = mGetInvoiceReportsPath.Replace("{" + "currency_code" + "}", KnetikClient.DefaultClient.ParameterToString(currencyCode));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "currency_code" + "}", KnetikClient.ParameterToString(currencyCode));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (granularity != null)
             {
-                queryParams.Add("granularity", KnetikClient.DefaultClient.ParameterToString(granularity));
+                mWebCallEvent.QueryParams["granularity"] = KnetikClient.ParameterToString(granularity);
             }
 
             if (filterPaymentStatus != null)
             {
-                queryParams.Add("filter_payment_status", KnetikClient.DefaultClient.ParameterToString(filterPaymentStatus));
+                mWebCallEvent.QueryParams["filter_payment_status"] = KnetikClient.ParameterToString(filterPaymentStatus);
             }
 
             if (filterFulfillmentStatus != null)
             {
-                queryParams.Add("filter_fulfillment_status", KnetikClient.DefaultClient.ParameterToString(filterFulfillmentStatus));
+                mWebCallEvent.QueryParams["filter_fulfillment_status"] = KnetikClient.ParameterToString(filterFulfillmentStatus);
             }
 
             if (startDate != null)
             {
-                queryParams.Add("start_date", KnetikClient.DefaultClient.ParameterToString(startDate));
+                mWebCallEvent.QueryParams["start_date"] = KnetikClient.ParameterToString(startDate);
             }
 
             if (endDate != null)
             {
-                queryParams.Add("end_date", KnetikClient.DefaultClient.ParameterToString(endDate));
+                mWebCallEvent.QueryParams["end_date"] = KnetikClient.ParameterToString(endDate);
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetInvoiceReportsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetInvoiceReportsStartTime, mGetInvoiceReportsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetInvoiceReportsCoroutine.ResponseReceived += GetInvoiceReportsCallback;
-            mGetInvoiceReportsCoroutine.Start(mGetInvoiceReportsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetInvoiceReportsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetInvoiceReportsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetInvoiceReportsStartTime, "GetInvoiceReports", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetInvoiceReportsCallback(IRestResponse response)
+        private void OnGetInvoiceReportsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetInvoiceReports: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetInvoiceReports: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetInvoiceReports: " + response.Error);
             }
 
-            GetInvoiceReportsData = (PageResourceAggregateInvoiceReportResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceAggregateInvoiceReportResource), response.Headers);
-            KnetikLogger.LogResponse(mGetInvoiceReportsStartTime, mGetInvoiceReportsPath, string.Format("Response received successfully:\n{0}", GetInvoiceReportsData.ToString()));
+            GetInvoiceReportsData = (PageResourceAggregateInvoiceReportResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceAggregateInvoiceReportResource), response.Headers);
+            KnetikLogger.LogResponse(mGetInvoiceReportsStartTime, "GetInvoiceReports", string.Format("Response received successfully:\n{0}", GetInvoiceReportsData));
 
             if (GetInvoiceReportsComplete != null)
             {
-                GetInvoiceReportsComplete(GetInvoiceReportsData);
+                GetInvoiceReportsComplete(response.ResponseCode, GetInvoiceReportsData);
             }
         }
 

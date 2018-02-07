@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,7 +18,6 @@ namespace com.knetikcloud.Api
     {
         string CreateXsollaTokenUrlData { get; }
 
-        
         /// <summary>
         /// Create a payment token that should be used to forward the user to Xsolla so they can complete payment 
         /// </summary>
@@ -34,12 +32,13 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class PaymentsXsollaApi : IPaymentsXsollaApi
     {
-        private readonly KnetikCoroutine mCreateXsollaTokenUrlCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mCreateXsollaTokenUrlResponseContext;
         private DateTime mCreateXsollaTokenUrlStartTime;
-        private string mCreateXsollaTokenUrlPath;
 
         public string CreateXsollaTokenUrlData { get; private set; }
-        public delegate void CreateXsollaTokenUrlCompleteDelegate(string response);
+        public delegate void CreateXsollaTokenUrlCompleteDelegate(long responseCode, string response);
         public CreateXsollaTokenUrlCompleteDelegate CreateXsollaTokenUrlComplete;
 
         /// <summary>
@@ -48,7 +47,8 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public PaymentsXsollaApi()
         {
-            mCreateXsollaTokenUrlCoroutine = new KnetikCoroutine();
+            mCreateXsollaTokenUrlResponseContext = new KnetikResponseContext();
+            mCreateXsollaTokenUrlResponseContext.ResponseReceived += OnCreateXsollaTokenUrlResponse;
         }
     
         /// <inheritdoc />
@@ -59,48 +59,47 @@ namespace com.knetikcloud.Api
         public void CreateXsollaTokenUrl(XsollaPaymentRequest request)
         {
             
-            mCreateXsollaTokenUrlPath = "/payment/provider/xsolla/payment";
-            if (!string.IsNullOrEmpty(mCreateXsollaTokenUrlPath))
+            mWebCallEvent.WebPath = "/payment/provider/xsolla/payment";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mCreateXsollaTokenUrlPath = mCreateXsollaTokenUrlPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(request); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mCreateXsollaTokenUrlStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mCreateXsollaTokenUrlStartTime, mCreateXsollaTokenUrlPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mCreateXsollaTokenUrlCoroutine.ResponseReceived += CreateXsollaTokenUrlCallback;
-            mCreateXsollaTokenUrlCoroutine.Start(mCreateXsollaTokenUrlPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mCreateXsollaTokenUrlStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreateXsollaTokenUrlResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreateXsollaTokenUrlStartTime, "CreateXsollaTokenUrl", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void CreateXsollaTokenUrlCallback(IRestResponse response)
+        private void OnCreateXsollaTokenUrlResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateXsollaTokenUrl: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateXsollaTokenUrl: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling CreateXsollaTokenUrl: " + response.Error);
             }
 
-            CreateXsollaTokenUrlData = (string) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(string), response.Headers);
-            KnetikLogger.LogResponse(mCreateXsollaTokenUrlStartTime, mCreateXsollaTokenUrlPath, string.Format("Response received successfully:\n{0}", CreateXsollaTokenUrlData.ToString()));
+            CreateXsollaTokenUrlData = (string) KnetikClient.Deserialize(response.Content, typeof(string), response.Headers);
+            KnetikLogger.LogResponse(mCreateXsollaTokenUrlStartTime, "CreateXsollaTokenUrl", string.Format("Response received successfully:\n{0}", CreateXsollaTokenUrlData));
 
             if (CreateXsollaTokenUrlComplete != null)
             {
-                CreateXsollaTokenUrlComplete(CreateXsollaTokenUrlData);
+                CreateXsollaTokenUrlComplete(response.ResponseCode, CreateXsollaTokenUrlData);
             }
         }
 

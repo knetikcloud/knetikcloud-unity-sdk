@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -18,6 +17,7 @@ namespace com.knetikcloud.Api
     public interface ISocialFacebookApi
     {
         
+
         /// <summary>
         /// Link facebook account Links the current user account to a facebook account, using the acccess token from facebook. Can also be used to update the access token after it has expired.
         /// </summary>
@@ -32,11 +32,12 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class SocialFacebookApi : ISocialFacebookApi
     {
-        private readonly KnetikCoroutine mLinkAccountsCoroutine;
-        private DateTime mLinkAccountsStartTime;
-        private string mLinkAccountsPath;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
 
-        public delegate void LinkAccountsCompleteDelegate();
+        private readonly KnetikResponseContext mLinkAccountsResponseContext;
+        private DateTime mLinkAccountsStartTime;
+
+        public delegate void LinkAccountsCompleteDelegate(long responseCode);
         public LinkAccountsCompleteDelegate LinkAccountsComplete;
 
         /// <summary>
@@ -45,7 +46,8 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public SocialFacebookApi()
         {
-            mLinkAccountsCoroutine = new KnetikCoroutine();
+            mLinkAccountsResponseContext = new KnetikResponseContext();
+            mLinkAccountsResponseContext.ResponseReceived += OnLinkAccountsResponse;
         }
     
         /// <inheritdoc />
@@ -56,46 +58,45 @@ namespace com.knetikcloud.Api
         public void LinkAccounts(FacebookToken facebookToken)
         {
             
-            mLinkAccountsPath = "/social/facebook/users";
-            if (!string.IsNullOrEmpty(mLinkAccountsPath))
+            mWebCallEvent.WebPath = "/social/facebook/users";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mLinkAccountsPath = mLinkAccountsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(facebookToken); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(facebookToken); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mLinkAccountsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mLinkAccountsStartTime, mLinkAccountsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mLinkAccountsCoroutine.ResponseReceived += LinkAccountsCallback;
-            mLinkAccountsCoroutine.Start(mLinkAccountsPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mLinkAccountsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mLinkAccountsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mLinkAccountsStartTime, "LinkAccounts", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void LinkAccountsCallback(IRestResponse response)
+        private void OnLinkAccountsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling LinkAccounts: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling LinkAccounts: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling LinkAccounts: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mLinkAccountsStartTime, mLinkAccountsPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mLinkAccountsStartTime, "LinkAccounts", "Response received successfully.");
             if (LinkAccountsComplete != null)
             {
-                LinkAccountsComplete();
+                LinkAccountsComplete(response.ResponseCode);
             }
         }
 

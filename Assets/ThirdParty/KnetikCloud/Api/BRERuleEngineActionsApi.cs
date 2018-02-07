@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,7 +18,6 @@ namespace com.knetikcloud.Api
     {
         List<ActionResource> GetBREActionsData { get; }
 
-        
         /// <summary>
         /// Get a list of available actions 
         /// </summary>
@@ -37,12 +35,13 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class BRERuleEngineActionsApi : IBRERuleEngineActionsApi
     {
-        private readonly KnetikCoroutine mGetBREActionsCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mGetBREActionsResponseContext;
         private DateTime mGetBREActionsStartTime;
-        private string mGetBREActionsPath;
 
         public List<ActionResource> GetBREActionsData { get; private set; }
-        public delegate void GetBREActionsCompleteDelegate(List<ActionResource> response);
+        public delegate void GetBREActionsCompleteDelegate(long responseCode, List<ActionResource> response);
         public GetBREActionsCompleteDelegate GetBREActionsComplete;
 
         /// <summary>
@@ -51,7 +50,8 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public BRERuleEngineActionsApi()
         {
-            mGetBREActionsCoroutine = new KnetikCoroutine();
+            mGetBREActionsResponseContext = new KnetikResponseContext();
+            mGetBREActionsResponseContext.ResponseReceived += OnGetBREActionsResponse;
         }
     
         /// <inheritdoc />
@@ -65,66 +65,65 @@ namespace com.knetikcloud.Api
         public void GetBREActions(string filterCategory, string filterName, string filterTags, string filterSearch)
         {
             
-            mGetBREActionsPath = "/bre/actions";
-            if (!string.IsNullOrEmpty(mGetBREActionsPath))
+            mWebCallEvent.WebPath = "/bre/actions";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetBREActionsPath = mGetBREActionsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (filterCategory != null)
             {
-                queryParams.Add("filter_category", KnetikClient.DefaultClient.ParameterToString(filterCategory));
+                mWebCallEvent.QueryParams["filter_category"] = KnetikClient.ParameterToString(filterCategory);
             }
 
             if (filterName != null)
             {
-                queryParams.Add("filter_name", KnetikClient.DefaultClient.ParameterToString(filterName));
+                mWebCallEvent.QueryParams["filter_name"] = KnetikClient.ParameterToString(filterName);
             }
 
             if (filterTags != null)
             {
-                queryParams.Add("filter_tags", KnetikClient.DefaultClient.ParameterToString(filterTags));
+                mWebCallEvent.QueryParams["filter_tags"] = KnetikClient.ParameterToString(filterTags);
             }
 
             if (filterSearch != null)
             {
-                queryParams.Add("filter_search", KnetikClient.DefaultClient.ParameterToString(filterSearch));
+                mWebCallEvent.QueryParams["filter_search"] = KnetikClient.ParameterToString(filterSearch);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetBREActionsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetBREActionsStartTime, mGetBREActionsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetBREActionsCoroutine.ResponseReceived += GetBREActionsCallback;
-            mGetBREActionsCoroutine.Start(mGetBREActionsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetBREActionsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetBREActionsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetBREActionsStartTime, "GetBREActions", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetBREActionsCallback(IRestResponse response)
+        private void OnGetBREActionsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetBREActions: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetBREActions: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetBREActions: " + response.Error);
             }
 
-            GetBREActionsData = (List<ActionResource>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<ActionResource>), response.Headers);
-            KnetikLogger.LogResponse(mGetBREActionsStartTime, mGetBREActionsPath, string.Format("Response received successfully:\n{0}", GetBREActionsData.ToString()));
+            GetBREActionsData = (List<ActionResource>) KnetikClient.Deserialize(response.Content, typeof(List<ActionResource>), response.Headers);
+            KnetikLogger.LogResponse(mGetBREActionsStartTime, "GetBREActions", string.Format("Response received successfully:\n{0}", GetBREActionsData));
 
             if (GetBREActionsComplete != null)
             {
-                GetBREActionsComplete(GetBREActionsData);
+                GetBREActionsComplete(response.ResponseCode, GetBREActionsData);
             }
         }
 

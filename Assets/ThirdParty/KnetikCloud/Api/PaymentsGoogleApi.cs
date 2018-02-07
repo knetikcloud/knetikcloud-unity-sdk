@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,7 +18,6 @@ namespace com.knetikcloud.Api
     {
         int? HandleGooglePaymentData { get; }
 
-        
         /// <summary>
         /// Mark an invoice paid with Google Mark an invoice paid with Google. Verifies signature from Google and treats the developerPayload field inside the json payload as the id of the invoice to pay. Returns the transaction ID if successful.
         /// </summary>
@@ -34,12 +32,13 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class PaymentsGoogleApi : IPaymentsGoogleApi
     {
-        private readonly KnetikCoroutine mHandleGooglePaymentCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mHandleGooglePaymentResponseContext;
         private DateTime mHandleGooglePaymentStartTime;
-        private string mHandleGooglePaymentPath;
 
         public int? HandleGooglePaymentData { get; private set; }
-        public delegate void HandleGooglePaymentCompleteDelegate(int? response);
+        public delegate void HandleGooglePaymentCompleteDelegate(long responseCode, int? response);
         public HandleGooglePaymentCompleteDelegate HandleGooglePaymentComplete;
 
         /// <summary>
@@ -48,7 +47,8 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public PaymentsGoogleApi()
         {
-            mHandleGooglePaymentCoroutine = new KnetikCoroutine();
+            mHandleGooglePaymentResponseContext = new KnetikResponseContext();
+            mHandleGooglePaymentResponseContext.ResponseReceived += OnHandleGooglePaymentResponse;
         }
     
         /// <inheritdoc />
@@ -59,48 +59,47 @@ namespace com.knetikcloud.Api
         public void HandleGooglePayment(GooglePaymentRequest request)
         {
             
-            mHandleGooglePaymentPath = "/payment/provider/google/payments";
-            if (!string.IsNullOrEmpty(mHandleGooglePaymentPath))
+            mWebCallEvent.WebPath = "/payment/provider/google/payments";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mHandleGooglePaymentPath = mHandleGooglePaymentPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(request); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mHandleGooglePaymentStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mHandleGooglePaymentStartTime, mHandleGooglePaymentPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mHandleGooglePaymentCoroutine.ResponseReceived += HandleGooglePaymentCallback;
-            mHandleGooglePaymentCoroutine.Start(mHandleGooglePaymentPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mHandleGooglePaymentStartTime = DateTime.Now;
+            mWebCallEvent.Context = mHandleGooglePaymentResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mHandleGooglePaymentStartTime, "HandleGooglePayment", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void HandleGooglePaymentCallback(IRestResponse response)
+        private void OnHandleGooglePaymentResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling HandleGooglePayment: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling HandleGooglePayment: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling HandleGooglePayment: " + response.Error);
             }
 
-            HandleGooglePaymentData = (int?) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(int?), response.Headers);
-            KnetikLogger.LogResponse(mHandleGooglePaymentStartTime, mHandleGooglePaymentPath, string.Format("Response received successfully:\n{0}", HandleGooglePaymentData.ToString()));
+            HandleGooglePaymentData = (int?) KnetikClient.Deserialize(response.Content, typeof(int?), response.Headers);
+            KnetikLogger.LogResponse(mHandleGooglePaymentStartTime, "HandleGooglePayment", string.Format("Response received successfully:\n{0}", HandleGooglePaymentData));
 
             if (HandleGooglePaymentComplete != null)
             {
-                HandleGooglePaymentComplete(HandleGooglePaymentData);
+                HandleGooglePaymentComplete(response.ResponseCode, HandleGooglePaymentData);
             }
         }
 

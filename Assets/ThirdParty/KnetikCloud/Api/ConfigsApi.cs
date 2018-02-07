@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,16 +18,13 @@ namespace com.knetikcloud.Api
     {
         Config CreateConfigData { get; }
 
-        Config GetConfigData { get; }
-
-        PageResourceConfig GetConfigsData { get; }
-
-        
         /// <summary>
         /// Create a new config 
         /// </summary>
         /// <param name="config">The config object</param>
         void CreateConfig(Config config);
+
+        
 
         /// <summary>
         /// Delete an existing config 
@@ -36,11 +32,15 @@ namespace com.knetikcloud.Api
         /// <param name="name">The config name</param>
         void DeleteConfig(string name);
 
+        Config GetConfigData { get; }
+
         /// <summary>
         /// Get a single config Only configs that are public readable will be shown without admin access
         /// </summary>
         /// <param name="name">The config name</param>
         void GetConfig(string name);
+
+        PageResourceConfig GetConfigsData { get; }
 
         /// <summary>
         /// List and search configs 
@@ -50,6 +50,8 @@ namespace com.knetikcloud.Api
         /// <param name="page">The number of the page returned</param>
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
         void GetConfigs(string filterSearch, int? size, int? page, string order);
+
+        
 
         /// <summary>
         /// Update an existing config 
@@ -66,38 +68,35 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class ConfigsApi : IConfigsApi
     {
-        private readonly KnetikCoroutine mCreateConfigCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mCreateConfigResponseContext;
         private DateTime mCreateConfigStartTime;
-        private string mCreateConfigPath;
-        private readonly KnetikCoroutine mDeleteConfigCoroutine;
+        private readonly KnetikResponseContext mDeleteConfigResponseContext;
         private DateTime mDeleteConfigStartTime;
-        private string mDeleteConfigPath;
-        private readonly KnetikCoroutine mGetConfigCoroutine;
+        private readonly KnetikResponseContext mGetConfigResponseContext;
         private DateTime mGetConfigStartTime;
-        private string mGetConfigPath;
-        private readonly KnetikCoroutine mGetConfigsCoroutine;
+        private readonly KnetikResponseContext mGetConfigsResponseContext;
         private DateTime mGetConfigsStartTime;
-        private string mGetConfigsPath;
-        private readonly KnetikCoroutine mUpdateConfigCoroutine;
+        private readonly KnetikResponseContext mUpdateConfigResponseContext;
         private DateTime mUpdateConfigStartTime;
-        private string mUpdateConfigPath;
 
         public Config CreateConfigData { get; private set; }
-        public delegate void CreateConfigCompleteDelegate(Config response);
+        public delegate void CreateConfigCompleteDelegate(long responseCode, Config response);
         public CreateConfigCompleteDelegate CreateConfigComplete;
 
-        public delegate void DeleteConfigCompleteDelegate();
+        public delegate void DeleteConfigCompleteDelegate(long responseCode);
         public DeleteConfigCompleteDelegate DeleteConfigComplete;
 
         public Config GetConfigData { get; private set; }
-        public delegate void GetConfigCompleteDelegate(Config response);
+        public delegate void GetConfigCompleteDelegate(long responseCode, Config response);
         public GetConfigCompleteDelegate GetConfigComplete;
 
         public PageResourceConfig GetConfigsData { get; private set; }
-        public delegate void GetConfigsCompleteDelegate(PageResourceConfig response);
+        public delegate void GetConfigsCompleteDelegate(long responseCode, PageResourceConfig response);
         public GetConfigsCompleteDelegate GetConfigsComplete;
 
-        public delegate void UpdateConfigCompleteDelegate();
+        public delegate void UpdateConfigCompleteDelegate(long responseCode);
         public UpdateConfigCompleteDelegate UpdateConfigComplete;
 
         /// <summary>
@@ -106,11 +105,16 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public ConfigsApi()
         {
-            mCreateConfigCoroutine = new KnetikCoroutine();
-            mDeleteConfigCoroutine = new KnetikCoroutine();
-            mGetConfigCoroutine = new KnetikCoroutine();
-            mGetConfigsCoroutine = new KnetikCoroutine();
-            mUpdateConfigCoroutine = new KnetikCoroutine();
+            mCreateConfigResponseContext = new KnetikResponseContext();
+            mCreateConfigResponseContext.ResponseReceived += OnCreateConfigResponse;
+            mDeleteConfigResponseContext = new KnetikResponseContext();
+            mDeleteConfigResponseContext.ResponseReceived += OnDeleteConfigResponse;
+            mGetConfigResponseContext = new KnetikResponseContext();
+            mGetConfigResponseContext.ResponseReceived += OnGetConfigResponse;
+            mGetConfigsResponseContext = new KnetikResponseContext();
+            mGetConfigsResponseContext.ResponseReceived += OnGetConfigsResponse;
+            mUpdateConfigResponseContext = new KnetikResponseContext();
+            mUpdateConfigResponseContext.ResponseReceived += OnUpdateConfigResponse;
         }
     
         /// <inheritdoc />
@@ -121,48 +125,47 @@ namespace com.knetikcloud.Api
         public void CreateConfig(Config config)
         {
             
-            mCreateConfigPath = "/configs";
-            if (!string.IsNullOrEmpty(mCreateConfigPath))
+            mWebCallEvent.WebPath = "/configs";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mCreateConfigPath = mCreateConfigPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(config); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(config); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mCreateConfigStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mCreateConfigStartTime, mCreateConfigPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mCreateConfigCoroutine.ResponseReceived += CreateConfigCallback;
-            mCreateConfigCoroutine.Start(mCreateConfigPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mCreateConfigStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreateConfigResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreateConfigStartTime, "CreateConfig", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void CreateConfigCallback(IRestResponse response)
+        private void OnCreateConfigResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateConfig: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateConfig: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling CreateConfig: " + response.Error);
             }
 
-            CreateConfigData = (Config) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(Config), response.Headers);
-            KnetikLogger.LogResponse(mCreateConfigStartTime, mCreateConfigPath, string.Format("Response received successfully:\n{0}", CreateConfigData.ToString()));
+            CreateConfigData = (Config) KnetikClient.Deserialize(response.Content, typeof(Config), response.Headers);
+            KnetikLogger.LogResponse(mCreateConfigStartTime, "CreateConfig", string.Format("Response received successfully:\n{0}", CreateConfigData));
 
             if (CreateConfigComplete != null)
             {
-                CreateConfigComplete(CreateConfigData);
+                CreateConfigComplete(response.ResponseCode, CreateConfigData);
             }
         }
 
@@ -179,45 +182,44 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'name' when calling DeleteConfig");
             }
             
-            mDeleteConfigPath = "/configs/{name}";
-            if (!string.IsNullOrEmpty(mDeleteConfigPath))
+            mWebCallEvent.WebPath = "/configs/{name}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteConfigPath = mDeleteConfigPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteConfigPath = mDeleteConfigPath.Replace("{" + "name" + "}", KnetikClient.DefaultClient.ParameterToString(name));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "name" + "}", KnetikClient.ParameterToString(name));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteConfigStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteConfigStartTime, mDeleteConfigPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteConfigCoroutine.ResponseReceived += DeleteConfigCallback;
-            mDeleteConfigCoroutine.Start(mDeleteConfigPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteConfigStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteConfigResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteConfigStartTime, "DeleteConfig", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteConfigCallback(IRestResponse response)
+        private void OnDeleteConfigResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteConfig: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteConfig: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteConfig: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteConfigStartTime, mDeleteConfigPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteConfigStartTime, "DeleteConfig", "Response received successfully.");
             if (DeleteConfigComplete != null)
             {
-                DeleteConfigComplete();
+                DeleteConfigComplete(response.ResponseCode);
             }
         }
 
@@ -234,47 +236,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'name' when calling GetConfig");
             }
             
-            mGetConfigPath = "/configs/{name}";
-            if (!string.IsNullOrEmpty(mGetConfigPath))
+            mWebCallEvent.WebPath = "/configs/{name}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetConfigPath = mGetConfigPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetConfigPath = mGetConfigPath.Replace("{" + "name" + "}", KnetikClient.DefaultClient.ParameterToString(name));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "name" + "}", KnetikClient.ParameterToString(name));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetConfigStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetConfigStartTime, mGetConfigPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetConfigCoroutine.ResponseReceived += GetConfigCallback;
-            mGetConfigCoroutine.Start(mGetConfigPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetConfigStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetConfigResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetConfigStartTime, "GetConfig", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetConfigCallback(IRestResponse response)
+        private void OnGetConfigResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetConfig: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetConfig: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetConfig: " + response.Error);
             }
 
-            GetConfigData = (Config) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(Config), response.Headers);
-            KnetikLogger.LogResponse(mGetConfigStartTime, mGetConfigPath, string.Format("Response received successfully:\n{0}", GetConfigData.ToString()));
+            GetConfigData = (Config) KnetikClient.Deserialize(response.Content, typeof(Config), response.Headers);
+            KnetikLogger.LogResponse(mGetConfigStartTime, "GetConfig", string.Format("Response received successfully:\n{0}", GetConfigData));
 
             if (GetConfigComplete != null)
             {
-                GetConfigComplete(GetConfigData);
+                GetConfigComplete(response.ResponseCode, GetConfigData);
             }
         }
 
@@ -289,66 +290,65 @@ namespace com.knetikcloud.Api
         public void GetConfigs(string filterSearch, int? size, int? page, string order)
         {
             
-            mGetConfigsPath = "/configs";
-            if (!string.IsNullOrEmpty(mGetConfigsPath))
+            mWebCallEvent.WebPath = "/configs";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetConfigsPath = mGetConfigsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (filterSearch != null)
             {
-                queryParams.Add("filter_search", KnetikClient.DefaultClient.ParameterToString(filterSearch));
+                mWebCallEvent.QueryParams["filter_search"] = KnetikClient.ParameterToString(filterSearch);
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetConfigsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetConfigsStartTime, mGetConfigsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetConfigsCoroutine.ResponseReceived += GetConfigsCallback;
-            mGetConfigsCoroutine.Start(mGetConfigsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetConfigsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetConfigsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetConfigsStartTime, "GetConfigs", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetConfigsCallback(IRestResponse response)
+        private void OnGetConfigsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetConfigs: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetConfigs: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetConfigs: " + response.Error);
             }
 
-            GetConfigsData = (PageResourceConfig) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceConfig), response.Headers);
-            KnetikLogger.LogResponse(mGetConfigsStartTime, mGetConfigsPath, string.Format("Response received successfully:\n{0}", GetConfigsData.ToString()));
+            GetConfigsData = (PageResourceConfig) KnetikClient.Deserialize(response.Content, typeof(PageResourceConfig), response.Headers);
+            KnetikLogger.LogResponse(mGetConfigsStartTime, "GetConfigs", string.Format("Response received successfully:\n{0}", GetConfigsData));
 
             if (GetConfigsComplete != null)
             {
-                GetConfigsComplete(GetConfigsData);
+                GetConfigsComplete(response.ResponseCode, GetConfigsData);
             }
         }
 
@@ -366,47 +366,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'name' when calling UpdateConfig");
             }
             
-            mUpdateConfigPath = "/configs/{name}";
-            if (!string.IsNullOrEmpty(mUpdateConfigPath))
+            mWebCallEvent.WebPath = "/configs/{name}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateConfigPath = mUpdateConfigPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateConfigPath = mUpdateConfigPath.Replace("{" + "name" + "}", KnetikClient.DefaultClient.ParameterToString(name));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "name" + "}", KnetikClient.ParameterToString(name));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(config); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(config); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateConfigStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateConfigStartTime, mUpdateConfigPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateConfigCoroutine.ResponseReceived += UpdateConfigCallback;
-            mUpdateConfigCoroutine.Start(mUpdateConfigPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateConfigStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateConfigResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateConfigStartTime, "UpdateConfig", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateConfigCallback(IRestResponse response)
+        private void OnUpdateConfigResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateConfig: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateConfig: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateConfig: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mUpdateConfigStartTime, mUpdateConfigPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mUpdateConfigStartTime, "UpdateConfig", "Response received successfully.");
             if (UpdateConfigComplete != null)
             {
-                UpdateConfigComplete();
+                UpdateConfigComplete(response.ResponseCode);
             }
         }
 

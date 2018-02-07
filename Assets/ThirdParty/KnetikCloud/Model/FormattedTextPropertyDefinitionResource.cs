@@ -2,8 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using com.knetikcloud.Attributes;
-using com.knetikcloud.Serialization;
+using KnetikUnity.Attributes;
+using KnetikUnity.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -32,8 +32,13 @@ namespace com.knetikcloud.Model
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("class FormattedTextPropertyDefinitionResource {\n");
+            sb.Append("  Description: ").Append(Description).Append("\n");
             sb.Append("  FieldList: ").Append(FieldList).Append("\n");
+            sb.Append("  FriendlyName: ").Append(FriendlyName).Append("\n");
             sb.Append("  Name: ").Append(Name).Append("\n");
+            sb.Append("  OptionLabelPath: ").Append(OptionLabelPath).Append("\n");
+            sb.Append("  OptionValuePath: ").Append(OptionValuePath).Append("\n");
+            sb.Append("  OptionsUrl: ").Append(OptionsUrl).Append("\n");
             sb.Append("  Required: ").Append(Required).Append("\n");
             sb.Append("  Type: ").Append(Type).Append("\n");
             sb.Append("  MaxLength: ").Append(MaxLength).Append("\n");

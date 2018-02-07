@@ -2,8 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using com.knetikcloud.Attributes;
-using com.knetikcloud.Serialization;
+using KnetikUnity.Attributes;
+using KnetikUnity.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -22,6 +22,13 @@ namespace com.knetikcloud.Model
         /// <value>Whether the video is available, based on various factors</value>
         [JsonProperty(PropertyName = "active")]
         public bool? Active;
+
+        /// <summary>
+        /// A map of additional properties, keyed on the property name.  Must match the names and types defined in the template for this item type
+        /// </summary>
+        /// <value>A map of additional properties, keyed on the property name.  Must match the names and types defined in the template for this item type</value>
+        [JsonProperty(PropertyName = "additional_properties")]
+        public Dictionary<string, Property> AdditionalProperties;
 
         /// <summary>
         /// The original artist of the media
@@ -178,6 +185,13 @@ namespace com.knetikcloud.Model
         public List<string> Tags;
 
         /// <summary>
+        /// A video template this video is validated against (private). May be null and no validation of additional_properties will be done
+        /// </summary>
+        /// <value>A video template this video is validated against (private). May be null and no validation of additional_properties will be done</value>
+        [JsonProperty(PropertyName = "template")]
+        public string Template;
+
+        /// <summary>
         /// The country of a thumbnail version. Typically a url
         /// </summary>
         /// <value>The country of a thumbnail version. Typically a url</value>
@@ -222,6 +236,7 @@ namespace com.knetikcloud.Model
             StringBuilder sb = new StringBuilder();
             sb.Append("class VideoResource {\n");
             sb.Append("  Active: ").Append(Active).Append("\n");
+            sb.Append("  AdditionalProperties: ").Append(AdditionalProperties).Append("\n");
             sb.Append("  Author: ").Append(Author).Append("\n");
             sb.Append("  Authored: ").Append(Authored).Append("\n");
             sb.Append("  Banned: ").Append(Banned).Append("\n");
@@ -244,6 +259,7 @@ namespace com.knetikcloud.Model
             sb.Append("  ShortDescription: ").Append(ShortDescription).Append("\n");
             sb.Append("  Size: ").Append(Size).Append("\n");
             sb.Append("  Tags: ").Append(Tags).Append("\n");
+            sb.Append("  Template: ").Append(Template).Append("\n");
             sb.Append("  Thumbnail: ").Append(Thumbnail).Append("\n");
             sb.Append("  UpdatedDate: ").Append(UpdatedDate).Append("\n");
             sb.Append("  Uploader: ").Append(Uploader).Append("\n");

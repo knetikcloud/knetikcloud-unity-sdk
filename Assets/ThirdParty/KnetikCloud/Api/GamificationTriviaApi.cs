@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,51 +18,6 @@ namespace com.knetikcloud.Api
     {
         AnswerResource AddQuestionAnswersData { get; }
 
-        int? AddTagToQuestionsBatchData { get; }
-
-        ImportJobResource CreateImportJobData { get; }
-
-        QuestionResource CreateQuestionData { get; }
-
-        QuestionTemplateResource CreateQuestionTemplateData { get; }
-
-        ImportJobResource GetImportJobData { get; }
-
-        PageResourceImportJobResource GetImportJobsData { get; }
-
-        QuestionResource GetQuestionData { get; }
-
-        AnswerResource GetQuestionAnswerData { get; }
-
-        List<AnswerResource> GetQuestionAnswersData { get; }
-
-        List<DeltaResource> GetQuestionDeltasData { get; }
-
-        List<string> GetQuestionTagsData { get; }
-
-        QuestionTemplateResource GetQuestionTemplateData { get; }
-
-        PageResourceQuestionTemplateResource GetQuestionTemplatesData { get; }
-
-        PageResourceQuestionResource GetQuestionsData { get; }
-
-        long? GetQuestionsCountData { get; }
-
-        ImportJobResource ProcessImportJobData { get; }
-
-        int? RemoveTagToQuestionsBatchData { get; }
-
-        List<string> SearchQuestionTagsData { get; }
-
-        ImportJobResource UpdateImportJobData { get; }
-
-        QuestionResource UpdateQuestionData { get; }
-
-        QuestionTemplateResource UpdateQuestionTemplateData { get; }
-
-        int? UpdateQuestionsInBulkData { get; }
-
-        
         /// <summary>
         /// Add an answer to a question 
         /// </summary>
@@ -71,12 +25,16 @@ namespace com.knetikcloud.Api
         /// <param name="answer">The new answer</param>
         void AddQuestionAnswers(string questionId, AnswerResource answer);
 
+        
+
         /// <summary>
         /// Add a tag to a question 
         /// </summary>
         /// <param name="id">The id of the question</param>
         /// <param name="tag">The new tag</param>
         void AddQuestionTag(string id, StringWrapper tag);
+
+        int? AddTagToQuestionsBatchData { get; }
 
         /// <summary>
         /// Add a tag to a batch of questions All questions that dont&#39;t have the tag and match filters will have it added. The returned number is the number of questions updated.
@@ -92,11 +50,15 @@ namespace com.knetikcloud.Api
         /// <param name="filterImportId">Filter for questions from a specific import job</param>
         void AddTagToQuestionsBatch(StringWrapper tag, string filterSearch, string filterIdset, string filterCategory, string filterTag, string filterTagset, string filterType, bool? filterPublished, long? filterImportId);
 
+        ImportJobResource CreateImportJobData { get; }
+
         /// <summary>
         /// Create an import job Set up a job to import a set of trivia questions from a cvs file at a remote url. the file will be validated asynchronously but will not be processed until started manually with the process endpoint.
         /// </summary>
         /// <param name="request">The new import job</param>
         void CreateImportJob(ImportJobResource request);
+
+        QuestionResource CreateQuestionData { get; }
 
         /// <summary>
         /// Create a question 
@@ -104,11 +66,15 @@ namespace com.knetikcloud.Api
         /// <param name="question">The new question</param>
         void CreateQuestion(QuestionResource question);
 
+        QuestionTemplateResource CreateQuestionTemplateData { get; }
+
         /// <summary>
         /// Create a question template Question templates define a type of question and the properties they have
         /// </summary>
         /// <param name="questionTemplateResource">The question template resource object</param>
         void CreateQuestionTemplate(QuestionTemplateResource questionTemplateResource);
+
+        
 
         /// <summary>
         /// Delete an import job Also deletes all questions that were imported by it
@@ -116,11 +82,15 @@ namespace com.knetikcloud.Api
         /// <param name="id">The id of the job</param>
         void DeleteImportJob(long? id);
 
+        
+
         /// <summary>
         /// Delete a question 
         /// </summary>
         /// <param name="id">The id of the question</param>
         void DeleteQuestion(string id);
+
+        
 
         /// <summary>
         /// Remove an answer from a question 
@@ -129,6 +99,8 @@ namespace com.knetikcloud.Api
         /// <param name="id">The id of the answer</param>
         void DeleteQuestionAnswers(string questionId, string id);
 
+        
+
         /// <summary>
         /// Delete a question template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
         /// </summary>
@@ -136,11 +108,15 @@ namespace com.knetikcloud.Api
         /// <param name="cascade">The value needed to delete used templates</param>
         void DeleteQuestionTemplate(string id, string cascade);
 
+        ImportJobResource GetImportJobData { get; }
+
         /// <summary>
         /// Get an import job 
         /// </summary>
         /// <param name="id">The id of the job</param>
         void GetImportJob(long? id);
+
+        PageResourceImportJobResource GetImportJobsData { get; }
 
         /// <summary>
         /// Get a list of import job 
@@ -154,11 +130,15 @@ namespace com.knetikcloud.Api
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
         void GetImportJobs(string filterVendor, string filterCategory, string filterName, string filterStatus, int? size, int? page, string order);
 
+        QuestionResource GetQuestionData { get; }
+
         /// <summary>
         /// Get a single question 
         /// </summary>
         /// <param name="id">The id of the question</param>
         void GetQuestion(string id);
+
+        AnswerResource GetQuestionAnswerData { get; }
 
         /// <summary>
         /// Get an answer for a question 
@@ -167,11 +147,15 @@ namespace com.knetikcloud.Api
         /// <param name="id">The id of the answer</param>
         void GetQuestionAnswer(string questionId, string id);
 
+        List<AnswerResource> GetQuestionAnswersData { get; }
+
         /// <summary>
         /// List the answers available for a question 
         /// </summary>
         /// <param name="questionId">The id of the question</param>
         void GetQuestionAnswers(string questionId);
+
+        List<DeltaResource> GetQuestionDeltasData { get; }
 
         /// <summary>
         /// List question deltas in ascending order of updated date The &#39;since&#39; parameter is important to avoid getting a full list of all questions. Implementors should make sure they pass the updated date of the last resource loaded, not the date of the last request, in order to avoid gaps
@@ -179,17 +163,23 @@ namespace com.knetikcloud.Api
         /// <param name="since">Timestamp in seconds</param>
         void GetQuestionDeltas(long? since);
 
+        List<string> GetQuestionTagsData { get; }
+
         /// <summary>
         /// List the tags for a question 
         /// </summary>
         /// <param name="id">The id of the question</param>
         void GetQuestionTags(string id);
 
+        QuestionTemplateResource GetQuestionTemplateData { get; }
+
         /// <summary>
         /// Get a single question template 
         /// </summary>
         /// <param name="id">The id of the template</param>
         void GetQuestionTemplate(string id);
+
+        PageResourceQuestionTemplateResource GetQuestionTemplatesData { get; }
 
         /// <summary>
         /// List and search question templates 
@@ -198,6 +188,8 @@ namespace com.knetikcloud.Api
         /// <param name="page">The number of the page returned, starting with 1</param>
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
         void GetQuestionTemplates(int? size, int? page, string order);
+
+        PageResourceQuestionResource GetQuestionsData { get; }
 
         /// <summary>
         /// List and search questions 
@@ -215,6 +207,8 @@ namespace com.knetikcloud.Api
         /// <param name="filterImportId">Filter for questions from a specific import job</param>
         void GetQuestions(int? size, int? page, string order, string filterSearch, string filterIdset, string filterCategory, string filterTagset, string filterTag, string filterType, bool? filterPublished, long? filterImportId);
 
+        long? GetQuestionsCountData { get; }
+
         /// <summary>
         /// Count questions based on filters This is also provided by the list endpoint so you don&#39;t need to call this for pagination purposes
         /// </summary>
@@ -227,6 +221,8 @@ namespace com.knetikcloud.Api
         /// <param name="filterPublished">Filter for questions currenctly published or not</param>
         void GetQuestionsCount(string filterSearch, string filterIdset, string filterCategory, string filterTag, string filterTagset, string filterType, bool? filterPublished);
 
+        ImportJobResource ProcessImportJobData { get; }
+
         /// <summary>
         /// Start processing an import job Will process the CSV file and add new questions asynchronously. The status of the job must be &#39;VALID&#39;.
         /// </summary>
@@ -234,12 +230,16 @@ namespace com.knetikcloud.Api
         /// <param name="publishNow">Whether the new questions should be published live immediately</param>
         void ProcessImportJob(long? id, bool? publishNow);
 
+        
+
         /// <summary>
         /// Remove a tag from a question 
         /// </summary>
         /// <param name="id">The id of the question</param>
         /// <param name="tag">The tag to remove</param>
         void RemoveQuestionTag(string id, string tag);
+
+        int? RemoveTagToQuestionsBatchData { get; }
 
         /// <summary>
         /// Remove a tag from a batch of questions ll questions that have the tag and match filters will have it removed. The returned number is the number of questions updated.
@@ -255,6 +255,8 @@ namespace com.knetikcloud.Api
         /// <param name="filterImportId">Filter for questions from a specific import job</param>
         void RemoveTagToQuestionsBatch(string tag, string filterSearch, string filterIdset, string filterCategory, string filterTag, string filterTagset, string filterType, bool? filterPublished, long? filterImportId);
 
+        List<string> SearchQuestionTagsData { get; }
+
         /// <summary>
         /// List and search tags by the beginning of the string For performance reasons, search &amp; category filters are mutually exclusive. If category is specified, search filter will be ignored in order to do fast matches for typeahead.
         /// </summary>
@@ -263,6 +265,8 @@ namespace com.knetikcloud.Api
         /// <param name="filterImportId">Filter for tags on questions from a specific import job</param>
         void SearchQuestionTags(string filterSearch, string filterCategory, long? filterImportId);
 
+        ImportJobResource UpdateImportJobData { get; }
+
         /// <summary>
         /// Update an import job Changes should be made before process is started for there to be any effect.
         /// </summary>
@@ -270,12 +274,16 @@ namespace com.knetikcloud.Api
         /// <param name="request">The updated job</param>
         void UpdateImportJob(long? id, ImportJobResource request);
 
+        QuestionResource UpdateQuestionData { get; }
+
         /// <summary>
         /// Update a question 
         /// </summary>
         /// <param name="id">The id of the question</param>
         /// <param name="question">The updated question</param>
         void UpdateQuestion(string id, QuestionResource question);
+
+        
 
         /// <summary>
         /// Update an answer for a question 
@@ -285,12 +293,16 @@ namespace com.knetikcloud.Api
         /// <param name="answer">The updated answer</param>
         void UpdateQuestionAnswer(string questionId, string id, AnswerResource answer);
 
+        QuestionTemplateResource UpdateQuestionTemplateData { get; }
+
         /// <summary>
         /// Update a question template 
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="questionTemplateResource">The question template resource object</param>
         void UpdateQuestionTemplate(string id, QuestionTemplateResource questionTemplateResource);
+
+        int? UpdateQuestionsInBulkData { get; }
 
         /// <summary>
         /// Bulk update questions Will update all questions that match filters used (or all questions in system if no filters used). Body should match a question resource with only those properties you wish to set. Null values will be ignored. Returned number is how many were updated.
@@ -313,208 +325,180 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class GamificationTriviaApi : IGamificationTriviaApi
     {
-        private readonly KnetikCoroutine mAddQuestionAnswersCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mAddQuestionAnswersResponseContext;
         private DateTime mAddQuestionAnswersStartTime;
-        private string mAddQuestionAnswersPath;
-        private readonly KnetikCoroutine mAddQuestionTagCoroutine;
+        private readonly KnetikResponseContext mAddQuestionTagResponseContext;
         private DateTime mAddQuestionTagStartTime;
-        private string mAddQuestionTagPath;
-        private readonly KnetikCoroutine mAddTagToQuestionsBatchCoroutine;
+        private readonly KnetikResponseContext mAddTagToQuestionsBatchResponseContext;
         private DateTime mAddTagToQuestionsBatchStartTime;
-        private string mAddTagToQuestionsBatchPath;
-        private readonly KnetikCoroutine mCreateImportJobCoroutine;
+        private readonly KnetikResponseContext mCreateImportJobResponseContext;
         private DateTime mCreateImportJobStartTime;
-        private string mCreateImportJobPath;
-        private readonly KnetikCoroutine mCreateQuestionCoroutine;
+        private readonly KnetikResponseContext mCreateQuestionResponseContext;
         private DateTime mCreateQuestionStartTime;
-        private string mCreateQuestionPath;
-        private readonly KnetikCoroutine mCreateQuestionTemplateCoroutine;
+        private readonly KnetikResponseContext mCreateQuestionTemplateResponseContext;
         private DateTime mCreateQuestionTemplateStartTime;
-        private string mCreateQuestionTemplatePath;
-        private readonly KnetikCoroutine mDeleteImportJobCoroutine;
+        private readonly KnetikResponseContext mDeleteImportJobResponseContext;
         private DateTime mDeleteImportJobStartTime;
-        private string mDeleteImportJobPath;
-        private readonly KnetikCoroutine mDeleteQuestionCoroutine;
+        private readonly KnetikResponseContext mDeleteQuestionResponseContext;
         private DateTime mDeleteQuestionStartTime;
-        private string mDeleteQuestionPath;
-        private readonly KnetikCoroutine mDeleteQuestionAnswersCoroutine;
+        private readonly KnetikResponseContext mDeleteQuestionAnswersResponseContext;
         private DateTime mDeleteQuestionAnswersStartTime;
-        private string mDeleteQuestionAnswersPath;
-        private readonly KnetikCoroutine mDeleteQuestionTemplateCoroutine;
+        private readonly KnetikResponseContext mDeleteQuestionTemplateResponseContext;
         private DateTime mDeleteQuestionTemplateStartTime;
-        private string mDeleteQuestionTemplatePath;
-        private readonly KnetikCoroutine mGetImportJobCoroutine;
+        private readonly KnetikResponseContext mGetImportJobResponseContext;
         private DateTime mGetImportJobStartTime;
-        private string mGetImportJobPath;
-        private readonly KnetikCoroutine mGetImportJobsCoroutine;
+        private readonly KnetikResponseContext mGetImportJobsResponseContext;
         private DateTime mGetImportJobsStartTime;
-        private string mGetImportJobsPath;
-        private readonly KnetikCoroutine mGetQuestionCoroutine;
+        private readonly KnetikResponseContext mGetQuestionResponseContext;
         private DateTime mGetQuestionStartTime;
-        private string mGetQuestionPath;
-        private readonly KnetikCoroutine mGetQuestionAnswerCoroutine;
+        private readonly KnetikResponseContext mGetQuestionAnswerResponseContext;
         private DateTime mGetQuestionAnswerStartTime;
-        private string mGetQuestionAnswerPath;
-        private readonly KnetikCoroutine mGetQuestionAnswersCoroutine;
+        private readonly KnetikResponseContext mGetQuestionAnswersResponseContext;
         private DateTime mGetQuestionAnswersStartTime;
-        private string mGetQuestionAnswersPath;
-        private readonly KnetikCoroutine mGetQuestionDeltasCoroutine;
+        private readonly KnetikResponseContext mGetQuestionDeltasResponseContext;
         private DateTime mGetQuestionDeltasStartTime;
-        private string mGetQuestionDeltasPath;
-        private readonly KnetikCoroutine mGetQuestionTagsCoroutine;
+        private readonly KnetikResponseContext mGetQuestionTagsResponseContext;
         private DateTime mGetQuestionTagsStartTime;
-        private string mGetQuestionTagsPath;
-        private readonly KnetikCoroutine mGetQuestionTemplateCoroutine;
+        private readonly KnetikResponseContext mGetQuestionTemplateResponseContext;
         private DateTime mGetQuestionTemplateStartTime;
-        private string mGetQuestionTemplatePath;
-        private readonly KnetikCoroutine mGetQuestionTemplatesCoroutine;
+        private readonly KnetikResponseContext mGetQuestionTemplatesResponseContext;
         private DateTime mGetQuestionTemplatesStartTime;
-        private string mGetQuestionTemplatesPath;
-        private readonly KnetikCoroutine mGetQuestionsCoroutine;
+        private readonly KnetikResponseContext mGetQuestionsResponseContext;
         private DateTime mGetQuestionsStartTime;
-        private string mGetQuestionsPath;
-        private readonly KnetikCoroutine mGetQuestionsCountCoroutine;
+        private readonly KnetikResponseContext mGetQuestionsCountResponseContext;
         private DateTime mGetQuestionsCountStartTime;
-        private string mGetQuestionsCountPath;
-        private readonly KnetikCoroutine mProcessImportJobCoroutine;
+        private readonly KnetikResponseContext mProcessImportJobResponseContext;
         private DateTime mProcessImportJobStartTime;
-        private string mProcessImportJobPath;
-        private readonly KnetikCoroutine mRemoveQuestionTagCoroutine;
+        private readonly KnetikResponseContext mRemoveQuestionTagResponseContext;
         private DateTime mRemoveQuestionTagStartTime;
-        private string mRemoveQuestionTagPath;
-        private readonly KnetikCoroutine mRemoveTagToQuestionsBatchCoroutine;
+        private readonly KnetikResponseContext mRemoveTagToQuestionsBatchResponseContext;
         private DateTime mRemoveTagToQuestionsBatchStartTime;
-        private string mRemoveTagToQuestionsBatchPath;
-        private readonly KnetikCoroutine mSearchQuestionTagsCoroutine;
+        private readonly KnetikResponseContext mSearchQuestionTagsResponseContext;
         private DateTime mSearchQuestionTagsStartTime;
-        private string mSearchQuestionTagsPath;
-        private readonly KnetikCoroutine mUpdateImportJobCoroutine;
+        private readonly KnetikResponseContext mUpdateImportJobResponseContext;
         private DateTime mUpdateImportJobStartTime;
-        private string mUpdateImportJobPath;
-        private readonly KnetikCoroutine mUpdateQuestionCoroutine;
+        private readonly KnetikResponseContext mUpdateQuestionResponseContext;
         private DateTime mUpdateQuestionStartTime;
-        private string mUpdateQuestionPath;
-        private readonly KnetikCoroutine mUpdateQuestionAnswerCoroutine;
+        private readonly KnetikResponseContext mUpdateQuestionAnswerResponseContext;
         private DateTime mUpdateQuestionAnswerStartTime;
-        private string mUpdateQuestionAnswerPath;
-        private readonly KnetikCoroutine mUpdateQuestionTemplateCoroutine;
+        private readonly KnetikResponseContext mUpdateQuestionTemplateResponseContext;
         private DateTime mUpdateQuestionTemplateStartTime;
-        private string mUpdateQuestionTemplatePath;
-        private readonly KnetikCoroutine mUpdateQuestionsInBulkCoroutine;
+        private readonly KnetikResponseContext mUpdateQuestionsInBulkResponseContext;
         private DateTime mUpdateQuestionsInBulkStartTime;
-        private string mUpdateQuestionsInBulkPath;
 
         public AnswerResource AddQuestionAnswersData { get; private set; }
-        public delegate void AddQuestionAnswersCompleteDelegate(AnswerResource response);
+        public delegate void AddQuestionAnswersCompleteDelegate(long responseCode, AnswerResource response);
         public AddQuestionAnswersCompleteDelegate AddQuestionAnswersComplete;
 
-        public delegate void AddQuestionTagCompleteDelegate();
+        public delegate void AddQuestionTagCompleteDelegate(long responseCode);
         public AddQuestionTagCompleteDelegate AddQuestionTagComplete;
 
         public int? AddTagToQuestionsBatchData { get; private set; }
-        public delegate void AddTagToQuestionsBatchCompleteDelegate(int? response);
+        public delegate void AddTagToQuestionsBatchCompleteDelegate(long responseCode, int? response);
         public AddTagToQuestionsBatchCompleteDelegate AddTagToQuestionsBatchComplete;
 
         public ImportJobResource CreateImportJobData { get; private set; }
-        public delegate void CreateImportJobCompleteDelegate(ImportJobResource response);
+        public delegate void CreateImportJobCompleteDelegate(long responseCode, ImportJobResource response);
         public CreateImportJobCompleteDelegate CreateImportJobComplete;
 
         public QuestionResource CreateQuestionData { get; private set; }
-        public delegate void CreateQuestionCompleteDelegate(QuestionResource response);
+        public delegate void CreateQuestionCompleteDelegate(long responseCode, QuestionResource response);
         public CreateQuestionCompleteDelegate CreateQuestionComplete;
 
         public QuestionTemplateResource CreateQuestionTemplateData { get; private set; }
-        public delegate void CreateQuestionTemplateCompleteDelegate(QuestionTemplateResource response);
+        public delegate void CreateQuestionTemplateCompleteDelegate(long responseCode, QuestionTemplateResource response);
         public CreateQuestionTemplateCompleteDelegate CreateQuestionTemplateComplete;
 
-        public delegate void DeleteImportJobCompleteDelegate();
+        public delegate void DeleteImportJobCompleteDelegate(long responseCode);
         public DeleteImportJobCompleteDelegate DeleteImportJobComplete;
 
-        public delegate void DeleteQuestionCompleteDelegate();
+        public delegate void DeleteQuestionCompleteDelegate(long responseCode);
         public DeleteQuestionCompleteDelegate DeleteQuestionComplete;
 
-        public delegate void DeleteQuestionAnswersCompleteDelegate();
+        public delegate void DeleteQuestionAnswersCompleteDelegate(long responseCode);
         public DeleteQuestionAnswersCompleteDelegate DeleteQuestionAnswersComplete;
 
-        public delegate void DeleteQuestionTemplateCompleteDelegate();
+        public delegate void DeleteQuestionTemplateCompleteDelegate(long responseCode);
         public DeleteQuestionTemplateCompleteDelegate DeleteQuestionTemplateComplete;
 
         public ImportJobResource GetImportJobData { get; private set; }
-        public delegate void GetImportJobCompleteDelegate(ImportJobResource response);
+        public delegate void GetImportJobCompleteDelegate(long responseCode, ImportJobResource response);
         public GetImportJobCompleteDelegate GetImportJobComplete;
 
         public PageResourceImportJobResource GetImportJobsData { get; private set; }
-        public delegate void GetImportJobsCompleteDelegate(PageResourceImportJobResource response);
+        public delegate void GetImportJobsCompleteDelegate(long responseCode, PageResourceImportJobResource response);
         public GetImportJobsCompleteDelegate GetImportJobsComplete;
 
         public QuestionResource GetQuestionData { get; private set; }
-        public delegate void GetQuestionCompleteDelegate(QuestionResource response);
+        public delegate void GetQuestionCompleteDelegate(long responseCode, QuestionResource response);
         public GetQuestionCompleteDelegate GetQuestionComplete;
 
         public AnswerResource GetQuestionAnswerData { get; private set; }
-        public delegate void GetQuestionAnswerCompleteDelegate(AnswerResource response);
+        public delegate void GetQuestionAnswerCompleteDelegate(long responseCode, AnswerResource response);
         public GetQuestionAnswerCompleteDelegate GetQuestionAnswerComplete;
 
         public List<AnswerResource> GetQuestionAnswersData { get; private set; }
-        public delegate void GetQuestionAnswersCompleteDelegate(List<AnswerResource> response);
+        public delegate void GetQuestionAnswersCompleteDelegate(long responseCode, List<AnswerResource> response);
         public GetQuestionAnswersCompleteDelegate GetQuestionAnswersComplete;
 
         public List<DeltaResource> GetQuestionDeltasData { get; private set; }
-        public delegate void GetQuestionDeltasCompleteDelegate(List<DeltaResource> response);
+        public delegate void GetQuestionDeltasCompleteDelegate(long responseCode, List<DeltaResource> response);
         public GetQuestionDeltasCompleteDelegate GetQuestionDeltasComplete;
 
         public List<string> GetQuestionTagsData { get; private set; }
-        public delegate void GetQuestionTagsCompleteDelegate(List<string> response);
+        public delegate void GetQuestionTagsCompleteDelegate(long responseCode, List<string> response);
         public GetQuestionTagsCompleteDelegate GetQuestionTagsComplete;
 
         public QuestionTemplateResource GetQuestionTemplateData { get; private set; }
-        public delegate void GetQuestionTemplateCompleteDelegate(QuestionTemplateResource response);
+        public delegate void GetQuestionTemplateCompleteDelegate(long responseCode, QuestionTemplateResource response);
         public GetQuestionTemplateCompleteDelegate GetQuestionTemplateComplete;
 
         public PageResourceQuestionTemplateResource GetQuestionTemplatesData { get; private set; }
-        public delegate void GetQuestionTemplatesCompleteDelegate(PageResourceQuestionTemplateResource response);
+        public delegate void GetQuestionTemplatesCompleteDelegate(long responseCode, PageResourceQuestionTemplateResource response);
         public GetQuestionTemplatesCompleteDelegate GetQuestionTemplatesComplete;
 
         public PageResourceQuestionResource GetQuestionsData { get; private set; }
-        public delegate void GetQuestionsCompleteDelegate(PageResourceQuestionResource response);
+        public delegate void GetQuestionsCompleteDelegate(long responseCode, PageResourceQuestionResource response);
         public GetQuestionsCompleteDelegate GetQuestionsComplete;
 
         public long? GetQuestionsCountData { get; private set; }
-        public delegate void GetQuestionsCountCompleteDelegate(long? response);
+        public delegate void GetQuestionsCountCompleteDelegate(long responseCode, long? response);
         public GetQuestionsCountCompleteDelegate GetQuestionsCountComplete;
 
         public ImportJobResource ProcessImportJobData { get; private set; }
-        public delegate void ProcessImportJobCompleteDelegate(ImportJobResource response);
+        public delegate void ProcessImportJobCompleteDelegate(long responseCode, ImportJobResource response);
         public ProcessImportJobCompleteDelegate ProcessImportJobComplete;
 
-        public delegate void RemoveQuestionTagCompleteDelegate();
+        public delegate void RemoveQuestionTagCompleteDelegate(long responseCode);
         public RemoveQuestionTagCompleteDelegate RemoveQuestionTagComplete;
 
         public int? RemoveTagToQuestionsBatchData { get; private set; }
-        public delegate void RemoveTagToQuestionsBatchCompleteDelegate(int? response);
+        public delegate void RemoveTagToQuestionsBatchCompleteDelegate(long responseCode, int? response);
         public RemoveTagToQuestionsBatchCompleteDelegate RemoveTagToQuestionsBatchComplete;
 
         public List<string> SearchQuestionTagsData { get; private set; }
-        public delegate void SearchQuestionTagsCompleteDelegate(List<string> response);
+        public delegate void SearchQuestionTagsCompleteDelegate(long responseCode, List<string> response);
         public SearchQuestionTagsCompleteDelegate SearchQuestionTagsComplete;
 
         public ImportJobResource UpdateImportJobData { get; private set; }
-        public delegate void UpdateImportJobCompleteDelegate(ImportJobResource response);
+        public delegate void UpdateImportJobCompleteDelegate(long responseCode, ImportJobResource response);
         public UpdateImportJobCompleteDelegate UpdateImportJobComplete;
 
         public QuestionResource UpdateQuestionData { get; private set; }
-        public delegate void UpdateQuestionCompleteDelegate(QuestionResource response);
+        public delegate void UpdateQuestionCompleteDelegate(long responseCode, QuestionResource response);
         public UpdateQuestionCompleteDelegate UpdateQuestionComplete;
 
-        public delegate void UpdateQuestionAnswerCompleteDelegate();
+        public delegate void UpdateQuestionAnswerCompleteDelegate(long responseCode);
         public UpdateQuestionAnswerCompleteDelegate UpdateQuestionAnswerComplete;
 
         public QuestionTemplateResource UpdateQuestionTemplateData { get; private set; }
-        public delegate void UpdateQuestionTemplateCompleteDelegate(QuestionTemplateResource response);
+        public delegate void UpdateQuestionTemplateCompleteDelegate(long responseCode, QuestionTemplateResource response);
         public UpdateQuestionTemplateCompleteDelegate UpdateQuestionTemplateComplete;
 
         public int? UpdateQuestionsInBulkData { get; private set; }
-        public delegate void UpdateQuestionsInBulkCompleteDelegate(int? response);
+        public delegate void UpdateQuestionsInBulkCompleteDelegate(long responseCode, int? response);
         public UpdateQuestionsInBulkCompleteDelegate UpdateQuestionsInBulkComplete;
 
         /// <summary>
@@ -523,36 +507,66 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public GamificationTriviaApi()
         {
-            mAddQuestionAnswersCoroutine = new KnetikCoroutine();
-            mAddQuestionTagCoroutine = new KnetikCoroutine();
-            mAddTagToQuestionsBatchCoroutine = new KnetikCoroutine();
-            mCreateImportJobCoroutine = new KnetikCoroutine();
-            mCreateQuestionCoroutine = new KnetikCoroutine();
-            mCreateQuestionTemplateCoroutine = new KnetikCoroutine();
-            mDeleteImportJobCoroutine = new KnetikCoroutine();
-            mDeleteQuestionCoroutine = new KnetikCoroutine();
-            mDeleteQuestionAnswersCoroutine = new KnetikCoroutine();
-            mDeleteQuestionTemplateCoroutine = new KnetikCoroutine();
-            mGetImportJobCoroutine = new KnetikCoroutine();
-            mGetImportJobsCoroutine = new KnetikCoroutine();
-            mGetQuestionCoroutine = new KnetikCoroutine();
-            mGetQuestionAnswerCoroutine = new KnetikCoroutine();
-            mGetQuestionAnswersCoroutine = new KnetikCoroutine();
-            mGetQuestionDeltasCoroutine = new KnetikCoroutine();
-            mGetQuestionTagsCoroutine = new KnetikCoroutine();
-            mGetQuestionTemplateCoroutine = new KnetikCoroutine();
-            mGetQuestionTemplatesCoroutine = new KnetikCoroutine();
-            mGetQuestionsCoroutine = new KnetikCoroutine();
-            mGetQuestionsCountCoroutine = new KnetikCoroutine();
-            mProcessImportJobCoroutine = new KnetikCoroutine();
-            mRemoveQuestionTagCoroutine = new KnetikCoroutine();
-            mRemoveTagToQuestionsBatchCoroutine = new KnetikCoroutine();
-            mSearchQuestionTagsCoroutine = new KnetikCoroutine();
-            mUpdateImportJobCoroutine = new KnetikCoroutine();
-            mUpdateQuestionCoroutine = new KnetikCoroutine();
-            mUpdateQuestionAnswerCoroutine = new KnetikCoroutine();
-            mUpdateQuestionTemplateCoroutine = new KnetikCoroutine();
-            mUpdateQuestionsInBulkCoroutine = new KnetikCoroutine();
+            mAddQuestionAnswersResponseContext = new KnetikResponseContext();
+            mAddQuestionAnswersResponseContext.ResponseReceived += OnAddQuestionAnswersResponse;
+            mAddQuestionTagResponseContext = new KnetikResponseContext();
+            mAddQuestionTagResponseContext.ResponseReceived += OnAddQuestionTagResponse;
+            mAddTagToQuestionsBatchResponseContext = new KnetikResponseContext();
+            mAddTagToQuestionsBatchResponseContext.ResponseReceived += OnAddTagToQuestionsBatchResponse;
+            mCreateImportJobResponseContext = new KnetikResponseContext();
+            mCreateImportJobResponseContext.ResponseReceived += OnCreateImportJobResponse;
+            mCreateQuestionResponseContext = new KnetikResponseContext();
+            mCreateQuestionResponseContext.ResponseReceived += OnCreateQuestionResponse;
+            mCreateQuestionTemplateResponseContext = new KnetikResponseContext();
+            mCreateQuestionTemplateResponseContext.ResponseReceived += OnCreateQuestionTemplateResponse;
+            mDeleteImportJobResponseContext = new KnetikResponseContext();
+            mDeleteImportJobResponseContext.ResponseReceived += OnDeleteImportJobResponse;
+            mDeleteQuestionResponseContext = new KnetikResponseContext();
+            mDeleteQuestionResponseContext.ResponseReceived += OnDeleteQuestionResponse;
+            mDeleteQuestionAnswersResponseContext = new KnetikResponseContext();
+            mDeleteQuestionAnswersResponseContext.ResponseReceived += OnDeleteQuestionAnswersResponse;
+            mDeleteQuestionTemplateResponseContext = new KnetikResponseContext();
+            mDeleteQuestionTemplateResponseContext.ResponseReceived += OnDeleteQuestionTemplateResponse;
+            mGetImportJobResponseContext = new KnetikResponseContext();
+            mGetImportJobResponseContext.ResponseReceived += OnGetImportJobResponse;
+            mGetImportJobsResponseContext = new KnetikResponseContext();
+            mGetImportJobsResponseContext.ResponseReceived += OnGetImportJobsResponse;
+            mGetQuestionResponseContext = new KnetikResponseContext();
+            mGetQuestionResponseContext.ResponseReceived += OnGetQuestionResponse;
+            mGetQuestionAnswerResponseContext = new KnetikResponseContext();
+            mGetQuestionAnswerResponseContext.ResponseReceived += OnGetQuestionAnswerResponse;
+            mGetQuestionAnswersResponseContext = new KnetikResponseContext();
+            mGetQuestionAnswersResponseContext.ResponseReceived += OnGetQuestionAnswersResponse;
+            mGetQuestionDeltasResponseContext = new KnetikResponseContext();
+            mGetQuestionDeltasResponseContext.ResponseReceived += OnGetQuestionDeltasResponse;
+            mGetQuestionTagsResponseContext = new KnetikResponseContext();
+            mGetQuestionTagsResponseContext.ResponseReceived += OnGetQuestionTagsResponse;
+            mGetQuestionTemplateResponseContext = new KnetikResponseContext();
+            mGetQuestionTemplateResponseContext.ResponseReceived += OnGetQuestionTemplateResponse;
+            mGetQuestionTemplatesResponseContext = new KnetikResponseContext();
+            mGetQuestionTemplatesResponseContext.ResponseReceived += OnGetQuestionTemplatesResponse;
+            mGetQuestionsResponseContext = new KnetikResponseContext();
+            mGetQuestionsResponseContext.ResponseReceived += OnGetQuestionsResponse;
+            mGetQuestionsCountResponseContext = new KnetikResponseContext();
+            mGetQuestionsCountResponseContext.ResponseReceived += OnGetQuestionsCountResponse;
+            mProcessImportJobResponseContext = new KnetikResponseContext();
+            mProcessImportJobResponseContext.ResponseReceived += OnProcessImportJobResponse;
+            mRemoveQuestionTagResponseContext = new KnetikResponseContext();
+            mRemoveQuestionTagResponseContext.ResponseReceived += OnRemoveQuestionTagResponse;
+            mRemoveTagToQuestionsBatchResponseContext = new KnetikResponseContext();
+            mRemoveTagToQuestionsBatchResponseContext.ResponseReceived += OnRemoveTagToQuestionsBatchResponse;
+            mSearchQuestionTagsResponseContext = new KnetikResponseContext();
+            mSearchQuestionTagsResponseContext.ResponseReceived += OnSearchQuestionTagsResponse;
+            mUpdateImportJobResponseContext = new KnetikResponseContext();
+            mUpdateImportJobResponseContext.ResponseReceived += OnUpdateImportJobResponse;
+            mUpdateQuestionResponseContext = new KnetikResponseContext();
+            mUpdateQuestionResponseContext.ResponseReceived += OnUpdateQuestionResponse;
+            mUpdateQuestionAnswerResponseContext = new KnetikResponseContext();
+            mUpdateQuestionAnswerResponseContext.ResponseReceived += OnUpdateQuestionAnswerResponse;
+            mUpdateQuestionTemplateResponseContext = new KnetikResponseContext();
+            mUpdateQuestionTemplateResponseContext.ResponseReceived += OnUpdateQuestionTemplateResponse;
+            mUpdateQuestionsInBulkResponseContext = new KnetikResponseContext();
+            mUpdateQuestionsInBulkResponseContext.ResponseReceived += OnUpdateQuestionsInBulkResponse;
         }
     
         /// <inheritdoc />
@@ -569,49 +583,48 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'questionId' when calling AddQuestionAnswers");
             }
             
-            mAddQuestionAnswersPath = "/trivia/questions/{question_id}/answers";
-            if (!string.IsNullOrEmpty(mAddQuestionAnswersPath))
+            mWebCallEvent.WebPath = "/trivia/questions/{question_id}/answers";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mAddQuestionAnswersPath = mAddQuestionAnswersPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mAddQuestionAnswersPath = mAddQuestionAnswersPath.Replace("{" + "question_id" + "}", KnetikClient.DefaultClient.ParameterToString(questionId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "question_id" + "}", KnetikClient.ParameterToString(questionId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(answer); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(answer); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mAddQuestionAnswersStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mAddQuestionAnswersStartTime, mAddQuestionAnswersPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mAddQuestionAnswersCoroutine.ResponseReceived += AddQuestionAnswersCallback;
-            mAddQuestionAnswersCoroutine.Start(mAddQuestionAnswersPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mAddQuestionAnswersStartTime = DateTime.Now;
+            mWebCallEvent.Context = mAddQuestionAnswersResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mAddQuestionAnswersStartTime, "AddQuestionAnswers", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void AddQuestionAnswersCallback(IRestResponse response)
+        private void OnAddQuestionAnswersResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling AddQuestionAnswers: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling AddQuestionAnswers: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling AddQuestionAnswers: " + response.Error);
             }
 
-            AddQuestionAnswersData = (AnswerResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(AnswerResource), response.Headers);
-            KnetikLogger.LogResponse(mAddQuestionAnswersStartTime, mAddQuestionAnswersPath, string.Format("Response received successfully:\n{0}", AddQuestionAnswersData.ToString()));
+            AddQuestionAnswersData = (AnswerResource) KnetikClient.Deserialize(response.Content, typeof(AnswerResource), response.Headers);
+            KnetikLogger.LogResponse(mAddQuestionAnswersStartTime, "AddQuestionAnswers", string.Format("Response received successfully:\n{0}", AddQuestionAnswersData));
 
             if (AddQuestionAnswersComplete != null)
             {
-                AddQuestionAnswersComplete(AddQuestionAnswersData);
+                AddQuestionAnswersComplete(response.ResponseCode, AddQuestionAnswersData);
             }
         }
 
@@ -629,47 +642,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling AddQuestionTag");
             }
             
-            mAddQuestionTagPath = "/trivia/questions/{id}/tags";
-            if (!string.IsNullOrEmpty(mAddQuestionTagPath))
+            mWebCallEvent.WebPath = "/trivia/questions/{id}/tags";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mAddQuestionTagPath = mAddQuestionTagPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mAddQuestionTagPath = mAddQuestionTagPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(tag); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(tag); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mAddQuestionTagStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mAddQuestionTagStartTime, mAddQuestionTagPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mAddQuestionTagCoroutine.ResponseReceived += AddQuestionTagCallback;
-            mAddQuestionTagCoroutine.Start(mAddQuestionTagPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mAddQuestionTagStartTime = DateTime.Now;
+            mWebCallEvent.Context = mAddQuestionTagResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mAddQuestionTagStartTime, "AddQuestionTag", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void AddQuestionTagCallback(IRestResponse response)
+        private void OnAddQuestionTagResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling AddQuestionTag: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling AddQuestionTag: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling AddQuestionTag: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mAddQuestionTagStartTime, mAddQuestionTagPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mAddQuestionTagStartTime, "AddQuestionTag", "Response received successfully.");
             if (AddQuestionTagComplete != null)
             {
-                AddQuestionTagComplete();
+                AddQuestionTagComplete(response.ResponseCode);
             }
         }
 
@@ -689,88 +701,87 @@ namespace com.knetikcloud.Api
         public void AddTagToQuestionsBatch(StringWrapper tag, string filterSearch, string filterIdset, string filterCategory, string filterTag, string filterTagset, string filterType, bool? filterPublished, long? filterImportId)
         {
             
-            mAddTagToQuestionsBatchPath = "/trivia/questions/tags";
-            if (!string.IsNullOrEmpty(mAddTagToQuestionsBatchPath))
+            mWebCallEvent.WebPath = "/trivia/questions/tags";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mAddTagToQuestionsBatchPath = mAddTagToQuestionsBatchPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (filterSearch != null)
             {
-                queryParams.Add("filter_search", KnetikClient.DefaultClient.ParameterToString(filterSearch));
+                mWebCallEvent.QueryParams["filter_search"] = KnetikClient.ParameterToString(filterSearch);
             }
 
             if (filterIdset != null)
             {
-                queryParams.Add("filter_idset", KnetikClient.DefaultClient.ParameterToString(filterIdset));
+                mWebCallEvent.QueryParams["filter_idset"] = KnetikClient.ParameterToString(filterIdset);
             }
 
             if (filterCategory != null)
             {
-                queryParams.Add("filter_category", KnetikClient.DefaultClient.ParameterToString(filterCategory));
+                mWebCallEvent.QueryParams["filter_category"] = KnetikClient.ParameterToString(filterCategory);
             }
 
             if (filterTag != null)
             {
-                queryParams.Add("filter_tag", KnetikClient.DefaultClient.ParameterToString(filterTag));
+                mWebCallEvent.QueryParams["filter_tag"] = KnetikClient.ParameterToString(filterTag);
             }
 
             if (filterTagset != null)
             {
-                queryParams.Add("filter_tagset", KnetikClient.DefaultClient.ParameterToString(filterTagset));
+                mWebCallEvent.QueryParams["filter_tagset"] = KnetikClient.ParameterToString(filterTagset);
             }
 
             if (filterType != null)
             {
-                queryParams.Add("filter_type", KnetikClient.DefaultClient.ParameterToString(filterType));
+                mWebCallEvent.QueryParams["filter_type"] = KnetikClient.ParameterToString(filterType);
             }
 
             if (filterPublished != null)
             {
-                queryParams.Add("filter_published", KnetikClient.DefaultClient.ParameterToString(filterPublished));
+                mWebCallEvent.QueryParams["filter_published"] = KnetikClient.ParameterToString(filterPublished);
             }
 
             if (filterImportId != null)
             {
-                queryParams.Add("filter_import_id", KnetikClient.DefaultClient.ParameterToString(filterImportId));
+                mWebCallEvent.QueryParams["filter_import_id"] = KnetikClient.ParameterToString(filterImportId);
             }
 
-            postBody = KnetikClient.DefaultClient.Serialize(tag); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(tag); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mAddTagToQuestionsBatchStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mAddTagToQuestionsBatchStartTime, mAddTagToQuestionsBatchPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mAddTagToQuestionsBatchCoroutine.ResponseReceived += AddTagToQuestionsBatchCallback;
-            mAddTagToQuestionsBatchCoroutine.Start(mAddTagToQuestionsBatchPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mAddTagToQuestionsBatchStartTime = DateTime.Now;
+            mWebCallEvent.Context = mAddTagToQuestionsBatchResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mAddTagToQuestionsBatchStartTime, "AddTagToQuestionsBatch", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void AddTagToQuestionsBatchCallback(IRestResponse response)
+        private void OnAddTagToQuestionsBatchResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling AddTagToQuestionsBatch: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling AddTagToQuestionsBatch: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling AddTagToQuestionsBatch: " + response.Error);
             }
 
-            AddTagToQuestionsBatchData = (int?) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(int?), response.Headers);
-            KnetikLogger.LogResponse(mAddTagToQuestionsBatchStartTime, mAddTagToQuestionsBatchPath, string.Format("Response received successfully:\n{0}", AddTagToQuestionsBatchData.ToString()));
+            AddTagToQuestionsBatchData = (int?) KnetikClient.Deserialize(response.Content, typeof(int?), response.Headers);
+            KnetikLogger.LogResponse(mAddTagToQuestionsBatchStartTime, "AddTagToQuestionsBatch", string.Format("Response received successfully:\n{0}", AddTagToQuestionsBatchData));
 
             if (AddTagToQuestionsBatchComplete != null)
             {
-                AddTagToQuestionsBatchComplete(AddTagToQuestionsBatchData);
+                AddTagToQuestionsBatchComplete(response.ResponseCode, AddTagToQuestionsBatchData);
             }
         }
 
@@ -782,48 +793,47 @@ namespace com.knetikcloud.Api
         public void CreateImportJob(ImportJobResource request)
         {
             
-            mCreateImportJobPath = "/trivia/import";
-            if (!string.IsNullOrEmpty(mCreateImportJobPath))
+            mWebCallEvent.WebPath = "/trivia/import";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mCreateImportJobPath = mCreateImportJobPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(request); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mCreateImportJobStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mCreateImportJobStartTime, mCreateImportJobPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mCreateImportJobCoroutine.ResponseReceived += CreateImportJobCallback;
-            mCreateImportJobCoroutine.Start(mCreateImportJobPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mCreateImportJobStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreateImportJobResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreateImportJobStartTime, "CreateImportJob", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void CreateImportJobCallback(IRestResponse response)
+        private void OnCreateImportJobResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateImportJob: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateImportJob: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling CreateImportJob: " + response.Error);
             }
 
-            CreateImportJobData = (ImportJobResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ImportJobResource), response.Headers);
-            KnetikLogger.LogResponse(mCreateImportJobStartTime, mCreateImportJobPath, string.Format("Response received successfully:\n{0}", CreateImportJobData.ToString()));
+            CreateImportJobData = (ImportJobResource) KnetikClient.Deserialize(response.Content, typeof(ImportJobResource), response.Headers);
+            KnetikLogger.LogResponse(mCreateImportJobStartTime, "CreateImportJob", string.Format("Response received successfully:\n{0}", CreateImportJobData));
 
             if (CreateImportJobComplete != null)
             {
-                CreateImportJobComplete(CreateImportJobData);
+                CreateImportJobComplete(response.ResponseCode, CreateImportJobData);
             }
         }
 
@@ -835,48 +845,47 @@ namespace com.knetikcloud.Api
         public void CreateQuestion(QuestionResource question)
         {
             
-            mCreateQuestionPath = "/trivia/questions";
-            if (!string.IsNullOrEmpty(mCreateQuestionPath))
+            mWebCallEvent.WebPath = "/trivia/questions";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mCreateQuestionPath = mCreateQuestionPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(question); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(question); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mCreateQuestionStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mCreateQuestionStartTime, mCreateQuestionPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mCreateQuestionCoroutine.ResponseReceived += CreateQuestionCallback;
-            mCreateQuestionCoroutine.Start(mCreateQuestionPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mCreateQuestionStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreateQuestionResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreateQuestionStartTime, "CreateQuestion", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void CreateQuestionCallback(IRestResponse response)
+        private void OnCreateQuestionResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateQuestion: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateQuestion: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling CreateQuestion: " + response.Error);
             }
 
-            CreateQuestionData = (QuestionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(QuestionResource), response.Headers);
-            KnetikLogger.LogResponse(mCreateQuestionStartTime, mCreateQuestionPath, string.Format("Response received successfully:\n{0}", CreateQuestionData.ToString()));
+            CreateQuestionData = (QuestionResource) KnetikClient.Deserialize(response.Content, typeof(QuestionResource), response.Headers);
+            KnetikLogger.LogResponse(mCreateQuestionStartTime, "CreateQuestion", string.Format("Response received successfully:\n{0}", CreateQuestionData));
 
             if (CreateQuestionComplete != null)
             {
-                CreateQuestionComplete(CreateQuestionData);
+                CreateQuestionComplete(response.ResponseCode, CreateQuestionData);
             }
         }
 
@@ -888,48 +897,47 @@ namespace com.knetikcloud.Api
         public void CreateQuestionTemplate(QuestionTemplateResource questionTemplateResource)
         {
             
-            mCreateQuestionTemplatePath = "/trivia/questions/templates";
-            if (!string.IsNullOrEmpty(mCreateQuestionTemplatePath))
+            mWebCallEvent.WebPath = "/trivia/questions/templates";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mCreateQuestionTemplatePath = mCreateQuestionTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(questionTemplateResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(questionTemplateResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mCreateQuestionTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mCreateQuestionTemplateStartTime, mCreateQuestionTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mCreateQuestionTemplateCoroutine.ResponseReceived += CreateQuestionTemplateCallback;
-            mCreateQuestionTemplateCoroutine.Start(mCreateQuestionTemplatePath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mCreateQuestionTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreateQuestionTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreateQuestionTemplateStartTime, "CreateQuestionTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void CreateQuestionTemplateCallback(IRestResponse response)
+        private void OnCreateQuestionTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateQuestionTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateQuestionTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling CreateQuestionTemplate: " + response.Error);
             }
 
-            CreateQuestionTemplateData = (QuestionTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(QuestionTemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mCreateQuestionTemplateStartTime, mCreateQuestionTemplatePath, string.Format("Response received successfully:\n{0}", CreateQuestionTemplateData.ToString()));
+            CreateQuestionTemplateData = (QuestionTemplateResource) KnetikClient.Deserialize(response.Content, typeof(QuestionTemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mCreateQuestionTemplateStartTime, "CreateQuestionTemplate", string.Format("Response received successfully:\n{0}", CreateQuestionTemplateData));
 
             if (CreateQuestionTemplateComplete != null)
             {
-                CreateQuestionTemplateComplete(CreateQuestionTemplateData);
+                CreateQuestionTemplateComplete(response.ResponseCode, CreateQuestionTemplateData);
             }
         }
 
@@ -946,45 +954,44 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeleteImportJob");
             }
             
-            mDeleteImportJobPath = "/trivia/import/{id}";
-            if (!string.IsNullOrEmpty(mDeleteImportJobPath))
+            mWebCallEvent.WebPath = "/trivia/import/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteImportJobPath = mDeleteImportJobPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteImportJobPath = mDeleteImportJobPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteImportJobStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteImportJobStartTime, mDeleteImportJobPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteImportJobCoroutine.ResponseReceived += DeleteImportJobCallback;
-            mDeleteImportJobCoroutine.Start(mDeleteImportJobPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteImportJobStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteImportJobResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteImportJobStartTime, "DeleteImportJob", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteImportJobCallback(IRestResponse response)
+        private void OnDeleteImportJobResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteImportJob: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteImportJob: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteImportJob: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteImportJobStartTime, mDeleteImportJobPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteImportJobStartTime, "DeleteImportJob", "Response received successfully.");
             if (DeleteImportJobComplete != null)
             {
-                DeleteImportJobComplete();
+                DeleteImportJobComplete(response.ResponseCode);
             }
         }
 
@@ -1001,45 +1008,44 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeleteQuestion");
             }
             
-            mDeleteQuestionPath = "/trivia/questions/{id}";
-            if (!string.IsNullOrEmpty(mDeleteQuestionPath))
+            mWebCallEvent.WebPath = "/trivia/questions/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteQuestionPath = mDeleteQuestionPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteQuestionPath = mDeleteQuestionPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteQuestionStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteQuestionStartTime, mDeleteQuestionPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteQuestionCoroutine.ResponseReceived += DeleteQuestionCallback;
-            mDeleteQuestionCoroutine.Start(mDeleteQuestionPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteQuestionStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteQuestionResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteQuestionStartTime, "DeleteQuestion", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteQuestionCallback(IRestResponse response)
+        private void OnDeleteQuestionResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteQuestion: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteQuestion: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteQuestion: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteQuestionStartTime, mDeleteQuestionPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteQuestionStartTime, "DeleteQuestion", "Response received successfully.");
             if (DeleteQuestionComplete != null)
             {
-                DeleteQuestionComplete();
+                DeleteQuestionComplete(response.ResponseCode);
             }
         }
 
@@ -1062,46 +1068,45 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeleteQuestionAnswers");
             }
             
-            mDeleteQuestionAnswersPath = "/trivia/questions/{question_id}/answers/{id}";
-            if (!string.IsNullOrEmpty(mDeleteQuestionAnswersPath))
+            mWebCallEvent.WebPath = "/trivia/questions/{question_id}/answers/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "question_id" + "}", KnetikClient.DefaultClient.ParameterToString(questionId));
-mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "question_id" + "}", KnetikClient.ParameterToString(questionId));
+mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteQuestionAnswersStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteQuestionAnswersStartTime, mDeleteQuestionAnswersPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteQuestionAnswersCoroutine.ResponseReceived += DeleteQuestionAnswersCallback;
-            mDeleteQuestionAnswersCoroutine.Start(mDeleteQuestionAnswersPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteQuestionAnswersStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteQuestionAnswersResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteQuestionAnswersStartTime, "DeleteQuestionAnswers", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteQuestionAnswersCallback(IRestResponse response)
+        private void OnDeleteQuestionAnswersResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteQuestionAnswers: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteQuestionAnswers: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteQuestionAnswers: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteQuestionAnswersStartTime, mDeleteQuestionAnswersPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteQuestionAnswersStartTime, "DeleteQuestionAnswers", "Response received successfully.");
             if (DeleteQuestionAnswersComplete != null)
             {
-                DeleteQuestionAnswersComplete();
+                DeleteQuestionAnswersComplete(response.ResponseCode);
             }
         }
 
@@ -1119,50 +1124,49 @@ mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "id" + "}"
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeleteQuestionTemplate");
             }
             
-            mDeleteQuestionTemplatePath = "/trivia/questions/templates/{id}";
-            if (!string.IsNullOrEmpty(mDeleteQuestionTemplatePath))
+            mWebCallEvent.WebPath = "/trivia/questions/templates/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteQuestionTemplatePath = mDeleteQuestionTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteQuestionTemplatePath = mDeleteQuestionTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
+                mWebCallEvent.QueryParams["cascade"] = KnetikClient.ParameterToString(cascade);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteQuestionTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteQuestionTemplateStartTime, mDeleteQuestionTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteQuestionTemplateCoroutine.ResponseReceived += DeleteQuestionTemplateCallback;
-            mDeleteQuestionTemplateCoroutine.Start(mDeleteQuestionTemplatePath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteQuestionTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteQuestionTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteQuestionTemplateStartTime, "DeleteQuestionTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteQuestionTemplateCallback(IRestResponse response)
+        private void OnDeleteQuestionTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteQuestionTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteQuestionTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteQuestionTemplate: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteQuestionTemplateStartTime, mDeleteQuestionTemplatePath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteQuestionTemplateStartTime, "DeleteQuestionTemplate", "Response received successfully.");
             if (DeleteQuestionTemplateComplete != null)
             {
-                DeleteQuestionTemplateComplete();
+                DeleteQuestionTemplateComplete(response.ResponseCode);
             }
         }
 
@@ -1179,47 +1183,46 @@ mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "id" + "}"
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetImportJob");
             }
             
-            mGetImportJobPath = "/trivia/import/{id}";
-            if (!string.IsNullOrEmpty(mGetImportJobPath))
+            mWebCallEvent.WebPath = "/trivia/import/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetImportJobPath = mGetImportJobPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetImportJobPath = mGetImportJobPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetImportJobStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetImportJobStartTime, mGetImportJobPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetImportJobCoroutine.ResponseReceived += GetImportJobCallback;
-            mGetImportJobCoroutine.Start(mGetImportJobPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetImportJobStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetImportJobResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetImportJobStartTime, "GetImportJob", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetImportJobCallback(IRestResponse response)
+        private void OnGetImportJobResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetImportJob: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetImportJob: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetImportJob: " + response.Error);
             }
 
-            GetImportJobData = (ImportJobResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ImportJobResource), response.Headers);
-            KnetikLogger.LogResponse(mGetImportJobStartTime, mGetImportJobPath, string.Format("Response received successfully:\n{0}", GetImportJobData.ToString()));
+            GetImportJobData = (ImportJobResource) KnetikClient.Deserialize(response.Content, typeof(ImportJobResource), response.Headers);
+            KnetikLogger.LogResponse(mGetImportJobStartTime, "GetImportJob", string.Format("Response received successfully:\n{0}", GetImportJobData));
 
             if (GetImportJobComplete != null)
             {
-                GetImportJobComplete(GetImportJobData);
+                GetImportJobComplete(response.ResponseCode, GetImportJobData);
             }
         }
 
@@ -1237,81 +1240,80 @@ mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "id" + "}"
         public void GetImportJobs(string filterVendor, string filterCategory, string filterName, string filterStatus, int? size, int? page, string order)
         {
             
-            mGetImportJobsPath = "/trivia/import";
-            if (!string.IsNullOrEmpty(mGetImportJobsPath))
+            mWebCallEvent.WebPath = "/trivia/import";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetImportJobsPath = mGetImportJobsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (filterVendor != null)
             {
-                queryParams.Add("filter_vendor", KnetikClient.DefaultClient.ParameterToString(filterVendor));
+                mWebCallEvent.QueryParams["filter_vendor"] = KnetikClient.ParameterToString(filterVendor);
             }
 
             if (filterCategory != null)
             {
-                queryParams.Add("filter_category", KnetikClient.DefaultClient.ParameterToString(filterCategory));
+                mWebCallEvent.QueryParams["filter_category"] = KnetikClient.ParameterToString(filterCategory);
             }
 
             if (filterName != null)
             {
-                queryParams.Add("filter_name", KnetikClient.DefaultClient.ParameterToString(filterName));
+                mWebCallEvent.QueryParams["filter_name"] = KnetikClient.ParameterToString(filterName);
             }
 
             if (filterStatus != null)
             {
-                queryParams.Add("filter_status", KnetikClient.DefaultClient.ParameterToString(filterStatus));
+                mWebCallEvent.QueryParams["filter_status"] = KnetikClient.ParameterToString(filterStatus);
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetImportJobsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetImportJobsStartTime, mGetImportJobsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetImportJobsCoroutine.ResponseReceived += GetImportJobsCallback;
-            mGetImportJobsCoroutine.Start(mGetImportJobsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetImportJobsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetImportJobsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetImportJobsStartTime, "GetImportJobs", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetImportJobsCallback(IRestResponse response)
+        private void OnGetImportJobsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetImportJobs: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetImportJobs: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetImportJobs: " + response.Error);
             }
 
-            GetImportJobsData = (PageResourceImportJobResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceImportJobResource), response.Headers);
-            KnetikLogger.LogResponse(mGetImportJobsStartTime, mGetImportJobsPath, string.Format("Response received successfully:\n{0}", GetImportJobsData.ToString()));
+            GetImportJobsData = (PageResourceImportJobResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceImportJobResource), response.Headers);
+            KnetikLogger.LogResponse(mGetImportJobsStartTime, "GetImportJobs", string.Format("Response received successfully:\n{0}", GetImportJobsData));
 
             if (GetImportJobsComplete != null)
             {
-                GetImportJobsComplete(GetImportJobsData);
+                GetImportJobsComplete(response.ResponseCode, GetImportJobsData);
             }
         }
 
@@ -1328,47 +1330,46 @@ mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "id" + "}"
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetQuestion");
             }
             
-            mGetQuestionPath = "/trivia/questions/{id}";
-            if (!string.IsNullOrEmpty(mGetQuestionPath))
+            mWebCallEvent.WebPath = "/trivia/questions/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetQuestionPath = mGetQuestionPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetQuestionPath = mGetQuestionPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetQuestionStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetQuestionStartTime, mGetQuestionPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetQuestionCoroutine.ResponseReceived += GetQuestionCallback;
-            mGetQuestionCoroutine.Start(mGetQuestionPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetQuestionStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetQuestionResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetQuestionStartTime, "GetQuestion", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetQuestionCallback(IRestResponse response)
+        private void OnGetQuestionResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetQuestion: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetQuestion: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetQuestion: " + response.Error);
             }
 
-            GetQuestionData = (QuestionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(QuestionResource), response.Headers);
-            KnetikLogger.LogResponse(mGetQuestionStartTime, mGetQuestionPath, string.Format("Response received successfully:\n{0}", GetQuestionData.ToString()));
+            GetQuestionData = (QuestionResource) KnetikClient.Deserialize(response.Content, typeof(QuestionResource), response.Headers);
+            KnetikLogger.LogResponse(mGetQuestionStartTime, "GetQuestion", string.Format("Response received successfully:\n{0}", GetQuestionData));
 
             if (GetQuestionComplete != null)
             {
-                GetQuestionComplete(GetQuestionData);
+                GetQuestionComplete(response.ResponseCode, GetQuestionData);
             }
         }
 
@@ -1391,48 +1392,47 @@ mDeleteQuestionAnswersPath = mDeleteQuestionAnswersPath.Replace("{" + "id" + "}"
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetQuestionAnswer");
             }
             
-            mGetQuestionAnswerPath = "/trivia/questions/{question_id}/answers/{id}";
-            if (!string.IsNullOrEmpty(mGetQuestionAnswerPath))
+            mWebCallEvent.WebPath = "/trivia/questions/{question_id}/answers/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "question_id" + "}", KnetikClient.DefaultClient.ParameterToString(questionId));
-mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "question_id" + "}", KnetikClient.ParameterToString(questionId));
+mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetQuestionAnswerStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetQuestionAnswerStartTime, mGetQuestionAnswerPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetQuestionAnswerCoroutine.ResponseReceived += GetQuestionAnswerCallback;
-            mGetQuestionAnswerCoroutine.Start(mGetQuestionAnswerPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetQuestionAnswerStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetQuestionAnswerResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetQuestionAnswerStartTime, "GetQuestionAnswer", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetQuestionAnswerCallback(IRestResponse response)
+        private void OnGetQuestionAnswerResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetQuestionAnswer: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetQuestionAnswer: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetQuestionAnswer: " + response.Error);
             }
 
-            GetQuestionAnswerData = (AnswerResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(AnswerResource), response.Headers);
-            KnetikLogger.LogResponse(mGetQuestionAnswerStartTime, mGetQuestionAnswerPath, string.Format("Response received successfully:\n{0}", GetQuestionAnswerData.ToString()));
+            GetQuestionAnswerData = (AnswerResource) KnetikClient.Deserialize(response.Content, typeof(AnswerResource), response.Headers);
+            KnetikLogger.LogResponse(mGetQuestionAnswerStartTime, "GetQuestionAnswer", string.Format("Response received successfully:\n{0}", GetQuestionAnswerData));
 
             if (GetQuestionAnswerComplete != null)
             {
-                GetQuestionAnswerComplete(GetQuestionAnswerData);
+                GetQuestionAnswerComplete(response.ResponseCode, GetQuestionAnswerData);
             }
         }
 
@@ -1449,47 +1449,46 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
                 throw new KnetikException(400, "Missing required parameter 'questionId' when calling GetQuestionAnswers");
             }
             
-            mGetQuestionAnswersPath = "/trivia/questions/{question_id}/answers";
-            if (!string.IsNullOrEmpty(mGetQuestionAnswersPath))
+            mWebCallEvent.WebPath = "/trivia/questions/{question_id}/answers";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetQuestionAnswersPath = mGetQuestionAnswersPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetQuestionAnswersPath = mGetQuestionAnswersPath.Replace("{" + "question_id" + "}", KnetikClient.DefaultClient.ParameterToString(questionId));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "question_id" + "}", KnetikClient.ParameterToString(questionId));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetQuestionAnswersStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetQuestionAnswersStartTime, mGetQuestionAnswersPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetQuestionAnswersCoroutine.ResponseReceived += GetQuestionAnswersCallback;
-            mGetQuestionAnswersCoroutine.Start(mGetQuestionAnswersPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetQuestionAnswersStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetQuestionAnswersResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetQuestionAnswersStartTime, "GetQuestionAnswers", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetQuestionAnswersCallback(IRestResponse response)
+        private void OnGetQuestionAnswersResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetQuestionAnswers: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetQuestionAnswers: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetQuestionAnswers: " + response.Error);
             }
 
-            GetQuestionAnswersData = (List<AnswerResource>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<AnswerResource>), response.Headers);
-            KnetikLogger.LogResponse(mGetQuestionAnswersStartTime, mGetQuestionAnswersPath, string.Format("Response received successfully:\n{0}", GetQuestionAnswersData.ToString()));
+            GetQuestionAnswersData = (List<AnswerResource>) KnetikClient.Deserialize(response.Content, typeof(List<AnswerResource>), response.Headers);
+            KnetikLogger.LogResponse(mGetQuestionAnswersStartTime, "GetQuestionAnswers", string.Format("Response received successfully:\n{0}", GetQuestionAnswersData));
 
             if (GetQuestionAnswersComplete != null)
             {
-                GetQuestionAnswersComplete(GetQuestionAnswersData);
+                GetQuestionAnswersComplete(response.ResponseCode, GetQuestionAnswersData);
             }
         }
 
@@ -1501,51 +1500,50 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
         public void GetQuestionDeltas(long? since)
         {
             
-            mGetQuestionDeltasPath = "/trivia/questions/delta";
-            if (!string.IsNullOrEmpty(mGetQuestionDeltasPath))
+            mWebCallEvent.WebPath = "/trivia/questions/delta";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetQuestionDeltasPath = mGetQuestionDeltasPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (since != null)
             {
-                queryParams.Add("since", KnetikClient.DefaultClient.ParameterToString(since));
+                mWebCallEvent.QueryParams["since"] = KnetikClient.ParameterToString(since);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetQuestionDeltasStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetQuestionDeltasStartTime, mGetQuestionDeltasPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetQuestionDeltasCoroutine.ResponseReceived += GetQuestionDeltasCallback;
-            mGetQuestionDeltasCoroutine.Start(mGetQuestionDeltasPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetQuestionDeltasStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetQuestionDeltasResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetQuestionDeltasStartTime, "GetQuestionDeltas", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetQuestionDeltasCallback(IRestResponse response)
+        private void OnGetQuestionDeltasResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetQuestionDeltas: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetQuestionDeltas: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetQuestionDeltas: " + response.Error);
             }
 
-            GetQuestionDeltasData = (List<DeltaResource>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<DeltaResource>), response.Headers);
-            KnetikLogger.LogResponse(mGetQuestionDeltasStartTime, mGetQuestionDeltasPath, string.Format("Response received successfully:\n{0}", GetQuestionDeltasData.ToString()));
+            GetQuestionDeltasData = (List<DeltaResource>) KnetikClient.Deserialize(response.Content, typeof(List<DeltaResource>), response.Headers);
+            KnetikLogger.LogResponse(mGetQuestionDeltasStartTime, "GetQuestionDeltas", string.Format("Response received successfully:\n{0}", GetQuestionDeltasData));
 
             if (GetQuestionDeltasComplete != null)
             {
-                GetQuestionDeltasComplete(GetQuestionDeltasData);
+                GetQuestionDeltasComplete(response.ResponseCode, GetQuestionDeltasData);
             }
         }
 
@@ -1562,47 +1560,46 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetQuestionTags");
             }
             
-            mGetQuestionTagsPath = "/trivia/questions/{id}/tags";
-            if (!string.IsNullOrEmpty(mGetQuestionTagsPath))
+            mWebCallEvent.WebPath = "/trivia/questions/{id}/tags";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetQuestionTagsPath = mGetQuestionTagsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetQuestionTagsPath = mGetQuestionTagsPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetQuestionTagsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetQuestionTagsStartTime, mGetQuestionTagsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetQuestionTagsCoroutine.ResponseReceived += GetQuestionTagsCallback;
-            mGetQuestionTagsCoroutine.Start(mGetQuestionTagsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetQuestionTagsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetQuestionTagsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetQuestionTagsStartTime, "GetQuestionTags", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetQuestionTagsCallback(IRestResponse response)
+        private void OnGetQuestionTagsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetQuestionTags: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetQuestionTags: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetQuestionTags: " + response.Error);
             }
 
-            GetQuestionTagsData = (List<string>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<string>), response.Headers);
-            KnetikLogger.LogResponse(mGetQuestionTagsStartTime, mGetQuestionTagsPath, string.Format("Response received successfully:\n{0}", GetQuestionTagsData.ToString()));
+            GetQuestionTagsData = (List<string>) KnetikClient.Deserialize(response.Content, typeof(List<string>), response.Headers);
+            KnetikLogger.LogResponse(mGetQuestionTagsStartTime, "GetQuestionTags", string.Format("Response received successfully:\n{0}", GetQuestionTagsData));
 
             if (GetQuestionTagsComplete != null)
             {
-                GetQuestionTagsComplete(GetQuestionTagsData);
+                GetQuestionTagsComplete(response.ResponseCode, GetQuestionTagsData);
             }
         }
 
@@ -1619,47 +1616,46 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetQuestionTemplate");
             }
             
-            mGetQuestionTemplatePath = "/trivia/questions/templates/{id}";
-            if (!string.IsNullOrEmpty(mGetQuestionTemplatePath))
+            mWebCallEvent.WebPath = "/trivia/questions/templates/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetQuestionTemplatePath = mGetQuestionTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetQuestionTemplatePath = mGetQuestionTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetQuestionTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetQuestionTemplateStartTime, mGetQuestionTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetQuestionTemplateCoroutine.ResponseReceived += GetQuestionTemplateCallback;
-            mGetQuestionTemplateCoroutine.Start(mGetQuestionTemplatePath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetQuestionTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetQuestionTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetQuestionTemplateStartTime, "GetQuestionTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetQuestionTemplateCallback(IRestResponse response)
+        private void OnGetQuestionTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetQuestionTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetQuestionTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetQuestionTemplate: " + response.Error);
             }
 
-            GetQuestionTemplateData = (QuestionTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(QuestionTemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mGetQuestionTemplateStartTime, mGetQuestionTemplatePath, string.Format("Response received successfully:\n{0}", GetQuestionTemplateData.ToString()));
+            GetQuestionTemplateData = (QuestionTemplateResource) KnetikClient.Deserialize(response.Content, typeof(QuestionTemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mGetQuestionTemplateStartTime, "GetQuestionTemplate", string.Format("Response received successfully:\n{0}", GetQuestionTemplateData));
 
             if (GetQuestionTemplateComplete != null)
             {
-                GetQuestionTemplateComplete(GetQuestionTemplateData);
+                GetQuestionTemplateComplete(response.ResponseCode, GetQuestionTemplateData);
             }
         }
 
@@ -1673,61 +1669,60 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
         public void GetQuestionTemplates(int? size, int? page, string order)
         {
             
-            mGetQuestionTemplatesPath = "/trivia/questions/templates";
-            if (!string.IsNullOrEmpty(mGetQuestionTemplatesPath))
+            mWebCallEvent.WebPath = "/trivia/questions/templates";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetQuestionTemplatesPath = mGetQuestionTemplatesPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetQuestionTemplatesStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetQuestionTemplatesStartTime, mGetQuestionTemplatesPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetQuestionTemplatesCoroutine.ResponseReceived += GetQuestionTemplatesCallback;
-            mGetQuestionTemplatesCoroutine.Start(mGetQuestionTemplatesPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetQuestionTemplatesStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetQuestionTemplatesResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetQuestionTemplatesStartTime, "GetQuestionTemplates", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetQuestionTemplatesCallback(IRestResponse response)
+        private void OnGetQuestionTemplatesResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetQuestionTemplates: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetQuestionTemplates: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetQuestionTemplates: " + response.Error);
             }
 
-            GetQuestionTemplatesData = (PageResourceQuestionTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceQuestionTemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mGetQuestionTemplatesStartTime, mGetQuestionTemplatesPath, string.Format("Response received successfully:\n{0}", GetQuestionTemplatesData.ToString()));
+            GetQuestionTemplatesData = (PageResourceQuestionTemplateResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceQuestionTemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mGetQuestionTemplatesStartTime, "GetQuestionTemplates", string.Format("Response received successfully:\n{0}", GetQuestionTemplatesData));
 
             if (GetQuestionTemplatesComplete != null)
             {
-                GetQuestionTemplatesComplete(GetQuestionTemplatesData);
+                GetQuestionTemplatesComplete(response.ResponseCode, GetQuestionTemplatesData);
             }
         }
 
@@ -1749,101 +1744,100 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
         public void GetQuestions(int? size, int? page, string order, string filterSearch, string filterIdset, string filterCategory, string filterTagset, string filterTag, string filterType, bool? filterPublished, long? filterImportId)
         {
             
-            mGetQuestionsPath = "/trivia/questions";
-            if (!string.IsNullOrEmpty(mGetQuestionsPath))
+            mWebCallEvent.WebPath = "/trivia/questions";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetQuestionsPath = mGetQuestionsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
             if (filterSearch != null)
             {
-                queryParams.Add("filter_search", KnetikClient.DefaultClient.ParameterToString(filterSearch));
+                mWebCallEvent.QueryParams["filter_search"] = KnetikClient.ParameterToString(filterSearch);
             }
 
             if (filterIdset != null)
             {
-                queryParams.Add("filter_idset", KnetikClient.DefaultClient.ParameterToString(filterIdset));
+                mWebCallEvent.QueryParams["filter_idset"] = KnetikClient.ParameterToString(filterIdset);
             }
 
             if (filterCategory != null)
             {
-                queryParams.Add("filter_category", KnetikClient.DefaultClient.ParameterToString(filterCategory));
+                mWebCallEvent.QueryParams["filter_category"] = KnetikClient.ParameterToString(filterCategory);
             }
 
             if (filterTagset != null)
             {
-                queryParams.Add("filter_tagset", KnetikClient.DefaultClient.ParameterToString(filterTagset));
+                mWebCallEvent.QueryParams["filter_tagset"] = KnetikClient.ParameterToString(filterTagset);
             }
 
             if (filterTag != null)
             {
-                queryParams.Add("filter_tag", KnetikClient.DefaultClient.ParameterToString(filterTag));
+                mWebCallEvent.QueryParams["filter_tag"] = KnetikClient.ParameterToString(filterTag);
             }
 
             if (filterType != null)
             {
-                queryParams.Add("filter_type", KnetikClient.DefaultClient.ParameterToString(filterType));
+                mWebCallEvent.QueryParams["filter_type"] = KnetikClient.ParameterToString(filterType);
             }
 
             if (filterPublished != null)
             {
-                queryParams.Add("filter_published", KnetikClient.DefaultClient.ParameterToString(filterPublished));
+                mWebCallEvent.QueryParams["filter_published"] = KnetikClient.ParameterToString(filterPublished);
             }
 
             if (filterImportId != null)
             {
-                queryParams.Add("filter_import_id", KnetikClient.DefaultClient.ParameterToString(filterImportId));
+                mWebCallEvent.QueryParams["filter_import_id"] = KnetikClient.ParameterToString(filterImportId);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetQuestionsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetQuestionsStartTime, mGetQuestionsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetQuestionsCoroutine.ResponseReceived += GetQuestionsCallback;
-            mGetQuestionsCoroutine.Start(mGetQuestionsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetQuestionsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetQuestionsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetQuestionsStartTime, "GetQuestions", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetQuestionsCallback(IRestResponse response)
+        private void OnGetQuestionsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetQuestions: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetQuestions: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetQuestions: " + response.Error);
             }
 
-            GetQuestionsData = (PageResourceQuestionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceQuestionResource), response.Headers);
-            KnetikLogger.LogResponse(mGetQuestionsStartTime, mGetQuestionsPath, string.Format("Response received successfully:\n{0}", GetQuestionsData.ToString()));
+            GetQuestionsData = (PageResourceQuestionResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceQuestionResource), response.Headers);
+            KnetikLogger.LogResponse(mGetQuestionsStartTime, "GetQuestions", string.Format("Response received successfully:\n{0}", GetQuestionsData));
 
             if (GetQuestionsComplete != null)
             {
-                GetQuestionsComplete(GetQuestionsData);
+                GetQuestionsComplete(response.ResponseCode, GetQuestionsData);
             }
         }
 
@@ -1861,81 +1855,80 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
         public void GetQuestionsCount(string filterSearch, string filterIdset, string filterCategory, string filterTag, string filterTagset, string filterType, bool? filterPublished)
         {
             
-            mGetQuestionsCountPath = "/trivia/questions/count";
-            if (!string.IsNullOrEmpty(mGetQuestionsCountPath))
+            mWebCallEvent.WebPath = "/trivia/questions/count";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetQuestionsCountPath = mGetQuestionsCountPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (filterSearch != null)
             {
-                queryParams.Add("filter_search", KnetikClient.DefaultClient.ParameterToString(filterSearch));
+                mWebCallEvent.QueryParams["filter_search"] = KnetikClient.ParameterToString(filterSearch);
             }
 
             if (filterIdset != null)
             {
-                queryParams.Add("filter_idset", KnetikClient.DefaultClient.ParameterToString(filterIdset));
+                mWebCallEvent.QueryParams["filter_idset"] = KnetikClient.ParameterToString(filterIdset);
             }
 
             if (filterCategory != null)
             {
-                queryParams.Add("filter_category", KnetikClient.DefaultClient.ParameterToString(filterCategory));
+                mWebCallEvent.QueryParams["filter_category"] = KnetikClient.ParameterToString(filterCategory);
             }
 
             if (filterTag != null)
             {
-                queryParams.Add("filter_tag", KnetikClient.DefaultClient.ParameterToString(filterTag));
+                mWebCallEvent.QueryParams["filter_tag"] = KnetikClient.ParameterToString(filterTag);
             }
 
             if (filterTagset != null)
             {
-                queryParams.Add("filter_tagset", KnetikClient.DefaultClient.ParameterToString(filterTagset));
+                mWebCallEvent.QueryParams["filter_tagset"] = KnetikClient.ParameterToString(filterTagset);
             }
 
             if (filterType != null)
             {
-                queryParams.Add("filter_type", KnetikClient.DefaultClient.ParameterToString(filterType));
+                mWebCallEvent.QueryParams["filter_type"] = KnetikClient.ParameterToString(filterType);
             }
 
             if (filterPublished != null)
             {
-                queryParams.Add("filter_published", KnetikClient.DefaultClient.ParameterToString(filterPublished));
+                mWebCallEvent.QueryParams["filter_published"] = KnetikClient.ParameterToString(filterPublished);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetQuestionsCountStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetQuestionsCountStartTime, mGetQuestionsCountPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetQuestionsCountCoroutine.ResponseReceived += GetQuestionsCountCallback;
-            mGetQuestionsCountCoroutine.Start(mGetQuestionsCountPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetQuestionsCountStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetQuestionsCountResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetQuestionsCountStartTime, "GetQuestionsCount", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetQuestionsCountCallback(IRestResponse response)
+        private void OnGetQuestionsCountResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetQuestionsCount: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetQuestionsCount: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetQuestionsCount: " + response.Error);
             }
 
-            GetQuestionsCountData = (long?) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(long?), response.Headers);
-            KnetikLogger.LogResponse(mGetQuestionsCountStartTime, mGetQuestionsCountPath, string.Format("Response received successfully:\n{0}", GetQuestionsCountData.ToString()));
+            GetQuestionsCountData = (long?) KnetikClient.Deserialize(response.Content, typeof(long?), response.Headers);
+            KnetikLogger.LogResponse(mGetQuestionsCountStartTime, "GetQuestionsCount", string.Format("Response received successfully:\n{0}", GetQuestionsCountData));
 
             if (GetQuestionsCountComplete != null)
             {
-                GetQuestionsCountComplete(GetQuestionsCountData);
+                GetQuestionsCountComplete(response.ResponseCode, GetQuestionsCountData);
             }
         }
 
@@ -1958,52 +1951,51 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
                 throw new KnetikException(400, "Missing required parameter 'publishNow' when calling ProcessImportJob");
             }
             
-            mProcessImportJobPath = "/trivia/import/{id}/process";
-            if (!string.IsNullOrEmpty(mProcessImportJobPath))
+            mWebCallEvent.WebPath = "/trivia/import/{id}/process";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mProcessImportJobPath = mProcessImportJobPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mProcessImportJobPath = mProcessImportJobPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (publishNow != null)
             {
-                queryParams.Add("publish_now", KnetikClient.DefaultClient.ParameterToString(publishNow));
+                mWebCallEvent.QueryParams["publish_now"] = KnetikClient.ParameterToString(publishNow);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mProcessImportJobStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mProcessImportJobStartTime, mProcessImportJobPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mProcessImportJobCoroutine.ResponseReceived += ProcessImportJobCallback;
-            mProcessImportJobCoroutine.Start(mProcessImportJobPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mProcessImportJobStartTime = DateTime.Now;
+            mWebCallEvent.Context = mProcessImportJobResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mProcessImportJobStartTime, "ProcessImportJob", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void ProcessImportJobCallback(IRestResponse response)
+        private void OnProcessImportJobResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling ProcessImportJob: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling ProcessImportJob: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling ProcessImportJob: " + response.Error);
             }
 
-            ProcessImportJobData = (ImportJobResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ImportJobResource), response.Headers);
-            KnetikLogger.LogResponse(mProcessImportJobStartTime, mProcessImportJobPath, string.Format("Response received successfully:\n{0}", ProcessImportJobData.ToString()));
+            ProcessImportJobData = (ImportJobResource) KnetikClient.Deserialize(response.Content, typeof(ImportJobResource), response.Headers);
+            KnetikLogger.LogResponse(mProcessImportJobStartTime, "ProcessImportJob", string.Format("Response received successfully:\n{0}", ProcessImportJobData));
 
             if (ProcessImportJobComplete != null)
             {
-                ProcessImportJobComplete(ProcessImportJobData);
+                ProcessImportJobComplete(response.ResponseCode, ProcessImportJobData);
             }
         }
 
@@ -2026,46 +2018,45 @@ mGetQuestionAnswerPath = mGetQuestionAnswerPath.Replace("{" + "id" + "}", Knetik
                 throw new KnetikException(400, "Missing required parameter 'tag' when calling RemoveQuestionTag");
             }
             
-            mRemoveQuestionTagPath = "/trivia/questions/{id}/tags/{tag}";
-            if (!string.IsNullOrEmpty(mRemoveQuestionTagPath))
+            mWebCallEvent.WebPath = "/trivia/questions/{id}/tags/{tag}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
-mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", KnetikClient.DefaultClient.ParameterToString(tag));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
+mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "tag" + "}", KnetikClient.ParameterToString(tag));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mRemoveQuestionTagStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mRemoveQuestionTagStartTime, mRemoveQuestionTagPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mRemoveQuestionTagCoroutine.ResponseReceived += RemoveQuestionTagCallback;
-            mRemoveQuestionTagCoroutine.Start(mRemoveQuestionTagPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mRemoveQuestionTagStartTime = DateTime.Now;
+            mWebCallEvent.Context = mRemoveQuestionTagResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mRemoveQuestionTagStartTime, "RemoveQuestionTag", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void RemoveQuestionTagCallback(IRestResponse response)
+        private void OnRemoveQuestionTagResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling RemoveQuestionTag: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling RemoveQuestionTag: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling RemoveQuestionTag: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mRemoveQuestionTagStartTime, mRemoveQuestionTagPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mRemoveQuestionTagStartTime, "RemoveQuestionTag", "Response received successfully.");
             if (RemoveQuestionTagComplete != null)
             {
-                RemoveQuestionTagComplete();
+                RemoveQuestionTagComplete(response.ResponseCode);
             }
         }
 
@@ -2090,87 +2081,86 @@ mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", Kneti
                 throw new KnetikException(400, "Missing required parameter 'tag' when calling RemoveTagToQuestionsBatch");
             }
             
-            mRemoveTagToQuestionsBatchPath = "/trivia/questions/tags/{tag}";
-            if (!string.IsNullOrEmpty(mRemoveTagToQuestionsBatchPath))
+            mWebCallEvent.WebPath = "/trivia/questions/tags/{tag}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mRemoveTagToQuestionsBatchPath = mRemoveTagToQuestionsBatchPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mRemoveTagToQuestionsBatchPath = mRemoveTagToQuestionsBatchPath.Replace("{" + "tag" + "}", KnetikClient.DefaultClient.ParameterToString(tag));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "tag" + "}", KnetikClient.ParameterToString(tag));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (filterSearch != null)
             {
-                queryParams.Add("filter_search", KnetikClient.DefaultClient.ParameterToString(filterSearch));
+                mWebCallEvent.QueryParams["filter_search"] = KnetikClient.ParameterToString(filterSearch);
             }
 
             if (filterIdset != null)
             {
-                queryParams.Add("filter_idset", KnetikClient.DefaultClient.ParameterToString(filterIdset));
+                mWebCallEvent.QueryParams["filter_idset"] = KnetikClient.ParameterToString(filterIdset);
             }
 
             if (filterCategory != null)
             {
-                queryParams.Add("filter_category", KnetikClient.DefaultClient.ParameterToString(filterCategory));
+                mWebCallEvent.QueryParams["filter_category"] = KnetikClient.ParameterToString(filterCategory);
             }
 
             if (filterTag != null)
             {
-                queryParams.Add("filter_tag", KnetikClient.DefaultClient.ParameterToString(filterTag));
+                mWebCallEvent.QueryParams["filter_tag"] = KnetikClient.ParameterToString(filterTag);
             }
 
             if (filterTagset != null)
             {
-                queryParams.Add("filter_tagset", KnetikClient.DefaultClient.ParameterToString(filterTagset));
+                mWebCallEvent.QueryParams["filter_tagset"] = KnetikClient.ParameterToString(filterTagset);
             }
 
             if (filterType != null)
             {
-                queryParams.Add("filter_type", KnetikClient.DefaultClient.ParameterToString(filterType));
+                mWebCallEvent.QueryParams["filter_type"] = KnetikClient.ParameterToString(filterType);
             }
 
             if (filterPublished != null)
             {
-                queryParams.Add("filter_published", KnetikClient.DefaultClient.ParameterToString(filterPublished));
+                mWebCallEvent.QueryParams["filter_published"] = KnetikClient.ParameterToString(filterPublished);
             }
 
             if (filterImportId != null)
             {
-                queryParams.Add("filter_import_id", KnetikClient.DefaultClient.ParameterToString(filterImportId));
+                mWebCallEvent.QueryParams["filter_import_id"] = KnetikClient.ParameterToString(filterImportId);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mRemoveTagToQuestionsBatchStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mRemoveTagToQuestionsBatchStartTime, mRemoveTagToQuestionsBatchPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mRemoveTagToQuestionsBatchCoroutine.ResponseReceived += RemoveTagToQuestionsBatchCallback;
-            mRemoveTagToQuestionsBatchCoroutine.Start(mRemoveTagToQuestionsBatchPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mRemoveTagToQuestionsBatchStartTime = DateTime.Now;
+            mWebCallEvent.Context = mRemoveTagToQuestionsBatchResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mRemoveTagToQuestionsBatchStartTime, "RemoveTagToQuestionsBatch", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void RemoveTagToQuestionsBatchCallback(IRestResponse response)
+        private void OnRemoveTagToQuestionsBatchResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling RemoveTagToQuestionsBatch: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling RemoveTagToQuestionsBatch: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling RemoveTagToQuestionsBatch: " + response.Error);
             }
 
-            RemoveTagToQuestionsBatchData = (int?) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(int?), response.Headers);
-            KnetikLogger.LogResponse(mRemoveTagToQuestionsBatchStartTime, mRemoveTagToQuestionsBatchPath, string.Format("Response received successfully:\n{0}", RemoveTagToQuestionsBatchData.ToString()));
+            RemoveTagToQuestionsBatchData = (int?) KnetikClient.Deserialize(response.Content, typeof(int?), response.Headers);
+            KnetikLogger.LogResponse(mRemoveTagToQuestionsBatchStartTime, "RemoveTagToQuestionsBatch", string.Format("Response received successfully:\n{0}", RemoveTagToQuestionsBatchData));
 
             if (RemoveTagToQuestionsBatchComplete != null)
             {
-                RemoveTagToQuestionsBatchComplete(RemoveTagToQuestionsBatchData);
+                RemoveTagToQuestionsBatchComplete(response.ResponseCode, RemoveTagToQuestionsBatchData);
             }
         }
 
@@ -2184,61 +2174,60 @@ mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", Kneti
         public void SearchQuestionTags(string filterSearch, string filterCategory, long? filterImportId)
         {
             
-            mSearchQuestionTagsPath = "/trivia/tags";
-            if (!string.IsNullOrEmpty(mSearchQuestionTagsPath))
+            mWebCallEvent.WebPath = "/trivia/tags";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mSearchQuestionTagsPath = mSearchQuestionTagsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (filterSearch != null)
             {
-                queryParams.Add("filter_search", KnetikClient.DefaultClient.ParameterToString(filterSearch));
+                mWebCallEvent.QueryParams["filter_search"] = KnetikClient.ParameterToString(filterSearch);
             }
 
             if (filterCategory != null)
             {
-                queryParams.Add("filter_category", KnetikClient.DefaultClient.ParameterToString(filterCategory));
+                mWebCallEvent.QueryParams["filter_category"] = KnetikClient.ParameterToString(filterCategory);
             }
 
             if (filterImportId != null)
             {
-                queryParams.Add("filter_import_id", KnetikClient.DefaultClient.ParameterToString(filterImportId));
+                mWebCallEvent.QueryParams["filter_import_id"] = KnetikClient.ParameterToString(filterImportId);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mSearchQuestionTagsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mSearchQuestionTagsStartTime, mSearchQuestionTagsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mSearchQuestionTagsCoroutine.ResponseReceived += SearchQuestionTagsCallback;
-            mSearchQuestionTagsCoroutine.Start(mSearchQuestionTagsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mSearchQuestionTagsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mSearchQuestionTagsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mSearchQuestionTagsStartTime, "SearchQuestionTags", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void SearchQuestionTagsCallback(IRestResponse response)
+        private void OnSearchQuestionTagsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling SearchQuestionTags: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling SearchQuestionTags: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling SearchQuestionTags: " + response.Error);
             }
 
-            SearchQuestionTagsData = (List<string>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<string>), response.Headers);
-            KnetikLogger.LogResponse(mSearchQuestionTagsStartTime, mSearchQuestionTagsPath, string.Format("Response received successfully:\n{0}", SearchQuestionTagsData.ToString()));
+            SearchQuestionTagsData = (List<string>) KnetikClient.Deserialize(response.Content, typeof(List<string>), response.Headers);
+            KnetikLogger.LogResponse(mSearchQuestionTagsStartTime, "SearchQuestionTags", string.Format("Response received successfully:\n{0}", SearchQuestionTagsData));
 
             if (SearchQuestionTagsComplete != null)
             {
-                SearchQuestionTagsComplete(SearchQuestionTagsData);
+                SearchQuestionTagsComplete(response.ResponseCode, SearchQuestionTagsData);
             }
         }
 
@@ -2256,49 +2245,48 @@ mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", Kneti
                 throw new KnetikException(400, "Missing required parameter 'id' when calling UpdateImportJob");
             }
             
-            mUpdateImportJobPath = "/trivia/import/{id}";
-            if (!string.IsNullOrEmpty(mUpdateImportJobPath))
+            mWebCallEvent.WebPath = "/trivia/import/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateImportJobPath = mUpdateImportJobPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateImportJobPath = mUpdateImportJobPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(request); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateImportJobStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateImportJobStartTime, mUpdateImportJobPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateImportJobCoroutine.ResponseReceived += UpdateImportJobCallback;
-            mUpdateImportJobCoroutine.Start(mUpdateImportJobPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateImportJobStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateImportJobResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateImportJobStartTime, "UpdateImportJob", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateImportJobCallback(IRestResponse response)
+        private void OnUpdateImportJobResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateImportJob: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateImportJob: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateImportJob: " + response.Error);
             }
 
-            UpdateImportJobData = (ImportJobResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ImportJobResource), response.Headers);
-            KnetikLogger.LogResponse(mUpdateImportJobStartTime, mUpdateImportJobPath, string.Format("Response received successfully:\n{0}", UpdateImportJobData.ToString()));
+            UpdateImportJobData = (ImportJobResource) KnetikClient.Deserialize(response.Content, typeof(ImportJobResource), response.Headers);
+            KnetikLogger.LogResponse(mUpdateImportJobStartTime, "UpdateImportJob", string.Format("Response received successfully:\n{0}", UpdateImportJobData));
 
             if (UpdateImportJobComplete != null)
             {
-                UpdateImportJobComplete(UpdateImportJobData);
+                UpdateImportJobComplete(response.ResponseCode, UpdateImportJobData);
             }
         }
 
@@ -2316,49 +2304,48 @@ mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", Kneti
                 throw new KnetikException(400, "Missing required parameter 'id' when calling UpdateQuestion");
             }
             
-            mUpdateQuestionPath = "/trivia/questions/{id}";
-            if (!string.IsNullOrEmpty(mUpdateQuestionPath))
+            mWebCallEvent.WebPath = "/trivia/questions/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateQuestionPath = mUpdateQuestionPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateQuestionPath = mUpdateQuestionPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(question); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(question); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateQuestionStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateQuestionStartTime, mUpdateQuestionPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateQuestionCoroutine.ResponseReceived += UpdateQuestionCallback;
-            mUpdateQuestionCoroutine.Start(mUpdateQuestionPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateQuestionStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateQuestionResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateQuestionStartTime, "UpdateQuestion", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateQuestionCallback(IRestResponse response)
+        private void OnUpdateQuestionResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateQuestion: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateQuestion: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateQuestion: " + response.Error);
             }
 
-            UpdateQuestionData = (QuestionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(QuestionResource), response.Headers);
-            KnetikLogger.LogResponse(mUpdateQuestionStartTime, mUpdateQuestionPath, string.Format("Response received successfully:\n{0}", UpdateQuestionData.ToString()));
+            UpdateQuestionData = (QuestionResource) KnetikClient.Deserialize(response.Content, typeof(QuestionResource), response.Headers);
+            KnetikLogger.LogResponse(mUpdateQuestionStartTime, "UpdateQuestion", string.Format("Response received successfully:\n{0}", UpdateQuestionData));
 
             if (UpdateQuestionComplete != null)
             {
-                UpdateQuestionComplete(UpdateQuestionData);
+                UpdateQuestionComplete(response.ResponseCode, UpdateQuestionData);
             }
         }
 
@@ -2382,48 +2369,47 @@ mRemoveQuestionTagPath = mRemoveQuestionTagPath.Replace("{" + "tag" + "}", Kneti
                 throw new KnetikException(400, "Missing required parameter 'id' when calling UpdateQuestionAnswer");
             }
             
-            mUpdateQuestionAnswerPath = "/trivia/questions/{question_id}/answers/{id}";
-            if (!string.IsNullOrEmpty(mUpdateQuestionAnswerPath))
+            mWebCallEvent.WebPath = "/trivia/questions/{question_id}/answers/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateQuestionAnswerPath = mUpdateQuestionAnswerPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateQuestionAnswerPath = mUpdateQuestionAnswerPath.Replace("{" + "question_id" + "}", KnetikClient.DefaultClient.ParameterToString(questionId));
-mUpdateQuestionAnswerPath = mUpdateQuestionAnswerPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "question_id" + "}", KnetikClient.ParameterToString(questionId));
+mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(answer); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(answer); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateQuestionAnswerStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateQuestionAnswerStartTime, mUpdateQuestionAnswerPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateQuestionAnswerCoroutine.ResponseReceived += UpdateQuestionAnswerCallback;
-            mUpdateQuestionAnswerCoroutine.Start(mUpdateQuestionAnswerPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateQuestionAnswerStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateQuestionAnswerResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateQuestionAnswerStartTime, "UpdateQuestionAnswer", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateQuestionAnswerCallback(IRestResponse response)
+        private void OnUpdateQuestionAnswerResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateQuestionAnswer: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateQuestionAnswer: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateQuestionAnswer: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mUpdateQuestionAnswerStartTime, mUpdateQuestionAnswerPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mUpdateQuestionAnswerStartTime, "UpdateQuestionAnswer", "Response received successfully.");
             if (UpdateQuestionAnswerComplete != null)
             {
-                UpdateQuestionAnswerComplete();
+                UpdateQuestionAnswerComplete(response.ResponseCode);
             }
         }
 
@@ -2441,49 +2427,48 @@ mUpdateQuestionAnswerPath = mUpdateQuestionAnswerPath.Replace("{" + "id" + "}", 
                 throw new KnetikException(400, "Missing required parameter 'id' when calling UpdateQuestionTemplate");
             }
             
-            mUpdateQuestionTemplatePath = "/trivia/questions/templates/{id}";
-            if (!string.IsNullOrEmpty(mUpdateQuestionTemplatePath))
+            mWebCallEvent.WebPath = "/trivia/questions/templates/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateQuestionTemplatePath = mUpdateQuestionTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateQuestionTemplatePath = mUpdateQuestionTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(questionTemplateResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(questionTemplateResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateQuestionTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateQuestionTemplateStartTime, mUpdateQuestionTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateQuestionTemplateCoroutine.ResponseReceived += UpdateQuestionTemplateCallback;
-            mUpdateQuestionTemplateCoroutine.Start(mUpdateQuestionTemplatePath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateQuestionTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateQuestionTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateQuestionTemplateStartTime, "UpdateQuestionTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateQuestionTemplateCallback(IRestResponse response)
+        private void OnUpdateQuestionTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateQuestionTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateQuestionTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateQuestionTemplate: " + response.Error);
             }
 
-            UpdateQuestionTemplateData = (QuestionTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(QuestionTemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mUpdateQuestionTemplateStartTime, mUpdateQuestionTemplatePath, string.Format("Response received successfully:\n{0}", UpdateQuestionTemplateData.ToString()));
+            UpdateQuestionTemplateData = (QuestionTemplateResource) KnetikClient.Deserialize(response.Content, typeof(QuestionTemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mUpdateQuestionTemplateStartTime, "UpdateQuestionTemplate", string.Format("Response received successfully:\n{0}", UpdateQuestionTemplateData));
 
             if (UpdateQuestionTemplateComplete != null)
             {
-                UpdateQuestionTemplateComplete(UpdateQuestionTemplateData);
+                UpdateQuestionTemplateComplete(response.ResponseCode, UpdateQuestionTemplateData);
             }
         }
 
@@ -2502,83 +2487,82 @@ mUpdateQuestionAnswerPath = mUpdateQuestionAnswerPath.Replace("{" + "id" + "}", 
         public void UpdateQuestionsInBulk(QuestionResource question, string filterSearch, string filterIdset, string filterCategory, string filterTagset, string filterType, bool? filterPublished, long? filterImportId)
         {
             
-            mUpdateQuestionsInBulkPath = "/trivia/questions";
-            if (!string.IsNullOrEmpty(mUpdateQuestionsInBulkPath))
+            mWebCallEvent.WebPath = "/trivia/questions";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateQuestionsInBulkPath = mUpdateQuestionsInBulkPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (filterSearch != null)
             {
-                queryParams.Add("filter_search", KnetikClient.DefaultClient.ParameterToString(filterSearch));
+                mWebCallEvent.QueryParams["filter_search"] = KnetikClient.ParameterToString(filterSearch);
             }
 
             if (filterIdset != null)
             {
-                queryParams.Add("filter_idset", KnetikClient.DefaultClient.ParameterToString(filterIdset));
+                mWebCallEvent.QueryParams["filter_idset"] = KnetikClient.ParameterToString(filterIdset);
             }
 
             if (filterCategory != null)
             {
-                queryParams.Add("filter_category", KnetikClient.DefaultClient.ParameterToString(filterCategory));
+                mWebCallEvent.QueryParams["filter_category"] = KnetikClient.ParameterToString(filterCategory);
             }
 
             if (filterTagset != null)
             {
-                queryParams.Add("filter_tagset", KnetikClient.DefaultClient.ParameterToString(filterTagset));
+                mWebCallEvent.QueryParams["filter_tagset"] = KnetikClient.ParameterToString(filterTagset);
             }
 
             if (filterType != null)
             {
-                queryParams.Add("filter_type", KnetikClient.DefaultClient.ParameterToString(filterType));
+                mWebCallEvent.QueryParams["filter_type"] = KnetikClient.ParameterToString(filterType);
             }
 
             if (filterPublished != null)
             {
-                queryParams.Add("filter_published", KnetikClient.DefaultClient.ParameterToString(filterPublished));
+                mWebCallEvent.QueryParams["filter_published"] = KnetikClient.ParameterToString(filterPublished);
             }
 
             if (filterImportId != null)
             {
-                queryParams.Add("filter_import_id", KnetikClient.DefaultClient.ParameterToString(filterImportId));
+                mWebCallEvent.QueryParams["filter_import_id"] = KnetikClient.ParameterToString(filterImportId);
             }
 
-            postBody = KnetikClient.DefaultClient.Serialize(question); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(question); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateQuestionsInBulkStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateQuestionsInBulkStartTime, mUpdateQuestionsInBulkPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateQuestionsInBulkCoroutine.ResponseReceived += UpdateQuestionsInBulkCallback;
-            mUpdateQuestionsInBulkCoroutine.Start(mUpdateQuestionsInBulkPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateQuestionsInBulkStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateQuestionsInBulkResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateQuestionsInBulkStartTime, "UpdateQuestionsInBulk", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateQuestionsInBulkCallback(IRestResponse response)
+        private void OnUpdateQuestionsInBulkResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateQuestionsInBulk: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateQuestionsInBulk: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateQuestionsInBulk: " + response.Error);
             }
 
-            UpdateQuestionsInBulkData = (int?) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(int?), response.Headers);
-            KnetikLogger.LogResponse(mUpdateQuestionsInBulkStartTime, mUpdateQuestionsInBulkPath, string.Format("Response received successfully:\n{0}", UpdateQuestionsInBulkData.ToString()));
+            UpdateQuestionsInBulkData = (int?) KnetikClient.Deserialize(response.Content, typeof(int?), response.Headers);
+            KnetikLogger.LogResponse(mUpdateQuestionsInBulkStartTime, "UpdateQuestionsInBulk", string.Format("Response received successfully:\n{0}", UpdateQuestionsInBulkData));
 
             if (UpdateQuestionsInBulkComplete != null)
             {
-                UpdateQuestionsInBulkComplete(UpdateQuestionsInBulkData);
+                UpdateQuestionsInBulkComplete(response.ResponseCode, UpdateQuestionsInBulkData);
             }
         }
 

@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,18 +18,13 @@ namespace com.knetikcloud.Api
     {
         DispositionResource AddDispositionData { get; }
 
-        DispositionResource GetDispositionData { get; }
-
-        List<DispositionCount> GetDispositionCountsData { get; }
-
-        PageResourceDispositionResource GetDispositionsData { get; }
-
-        
         /// <summary>
         /// Add a new disposition 
         /// </summary>
         /// <param name="disposition">The new disposition record</param>
         void AddDisposition(DispositionResource disposition);
+
+        
 
         /// <summary>
         /// Delete a disposition 
@@ -38,11 +32,15 @@ namespace com.knetikcloud.Api
         /// <param name="id">The id of the disposition record</param>
         void DeleteDisposition(long? id);
 
+        DispositionResource GetDispositionData { get; }
+
         /// <summary>
         /// Returns a disposition 
         /// </summary>
         /// <param name="id">The id of the disposition record</param>
         void GetDisposition(long? id);
+
+        List<DispositionCount> GetDispositionCountsData { get; }
 
         /// <summary>
         /// Returns a list of disposition counts 
@@ -50,6 +48,8 @@ namespace com.knetikcloud.Api
         /// <param name="filterContext">Filter for dispositions within a context type (games, articles, polls, etc). Optionally with a specific id like filter_context&#x3D;video:47</param>
         /// <param name="filterOwner">Filter for dispositions from a specific user by id or &#39;me&#39;</param>
         void GetDispositionCounts(string filterContext, string filterOwner);
+
+        PageResourceDispositionResource GetDispositionsData { get; }
 
         /// <summary>
         /// Returns a page of dispositions 
@@ -69,39 +69,36 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class DispositionsApi : IDispositionsApi
     {
-        private readonly KnetikCoroutine mAddDispositionCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mAddDispositionResponseContext;
         private DateTime mAddDispositionStartTime;
-        private string mAddDispositionPath;
-        private readonly KnetikCoroutine mDeleteDispositionCoroutine;
+        private readonly KnetikResponseContext mDeleteDispositionResponseContext;
         private DateTime mDeleteDispositionStartTime;
-        private string mDeleteDispositionPath;
-        private readonly KnetikCoroutine mGetDispositionCoroutine;
+        private readonly KnetikResponseContext mGetDispositionResponseContext;
         private DateTime mGetDispositionStartTime;
-        private string mGetDispositionPath;
-        private readonly KnetikCoroutine mGetDispositionCountsCoroutine;
+        private readonly KnetikResponseContext mGetDispositionCountsResponseContext;
         private DateTime mGetDispositionCountsStartTime;
-        private string mGetDispositionCountsPath;
-        private readonly KnetikCoroutine mGetDispositionsCoroutine;
+        private readonly KnetikResponseContext mGetDispositionsResponseContext;
         private DateTime mGetDispositionsStartTime;
-        private string mGetDispositionsPath;
 
         public DispositionResource AddDispositionData { get; private set; }
-        public delegate void AddDispositionCompleteDelegate(DispositionResource response);
+        public delegate void AddDispositionCompleteDelegate(long responseCode, DispositionResource response);
         public AddDispositionCompleteDelegate AddDispositionComplete;
 
-        public delegate void DeleteDispositionCompleteDelegate();
+        public delegate void DeleteDispositionCompleteDelegate(long responseCode);
         public DeleteDispositionCompleteDelegate DeleteDispositionComplete;
 
         public DispositionResource GetDispositionData { get; private set; }
-        public delegate void GetDispositionCompleteDelegate(DispositionResource response);
+        public delegate void GetDispositionCompleteDelegate(long responseCode, DispositionResource response);
         public GetDispositionCompleteDelegate GetDispositionComplete;
 
         public List<DispositionCount> GetDispositionCountsData { get; private set; }
-        public delegate void GetDispositionCountsCompleteDelegate(List<DispositionCount> response);
+        public delegate void GetDispositionCountsCompleteDelegate(long responseCode, List<DispositionCount> response);
         public GetDispositionCountsCompleteDelegate GetDispositionCountsComplete;
 
         public PageResourceDispositionResource GetDispositionsData { get; private set; }
-        public delegate void GetDispositionsCompleteDelegate(PageResourceDispositionResource response);
+        public delegate void GetDispositionsCompleteDelegate(long responseCode, PageResourceDispositionResource response);
         public GetDispositionsCompleteDelegate GetDispositionsComplete;
 
         /// <summary>
@@ -110,11 +107,16 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public DispositionsApi()
         {
-            mAddDispositionCoroutine = new KnetikCoroutine();
-            mDeleteDispositionCoroutine = new KnetikCoroutine();
-            mGetDispositionCoroutine = new KnetikCoroutine();
-            mGetDispositionCountsCoroutine = new KnetikCoroutine();
-            mGetDispositionsCoroutine = new KnetikCoroutine();
+            mAddDispositionResponseContext = new KnetikResponseContext();
+            mAddDispositionResponseContext.ResponseReceived += OnAddDispositionResponse;
+            mDeleteDispositionResponseContext = new KnetikResponseContext();
+            mDeleteDispositionResponseContext.ResponseReceived += OnDeleteDispositionResponse;
+            mGetDispositionResponseContext = new KnetikResponseContext();
+            mGetDispositionResponseContext.ResponseReceived += OnGetDispositionResponse;
+            mGetDispositionCountsResponseContext = new KnetikResponseContext();
+            mGetDispositionCountsResponseContext.ResponseReceived += OnGetDispositionCountsResponse;
+            mGetDispositionsResponseContext = new KnetikResponseContext();
+            mGetDispositionsResponseContext.ResponseReceived += OnGetDispositionsResponse;
         }
     
         /// <inheritdoc />
@@ -125,48 +127,47 @@ namespace com.knetikcloud.Api
         public void AddDisposition(DispositionResource disposition)
         {
             
-            mAddDispositionPath = "/dispositions";
-            if (!string.IsNullOrEmpty(mAddDispositionPath))
+            mWebCallEvent.WebPath = "/dispositions";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mAddDispositionPath = mAddDispositionPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(disposition); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(disposition); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mAddDispositionStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mAddDispositionStartTime, mAddDispositionPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mAddDispositionCoroutine.ResponseReceived += AddDispositionCallback;
-            mAddDispositionCoroutine.Start(mAddDispositionPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mAddDispositionStartTime = DateTime.Now;
+            mWebCallEvent.Context = mAddDispositionResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mAddDispositionStartTime, "AddDisposition", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void AddDispositionCallback(IRestResponse response)
+        private void OnAddDispositionResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling AddDisposition: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling AddDisposition: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling AddDisposition: " + response.Error);
             }
 
-            AddDispositionData = (DispositionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(DispositionResource), response.Headers);
-            KnetikLogger.LogResponse(mAddDispositionStartTime, mAddDispositionPath, string.Format("Response received successfully:\n{0}", AddDispositionData.ToString()));
+            AddDispositionData = (DispositionResource) KnetikClient.Deserialize(response.Content, typeof(DispositionResource), response.Headers);
+            KnetikLogger.LogResponse(mAddDispositionStartTime, "AddDisposition", string.Format("Response received successfully:\n{0}", AddDispositionData));
 
             if (AddDispositionComplete != null)
             {
-                AddDispositionComplete(AddDispositionData);
+                AddDispositionComplete(response.ResponseCode, AddDispositionData);
             }
         }
 
@@ -183,45 +184,44 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeleteDisposition");
             }
             
-            mDeleteDispositionPath = "/dispositions/{id}";
-            if (!string.IsNullOrEmpty(mDeleteDispositionPath))
+            mWebCallEvent.WebPath = "/dispositions/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteDispositionPath = mDeleteDispositionPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteDispositionPath = mDeleteDispositionPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteDispositionStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteDispositionStartTime, mDeleteDispositionPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteDispositionCoroutine.ResponseReceived += DeleteDispositionCallback;
-            mDeleteDispositionCoroutine.Start(mDeleteDispositionPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteDispositionStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteDispositionResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteDispositionStartTime, "DeleteDisposition", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteDispositionCallback(IRestResponse response)
+        private void OnDeleteDispositionResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteDisposition: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteDisposition: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteDisposition: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteDispositionStartTime, mDeleteDispositionPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteDispositionStartTime, "DeleteDisposition", "Response received successfully.");
             if (DeleteDispositionComplete != null)
             {
-                DeleteDispositionComplete();
+                DeleteDispositionComplete(response.ResponseCode);
             }
         }
 
@@ -238,47 +238,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetDisposition");
             }
             
-            mGetDispositionPath = "/dispositions/{id}";
-            if (!string.IsNullOrEmpty(mGetDispositionPath))
+            mWebCallEvent.WebPath = "/dispositions/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetDispositionPath = mGetDispositionPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetDispositionPath = mGetDispositionPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetDispositionStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetDispositionStartTime, mGetDispositionPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetDispositionCoroutine.ResponseReceived += GetDispositionCallback;
-            mGetDispositionCoroutine.Start(mGetDispositionPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetDispositionStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetDispositionResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetDispositionStartTime, "GetDisposition", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetDispositionCallback(IRestResponse response)
+        private void OnGetDispositionResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetDisposition: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetDisposition: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetDisposition: " + response.Error);
             }
 
-            GetDispositionData = (DispositionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(DispositionResource), response.Headers);
-            KnetikLogger.LogResponse(mGetDispositionStartTime, mGetDispositionPath, string.Format("Response received successfully:\n{0}", GetDispositionData.ToString()));
+            GetDispositionData = (DispositionResource) KnetikClient.Deserialize(response.Content, typeof(DispositionResource), response.Headers);
+            KnetikLogger.LogResponse(mGetDispositionStartTime, "GetDisposition", string.Format("Response received successfully:\n{0}", GetDispositionData));
 
             if (GetDispositionComplete != null)
             {
-                GetDispositionComplete(GetDispositionData);
+                GetDispositionComplete(response.ResponseCode, GetDispositionData);
             }
         }
 
@@ -291,56 +290,55 @@ namespace com.knetikcloud.Api
         public void GetDispositionCounts(string filterContext, string filterOwner)
         {
             
-            mGetDispositionCountsPath = "/dispositions/count";
-            if (!string.IsNullOrEmpty(mGetDispositionCountsPath))
+            mWebCallEvent.WebPath = "/dispositions/count";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetDispositionCountsPath = mGetDispositionCountsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (filterContext != null)
             {
-                queryParams.Add("filter_context", KnetikClient.DefaultClient.ParameterToString(filterContext));
+                mWebCallEvent.QueryParams["filter_context"] = KnetikClient.ParameterToString(filterContext);
             }
 
             if (filterOwner != null)
             {
-                queryParams.Add("filter_owner", KnetikClient.DefaultClient.ParameterToString(filterOwner));
+                mWebCallEvent.QueryParams["filter_owner"] = KnetikClient.ParameterToString(filterOwner);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetDispositionCountsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetDispositionCountsStartTime, mGetDispositionCountsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetDispositionCountsCoroutine.ResponseReceived += GetDispositionCountsCallback;
-            mGetDispositionCountsCoroutine.Start(mGetDispositionCountsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetDispositionCountsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetDispositionCountsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetDispositionCountsStartTime, "GetDispositionCounts", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetDispositionCountsCallback(IRestResponse response)
+        private void OnGetDispositionCountsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetDispositionCounts: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetDispositionCounts: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetDispositionCounts: " + response.Error);
             }
 
-            GetDispositionCountsData = (List<DispositionCount>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<DispositionCount>), response.Headers);
-            KnetikLogger.LogResponse(mGetDispositionCountsStartTime, mGetDispositionCountsPath, string.Format("Response received successfully:\n{0}", GetDispositionCountsData.ToString()));
+            GetDispositionCountsData = (List<DispositionCount>) KnetikClient.Deserialize(response.Content, typeof(List<DispositionCount>), response.Headers);
+            KnetikLogger.LogResponse(mGetDispositionCountsStartTime, "GetDispositionCounts", string.Format("Response received successfully:\n{0}", GetDispositionCountsData));
 
             if (GetDispositionCountsComplete != null)
             {
-                GetDispositionCountsComplete(GetDispositionCountsData);
+                GetDispositionCountsComplete(response.ResponseCode, GetDispositionCountsData);
             }
         }
 
@@ -356,71 +354,70 @@ namespace com.knetikcloud.Api
         public void GetDispositions(string filterContext, string filterOwner, int? size, int? page, string order)
         {
             
-            mGetDispositionsPath = "/dispositions";
-            if (!string.IsNullOrEmpty(mGetDispositionsPath))
+            mWebCallEvent.WebPath = "/dispositions";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetDispositionsPath = mGetDispositionsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (filterContext != null)
             {
-                queryParams.Add("filter_context", KnetikClient.DefaultClient.ParameterToString(filterContext));
+                mWebCallEvent.QueryParams["filter_context"] = KnetikClient.ParameterToString(filterContext);
             }
 
             if (filterOwner != null)
             {
-                queryParams.Add("filter_owner", KnetikClient.DefaultClient.ParameterToString(filterOwner));
+                mWebCallEvent.QueryParams["filter_owner"] = KnetikClient.ParameterToString(filterOwner);
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetDispositionsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetDispositionsStartTime, mGetDispositionsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetDispositionsCoroutine.ResponseReceived += GetDispositionsCallback;
-            mGetDispositionsCoroutine.Start(mGetDispositionsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetDispositionsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetDispositionsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetDispositionsStartTime, "GetDispositions", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetDispositionsCallback(IRestResponse response)
+        private void OnGetDispositionsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetDispositions: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetDispositions: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetDispositions: " + response.Error);
             }
 
-            GetDispositionsData = (PageResourceDispositionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceDispositionResource), response.Headers);
-            KnetikLogger.LogResponse(mGetDispositionsStartTime, mGetDispositionsPath, string.Format("Response received successfully:\n{0}", GetDispositionsData.ToString()));
+            GetDispositionsData = (PageResourceDispositionResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceDispositionResource), response.Headers);
+            KnetikLogger.LogResponse(mGetDispositionsStartTime, "GetDispositions", string.Format("Response received successfully:\n{0}", GetDispositionsData));
 
             if (GetDispositionsComplete != null)
             {
-                GetDispositionsComplete(GetDispositionsData);
+                GetDispositionsComplete(response.ResponseCode, GetDispositionsData);
             }
         }
 

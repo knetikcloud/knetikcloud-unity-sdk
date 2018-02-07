@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,7 +18,6 @@ namespace com.knetikcloud.Api
     {
         string SilentPostOptimalData { get; }
 
-        
         /// <summary>
         /// Initiate silent post with Optimal Will return the url for a hosted payment endpoint to post to. See Optimal documentation for details.
         /// </summary>
@@ -34,12 +32,13 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class PaymentsOptimalApi : IPaymentsOptimalApi
     {
-        private readonly KnetikCoroutine mSilentPostOptimalCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mSilentPostOptimalResponseContext;
         private DateTime mSilentPostOptimalStartTime;
-        private string mSilentPostOptimalPath;
 
         public string SilentPostOptimalData { get; private set; }
-        public delegate void SilentPostOptimalCompleteDelegate(string response);
+        public delegate void SilentPostOptimalCompleteDelegate(long responseCode, string response);
         public SilentPostOptimalCompleteDelegate SilentPostOptimalComplete;
 
         /// <summary>
@@ -48,7 +47,8 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public PaymentsOptimalApi()
         {
-            mSilentPostOptimalCoroutine = new KnetikCoroutine();
+            mSilentPostOptimalResponseContext = new KnetikResponseContext();
+            mSilentPostOptimalResponseContext.ResponseReceived += OnSilentPostOptimalResponse;
         }
     
         /// <inheritdoc />
@@ -59,48 +59,47 @@ namespace com.knetikcloud.Api
         public void SilentPostOptimal(OptimalPaymentRequest request)
         {
             
-            mSilentPostOptimalPath = "/payment/provider/optimal/silent";
-            if (!string.IsNullOrEmpty(mSilentPostOptimalPath))
+            mWebCallEvent.WebPath = "/payment/provider/optimal/silent";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mSilentPostOptimalPath = mSilentPostOptimalPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(request); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(request); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mSilentPostOptimalStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mSilentPostOptimalStartTime, mSilentPostOptimalPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mSilentPostOptimalCoroutine.ResponseReceived += SilentPostOptimalCallback;
-            mSilentPostOptimalCoroutine.Start(mSilentPostOptimalPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mSilentPostOptimalStartTime = DateTime.Now;
+            mWebCallEvent.Context = mSilentPostOptimalResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mSilentPostOptimalStartTime, "SilentPostOptimal", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void SilentPostOptimalCallback(IRestResponse response)
+        private void OnSilentPostOptimalResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling SilentPostOptimal: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling SilentPostOptimal: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling SilentPostOptimal: " + response.Error);
             }
 
-            SilentPostOptimalData = (string) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(string), response.Headers);
-            KnetikLogger.LogResponse(mSilentPostOptimalStartTime, mSilentPostOptimalPath, string.Format("Response received successfully:\n{0}", SilentPostOptimalData.ToString()));
+            SilentPostOptimalData = (string) KnetikClient.Deserialize(response.Content, typeof(string), response.Headers);
+            KnetikLogger.LogResponse(mSilentPostOptimalStartTime, "SilentPostOptimal", string.Format("Response received successfully:\n{0}", SilentPostOptimalData));
 
             if (SilentPostOptimalComplete != null)
             {
-                SilentPostOptimalComplete(SilentPostOptimalData);
+                SilentPostOptimalComplete(response.ResponseCode, SilentPostOptimalData);
             }
         }
 

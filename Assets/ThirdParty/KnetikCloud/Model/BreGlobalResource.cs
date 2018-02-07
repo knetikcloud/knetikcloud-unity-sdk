@@ -2,8 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using com.knetikcloud.Attributes;
-using com.knetikcloud.Serialization;
+using KnetikUnity.Attributes;
+using KnetikUnity.Serialization;
 using Newtonsoft.Json;
 
 namespace com.knetikcloud.Model
@@ -59,9 +59,9 @@ namespace com.knetikcloud.Model
         public bool? SystemGlobal;
 
         /// <summary>
-        /// The variable type the global stores. See the See Bre Variables enpoint for list
+        /// The variable type the global stores. See the BRE variables endpoint for list
         /// </summary>
-        /// <value>The variable type the global stores. See the See Bre Variables enpoint for list</value>
+        /// <value>The variable type the global stores. See the BRE variables endpoint for list</value>
         [JsonProperty(PropertyName = "type")]
         public string Type;
 

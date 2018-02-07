@@ -1,9 +1,10 @@
 ﻿using com.knetikcloud.Api;
-using com.knetikcloud.Client;
 using com.knetikcloud.Credentials;
 using com.knetikcloud.Events;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Utils;
 using UnityEngine;
 
 
@@ -15,20 +16,20 @@ namespace KnetikTests
         private void Awake()
         {
             KnetikGlobalEventSystem.Subscribe<KnetikClientReadyResponseEvent>(OnClientReady);
-            KnetikGlobalEventSystem.Subscribe<KnetikClientAuthenticatedEvent>(OnClientAuthenticated);
+            KnetikGlobalEventSystem.Subscribe<KnetikClientAuthenticateResponseEvent<OAuth2Resource>>(OnClientAuthenticateResponse);
         }
 
         private void Start()
         {
             // Due to order of initialization the client may send a notification of being ready before we setup our
             // listener for that event.  As such, we verify the status when the this object is initialized.
-            KnetikGlobalEventSystem.Publish(KnetikClientReadyRequestEvent.GetInstance(this));
+            KnetikGlobalEventSystem.Publish(new KnetikClientReadyRequestEvent(this));
         }
 
         private void OnDestroy()
         {
             KnetikGlobalEventSystem.Unsubscribe<KnetikClientReadyResponseEvent>(OnClientReady);
-            KnetikGlobalEventSystem.Unsubscribe<KnetikClientAuthenticatedEvent>(OnClientAuthenticated);
+            KnetikGlobalEventSystem.Unsubscribe<KnetikClientAuthenticateResponseEvent<OAuth2Resource>>(OnClientAuthenticateResponse);
         }
 
         #endregion
@@ -37,11 +38,11 @@ namespace KnetikTests
         {
             if (e.ShouldProcess(this))
             {
-                KnetikClient.DefaultClient.AuthenticateWithUserCredentials(KnetikClient.ServerEnvironment.Staging, KnetikUserCredentials.Load());
+                KnetikGlobalEventSystem.Publish(new KnetikCloudUserAuthenticateRequestEvent() { UserCredentials = KnetikUserCredentials.Load() });
             }
         }
 
-        private static void OnClientAuthenticated(KnetikClientAuthenticatedEvent e)
+        private static void OnClientAuthenticateResponse(KnetikClientAuthenticateResponseEvent<OAuth2Resource> e)
         {
             KnetikLogger.Log("*** CLIENT AUTHENTICATED SUCCESSFULLY ***");
             GetUserId();
@@ -55,7 +56,7 @@ namespace KnetikTests
             userApi.GetUser("me");
         }
 
-        private static void GetUserComplete(UserResource response)
+        private static void GetUserComplete(long responseCode, UserResource response)
         {
             KnetikLogger.Log("*** USER RETRIEVED SUCCESSFULLY ***");
             KnetikLogger.Log(response.ToString());

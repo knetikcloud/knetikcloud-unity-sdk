@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,18 +18,13 @@ namespace com.knetikcloud.Api
     {
         FlagResource AddFlagData { get; }
 
-        PageResourceFlagResource GetFlagsData { get; }
-
-        FlagReportResource GetModerationReportData { get; }
-
-        PageResourceFlagReportResource GetModerationReportsData { get; }
-
-        
         /// <summary>
         /// Add a flag 
         /// </summary>
         /// <param name="flagResource">The flag resource object</param>
         void AddFlag(FlagResource flagResource);
+
+        
 
         /// <summary>
         /// Delete a flag 
@@ -39,6 +33,8 @@ namespace com.knetikcloud.Api
         /// <param name="contextId">The id of the context</param>
         /// <param name="userId">The id of the user</param>
         void DeleteFlag(string contextName, string contextId, int? userId);
+
+        PageResourceFlagResource GetFlagsData { get; }
 
         /// <summary>
         /// Returns a page of flags 
@@ -50,11 +46,15 @@ namespace com.knetikcloud.Api
         /// <param name="page">The number of the page returned, starting with 1</param>
         void GetFlags(string filterContext, string filterContextId, int? filterUserId, int? size, int? page);
 
+        FlagReportResource GetModerationReportData { get; }
+
         /// <summary>
         /// Get a flag report 
         /// </summary>
         /// <param name="id">The flag report id</param>
         void GetModerationReport(long? id);
+
+        PageResourceFlagReportResource GetModerationReportsData { get; }
 
         /// <summary>
         /// Returns a page of flag reports Context can be either a free-form string or a pre-defined context name
@@ -65,6 +65,8 @@ namespace com.knetikcloud.Api
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
         void GetModerationReports(bool? excludeResolved, string filterContext, string filterContextId, int? size, int? page);
+
+        
 
         /// <summary>
         /// Update a flag report Lets you set the resolution of a report. Resolution types is {banned,ignore} in case of &#39;banned&#39; you will need to pass the reason.
@@ -81,45 +83,41 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class MediaModerationApi : IMediaModerationApi
     {
-        private readonly KnetikCoroutine mAddFlagCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mAddFlagResponseContext;
         private DateTime mAddFlagStartTime;
-        private string mAddFlagPath;
-        private readonly KnetikCoroutine mDeleteFlagCoroutine;
+        private readonly KnetikResponseContext mDeleteFlagResponseContext;
         private DateTime mDeleteFlagStartTime;
-        private string mDeleteFlagPath;
-        private readonly KnetikCoroutine mGetFlagsCoroutine;
+        private readonly KnetikResponseContext mGetFlagsResponseContext;
         private DateTime mGetFlagsStartTime;
-        private string mGetFlagsPath;
-        private readonly KnetikCoroutine mGetModerationReportCoroutine;
+        private readonly KnetikResponseContext mGetModerationReportResponseContext;
         private DateTime mGetModerationReportStartTime;
-        private string mGetModerationReportPath;
-        private readonly KnetikCoroutine mGetModerationReportsCoroutine;
+        private readonly KnetikResponseContext mGetModerationReportsResponseContext;
         private DateTime mGetModerationReportsStartTime;
-        private string mGetModerationReportsPath;
-        private readonly KnetikCoroutine mUpdateModerationReportCoroutine;
+        private readonly KnetikResponseContext mUpdateModerationReportResponseContext;
         private DateTime mUpdateModerationReportStartTime;
-        private string mUpdateModerationReportPath;
 
         public FlagResource AddFlagData { get; private set; }
-        public delegate void AddFlagCompleteDelegate(FlagResource response);
+        public delegate void AddFlagCompleteDelegate(long responseCode, FlagResource response);
         public AddFlagCompleteDelegate AddFlagComplete;
 
-        public delegate void DeleteFlagCompleteDelegate();
+        public delegate void DeleteFlagCompleteDelegate(long responseCode);
         public DeleteFlagCompleteDelegate DeleteFlagComplete;
 
         public PageResourceFlagResource GetFlagsData { get; private set; }
-        public delegate void GetFlagsCompleteDelegate(PageResourceFlagResource response);
+        public delegate void GetFlagsCompleteDelegate(long responseCode, PageResourceFlagResource response);
         public GetFlagsCompleteDelegate GetFlagsComplete;
 
         public FlagReportResource GetModerationReportData { get; private set; }
-        public delegate void GetModerationReportCompleteDelegate(FlagReportResource response);
+        public delegate void GetModerationReportCompleteDelegate(long responseCode, FlagReportResource response);
         public GetModerationReportCompleteDelegate GetModerationReportComplete;
 
         public PageResourceFlagReportResource GetModerationReportsData { get; private set; }
-        public delegate void GetModerationReportsCompleteDelegate(PageResourceFlagReportResource response);
+        public delegate void GetModerationReportsCompleteDelegate(long responseCode, PageResourceFlagReportResource response);
         public GetModerationReportsCompleteDelegate GetModerationReportsComplete;
 
-        public delegate void UpdateModerationReportCompleteDelegate();
+        public delegate void UpdateModerationReportCompleteDelegate(long responseCode);
         public UpdateModerationReportCompleteDelegate UpdateModerationReportComplete;
 
         /// <summary>
@@ -128,12 +126,18 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public MediaModerationApi()
         {
-            mAddFlagCoroutine = new KnetikCoroutine();
-            mDeleteFlagCoroutine = new KnetikCoroutine();
-            mGetFlagsCoroutine = new KnetikCoroutine();
-            mGetModerationReportCoroutine = new KnetikCoroutine();
-            mGetModerationReportsCoroutine = new KnetikCoroutine();
-            mUpdateModerationReportCoroutine = new KnetikCoroutine();
+            mAddFlagResponseContext = new KnetikResponseContext();
+            mAddFlagResponseContext.ResponseReceived += OnAddFlagResponse;
+            mDeleteFlagResponseContext = new KnetikResponseContext();
+            mDeleteFlagResponseContext.ResponseReceived += OnDeleteFlagResponse;
+            mGetFlagsResponseContext = new KnetikResponseContext();
+            mGetFlagsResponseContext.ResponseReceived += OnGetFlagsResponse;
+            mGetModerationReportResponseContext = new KnetikResponseContext();
+            mGetModerationReportResponseContext.ResponseReceived += OnGetModerationReportResponse;
+            mGetModerationReportsResponseContext = new KnetikResponseContext();
+            mGetModerationReportsResponseContext.ResponseReceived += OnGetModerationReportsResponse;
+            mUpdateModerationReportResponseContext = new KnetikResponseContext();
+            mUpdateModerationReportResponseContext.ResponseReceived += OnUpdateModerationReportResponse;
         }
     
         /// <inheritdoc />
@@ -144,48 +148,47 @@ namespace com.knetikcloud.Api
         public void AddFlag(FlagResource flagResource)
         {
             
-            mAddFlagPath = "/moderation/flags";
-            if (!string.IsNullOrEmpty(mAddFlagPath))
+            mWebCallEvent.WebPath = "/moderation/flags";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mAddFlagPath = mAddFlagPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(flagResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(flagResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mAddFlagStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mAddFlagStartTime, mAddFlagPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mAddFlagCoroutine.ResponseReceived += AddFlagCallback;
-            mAddFlagCoroutine.Start(mAddFlagPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mAddFlagStartTime = DateTime.Now;
+            mWebCallEvent.Context = mAddFlagResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mAddFlagStartTime, "AddFlag", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void AddFlagCallback(IRestResponse response)
+        private void OnAddFlagResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling AddFlag: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling AddFlag: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling AddFlag: " + response.Error);
             }
 
-            AddFlagData = (FlagResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(FlagResource), response.Headers);
-            KnetikLogger.LogResponse(mAddFlagStartTime, mAddFlagPath, string.Format("Response received successfully:\n{0}", AddFlagData.ToString()));
+            AddFlagData = (FlagResource) KnetikClient.Deserialize(response.Content, typeof(FlagResource), response.Headers);
+            KnetikLogger.LogResponse(mAddFlagStartTime, "AddFlag", string.Format("Response received successfully:\n{0}", AddFlagData));
 
             if (AddFlagComplete != null)
             {
-                AddFlagComplete(AddFlagData);
+                AddFlagComplete(response.ResponseCode, AddFlagData);
             }
         }
 
@@ -199,59 +202,58 @@ namespace com.knetikcloud.Api
         public void DeleteFlag(string contextName, string contextId, int? userId)
         {
             
-            mDeleteFlagPath = "/moderation/flags";
-            if (!string.IsNullOrEmpty(mDeleteFlagPath))
+            mWebCallEvent.WebPath = "/moderation/flags";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteFlagPath = mDeleteFlagPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (contextName != null)
             {
-                queryParams.Add("context_name", KnetikClient.DefaultClient.ParameterToString(contextName));
+                mWebCallEvent.QueryParams["context_name"] = KnetikClient.ParameterToString(contextName);
             }
 
             if (contextId != null)
             {
-                queryParams.Add("context_id", KnetikClient.DefaultClient.ParameterToString(contextId));
+                mWebCallEvent.QueryParams["context_id"] = KnetikClient.ParameterToString(contextId);
             }
 
             if (userId != null)
             {
-                queryParams.Add("user_id", KnetikClient.DefaultClient.ParameterToString(userId));
+                mWebCallEvent.QueryParams["user_id"] = KnetikClient.ParameterToString(userId);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteFlagStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteFlagStartTime, mDeleteFlagPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteFlagCoroutine.ResponseReceived += DeleteFlagCallback;
-            mDeleteFlagCoroutine.Start(mDeleteFlagPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteFlagStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteFlagResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteFlagStartTime, "DeleteFlag", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteFlagCallback(IRestResponse response)
+        private void OnDeleteFlagResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteFlag: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteFlag: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteFlag: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteFlagStartTime, mDeleteFlagPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteFlagStartTime, "DeleteFlag", "Response received successfully.");
             if (DeleteFlagComplete != null)
             {
-                DeleteFlagComplete();
+                DeleteFlagComplete(response.ResponseCode);
             }
         }
 
@@ -267,71 +269,70 @@ namespace com.knetikcloud.Api
         public void GetFlags(string filterContext, string filterContextId, int? filterUserId, int? size, int? page)
         {
             
-            mGetFlagsPath = "/moderation/flags";
-            if (!string.IsNullOrEmpty(mGetFlagsPath))
+            mWebCallEvent.WebPath = "/moderation/flags";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetFlagsPath = mGetFlagsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (filterContext != null)
             {
-                queryParams.Add("filter_context", KnetikClient.DefaultClient.ParameterToString(filterContext));
+                mWebCallEvent.QueryParams["filter_context"] = KnetikClient.ParameterToString(filterContext);
             }
 
             if (filterContextId != null)
             {
-                queryParams.Add("filter_context_id", KnetikClient.DefaultClient.ParameterToString(filterContextId));
+                mWebCallEvent.QueryParams["filter_context_id"] = KnetikClient.ParameterToString(filterContextId);
             }
 
             if (filterUserId != null)
             {
-                queryParams.Add("filter_user_id", KnetikClient.DefaultClient.ParameterToString(filterUserId));
+                mWebCallEvent.QueryParams["filter_user_id"] = KnetikClient.ParameterToString(filterUserId);
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetFlagsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetFlagsStartTime, mGetFlagsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetFlagsCoroutine.ResponseReceived += GetFlagsCallback;
-            mGetFlagsCoroutine.Start(mGetFlagsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetFlagsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetFlagsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetFlagsStartTime, "GetFlags", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetFlagsCallback(IRestResponse response)
+        private void OnGetFlagsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetFlags: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetFlags: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetFlags: " + response.Error);
             }
 
-            GetFlagsData = (PageResourceFlagResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceFlagResource), response.Headers);
-            KnetikLogger.LogResponse(mGetFlagsStartTime, mGetFlagsPath, string.Format("Response received successfully:\n{0}", GetFlagsData.ToString()));
+            GetFlagsData = (PageResourceFlagResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceFlagResource), response.Headers);
+            KnetikLogger.LogResponse(mGetFlagsStartTime, "GetFlags", string.Format("Response received successfully:\n{0}", GetFlagsData));
 
             if (GetFlagsComplete != null)
             {
-                GetFlagsComplete(GetFlagsData);
+                GetFlagsComplete(response.ResponseCode, GetFlagsData);
             }
         }
 
@@ -348,47 +349,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetModerationReport");
             }
             
-            mGetModerationReportPath = "/moderation/reports/{id}";
-            if (!string.IsNullOrEmpty(mGetModerationReportPath))
+            mWebCallEvent.WebPath = "/moderation/reports/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetModerationReportPath = mGetModerationReportPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetModerationReportPath = mGetModerationReportPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetModerationReportStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetModerationReportStartTime, mGetModerationReportPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetModerationReportCoroutine.ResponseReceived += GetModerationReportCallback;
-            mGetModerationReportCoroutine.Start(mGetModerationReportPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetModerationReportStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetModerationReportResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetModerationReportStartTime, "GetModerationReport", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetModerationReportCallback(IRestResponse response)
+        private void OnGetModerationReportResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetModerationReport: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetModerationReport: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetModerationReport: " + response.Error);
             }
 
-            GetModerationReportData = (FlagReportResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(FlagReportResource), response.Headers);
-            KnetikLogger.LogResponse(mGetModerationReportStartTime, mGetModerationReportPath, string.Format("Response received successfully:\n{0}", GetModerationReportData.ToString()));
+            GetModerationReportData = (FlagReportResource) KnetikClient.Deserialize(response.Content, typeof(FlagReportResource), response.Headers);
+            KnetikLogger.LogResponse(mGetModerationReportStartTime, "GetModerationReport", string.Format("Response received successfully:\n{0}", GetModerationReportData));
 
             if (GetModerationReportComplete != null)
             {
-                GetModerationReportComplete(GetModerationReportData);
+                GetModerationReportComplete(response.ResponseCode, GetModerationReportData);
             }
         }
 
@@ -404,71 +404,70 @@ namespace com.knetikcloud.Api
         public void GetModerationReports(bool? excludeResolved, string filterContext, string filterContextId, int? size, int? page)
         {
             
-            mGetModerationReportsPath = "/moderation/reports";
-            if (!string.IsNullOrEmpty(mGetModerationReportsPath))
+            mWebCallEvent.WebPath = "/moderation/reports";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetModerationReportsPath = mGetModerationReportsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (excludeResolved != null)
             {
-                queryParams.Add("exclude_resolved", KnetikClient.DefaultClient.ParameterToString(excludeResolved));
+                mWebCallEvent.QueryParams["exclude_resolved"] = KnetikClient.ParameterToString(excludeResolved);
             }
 
             if (filterContext != null)
             {
-                queryParams.Add("filter_context", KnetikClient.DefaultClient.ParameterToString(filterContext));
+                mWebCallEvent.QueryParams["filter_context"] = KnetikClient.ParameterToString(filterContext);
             }
 
             if (filterContextId != null)
             {
-                queryParams.Add("filter_context_id", KnetikClient.DefaultClient.ParameterToString(filterContextId));
+                mWebCallEvent.QueryParams["filter_context_id"] = KnetikClient.ParameterToString(filterContextId);
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetModerationReportsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetModerationReportsStartTime, mGetModerationReportsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetModerationReportsCoroutine.ResponseReceived += GetModerationReportsCallback;
-            mGetModerationReportsCoroutine.Start(mGetModerationReportsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetModerationReportsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetModerationReportsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetModerationReportsStartTime, "GetModerationReports", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetModerationReportsCallback(IRestResponse response)
+        private void OnGetModerationReportsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetModerationReports: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetModerationReports: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetModerationReports: " + response.Error);
             }
 
-            GetModerationReportsData = (PageResourceFlagReportResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceFlagReportResource), response.Headers);
-            KnetikLogger.LogResponse(mGetModerationReportsStartTime, mGetModerationReportsPath, string.Format("Response received successfully:\n{0}", GetModerationReportsData.ToString()));
+            GetModerationReportsData = (PageResourceFlagReportResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceFlagReportResource), response.Headers);
+            KnetikLogger.LogResponse(mGetModerationReportsStartTime, "GetModerationReports", string.Format("Response received successfully:\n{0}", GetModerationReportsData));
 
             if (GetModerationReportsComplete != null)
             {
-                GetModerationReportsComplete(GetModerationReportsData);
+                GetModerationReportsComplete(response.ResponseCode, GetModerationReportsData);
             }
         }
 
@@ -486,47 +485,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling UpdateModerationReport");
             }
             
-            mUpdateModerationReportPath = "/moderation/reports/{id}";
-            if (!string.IsNullOrEmpty(mUpdateModerationReportPath))
+            mWebCallEvent.WebPath = "/moderation/reports/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateModerationReportPath = mUpdateModerationReportPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateModerationReportPath = mUpdateModerationReportPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(flagReportResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(flagReportResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateModerationReportStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateModerationReportStartTime, mUpdateModerationReportPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateModerationReportCoroutine.ResponseReceived += UpdateModerationReportCallback;
-            mUpdateModerationReportCoroutine.Start(mUpdateModerationReportPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateModerationReportStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateModerationReportResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateModerationReportStartTime, "UpdateModerationReport", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateModerationReportCallback(IRestResponse response)
+        private void OnUpdateModerationReportResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateModerationReport: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateModerationReport: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateModerationReport: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mUpdateModerationReportStartTime, mUpdateModerationReportPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mUpdateModerationReportStartTime, "UpdateModerationReport", "Response received successfully.");
             if (UpdateModerationReportComplete != null)
             {
-                UpdateModerationReportComplete();
+                UpdateModerationReportComplete(response.ResponseCode);
             }
         }
 

@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,13 +18,12 @@ namespace com.knetikcloud.Api
     {
         List<VariableTypeResource> GetBREVariableTypesData { get; }
 
-        PageResourceSimpleReferenceResourceobject GetBREVariableValuesData { get; }
-
-        
         /// <summary>
         /// Get a list of variable types available Types include integer, string, user and invoice. These are used to qualify trigger parameters and action variables with strong typing.
         /// </summary>
         void GetBREVariableTypes();
+
+        PageResourceSimpleReferenceResourceobject GetBREVariableValuesData { get; }
 
         /// <summary>
         /// List valid values for a type Used to lookup users to fill in a user constant for example. Only types marked as enumerable are suppoorted here.
@@ -44,19 +42,19 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class BRERuleEngineVariablesApi : IBRERuleEngineVariablesApi
     {
-        private readonly KnetikCoroutine mGetBREVariableTypesCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mGetBREVariableTypesResponseContext;
         private DateTime mGetBREVariableTypesStartTime;
-        private string mGetBREVariableTypesPath;
-        private readonly KnetikCoroutine mGetBREVariableValuesCoroutine;
+        private readonly KnetikResponseContext mGetBREVariableValuesResponseContext;
         private DateTime mGetBREVariableValuesStartTime;
-        private string mGetBREVariableValuesPath;
 
         public List<VariableTypeResource> GetBREVariableTypesData { get; private set; }
-        public delegate void GetBREVariableTypesCompleteDelegate(List<VariableTypeResource> response);
+        public delegate void GetBREVariableTypesCompleteDelegate(long responseCode, List<VariableTypeResource> response);
         public GetBREVariableTypesCompleteDelegate GetBREVariableTypesComplete;
 
         public PageResourceSimpleReferenceResourceobject GetBREVariableValuesData { get; private set; }
-        public delegate void GetBREVariableValuesCompleteDelegate(PageResourceSimpleReferenceResourceobject response);
+        public delegate void GetBREVariableValuesCompleteDelegate(long responseCode, PageResourceSimpleReferenceResourceobject response);
         public GetBREVariableValuesCompleteDelegate GetBREVariableValuesComplete;
 
         /// <summary>
@@ -65,8 +63,10 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public BRERuleEngineVariablesApi()
         {
-            mGetBREVariableTypesCoroutine = new KnetikCoroutine();
-            mGetBREVariableValuesCoroutine = new KnetikCoroutine();
+            mGetBREVariableTypesResponseContext = new KnetikResponseContext();
+            mGetBREVariableTypesResponseContext.ResponseReceived += OnGetBREVariableTypesResponse;
+            mGetBREVariableValuesResponseContext = new KnetikResponseContext();
+            mGetBREVariableValuesResponseContext.ResponseReceived += OnGetBREVariableValuesResponse;
         }
     
         /// <inheritdoc />
@@ -76,46 +76,45 @@ namespace com.knetikcloud.Api
         public void GetBREVariableTypes()
         {
             
-            mGetBREVariableTypesPath = "/bre/variable-types";
-            if (!string.IsNullOrEmpty(mGetBREVariableTypesPath))
+            mWebCallEvent.WebPath = "/bre/variable-types";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetBREVariableTypesPath = mGetBREVariableTypesPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetBREVariableTypesStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetBREVariableTypesStartTime, mGetBREVariableTypesPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetBREVariableTypesCoroutine.ResponseReceived += GetBREVariableTypesCallback;
-            mGetBREVariableTypesCoroutine.Start(mGetBREVariableTypesPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetBREVariableTypesStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetBREVariableTypesResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetBREVariableTypesStartTime, "GetBREVariableTypes", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetBREVariableTypesCallback(IRestResponse response)
+        private void OnGetBREVariableTypesResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetBREVariableTypes: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetBREVariableTypes: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetBREVariableTypes: " + response.Error);
             }
 
-            GetBREVariableTypesData = (List<VariableTypeResource>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<VariableTypeResource>), response.Headers);
-            KnetikLogger.LogResponse(mGetBREVariableTypesStartTime, mGetBREVariableTypesPath, string.Format("Response received successfully:\n{0}", GetBREVariableTypesData.ToString()));
+            GetBREVariableTypesData = (List<VariableTypeResource>) KnetikClient.Deserialize(response.Content, typeof(List<VariableTypeResource>), response.Headers);
+            KnetikLogger.LogResponse(mGetBREVariableTypesStartTime, "GetBREVariableTypes", string.Format("Response received successfully:\n{0}", GetBREVariableTypesData));
 
             if (GetBREVariableTypesComplete != null)
             {
-                GetBREVariableTypesComplete(GetBREVariableTypesData);
+                GetBREVariableTypesComplete(response.ResponseCode, GetBREVariableTypesData);
             }
         }
 
@@ -135,62 +134,61 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'name' when calling GetBREVariableValues");
             }
             
-            mGetBREVariableValuesPath = "/bre/variable-types/{name}/values";
-            if (!string.IsNullOrEmpty(mGetBREVariableValuesPath))
+            mWebCallEvent.WebPath = "/bre/variable-types/{name}/values";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetBREVariableValuesPath = mGetBREVariableValuesPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetBREVariableValuesPath = mGetBREVariableValuesPath.Replace("{" + "name" + "}", KnetikClient.DefaultClient.ParameterToString(name));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "name" + "}", KnetikClient.ParameterToString(name));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (filterName != null)
             {
-                queryParams.Add("filter_name", KnetikClient.DefaultClient.ParameterToString(filterName));
+                mWebCallEvent.QueryParams["filter_name"] = KnetikClient.ParameterToString(filterName);
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetBREVariableValuesStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetBREVariableValuesStartTime, mGetBREVariableValuesPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetBREVariableValuesCoroutine.ResponseReceived += GetBREVariableValuesCallback;
-            mGetBREVariableValuesCoroutine.Start(mGetBREVariableValuesPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetBREVariableValuesStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetBREVariableValuesResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetBREVariableValuesStartTime, "GetBREVariableValues", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetBREVariableValuesCallback(IRestResponse response)
+        private void OnGetBREVariableValuesResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetBREVariableValues: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetBREVariableValues: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetBREVariableValues: " + response.Error);
             }
 
-            GetBREVariableValuesData = (PageResourceSimpleReferenceResourceobject) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceSimpleReferenceResourceobject), response.Headers);
-            KnetikLogger.LogResponse(mGetBREVariableValuesStartTime, mGetBREVariableValuesPath, string.Format("Response received successfully:\n{0}", GetBREVariableValuesData.ToString()));
+            GetBREVariableValuesData = (PageResourceSimpleReferenceResourceobject) KnetikClient.Deserialize(response.Content, typeof(PageResourceSimpleReferenceResourceobject), response.Headers);
+            KnetikLogger.LogResponse(mGetBREVariableValuesStartTime, "GetBREVariableValues", string.Format("Response received successfully:\n{0}", GetBREVariableValuesData));
 
             if (GetBREVariableValuesComplete != null)
             {
-                GetBREVariableValuesComplete(GetBREVariableValuesData);
+                GetBREVariableValuesComplete(response.ResponseCode, GetBREVariableValuesData);
             }
         }
 

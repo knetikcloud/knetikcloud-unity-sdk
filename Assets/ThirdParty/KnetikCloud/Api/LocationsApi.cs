@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,28 +18,27 @@ namespace com.knetikcloud.Api
     {
         List<CountryResource> GetCountriesData { get; }
 
-        string GetCountryByGeoLocationData { get; }
-
-        List<StateResource> GetCountryStatesData { get; }
-
-        CurrencyResource GetCurrencyByGeoLocationData { get; }
-
-        
         /// <summary>
         /// Get a list of countries 
         /// </summary>
         void GetCountries();
+
+        string GetCountryByGeoLocationData { get; }
 
         /// <summary>
         /// Get the iso3 code of your country Determined by geo ip location
         /// </summary>
         void GetCountryByGeoLocation();
 
+        List<StateResource> GetCountryStatesData { get; }
+
         /// <summary>
         /// Get a list of a country&#39;s states 
         /// </summary>
         /// <param name="countryCodeIso3">The iso3 code of the country</param>
         void GetCountryStates(string countryCodeIso3);
+
+        CurrencyResource GetCurrencyByGeoLocationData { get; }
 
         /// <summary>
         /// Get the currency information of your country Determined by geo ip location, currency to country mapping and a fallback setting
@@ -55,33 +53,31 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class LocationsApi : ILocationsApi
     {
-        private readonly KnetikCoroutine mGetCountriesCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mGetCountriesResponseContext;
         private DateTime mGetCountriesStartTime;
-        private string mGetCountriesPath;
-        private readonly KnetikCoroutine mGetCountryByGeoLocationCoroutine;
+        private readonly KnetikResponseContext mGetCountryByGeoLocationResponseContext;
         private DateTime mGetCountryByGeoLocationStartTime;
-        private string mGetCountryByGeoLocationPath;
-        private readonly KnetikCoroutine mGetCountryStatesCoroutine;
+        private readonly KnetikResponseContext mGetCountryStatesResponseContext;
         private DateTime mGetCountryStatesStartTime;
-        private string mGetCountryStatesPath;
-        private readonly KnetikCoroutine mGetCurrencyByGeoLocationCoroutine;
+        private readonly KnetikResponseContext mGetCurrencyByGeoLocationResponseContext;
         private DateTime mGetCurrencyByGeoLocationStartTime;
-        private string mGetCurrencyByGeoLocationPath;
 
         public List<CountryResource> GetCountriesData { get; private set; }
-        public delegate void GetCountriesCompleteDelegate(List<CountryResource> response);
+        public delegate void GetCountriesCompleteDelegate(long responseCode, List<CountryResource> response);
         public GetCountriesCompleteDelegate GetCountriesComplete;
 
         public string GetCountryByGeoLocationData { get; private set; }
-        public delegate void GetCountryByGeoLocationCompleteDelegate(string response);
+        public delegate void GetCountryByGeoLocationCompleteDelegate(long responseCode, string response);
         public GetCountryByGeoLocationCompleteDelegate GetCountryByGeoLocationComplete;
 
         public List<StateResource> GetCountryStatesData { get; private set; }
-        public delegate void GetCountryStatesCompleteDelegate(List<StateResource> response);
+        public delegate void GetCountryStatesCompleteDelegate(long responseCode, List<StateResource> response);
         public GetCountryStatesCompleteDelegate GetCountryStatesComplete;
 
         public CurrencyResource GetCurrencyByGeoLocationData { get; private set; }
-        public delegate void GetCurrencyByGeoLocationCompleteDelegate(CurrencyResource response);
+        public delegate void GetCurrencyByGeoLocationCompleteDelegate(long responseCode, CurrencyResource response);
         public GetCurrencyByGeoLocationCompleteDelegate GetCurrencyByGeoLocationComplete;
 
         /// <summary>
@@ -90,10 +86,14 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public LocationsApi()
         {
-            mGetCountriesCoroutine = new KnetikCoroutine();
-            mGetCountryByGeoLocationCoroutine = new KnetikCoroutine();
-            mGetCountryStatesCoroutine = new KnetikCoroutine();
-            mGetCurrencyByGeoLocationCoroutine = new KnetikCoroutine();
+            mGetCountriesResponseContext = new KnetikResponseContext();
+            mGetCountriesResponseContext.ResponseReceived += OnGetCountriesResponse;
+            mGetCountryByGeoLocationResponseContext = new KnetikResponseContext();
+            mGetCountryByGeoLocationResponseContext.ResponseReceived += OnGetCountryByGeoLocationResponse;
+            mGetCountryStatesResponseContext = new KnetikResponseContext();
+            mGetCountryStatesResponseContext.ResponseReceived += OnGetCountryStatesResponse;
+            mGetCurrencyByGeoLocationResponseContext = new KnetikResponseContext();
+            mGetCurrencyByGeoLocationResponseContext.ResponseReceived += OnGetCurrencyByGeoLocationResponse;
         }
     
         /// <inheritdoc />
@@ -103,46 +103,45 @@ namespace com.knetikcloud.Api
         public void GetCountries()
         {
             
-            mGetCountriesPath = "/location/countries";
-            if (!string.IsNullOrEmpty(mGetCountriesPath))
+            mWebCallEvent.WebPath = "/location/countries";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetCountriesPath = mGetCountriesPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetCountriesStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetCountriesStartTime, mGetCountriesPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetCountriesCoroutine.ResponseReceived += GetCountriesCallback;
-            mGetCountriesCoroutine.Start(mGetCountriesPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetCountriesStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetCountriesResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetCountriesStartTime, "GetCountries", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetCountriesCallback(IRestResponse response)
+        private void OnGetCountriesResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCountries: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCountries: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetCountries: " + response.Error);
             }
 
-            GetCountriesData = (List<CountryResource>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<CountryResource>), response.Headers);
-            KnetikLogger.LogResponse(mGetCountriesStartTime, mGetCountriesPath, string.Format("Response received successfully:\n{0}", GetCountriesData.ToString()));
+            GetCountriesData = (List<CountryResource>) KnetikClient.Deserialize(response.Content, typeof(List<CountryResource>), response.Headers);
+            KnetikLogger.LogResponse(mGetCountriesStartTime, "GetCountries", string.Format("Response received successfully:\n{0}", GetCountriesData));
 
             if (GetCountriesComplete != null)
             {
-                GetCountriesComplete(GetCountriesData);
+                GetCountriesComplete(response.ResponseCode, GetCountriesData);
             }
         }
 
@@ -153,46 +152,45 @@ namespace com.knetikcloud.Api
         public void GetCountryByGeoLocation()
         {
             
-            mGetCountryByGeoLocationPath = "/location/geolocation/country";
-            if (!string.IsNullOrEmpty(mGetCountryByGeoLocationPath))
+            mWebCallEvent.WebPath = "/location/geolocation/country";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetCountryByGeoLocationPath = mGetCountryByGeoLocationPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetCountryByGeoLocationStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetCountryByGeoLocationStartTime, mGetCountryByGeoLocationPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetCountryByGeoLocationCoroutine.ResponseReceived += GetCountryByGeoLocationCallback;
-            mGetCountryByGeoLocationCoroutine.Start(mGetCountryByGeoLocationPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetCountryByGeoLocationStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetCountryByGeoLocationResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetCountryByGeoLocationStartTime, "GetCountryByGeoLocation", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetCountryByGeoLocationCallback(IRestResponse response)
+        private void OnGetCountryByGeoLocationResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCountryByGeoLocation: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCountryByGeoLocation: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetCountryByGeoLocation: " + response.Error);
             }
 
-            GetCountryByGeoLocationData = (string) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(string), response.Headers);
-            KnetikLogger.LogResponse(mGetCountryByGeoLocationStartTime, mGetCountryByGeoLocationPath, string.Format("Response received successfully:\n{0}", GetCountryByGeoLocationData.ToString()));
+            GetCountryByGeoLocationData = (string) KnetikClient.Deserialize(response.Content, typeof(string), response.Headers);
+            KnetikLogger.LogResponse(mGetCountryByGeoLocationStartTime, "GetCountryByGeoLocation", string.Format("Response received successfully:\n{0}", GetCountryByGeoLocationData));
 
             if (GetCountryByGeoLocationComplete != null)
             {
-                GetCountryByGeoLocationComplete(GetCountryByGeoLocationData);
+                GetCountryByGeoLocationComplete(response.ResponseCode, GetCountryByGeoLocationData);
             }
         }
 
@@ -209,47 +207,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'countryCodeIso3' when calling GetCountryStates");
             }
             
-            mGetCountryStatesPath = "/location/countries/{country_code_iso3}/states";
-            if (!string.IsNullOrEmpty(mGetCountryStatesPath))
+            mWebCallEvent.WebPath = "/location/countries/{country_code_iso3}/states";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetCountryStatesPath = mGetCountryStatesPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetCountryStatesPath = mGetCountryStatesPath.Replace("{" + "country_code_iso3" + "}", KnetikClient.DefaultClient.ParameterToString(countryCodeIso3));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "country_code_iso3" + "}", KnetikClient.ParameterToString(countryCodeIso3));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetCountryStatesStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetCountryStatesStartTime, mGetCountryStatesPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetCountryStatesCoroutine.ResponseReceived += GetCountryStatesCallback;
-            mGetCountryStatesCoroutine.Start(mGetCountryStatesPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetCountryStatesStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetCountryStatesResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetCountryStatesStartTime, "GetCountryStates", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetCountryStatesCallback(IRestResponse response)
+        private void OnGetCountryStatesResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCountryStates: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCountryStates: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetCountryStates: " + response.Error);
             }
 
-            GetCountryStatesData = (List<StateResource>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<StateResource>), response.Headers);
-            KnetikLogger.LogResponse(mGetCountryStatesStartTime, mGetCountryStatesPath, string.Format("Response received successfully:\n{0}", GetCountryStatesData.ToString()));
+            GetCountryStatesData = (List<StateResource>) KnetikClient.Deserialize(response.Content, typeof(List<StateResource>), response.Headers);
+            KnetikLogger.LogResponse(mGetCountryStatesStartTime, "GetCountryStates", string.Format("Response received successfully:\n{0}", GetCountryStatesData));
 
             if (GetCountryStatesComplete != null)
             {
-                GetCountryStatesComplete(GetCountryStatesData);
+                GetCountryStatesComplete(response.ResponseCode, GetCountryStatesData);
             }
         }
 
@@ -260,46 +257,45 @@ namespace com.knetikcloud.Api
         public void GetCurrencyByGeoLocation()
         {
             
-            mGetCurrencyByGeoLocationPath = "/location/geolocation/currency";
-            if (!string.IsNullOrEmpty(mGetCurrencyByGeoLocationPath))
+            mWebCallEvent.WebPath = "/location/geolocation/currency";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetCurrencyByGeoLocationPath = mGetCurrencyByGeoLocationPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetCurrencyByGeoLocationStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetCurrencyByGeoLocationStartTime, mGetCurrencyByGeoLocationPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetCurrencyByGeoLocationCoroutine.ResponseReceived += GetCurrencyByGeoLocationCallback;
-            mGetCurrencyByGeoLocationCoroutine.Start(mGetCurrencyByGeoLocationPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetCurrencyByGeoLocationStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetCurrencyByGeoLocationResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetCurrencyByGeoLocationStartTime, "GetCurrencyByGeoLocation", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetCurrencyByGeoLocationCallback(IRestResponse response)
+        private void OnGetCurrencyByGeoLocationResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCurrencyByGeoLocation: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetCurrencyByGeoLocation: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetCurrencyByGeoLocation: " + response.Error);
             }
 
-            GetCurrencyByGeoLocationData = (CurrencyResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(CurrencyResource), response.Headers);
-            KnetikLogger.LogResponse(mGetCurrencyByGeoLocationStartTime, mGetCurrencyByGeoLocationPath, string.Format("Response received successfully:\n{0}", GetCurrencyByGeoLocationData.ToString()));
+            GetCurrencyByGeoLocationData = (CurrencyResource) KnetikClient.Deserialize(response.Content, typeof(CurrencyResource), response.Headers);
+            KnetikLogger.LogResponse(mGetCurrencyByGeoLocationStartTime, "GetCurrencyByGeoLocation", string.Format("Response received successfully:\n{0}", GetCurrencyByGeoLocationData));
 
             if (GetCurrencyByGeoLocationComplete != null)
             {
-                GetCurrencyByGeoLocationComplete(GetCurrencyByGeoLocationData);
+                GetCurrencyByGeoLocationComplete(response.ResponseCode, GetCurrencyByGeoLocationData);
             }
         }
 

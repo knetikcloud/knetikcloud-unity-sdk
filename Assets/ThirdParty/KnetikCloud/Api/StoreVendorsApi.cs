@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,26 +18,13 @@ namespace com.knetikcloud.Api
     {
         VendorResource CreateVendorData { get; }
 
-        ItemTemplateResource CreateVendorTemplateData { get; }
-
-        VendorResource GetVendorData { get; }
-
-        ItemTemplateResource GetVendorTemplateData { get; }
-
-        PageResourceItemTemplateResource GetVendorTemplatesData { get; }
-
-        PageResourceVendorResource GetVendorsData { get; }
-
-        VendorResource UpdateVendorData { get; }
-
-        ItemTemplateResource UpdateVendorTemplateData { get; }
-
-        
         /// <summary>
         /// Create a vendor 
         /// </summary>
         /// <param name="vendor">The vendor</param>
         void CreateVendor(VendorResource vendor);
+
+        ItemTemplateResource CreateVendorTemplateData { get; }
 
         /// <summary>
         /// Create a vendor template Vendor Templates define a type of vendor and the properties they have.
@@ -46,11 +32,15 @@ namespace com.knetikcloud.Api
         /// <param name="vendorTemplateResource">The new vendor template</param>
         void CreateVendorTemplate(ItemTemplateResource vendorTemplateResource);
 
+        
+
         /// <summary>
         /// Delete a vendor 
         /// </summary>
         /// <param name="id">The id of the vendor</param>
         void DeleteVendor(int? id);
+
+        
 
         /// <summary>
         /// Delete a vendor template 
@@ -59,17 +49,23 @@ namespace com.knetikcloud.Api
         /// <param name="cascade">force deleting the template if it&#39;s attached to other objects, cascade &#x3D; detach</param>
         void DeleteVendorTemplate(string id, string cascade);
 
+        VendorResource GetVendorData { get; }
+
         /// <summary>
         /// Get a single vendor 
         /// </summary>
         /// <param name="id">The id of the vendor</param>
         void GetVendor(int? id);
 
+        ItemTemplateResource GetVendorTemplateData { get; }
+
         /// <summary>
         /// Get a single vendor template Vendor Templates define a type of vendor and the properties they have.
         /// </summary>
         /// <param name="id">The id of the template</param>
         void GetVendorTemplate(string id);
+
+        PageResourceItemTemplateResource GetVendorTemplatesData { get; }
 
         /// <summary>
         /// List and search vendor templates 
@@ -78,6 +74,8 @@ namespace com.knetikcloud.Api
         /// <param name="page">The number of the page returned, starting with 1</param>
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
         void GetVendorTemplates(int? size, int? page, string order);
+
+        PageResourceVendorResource GetVendorsData { get; }
 
         /// <summary>
         /// List and search vendors 
@@ -88,12 +86,16 @@ namespace com.knetikcloud.Api
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
         void GetVendors(string filterName, int? size, int? page, string order);
 
+        VendorResource UpdateVendorData { get; }
+
         /// <summary>
         /// Update a vendor 
         /// </summary>
         /// <param name="id">The id of the vendor</param>
         /// <param name="vendor">The vendor</param>
         void UpdateVendor(int? id, VendorResource vendor);
+
+        ItemTemplateResource UpdateVendorTemplateData { get; }
 
         /// <summary>
         /// Update a vendor template 
@@ -110,73 +112,65 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class StoreVendorsApi : IStoreVendorsApi
     {
-        private readonly KnetikCoroutine mCreateVendorCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mCreateVendorResponseContext;
         private DateTime mCreateVendorStartTime;
-        private string mCreateVendorPath;
-        private readonly KnetikCoroutine mCreateVendorTemplateCoroutine;
+        private readonly KnetikResponseContext mCreateVendorTemplateResponseContext;
         private DateTime mCreateVendorTemplateStartTime;
-        private string mCreateVendorTemplatePath;
-        private readonly KnetikCoroutine mDeleteVendorCoroutine;
+        private readonly KnetikResponseContext mDeleteVendorResponseContext;
         private DateTime mDeleteVendorStartTime;
-        private string mDeleteVendorPath;
-        private readonly KnetikCoroutine mDeleteVendorTemplateCoroutine;
+        private readonly KnetikResponseContext mDeleteVendorTemplateResponseContext;
         private DateTime mDeleteVendorTemplateStartTime;
-        private string mDeleteVendorTemplatePath;
-        private readonly KnetikCoroutine mGetVendorCoroutine;
+        private readonly KnetikResponseContext mGetVendorResponseContext;
         private DateTime mGetVendorStartTime;
-        private string mGetVendorPath;
-        private readonly KnetikCoroutine mGetVendorTemplateCoroutine;
+        private readonly KnetikResponseContext mGetVendorTemplateResponseContext;
         private DateTime mGetVendorTemplateStartTime;
-        private string mGetVendorTemplatePath;
-        private readonly KnetikCoroutine mGetVendorTemplatesCoroutine;
+        private readonly KnetikResponseContext mGetVendorTemplatesResponseContext;
         private DateTime mGetVendorTemplatesStartTime;
-        private string mGetVendorTemplatesPath;
-        private readonly KnetikCoroutine mGetVendorsCoroutine;
+        private readonly KnetikResponseContext mGetVendorsResponseContext;
         private DateTime mGetVendorsStartTime;
-        private string mGetVendorsPath;
-        private readonly KnetikCoroutine mUpdateVendorCoroutine;
+        private readonly KnetikResponseContext mUpdateVendorResponseContext;
         private DateTime mUpdateVendorStartTime;
-        private string mUpdateVendorPath;
-        private readonly KnetikCoroutine mUpdateVendorTemplateCoroutine;
+        private readonly KnetikResponseContext mUpdateVendorTemplateResponseContext;
         private DateTime mUpdateVendorTemplateStartTime;
-        private string mUpdateVendorTemplatePath;
 
         public VendorResource CreateVendorData { get; private set; }
-        public delegate void CreateVendorCompleteDelegate(VendorResource response);
+        public delegate void CreateVendorCompleteDelegate(long responseCode, VendorResource response);
         public CreateVendorCompleteDelegate CreateVendorComplete;
 
         public ItemTemplateResource CreateVendorTemplateData { get; private set; }
-        public delegate void CreateVendorTemplateCompleteDelegate(ItemTemplateResource response);
+        public delegate void CreateVendorTemplateCompleteDelegate(long responseCode, ItemTemplateResource response);
         public CreateVendorTemplateCompleteDelegate CreateVendorTemplateComplete;
 
-        public delegate void DeleteVendorCompleteDelegate();
+        public delegate void DeleteVendorCompleteDelegate(long responseCode);
         public DeleteVendorCompleteDelegate DeleteVendorComplete;
 
-        public delegate void DeleteVendorTemplateCompleteDelegate();
+        public delegate void DeleteVendorTemplateCompleteDelegate(long responseCode);
         public DeleteVendorTemplateCompleteDelegate DeleteVendorTemplateComplete;
 
         public VendorResource GetVendorData { get; private set; }
-        public delegate void GetVendorCompleteDelegate(VendorResource response);
+        public delegate void GetVendorCompleteDelegate(long responseCode, VendorResource response);
         public GetVendorCompleteDelegate GetVendorComplete;
 
         public ItemTemplateResource GetVendorTemplateData { get; private set; }
-        public delegate void GetVendorTemplateCompleteDelegate(ItemTemplateResource response);
+        public delegate void GetVendorTemplateCompleteDelegate(long responseCode, ItemTemplateResource response);
         public GetVendorTemplateCompleteDelegate GetVendorTemplateComplete;
 
         public PageResourceItemTemplateResource GetVendorTemplatesData { get; private set; }
-        public delegate void GetVendorTemplatesCompleteDelegate(PageResourceItemTemplateResource response);
+        public delegate void GetVendorTemplatesCompleteDelegate(long responseCode, PageResourceItemTemplateResource response);
         public GetVendorTemplatesCompleteDelegate GetVendorTemplatesComplete;
 
         public PageResourceVendorResource GetVendorsData { get; private set; }
-        public delegate void GetVendorsCompleteDelegate(PageResourceVendorResource response);
+        public delegate void GetVendorsCompleteDelegate(long responseCode, PageResourceVendorResource response);
         public GetVendorsCompleteDelegate GetVendorsComplete;
 
         public VendorResource UpdateVendorData { get; private set; }
-        public delegate void UpdateVendorCompleteDelegate(VendorResource response);
+        public delegate void UpdateVendorCompleteDelegate(long responseCode, VendorResource response);
         public UpdateVendorCompleteDelegate UpdateVendorComplete;
 
         public ItemTemplateResource UpdateVendorTemplateData { get; private set; }
-        public delegate void UpdateVendorTemplateCompleteDelegate(ItemTemplateResource response);
+        public delegate void UpdateVendorTemplateCompleteDelegate(long responseCode, ItemTemplateResource response);
         public UpdateVendorTemplateCompleteDelegate UpdateVendorTemplateComplete;
 
         /// <summary>
@@ -185,16 +179,26 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public StoreVendorsApi()
         {
-            mCreateVendorCoroutine = new KnetikCoroutine();
-            mCreateVendorTemplateCoroutine = new KnetikCoroutine();
-            mDeleteVendorCoroutine = new KnetikCoroutine();
-            mDeleteVendorTemplateCoroutine = new KnetikCoroutine();
-            mGetVendorCoroutine = new KnetikCoroutine();
-            mGetVendorTemplateCoroutine = new KnetikCoroutine();
-            mGetVendorTemplatesCoroutine = new KnetikCoroutine();
-            mGetVendorsCoroutine = new KnetikCoroutine();
-            mUpdateVendorCoroutine = new KnetikCoroutine();
-            mUpdateVendorTemplateCoroutine = new KnetikCoroutine();
+            mCreateVendorResponseContext = new KnetikResponseContext();
+            mCreateVendorResponseContext.ResponseReceived += OnCreateVendorResponse;
+            mCreateVendorTemplateResponseContext = new KnetikResponseContext();
+            mCreateVendorTemplateResponseContext.ResponseReceived += OnCreateVendorTemplateResponse;
+            mDeleteVendorResponseContext = new KnetikResponseContext();
+            mDeleteVendorResponseContext.ResponseReceived += OnDeleteVendorResponse;
+            mDeleteVendorTemplateResponseContext = new KnetikResponseContext();
+            mDeleteVendorTemplateResponseContext.ResponseReceived += OnDeleteVendorTemplateResponse;
+            mGetVendorResponseContext = new KnetikResponseContext();
+            mGetVendorResponseContext.ResponseReceived += OnGetVendorResponse;
+            mGetVendorTemplateResponseContext = new KnetikResponseContext();
+            mGetVendorTemplateResponseContext.ResponseReceived += OnGetVendorTemplateResponse;
+            mGetVendorTemplatesResponseContext = new KnetikResponseContext();
+            mGetVendorTemplatesResponseContext.ResponseReceived += OnGetVendorTemplatesResponse;
+            mGetVendorsResponseContext = new KnetikResponseContext();
+            mGetVendorsResponseContext.ResponseReceived += OnGetVendorsResponse;
+            mUpdateVendorResponseContext = new KnetikResponseContext();
+            mUpdateVendorResponseContext.ResponseReceived += OnUpdateVendorResponse;
+            mUpdateVendorTemplateResponseContext = new KnetikResponseContext();
+            mUpdateVendorTemplateResponseContext.ResponseReceived += OnUpdateVendorTemplateResponse;
         }
     
         /// <inheritdoc />
@@ -205,48 +209,47 @@ namespace com.knetikcloud.Api
         public void CreateVendor(VendorResource vendor)
         {
             
-            mCreateVendorPath = "/vendors";
-            if (!string.IsNullOrEmpty(mCreateVendorPath))
+            mWebCallEvent.WebPath = "/vendors";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mCreateVendorPath = mCreateVendorPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(vendor); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(vendor); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mCreateVendorStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mCreateVendorStartTime, mCreateVendorPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mCreateVendorCoroutine.ResponseReceived += CreateVendorCallback;
-            mCreateVendorCoroutine.Start(mCreateVendorPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mCreateVendorStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreateVendorResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreateVendorStartTime, "CreateVendor", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void CreateVendorCallback(IRestResponse response)
+        private void OnCreateVendorResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateVendor: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateVendor: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling CreateVendor: " + response.Error);
             }
 
-            CreateVendorData = (VendorResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(VendorResource), response.Headers);
-            KnetikLogger.LogResponse(mCreateVendorStartTime, mCreateVendorPath, string.Format("Response received successfully:\n{0}", CreateVendorData.ToString()));
+            CreateVendorData = (VendorResource) KnetikClient.Deserialize(response.Content, typeof(VendorResource), response.Headers);
+            KnetikLogger.LogResponse(mCreateVendorStartTime, "CreateVendor", string.Format("Response received successfully:\n{0}", CreateVendorData));
 
             if (CreateVendorComplete != null)
             {
-                CreateVendorComplete(CreateVendorData);
+                CreateVendorComplete(response.ResponseCode, CreateVendorData);
             }
         }
 
@@ -258,48 +261,47 @@ namespace com.knetikcloud.Api
         public void CreateVendorTemplate(ItemTemplateResource vendorTemplateResource)
         {
             
-            mCreateVendorTemplatePath = "/vendors/templates";
-            if (!string.IsNullOrEmpty(mCreateVendorTemplatePath))
+            mWebCallEvent.WebPath = "/vendors/templates";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mCreateVendorTemplatePath = mCreateVendorTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(vendorTemplateResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(vendorTemplateResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mCreateVendorTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mCreateVendorTemplateStartTime, mCreateVendorTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mCreateVendorTemplateCoroutine.ResponseReceived += CreateVendorTemplateCallback;
-            mCreateVendorTemplateCoroutine.Start(mCreateVendorTemplatePath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mCreateVendorTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mCreateVendorTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mCreateVendorTemplateStartTime, "CreateVendorTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void CreateVendorTemplateCallback(IRestResponse response)
+        private void OnCreateVendorTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateVendorTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling CreateVendorTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling CreateVendorTemplate: " + response.Error);
             }
 
-            CreateVendorTemplateData = (ItemTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mCreateVendorTemplateStartTime, mCreateVendorTemplatePath, string.Format("Response received successfully:\n{0}", CreateVendorTemplateData.ToString()));
+            CreateVendorTemplateData = (ItemTemplateResource) KnetikClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mCreateVendorTemplateStartTime, "CreateVendorTemplate", string.Format("Response received successfully:\n{0}", CreateVendorTemplateData));
 
             if (CreateVendorTemplateComplete != null)
             {
-                CreateVendorTemplateComplete(CreateVendorTemplateData);
+                CreateVendorTemplateComplete(response.ResponseCode, CreateVendorTemplateData);
             }
         }
 
@@ -316,45 +318,44 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeleteVendor");
             }
             
-            mDeleteVendorPath = "/vendors/{id}";
-            if (!string.IsNullOrEmpty(mDeleteVendorPath))
+            mWebCallEvent.WebPath = "/vendors/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteVendorPath = mDeleteVendorPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteVendorPath = mDeleteVendorPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteVendorStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteVendorStartTime, mDeleteVendorPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteVendorCoroutine.ResponseReceived += DeleteVendorCallback;
-            mDeleteVendorCoroutine.Start(mDeleteVendorPath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteVendorStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteVendorResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteVendorStartTime, "DeleteVendor", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteVendorCallback(IRestResponse response)
+        private void OnDeleteVendorResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteVendor: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteVendor: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteVendor: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteVendorStartTime, mDeleteVendorPath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteVendorStartTime, "DeleteVendor", "Response received successfully.");
             if (DeleteVendorComplete != null)
             {
-                DeleteVendorComplete();
+                DeleteVendorComplete(response.ResponseCode);
             }
         }
 
@@ -372,50 +373,49 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling DeleteVendorTemplate");
             }
             
-            mDeleteVendorTemplatePath = "/vendors/templates/{id}";
-            if (!string.IsNullOrEmpty(mDeleteVendorTemplatePath))
+            mWebCallEvent.WebPath = "/vendors/templates/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mDeleteVendorTemplatePath = mDeleteVendorTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mDeleteVendorTemplatePath = mDeleteVendorTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (cascade != null)
             {
-                queryParams.Add("cascade", KnetikClient.DefaultClient.ParameterToString(cascade));
+                mWebCallEvent.QueryParams["cascade"] = KnetikClient.ParameterToString(cascade);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mDeleteVendorTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mDeleteVendorTemplateStartTime, mDeleteVendorTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mDeleteVendorTemplateCoroutine.ResponseReceived += DeleteVendorTemplateCallback;
-            mDeleteVendorTemplateCoroutine.Start(mDeleteVendorTemplatePath, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mDeleteVendorTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDeleteVendorTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.DELETE;
+
+            KnetikLogger.LogRequest(mDeleteVendorTemplateStartTime, "DeleteVendorTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void DeleteVendorTemplateCallback(IRestResponse response)
+        private void OnDeleteVendorTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteVendorTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling DeleteVendorTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling DeleteVendorTemplate: " + response.Error);
             }
 
-            KnetikLogger.LogResponse(mDeleteVendorTemplateStartTime, mDeleteVendorTemplatePath, "Response received successfully.");
+            KnetikLogger.LogResponse(mDeleteVendorTemplateStartTime, "DeleteVendorTemplate", "Response received successfully.");
             if (DeleteVendorTemplateComplete != null)
             {
-                DeleteVendorTemplateComplete();
+                DeleteVendorTemplateComplete(response.ResponseCode);
             }
         }
 
@@ -432,47 +432,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetVendor");
             }
             
-            mGetVendorPath = "/vendors/{id}";
-            if (!string.IsNullOrEmpty(mGetVendorPath))
+            mWebCallEvent.WebPath = "/vendors/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetVendorPath = mGetVendorPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetVendorPath = mGetVendorPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetVendorStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetVendorStartTime, mGetVendorPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetVendorCoroutine.ResponseReceived += GetVendorCallback;
-            mGetVendorCoroutine.Start(mGetVendorPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetVendorStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetVendorResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetVendorStartTime, "GetVendor", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetVendorCallback(IRestResponse response)
+        private void OnGetVendorResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetVendor: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetVendor: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetVendor: " + response.Error);
             }
 
-            GetVendorData = (VendorResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(VendorResource), response.Headers);
-            KnetikLogger.LogResponse(mGetVendorStartTime, mGetVendorPath, string.Format("Response received successfully:\n{0}", GetVendorData.ToString()));
+            GetVendorData = (VendorResource) KnetikClient.Deserialize(response.Content, typeof(VendorResource), response.Headers);
+            KnetikLogger.LogResponse(mGetVendorStartTime, "GetVendor", string.Format("Response received successfully:\n{0}", GetVendorData));
 
             if (GetVendorComplete != null)
             {
-                GetVendorComplete(GetVendorData);
+                GetVendorComplete(response.ResponseCode, GetVendorData);
             }
         }
 
@@ -489,47 +488,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling GetVendorTemplate");
             }
             
-            mGetVendorTemplatePath = "/vendors/templates/{id}";
-            if (!string.IsNullOrEmpty(mGetVendorTemplatePath))
+            mWebCallEvent.WebPath = "/vendors/templates/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetVendorTemplatePath = mGetVendorTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetVendorTemplatePath = mGetVendorTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetVendorTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetVendorTemplateStartTime, mGetVendorTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetVendorTemplateCoroutine.ResponseReceived += GetVendorTemplateCallback;
-            mGetVendorTemplateCoroutine.Start(mGetVendorTemplatePath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetVendorTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetVendorTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetVendorTemplateStartTime, "GetVendorTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetVendorTemplateCallback(IRestResponse response)
+        private void OnGetVendorTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetVendorTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetVendorTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetVendorTemplate: " + response.Error);
             }
 
-            GetVendorTemplateData = (ItemTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mGetVendorTemplateStartTime, mGetVendorTemplatePath, string.Format("Response received successfully:\n{0}", GetVendorTemplateData.ToString()));
+            GetVendorTemplateData = (ItemTemplateResource) KnetikClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mGetVendorTemplateStartTime, "GetVendorTemplate", string.Format("Response received successfully:\n{0}", GetVendorTemplateData));
 
             if (GetVendorTemplateComplete != null)
             {
-                GetVendorTemplateComplete(GetVendorTemplateData);
+                GetVendorTemplateComplete(response.ResponseCode, GetVendorTemplateData);
             }
         }
 
@@ -543,61 +541,60 @@ namespace com.knetikcloud.Api
         public void GetVendorTemplates(int? size, int? page, string order)
         {
             
-            mGetVendorTemplatesPath = "/vendors/templates";
-            if (!string.IsNullOrEmpty(mGetVendorTemplatesPath))
+            mWebCallEvent.WebPath = "/vendors/templates";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetVendorTemplatesPath = mGetVendorTemplatesPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetVendorTemplatesStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetVendorTemplatesStartTime, mGetVendorTemplatesPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetVendorTemplatesCoroutine.ResponseReceived += GetVendorTemplatesCallback;
-            mGetVendorTemplatesCoroutine.Start(mGetVendorTemplatesPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetVendorTemplatesStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetVendorTemplatesResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetVendorTemplatesStartTime, "GetVendorTemplates", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetVendorTemplatesCallback(IRestResponse response)
+        private void OnGetVendorTemplatesResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetVendorTemplates: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetVendorTemplates: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetVendorTemplates: " + response.Error);
             }
 
-            GetVendorTemplatesData = (PageResourceItemTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceItemTemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mGetVendorTemplatesStartTime, mGetVendorTemplatesPath, string.Format("Response received successfully:\n{0}", GetVendorTemplatesData.ToString()));
+            GetVendorTemplatesData = (PageResourceItemTemplateResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceItemTemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mGetVendorTemplatesStartTime, "GetVendorTemplates", string.Format("Response received successfully:\n{0}", GetVendorTemplatesData));
 
             if (GetVendorTemplatesComplete != null)
             {
-                GetVendorTemplatesComplete(GetVendorTemplatesData);
+                GetVendorTemplatesComplete(response.ResponseCode, GetVendorTemplatesData);
             }
         }
 
@@ -612,66 +609,65 @@ namespace com.knetikcloud.Api
         public void GetVendors(string filterName, int? size, int? page, string order)
         {
             
-            mGetVendorsPath = "/vendors";
-            if (!string.IsNullOrEmpty(mGetVendorsPath))
+            mWebCallEvent.WebPath = "/vendors";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetVendorsPath = mGetVendorsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (filterName != null)
             {
-                queryParams.Add("filter_name", KnetikClient.DefaultClient.ParameterToString(filterName));
+                mWebCallEvent.QueryParams["filter_name"] = KnetikClient.ParameterToString(filterName);
             }
 
             if (size != null)
             {
-                queryParams.Add("size", KnetikClient.DefaultClient.ParameterToString(size));
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
             }
 
             if (page != null)
             {
-                queryParams.Add("page", KnetikClient.DefaultClient.ParameterToString(page));
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
             }
 
             if (order != null)
             {
-                queryParams.Add("order", KnetikClient.DefaultClient.ParameterToString(order));
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetVendorsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetVendorsStartTime, mGetVendorsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetVendorsCoroutine.ResponseReceived += GetVendorsCallback;
-            mGetVendorsCoroutine.Start(mGetVendorsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetVendorsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetVendorsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetVendorsStartTime, "GetVendors", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetVendorsCallback(IRestResponse response)
+        private void OnGetVendorsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetVendors: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetVendors: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetVendors: " + response.Error);
             }
 
-            GetVendorsData = (PageResourceVendorResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(PageResourceVendorResource), response.Headers);
-            KnetikLogger.LogResponse(mGetVendorsStartTime, mGetVendorsPath, string.Format("Response received successfully:\n{0}", GetVendorsData.ToString()));
+            GetVendorsData = (PageResourceVendorResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceVendorResource), response.Headers);
+            KnetikLogger.LogResponse(mGetVendorsStartTime, "GetVendors", string.Format("Response received successfully:\n{0}", GetVendorsData));
 
             if (GetVendorsComplete != null)
             {
-                GetVendorsComplete(GetVendorsData);
+                GetVendorsComplete(response.ResponseCode, GetVendorsData);
             }
         }
 
@@ -689,49 +685,48 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling UpdateVendor");
             }
             
-            mUpdateVendorPath = "/vendors/{id}";
-            if (!string.IsNullOrEmpty(mUpdateVendorPath))
+            mWebCallEvent.WebPath = "/vendors/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateVendorPath = mUpdateVendorPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateVendorPath = mUpdateVendorPath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(vendor); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(vendor); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateVendorStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateVendorStartTime, mUpdateVendorPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateVendorCoroutine.ResponseReceived += UpdateVendorCallback;
-            mUpdateVendorCoroutine.Start(mUpdateVendorPath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateVendorStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateVendorResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateVendorStartTime, "UpdateVendor", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateVendorCallback(IRestResponse response)
+        private void OnUpdateVendorResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateVendor: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateVendor: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateVendor: " + response.Error);
             }
 
-            UpdateVendorData = (VendorResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(VendorResource), response.Headers);
-            KnetikLogger.LogResponse(mUpdateVendorStartTime, mUpdateVendorPath, string.Format("Response received successfully:\n{0}", UpdateVendorData.ToString()));
+            UpdateVendorData = (VendorResource) KnetikClient.Deserialize(response.Content, typeof(VendorResource), response.Headers);
+            KnetikLogger.LogResponse(mUpdateVendorStartTime, "UpdateVendor", string.Format("Response received successfully:\n{0}", UpdateVendorData));
 
             if (UpdateVendorComplete != null)
             {
-                UpdateVendorComplete(UpdateVendorData);
+                UpdateVendorComplete(response.ResponseCode, UpdateVendorData);
             }
         }
 
@@ -749,49 +744,48 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'id' when calling UpdateVendorTemplate");
             }
             
-            mUpdateVendorTemplatePath = "/vendors/templates/{id}";
-            if (!string.IsNullOrEmpty(mUpdateVendorTemplatePath))
+            mWebCallEvent.WebPath = "/vendors/templates/{id}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mUpdateVendorTemplatePath = mUpdateVendorTemplatePath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mUpdateVendorTemplatePath = mUpdateVendorTemplatePath.Replace("{" + "id" + "}", KnetikClient.DefaultClient.ParameterToString(id));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikClient.ParameterToString(id));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(vendorTemplateResource); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(vendorTemplateResource); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mUpdateVendorTemplateStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mUpdateVendorTemplateStartTime, mUpdateVendorTemplatePath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mUpdateVendorTemplateCoroutine.ResponseReceived += UpdateVendorTemplateCallback;
-            mUpdateVendorTemplateCoroutine.Start(mUpdateVendorTemplatePath, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mUpdateVendorTemplateStartTime = DateTime.Now;
+            mWebCallEvent.Context = mUpdateVendorTemplateResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mUpdateVendorTemplateStartTime, "UpdateVendorTemplate", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void UpdateVendorTemplateCallback(IRestResponse response)
+        private void OnUpdateVendorTemplateResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateVendorTemplate: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling UpdateVendorTemplate: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling UpdateVendorTemplate: " + response.Error);
             }
 
-            UpdateVendorTemplateData = (ItemTemplateResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
-            KnetikLogger.LogResponse(mUpdateVendorTemplateStartTime, mUpdateVendorTemplatePath, string.Format("Response received successfully:\n{0}", UpdateVendorTemplateData.ToString()));
+            UpdateVendorTemplateData = (ItemTemplateResource) KnetikClient.Deserialize(response.Content, typeof(ItemTemplateResource), response.Headers);
+            KnetikLogger.LogResponse(mUpdateVendorTemplateStartTime, "UpdateVendorTemplate", string.Format("Response received successfully:\n{0}", UpdateVendorTemplateData));
 
             if (UpdateVendorTemplateComplete != null)
             {
-                UpdateVendorTemplateComplete(UpdateVendorTemplateData);
+                UpdateVendorTemplateComplete(response.ResponseCode, UpdateVendorTemplateData);
             }
         }
 

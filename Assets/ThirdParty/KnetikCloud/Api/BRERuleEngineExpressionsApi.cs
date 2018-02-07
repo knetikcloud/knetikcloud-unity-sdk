@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using com.knetikcloud.Client;
 using com.knetikcloud.Model;
-using com.knetikcloud.Utils;
-using UnityEngine;
+using KnetikUnity.Client;
+using KnetikUnity.Events;
+using KnetikUnity.Exceptions;
+using KnetikUnity.Utils;
 
 using Object = System.Object;
 using Version = com.knetikcloud.Model.Version;
-
 
 namespace com.knetikcloud.Api
 {
@@ -19,22 +18,21 @@ namespace com.knetikcloud.Api
     {
         ExpressionResource GetBREExpressionData { get; }
 
-        List<ExpressionResource> GetBREExpressionsData { get; }
-
-        StringWrapper GetExpressionAsTextData { get; }
-
-        
         /// <summary>
         /// Lookup a specific expression 
         /// </summary>
         /// <param name="type">Specifiy the type of expression as returned by the listing endpoint</param>
         void GetBREExpression(string type);
 
+        List<ExpressionResource> GetBREExpressionsData { get; }
+
         /// <summary>
         /// Get a list of supported expressions to use in conditions or actions. Each resource contains a type and a definition that are read-only, all the other fields must be provided when using the expression in a rule.
         /// </summary>
         /// <param name="filterTypeGroup">Filter for expressions by type group</param>
         void GetBREExpressions(string filterTypeGroup);
+
+        StringWrapper GetExpressionAsTextData { get; }
 
         /// <summary>
         /// Returns the textual representation of an expression 
@@ -50,26 +48,25 @@ namespace com.knetikcloud.Api
     /// </summary>
     public class BRERuleEngineExpressionsApi : IBRERuleEngineExpressionsApi
     {
-        private readonly KnetikCoroutine mGetBREExpressionCoroutine;
+        private readonly KnetikWebCallEvent mWebCallEvent = new KnetikWebCallEvent();
+
+        private readonly KnetikResponseContext mGetBREExpressionResponseContext;
         private DateTime mGetBREExpressionStartTime;
-        private string mGetBREExpressionPath;
-        private readonly KnetikCoroutine mGetBREExpressionsCoroutine;
+        private readonly KnetikResponseContext mGetBREExpressionsResponseContext;
         private DateTime mGetBREExpressionsStartTime;
-        private string mGetBREExpressionsPath;
-        private readonly KnetikCoroutine mGetExpressionAsTextCoroutine;
+        private readonly KnetikResponseContext mGetExpressionAsTextResponseContext;
         private DateTime mGetExpressionAsTextStartTime;
-        private string mGetExpressionAsTextPath;
 
         public ExpressionResource GetBREExpressionData { get; private set; }
-        public delegate void GetBREExpressionCompleteDelegate(ExpressionResource response);
+        public delegate void GetBREExpressionCompleteDelegate(long responseCode, ExpressionResource response);
         public GetBREExpressionCompleteDelegate GetBREExpressionComplete;
 
         public List<ExpressionResource> GetBREExpressionsData { get; private set; }
-        public delegate void GetBREExpressionsCompleteDelegate(List<ExpressionResource> response);
+        public delegate void GetBREExpressionsCompleteDelegate(long responseCode, List<ExpressionResource> response);
         public GetBREExpressionsCompleteDelegate GetBREExpressionsComplete;
 
         public StringWrapper GetExpressionAsTextData { get; private set; }
-        public delegate void GetExpressionAsTextCompleteDelegate(StringWrapper response);
+        public delegate void GetExpressionAsTextCompleteDelegate(long responseCode, StringWrapper response);
         public GetExpressionAsTextCompleteDelegate GetExpressionAsTextComplete;
 
         /// <summary>
@@ -78,9 +75,12 @@ namespace com.knetikcloud.Api
         /// <returns></returns>
         public BRERuleEngineExpressionsApi()
         {
-            mGetBREExpressionCoroutine = new KnetikCoroutine();
-            mGetBREExpressionsCoroutine = new KnetikCoroutine();
-            mGetExpressionAsTextCoroutine = new KnetikCoroutine();
+            mGetBREExpressionResponseContext = new KnetikResponseContext();
+            mGetBREExpressionResponseContext.ResponseReceived += OnGetBREExpressionResponse;
+            mGetBREExpressionsResponseContext = new KnetikResponseContext();
+            mGetBREExpressionsResponseContext.ResponseReceived += OnGetBREExpressionsResponse;
+            mGetExpressionAsTextResponseContext = new KnetikResponseContext();
+            mGetExpressionAsTextResponseContext.ResponseReceived += OnGetExpressionAsTextResponse;
         }
     
         /// <inheritdoc />
@@ -96,47 +96,46 @@ namespace com.knetikcloud.Api
                 throw new KnetikException(400, "Missing required parameter 'type' when calling GetBREExpression");
             }
             
-            mGetBREExpressionPath = "/bre/expressions/{type}";
-            if (!string.IsNullOrEmpty(mGetBREExpressionPath))
+            mWebCallEvent.WebPath = "/bre/expressions/{type}";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetBREExpressionPath = mGetBREExpressionPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
-            mGetBREExpressionPath = mGetBREExpressionPath.Replace("{" + "type" + "}", KnetikClient.DefaultClient.ParameterToString(type));
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "type" + "}", KnetikClient.ParameterToString(type));
 
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetBREExpressionStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetBREExpressionStartTime, mGetBREExpressionPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetBREExpressionCoroutine.ResponseReceived += GetBREExpressionCallback;
-            mGetBREExpressionCoroutine.Start(mGetBREExpressionPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetBREExpressionStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetBREExpressionResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetBREExpressionStartTime, "GetBREExpression", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetBREExpressionCallback(IRestResponse response)
+        private void OnGetBREExpressionResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetBREExpression: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetBREExpression: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetBREExpression: " + response.Error);
             }
 
-            GetBREExpressionData = (ExpressionResource) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(ExpressionResource), response.Headers);
-            KnetikLogger.LogResponse(mGetBREExpressionStartTime, mGetBREExpressionPath, string.Format("Response received successfully:\n{0}", GetBREExpressionData.ToString()));
+            GetBREExpressionData = (ExpressionResource) KnetikClient.Deserialize(response.Content, typeof(ExpressionResource), response.Headers);
+            KnetikLogger.LogResponse(mGetBREExpressionStartTime, "GetBREExpression", string.Format("Response received successfully:\n{0}", GetBREExpressionData));
 
             if (GetBREExpressionComplete != null)
             {
-                GetBREExpressionComplete(GetBREExpressionData);
+                GetBREExpressionComplete(response.ResponseCode, GetBREExpressionData);
             }
         }
 
@@ -148,51 +147,50 @@ namespace com.knetikcloud.Api
         public void GetBREExpressions(string filterTypeGroup)
         {
             
-            mGetBREExpressionsPath = "/bre/expressions";
-            if (!string.IsNullOrEmpty(mGetBREExpressionsPath))
+            mWebCallEvent.WebPath = "/bre/expressions";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetBREExpressionsPath = mGetBREExpressionsPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
             if (filterTypeGroup != null)
             {
-                queryParams.Add("filter_type_group", KnetikClient.DefaultClient.ParameterToString(filterTypeGroup));
+                mWebCallEvent.QueryParams["filter_type_group"] = KnetikClient.ParameterToString(filterTypeGroup);
             }
 
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetBREExpressionsStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetBREExpressionsStartTime, mGetBREExpressionsPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetBREExpressionsCoroutine.ResponseReceived += GetBREExpressionsCallback;
-            mGetBREExpressionsCoroutine.Start(mGetBREExpressionsPath, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetBREExpressionsStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetBREExpressionsResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetBREExpressionsStartTime, "GetBREExpressions", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetBREExpressionsCallback(IRestResponse response)
+        private void OnGetBREExpressionsResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetBREExpressions: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetBREExpressions: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetBREExpressions: " + response.Error);
             }
 
-            GetBREExpressionsData = (List<ExpressionResource>) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(List<ExpressionResource>), response.Headers);
-            KnetikLogger.LogResponse(mGetBREExpressionsStartTime, mGetBREExpressionsPath, string.Format("Response received successfully:\n{0}", GetBREExpressionsData.ToString()));
+            GetBREExpressionsData = (List<ExpressionResource>) KnetikClient.Deserialize(response.Content, typeof(List<ExpressionResource>), response.Headers);
+            KnetikLogger.LogResponse(mGetBREExpressionsStartTime, "GetBREExpressions", string.Format("Response received successfully:\n{0}", GetBREExpressionsData));
 
             if (GetBREExpressionsComplete != null)
             {
-                GetBREExpressionsComplete(GetBREExpressionsData);
+                GetBREExpressionsComplete(response.ResponseCode, GetBREExpressionsData);
             }
         }
 
@@ -204,48 +202,47 @@ namespace com.knetikcloud.Api
         public void GetExpressionAsText(ExpressionResource expression)
         {
             
-            mGetExpressionAsTextPath = "/bre/expressions";
-            if (!string.IsNullOrEmpty(mGetExpressionAsTextPath))
+            mWebCallEvent.WebPath = "/bre/expressions";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
             {
-                mGetExpressionAsTextPath = mGetExpressionAsTextPath.Replace("{format}", "json");
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
             }
             
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            Dictionary<string, string> headerParams = new Dictionary<string, string>();
-            Dictionary<string, string> formParams = new Dictionary<string, string>();
-            Dictionary<string, FileParameter> fileParams = new Dictionary<string, FileParameter>();
-            string postBody = null;
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
 
-            postBody = KnetikClient.DefaultClient.Serialize(expression); // http body (model) parameter
+            mWebCallEvent.PostBody = KnetikClient.Serialize(expression); // http body (model) parameter
  
-            // authentication setting, if any
-            List<string> authSettings = new List<string> { "oauth2_client_credentials_grant", "oauth2_password_grant" };
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
 
-            mGetExpressionAsTextStartTime = DateTime.Now;
-            KnetikLogger.LogRequest(mGetExpressionAsTextStartTime, mGetExpressionAsTextPath, "Sending server request...");
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
-            mGetExpressionAsTextCoroutine.ResponseReceived += GetExpressionAsTextCallback;
-            mGetExpressionAsTextCoroutine.Start(mGetExpressionAsTextPath, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+            mGetExpressionAsTextStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetExpressionAsTextResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mGetExpressionAsTextStartTime, "GetExpressionAsText", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
         }
 
-        private void GetExpressionAsTextCallback(IRestResponse response)
+        private void OnGetExpressionAsTextResponse(KnetikRestResponse response)
         {
-            if (((int)response.StatusCode) >= 400)
+            if (!string.IsNullOrEmpty(response.Error))
             {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetExpressionAsText: " + response.Content, response.Content);
-            }
-            else if (((int)response.StatusCode) == 0)
-            {
-                throw new KnetikException((int)response.StatusCode, "Error calling GetExpressionAsText: " + response.ErrorMessage, response.ErrorMessage);
+                throw new KnetikException("Error calling GetExpressionAsText: " + response.Error);
             }
 
-            GetExpressionAsTextData = (StringWrapper) KnetikClient.DefaultClient.Deserialize(response.Content, typeof(StringWrapper), response.Headers);
-            KnetikLogger.LogResponse(mGetExpressionAsTextStartTime, mGetExpressionAsTextPath, string.Format("Response received successfully:\n{0}", GetExpressionAsTextData.ToString()));
+            GetExpressionAsTextData = (StringWrapper) KnetikClient.Deserialize(response.Content, typeof(StringWrapper), response.Headers);
+            KnetikLogger.LogResponse(mGetExpressionAsTextStartTime, "GetExpressionAsText", string.Format("Response received successfully:\n{0}", GetExpressionAsTextData));
 
             if (GetExpressionAsTextComplete != null)
             {
-                GetExpressionAsTextComplete(GetExpressionAsTextData);
+                GetExpressionAsTextComplete(response.ResponseCode, GetExpressionAsTextData);
             }
         }
 
