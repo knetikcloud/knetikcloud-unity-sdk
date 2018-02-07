@@ -17,6 +17,7 @@ namespace com.knetikcloud.Client
     {
         private const string StagingUrlFormat = "https://{0}.devsandbox.knetikcloud.com";
         private const string ProductionUrlFormat = "https://{0}.knetikcloud.com";
+
         private KnetikCloudProjectSettings mProjectSettings;
         private AccessTokenApi mAccessTokenApi;
 

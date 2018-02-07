@@ -50,7 +50,7 @@ namespace com.knetikcloud.UnityEditor
             mProjectSettingsHeaderLabel = new GUIContent("Project Configuration", "Project wide settings that should be checked into source control (if used).");
             mAppName = new GUIContent("App Name", "The App Name for your project as configured in the KnetikCloud Web interface.  E.g. 'my-first-game' (without quotes).");
             mClientId = new GUIContent("Client ID", "The client ID as configured in the KnetikCloud Web interface.");
-            mProductionToggle = new GUIContent("Production Environment", "Should the client connect to the production environment or staging environment.");
+            mProductionToggle = new GUIContent("Production Environment", "Should the client connect to the production environment or staging environment?");
 
             mClientCredentialsHeaderLabel = new GUIContent("Client Credentials", "Optional: Settings that apply if the grant type is 'client_credentials'.\nShould be checked into source control (if used).");
             mClientSecret = new GUIContent("Client Secret", "Optional: Must match the secret configured in the KnetikCloud Web interface.");
