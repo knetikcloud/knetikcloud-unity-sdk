@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         VendorResource CreateVendorData { get; }
 
         /// <summary>
-        /// Create a vendor 
+        /// Create a vendor &lt;b&gt;Permissions Needed:&lt;/b&gt; VENDORS_ADMIN
         /// </summary>
         /// <param name="vendor">The vendor</param>
         void CreateVendor(VendorResource vendor);
@@ -27,7 +27,7 @@ namespace com.knetikcloud.Api
         ItemTemplateResource CreateVendorTemplateData { get; }
 
         /// <summary>
-        /// Create a vendor template Vendor Templates define a type of vendor and the properties they have.
+        /// Create a vendor template Vendor Templates define a type of vendor and the properties they have. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="vendorTemplateResource">The new vendor template</param>
         void CreateVendorTemplate(ItemTemplateResource vendorTemplateResource);
@@ -35,7 +35,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Delete a vendor 
+        /// Delete a vendor &lt;b&gt;Permissions Needed:&lt;/b&gt; VENDORS_ADMIN
         /// </summary>
         /// <param name="id">The id of the vendor</param>
         void DeleteVendor(int? id);
@@ -43,7 +43,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Delete a vendor template 
+        /// Delete a vendor template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="cascade">force deleting the template if it&#39;s attached to other objects, cascade &#x3D; detach</param>
@@ -52,7 +52,7 @@ namespace com.knetikcloud.Api
         VendorResource GetVendorData { get; }
 
         /// <summary>
-        /// Get a single vendor 
+        /// Get a single vendor &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="id">The id of the vendor</param>
         void GetVendor(int? id);
@@ -60,7 +60,7 @@ namespace com.knetikcloud.Api
         ItemTemplateResource GetVendorTemplateData { get; }
 
         /// <summary>
-        /// Get a single vendor template Vendor Templates define a type of vendor and the properties they have.
+        /// Get a single vendor template Vendor Templates define a type of vendor and the properties they have. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         void GetVendorTemplate(string id);
@@ -68,7 +68,7 @@ namespace com.knetikcloud.Api
         PageResourceItemTemplateResource GetVendorTemplatesData { get; }
 
         /// <summary>
-        /// List and search vendor templates 
+        /// List and search vendor templates &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -78,7 +78,7 @@ namespace com.knetikcloud.Api
         PageResourceVendorResource GetVendorsData { get; }
 
         /// <summary>
-        /// List and search vendors 
+        /// List and search vendors &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="filterName">Filters vendors by name starting with the text provided in the filter</param>
         /// <param name="size">The number of objects returned per page</param>
@@ -89,7 +89,7 @@ namespace com.knetikcloud.Api
         VendorResource UpdateVendorData { get; }
 
         /// <summary>
-        /// Update a vendor 
+        /// Update a vendor &lt;b&gt;Permissions Needed:&lt;/b&gt; VENDORS_ADMIN
         /// </summary>
         /// <param name="id">The id of the vendor</param>
         /// <param name="vendor">The vendor</param>
@@ -98,7 +98,7 @@ namespace com.knetikcloud.Api
         ItemTemplateResource UpdateVendorTemplateData { get; }
 
         /// <summary>
-        /// Update a vendor template 
+        /// Update a vendor template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="vendorTemplateResource">The vendor template resource object</param>
@@ -203,7 +203,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Create a vendor 
+        /// Create a vendor &lt;b&gt;Permissions Needed:&lt;/b&gt; VENDORS_ADMIN
         /// </summary>
         /// <param name="vendor">The vendor</param>
         public void CreateVendor(VendorResource vendor)
@@ -255,7 +255,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Create a vendor template Vendor Templates define a type of vendor and the properties they have.
+        /// Create a vendor template Vendor Templates define a type of vendor and the properties they have. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="vendorTemplateResource">The new vendor template</param>
         public void CreateVendorTemplate(ItemTemplateResource vendorTemplateResource)
@@ -307,7 +307,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Delete a vendor 
+        /// Delete a vendor &lt;b&gt;Permissions Needed:&lt;/b&gt; VENDORS_ADMIN
         /// </summary>
         /// <param name="id">The id of the vendor</param>
         public void DeleteVendor(int? id)
@@ -361,7 +361,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Delete a vendor template 
+        /// Delete a vendor template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="cascade">force deleting the template if it&#39;s attached to other objects, cascade &#x3D; detach</param>
@@ -421,7 +421,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a single vendor 
+        /// Get a single vendor &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="id">The id of the vendor</param>
         public void GetVendor(int? id)
@@ -477,7 +477,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a single vendor template Vendor Templates define a type of vendor and the properties they have.
+        /// Get a single vendor template Vendor Templates define a type of vendor and the properties they have. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         public void GetVendorTemplate(string id)
@@ -533,7 +533,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// List and search vendor templates 
+        /// List and search vendor templates &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -600,7 +600,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// List and search vendors 
+        /// List and search vendors &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="filterName">Filters vendors by name starting with the text provided in the filter</param>
         /// <param name="size">The number of objects returned per page</param>
@@ -673,7 +673,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Update a vendor 
+        /// Update a vendor &lt;b&gt;Permissions Needed:&lt;/b&gt; VENDORS_ADMIN
         /// </summary>
         /// <param name="id">The id of the vendor</param>
         /// <param name="vendor">The vendor</param>
@@ -732,7 +732,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Update a vendor template 
+        /// Update a vendor template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="vendorTemplateResource">The vendor template resource object</param>

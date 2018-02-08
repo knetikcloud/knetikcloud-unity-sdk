@@ -38,16 +38,16 @@ namespace com.knetikcloud.Model
         public string Description;
 
         /// <summary>
-        /// The type of device. Use mobile to specifically register mobile devices. This particular type will be used to send and receive notifications
+        /// The type of device. Use mobile_device to specifically register mobile devices. This particular type will be used to send and receive notifications
         /// </summary>
-        /// <value>The type of device. Use mobile to specifically register mobile devices. This particular type will be used to send and receive notifications</value>
+        /// <value>The type of device. Use mobile_device to specifically register mobile devices. This particular type will be used to send and receive notifications</value>
         [JsonProperty(PropertyName = "device_type")]
         public string DeviceType;
 
         /// <summary>
-        /// The unique ID for this device
+        /// The unique ID for this device. Cannot be changed after creation. Default: random
         /// </summary>
-        /// <value>The unique ID for this device</value>
+        /// <value>The unique ID for this device. Cannot be changed after creation. Default: random</value>
         [JsonProperty(PropertyName = "id")]
         public string Id;
 

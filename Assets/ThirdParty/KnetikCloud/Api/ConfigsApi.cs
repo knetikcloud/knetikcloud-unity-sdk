@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         Config CreateConfigData { get; }
 
         /// <summary>
-        /// Create a new config 
+        /// Create a new config &lt;b&gt;Permissions Needed:&lt;/b&gt; TOPICS_ADMIN
         /// </summary>
         /// <param name="config">The config object</param>
         void CreateConfig(Config config);
@@ -27,7 +27,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Delete an existing config 
+        /// Delete an existing config &lt;b&gt;Permissions Needed:&lt;/b&gt; CONFIGS_ADMIN
         /// </summary>
         /// <param name="name">The config name</param>
         void DeleteConfig(string name);
@@ -35,7 +35,7 @@ namespace com.knetikcloud.Api
         Config GetConfigData { get; }
 
         /// <summary>
-        /// Get a single config Only configs that are public readable will be shown without admin access
+        /// Get a single config Only configs that are public readable will be shown without admin access. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="name">The config name</param>
         void GetConfig(string name);
@@ -43,7 +43,7 @@ namespace com.knetikcloud.Api
         PageResourceConfig GetConfigsData { get; }
 
         /// <summary>
-        /// List and search configs 
+        /// List and search configs &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="filterSearch">Filter for configs whose name contains the given string</param>
         /// <param name="size">The number of objects returned per page</param>
@@ -54,7 +54,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Update an existing config 
+        /// Update an existing config &lt;b&gt;Permissions Needed:&lt;/b&gt; CONFIGS_ADMIN
         /// </summary>
         /// <param name="name">The config name</param>
         /// <param name="config">The config object</param>
@@ -119,7 +119,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Create a new config 
+        /// Create a new config &lt;b&gt;Permissions Needed:&lt;/b&gt; TOPICS_ADMIN
         /// </summary>
         /// <param name="config">The config object</param>
         public void CreateConfig(Config config)
@@ -171,7 +171,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Delete an existing config 
+        /// Delete an existing config &lt;b&gt;Permissions Needed:&lt;/b&gt; CONFIGS_ADMIN
         /// </summary>
         /// <param name="name">The config name</param>
         public void DeleteConfig(string name)
@@ -225,7 +225,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a single config Only configs that are public readable will be shown without admin access
+        /// Get a single config Only configs that are public readable will be shown without admin access. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="name">The config name</param>
         public void GetConfig(string name)
@@ -281,7 +281,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// List and search configs 
+        /// List and search configs &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="filterSearch">Filter for configs whose name contains the given string</param>
         /// <param name="size">The number of objects returned per page</param>
@@ -354,7 +354,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Update an existing config 
+        /// Update an existing config &lt;b&gt;Permissions Needed:&lt;/b&gt; CONFIGS_ADMIN
         /// </summary>
         /// <param name="name">The config name</param>
         /// <param name="config">The config object</param>

@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Delete tokens by username, client id, or both 
+        /// Delete tokens by username, client id, or both &lt;b&gt;Permissions Needed:&lt;/b&gt; TOKENS_ADMIN
         /// </summary>
         /// <param name="username">The username of the user</param>
         /// <param name="clientId">The id of the client</param>
@@ -28,7 +28,7 @@ namespace com.knetikcloud.Api
         OauthAccessTokenResource GetTokenData { get; }
 
         /// <summary>
-        /// Get a single token by username and client id 
+        /// Get a single token by username and client id &lt;b&gt;Permissions Needed:&lt;/b&gt; TOKENS_ADMIN
         /// </summary>
         /// <param name="username">The username of the user</param>
         /// <param name="clientId">The id of the client</param>
@@ -37,7 +37,7 @@ namespace com.knetikcloud.Api
         PageResourceOauthAccessTokenResource GetTokensData { get; }
 
         /// <summary>
-        /// List usernames and client ids Token value not shown
+        /// List usernames and client ids Token value not shown. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TOKENS_ADMIN
         /// </summary>
         /// <param name="filterClientId">Filters for token whose client id matches provided string</param>
         /// <param name="filterUsername">Filters for token whose username matches provided string</param>
@@ -90,7 +90,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Delete tokens by username, client id, or both 
+        /// Delete tokens by username, client id, or both &lt;b&gt;Permissions Needed:&lt;/b&gt; TOKENS_ADMIN
         /// </summary>
         /// <param name="username">The username of the user</param>
         /// <param name="clientId">The id of the client</param>
@@ -149,7 +149,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a single token by username and client id 
+        /// Get a single token by username and client id &lt;b&gt;Permissions Needed:&lt;/b&gt; TOKENS_ADMIN
         /// </summary>
         /// <param name="username">The username of the user</param>
         /// <param name="clientId">The id of the client</param>
@@ -212,7 +212,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "client_id" + "}", K
 
         /// <inheritdoc />
         /// <summary>
-        /// List usernames and client ids Token value not shown
+        /// List usernames and client ids Token value not shown. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TOKENS_ADMIN
         /// </summary>
         /// <param name="filterClientId">Filters for token whose client id matches provided string</param>
         /// <param name="filterUsername">Filters for token whose username matches provided string</param>

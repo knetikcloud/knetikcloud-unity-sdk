@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         PropertyFieldListResource GetTemplatePropertyTypeData { get; }
 
         /// <summary>
-        /// Get details for a template property type 
+        /// Get details for a template property type &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="type">type</param>
         void GetTemplatePropertyType(string type);
@@ -27,7 +27,7 @@ namespace com.knetikcloud.Api
         List<PropertyFieldListResource> GetTemplatePropertyTypesData { get; }
 
         /// <summary>
-        /// List template property types 
+        /// List template property types &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         void GetTemplatePropertyTypes();
 
@@ -68,7 +68,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Get details for a template property type 
+        /// Get details for a template property type &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="type">type</param>
         public void GetTemplatePropertyType(string type)
@@ -124,7 +124,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// List template property types 
+        /// List template property types &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         public void GetTemplatePropertyTypes()
         {

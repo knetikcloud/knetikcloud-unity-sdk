@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         CategoryResource CreateCategoryData { get; }
 
         /// <summary>
-        /// Create a new category 
+        /// Create a new category &lt;b&gt;Permissions Needed:&lt;/b&gt; CATEGORIES_ADMIN
         /// </summary>
         /// <param name="category">The category to create</param>
         void CreateCategory(CategoryResource category);
@@ -27,7 +27,7 @@ namespace com.knetikcloud.Api
         TemplateResource CreateCategoryTemplateData { get; }
 
         /// <summary>
-        /// Create a category template Templates define a type of category and the properties they have
+        /// Create a category template Templates define a type of category and the properties they have. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="template">The template to create</param>
         void CreateCategoryTemplate(TemplateResource template);
@@ -35,7 +35,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Delete an existing category 
+        /// Delete an existing category &lt;b&gt;Permissions Needed:&lt;/b&gt; CATEGORIES_ADMIN
         /// </summary>
         /// <param name="id">The id of the category to be deleted</param>
         void DeleteCategory(string id);
@@ -43,7 +43,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Delete a category template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
+        /// Delete a category template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="cascade">The value needed to delete used templates</param>
@@ -52,7 +52,7 @@ namespace com.knetikcloud.Api
         PageResourceCategoryResource GetCategoriesData { get; }
 
         /// <summary>
-        /// List and search categories with optional filters 
+        /// List and search categories with optional filters &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="filterSearch">Filter for categories whose names begin with provided string</param>
         /// <param name="filterActive">Filter for categories that are specifically active or inactive</param>
@@ -64,7 +64,7 @@ namespace com.knetikcloud.Api
         CategoryResource GetCategoryData { get; }
 
         /// <summary>
-        /// Get a single category 
+        /// Get a single category &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="id">The id of the category to retrieve</param>
         void GetCategory(string id);
@@ -72,7 +72,7 @@ namespace com.knetikcloud.Api
         TemplateResource GetCategoryTemplateData { get; }
 
         /// <summary>
-        /// Get a single category template 
+        /// Get a single category template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or CATEGORIES_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         void GetCategoryTemplate(string id);
@@ -80,7 +80,7 @@ namespace com.knetikcloud.Api
         PageResourceTemplateResource GetCategoryTemplatesData { get; }
 
         /// <summary>
-        /// List and search category templates 
+        /// List and search category templates &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or CATEGORIES_ADMIN
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -90,7 +90,7 @@ namespace com.knetikcloud.Api
         PageResourcestring GetTagsData { get; }
 
         /// <summary>
-        /// List all trivia tags in the system 
+        /// List all trivia tags in the system &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -99,7 +99,7 @@ namespace com.knetikcloud.Api
         CategoryResource UpdateCategoryData { get; }
 
         /// <summary>
-        /// Update an existing category 
+        /// Update an existing category &lt;b&gt;Permissions Needed:&lt;/b&gt; CATEGORIES_ADMIN
         /// </summary>
         /// <param name="id">The id of the category</param>
         /// <param name="category">The category to update</param>
@@ -108,7 +108,7 @@ namespace com.knetikcloud.Api
         TemplateResource UpdateCategoryTemplateData { get; }
 
         /// <summary>
-        /// Update a category template 
+        /// Update a category template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="template">The updated template information</param>
@@ -221,7 +221,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Create a new category 
+        /// Create a new category &lt;b&gt;Permissions Needed:&lt;/b&gt; CATEGORIES_ADMIN
         /// </summary>
         /// <param name="category">The category to create</param>
         public void CreateCategory(CategoryResource category)
@@ -273,7 +273,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Create a category template Templates define a type of category and the properties they have
+        /// Create a category template Templates define a type of category and the properties they have. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="template">The template to create</param>
         public void CreateCategoryTemplate(TemplateResource template)
@@ -325,7 +325,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Delete an existing category 
+        /// Delete an existing category &lt;b&gt;Permissions Needed:&lt;/b&gt; CATEGORIES_ADMIN
         /// </summary>
         /// <param name="id">The id of the category to be deleted</param>
         public void DeleteCategory(string id)
@@ -379,7 +379,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Delete a category template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
+        /// Delete a category template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="cascade">The value needed to delete used templates</param>
@@ -439,7 +439,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// List and search categories with optional filters 
+        /// List and search categories with optional filters &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="filterSearch">Filter for categories whose names begin with provided string</param>
         /// <param name="filterActive">Filter for categories that are specifically active or inactive</param>
@@ -518,7 +518,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a single category 
+        /// Get a single category &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="id">The id of the category to retrieve</param>
         public void GetCategory(string id)
@@ -574,7 +574,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a single category template 
+        /// Get a single category template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or CATEGORIES_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         public void GetCategoryTemplate(string id)
@@ -630,7 +630,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// List and search category templates 
+        /// List and search category templates &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or CATEGORIES_ADMIN
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -697,7 +697,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// List all trivia tags in the system 
+        /// List all trivia tags in the system &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -758,7 +758,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Update an existing category 
+        /// Update an existing category &lt;b&gt;Permissions Needed:&lt;/b&gt; CATEGORIES_ADMIN
         /// </summary>
         /// <param name="id">The id of the category</param>
         /// <param name="category">The category to update</param>
@@ -817,7 +817,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Update a category template 
+        /// Update a category template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="template">The updated template information</param>

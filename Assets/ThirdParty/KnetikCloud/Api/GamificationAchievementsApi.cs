@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         AchievementDefinitionResource CreateAchievementData { get; }
 
         /// <summary>
-        /// Create a new achievement definition If the definition contains a trigger event name, a BRE rule is created, so that tracking logic is executed when the triggering event occurs. If no trigger event name is specified, the user&#39;s achievement status must manually be updated via the API.
+        /// Create a new achievement definition If the definition contains a trigger event name, a BRE rule is created, so that tracking logic is executed when the triggering event occurs. If no trigger event name is specified, the user&#39;s achievement status must manually be updated via the API. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ACHIEVEMENTS_ADMIN
         /// </summary>
         /// <param name="achievement">The achievement definition</param>
         void CreateAchievement(AchievementDefinitionResource achievement);
@@ -27,7 +27,7 @@ namespace com.knetikcloud.Api
         TemplateResource CreateAchievementTemplateData { get; }
 
         /// <summary>
-        /// Create an achievement template Achievement templates define a type of achievement and the properties they have
+        /// Create an achievement template Achievement templates define a type of achievement and the properties they have. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="template">The achievement template to be created</param>
         void CreateAchievementTemplate(TemplateResource template);
@@ -35,7 +35,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Delete an achievement definition Will also disable the associated generated rule, if any.
+        /// Delete an achievement definition Will also disable the associated generated rule, if any. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ACHIEVEMENTS_ADMIN
         /// </summary>
         /// <param name="name">The name of the achievement</param>
         void DeleteAchievement(string name);
@@ -43,7 +43,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Delete an achievement template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
+        /// Delete an achievement template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="cascade">The value needed to delete used templates</param>
@@ -52,7 +52,7 @@ namespace com.knetikcloud.Api
         AchievementDefinitionResource GetAchievementData { get; }
 
         /// <summary>
-        /// Get a single achievement definition 
+        /// Get a single achievement definition &lt;b&gt;Permissions Needed:&lt;/b&gt; ACHIEVEMENTS_ADMIN or ACHIEVEMENTS_USER
         /// </summary>
         /// <param name="name">The name of the achievement</param>
         void GetAchievement(string name);
@@ -60,7 +60,7 @@ namespace com.knetikcloud.Api
         TemplateResource GetAchievementTemplateData { get; }
 
         /// <summary>
-        /// Get a single achievement template 
+        /// Get a single achievement template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or ACHIEVEMENTS_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         void GetAchievementTemplate(string id);
@@ -68,7 +68,7 @@ namespace com.knetikcloud.Api
         PageResourceTemplateResource GetAchievementTemplatesData { get; }
 
         /// <summary>
-        /// List and search achievement templates 
+        /// List and search achievement templates &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or ACHIEVEMENTS_ADMIN
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -78,14 +78,14 @@ namespace com.knetikcloud.Api
         List<BreTriggerResource> GetAchievementTriggersData { get; }
 
         /// <summary>
-        /// Get the list of triggers that can be used to trigger an achievement progress update 
+        /// Get the list of triggers that can be used to trigger an achievement progress update &lt;b&gt;Permissions Needed:&lt;/b&gt; ACHIEVEMENTS_ADMIN
         /// </summary>
         void GetAchievementTriggers();
 
         PageResourceAchievementDefinitionResource GetAchievementsData { get; }
 
         /// <summary>
-        /// Get all achievement definitions in the system 
+        /// Get all achievement definitions in the system &lt;b&gt;Permissions Needed:&lt;/b&gt; ACHIEVEMENTS_ADMIN or ACHIEVEMENTS_USER
         /// </summary>
         /// <param name="filterTagset">Filter for achievements with specified tags (separated by comma)</param>
         /// <param name="filterName">Filter for achievements whose name contains a string</param>
@@ -99,7 +99,7 @@ namespace com.knetikcloud.Api
         List<AchievementDefinitionResource> GetDerivedAchievementsData { get; }
 
         /// <summary>
-        /// Get a list of derived achievements Used by other services that depend on achievements
+        /// Get a list of derived achievements Used by other services that depend on achievements.  &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ACHIEVEMENTS_ADMIN
         /// </summary>
         /// <param name="name">The name of the derived achievement</param>
         void GetDerivedAchievements(string name);
@@ -107,7 +107,7 @@ namespace com.knetikcloud.Api
         UserAchievementGroupResource GetUserAchievementProgressData { get; }
 
         /// <summary>
-        /// Retrieve progress on a given achievement for a given user Assets will not be filled in on the resources returned. Use &#39;Get a single poll&#39; to retrieve the full resource with assets for a given item as needed.
+        /// Retrieve progress on a given achievement for a given user Assets will not be filled in on the resources returned. Use &#39;Get a single poll&#39; to retrieve the full resource with assets for a given item as needed. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ACHIEVEMENTS_ADMIN
         /// </summary>
         /// <param name="userId">The user&#39;s id</param>
         /// <param name="achievementName">The achievement&#39;s name</param>
@@ -116,7 +116,7 @@ namespace com.knetikcloud.Api
         PageResourceUserAchievementGroupResource GetUserAchievementsProgressData { get; }
 
         /// <summary>
-        /// Retrieve progress on achievements for a given user Assets will not be filled in on the resources returned. Use &#39;Get a single poll&#39; to retrieve the full resource with assets for a given item as needed.
+        /// Retrieve progress on achievements for a given user Assets will not be filled in on the resources returned. Use &#39;Get a single poll&#39; to retrieve the full resource with assets for a given item as needed. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ACHIEVEMENTS_ADMIN
         /// </summary>
         /// <param name="userId">The user&#39;s id</param>
         /// <param name="filterAchievementDerived">Filter for achievements that are derived from other services</param>
@@ -129,7 +129,7 @@ namespace com.knetikcloud.Api
         PageResourceUserAchievementGroupResource GetUsersAchievementProgressData { get; }
 
         /// <summary>
-        /// Retrieve progress on a given achievement for all users Assets will not be filled in on the resources returned. Use &#39;Get single achievement progress for user&#39; to retrieve the full resource with assets for a given user as needed.
+        /// Retrieve progress on a given achievement for all users Assets will not be filled in on the resources returned. Use &#39;Get single achievement progress for user&#39; to retrieve the full resource with assets for a given user as needed. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ACHIEVEMENTS_ADMIN
         /// </summary>
         /// <param name="achievementName">The achievement&#39;s name</param>
         /// <param name="filterAchievementDerived">Filter for achievements that are derived from other services</param>
@@ -142,7 +142,7 @@ namespace com.knetikcloud.Api
         PageResourceUserAchievementGroupResource GetUsersAchievementsProgressData { get; }
 
         /// <summary>
-        /// Retrieve progress on achievements for all users Assets will not be filled in on the resources returned. Use &#39;Get single achievement progress for user&#39; to retrieve the full resource with assets for a given user as needed.
+        /// Retrieve progress on achievements for all users Assets will not be filled in on the resources returned. Use &#39;Get single achievement progress for user&#39; to retrieve the full resource with assets for a given user as needed. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ACHIEVEMENTS_ADMIN
         /// </summary>
         /// <param name="filterAchievementDerived">Filter for achievements that are derived from other services</param>
         /// <param name="filterAchievementTagset">Filter for achievements with specified tags (separated by comma)</param>
@@ -154,7 +154,7 @@ namespace com.knetikcloud.Api
         UserAchievementGroupResource IncrementAchievementProgressData { get; }
 
         /// <summary>
-        /// Increment an achievement progress record for a user If no progress record yet exists for the user, it will be created. Otherwise it will be updated and the provided value added to the existing progress. May be negative. If progress meets or exceeds the achievement&#39;s max_value it will be marked as earned and a BRE event will be triggered for the &lt;code&gt;BreAchievementEarnedTrigger&lt;/code&gt;.
+        /// Increment an achievement progress record for a user If no progress record yet exists for the user, it will be created. Otherwise it will be updated and the provided value added to the existing progress. May be negative. If progress meets or exceeds the achievement&#39;s max_value it will be marked as earned and a BRE event will be triggered for the &lt;code&gt;BreAchievementEarnedTrigger&lt;/code&gt;. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ACHIEVEMENTS_ADMIN
         /// </summary>
         /// <param name="userId">The user&#39;s id</param>
         /// <param name="achievementName">The achievement&#39;s name</param>
@@ -164,7 +164,7 @@ namespace com.knetikcloud.Api
         UserAchievementGroupResource SetAchievementProgressData { get; }
 
         /// <summary>
-        /// Set an achievement progress record for a user If no progress record yet exists for the user, it will be created. Otherwise it will be updated and progress set to the provided value. If progress meets or exceeds the achievement&#39;s max_value it will be marked as earned and a BRE event will be triggered for the &lt;code&gt;BreAchievementEarnedTrigger&lt;/code&gt;.
+        /// Set an achievement progress record for a user If no progress record yet exists for the user, it will be created. Otherwise it will be updated and progress set to the provided value. If progress meets or exceeds the achievement&#39;s max_value it will be marked as earned and a BRE event will be triggered for the &lt;code&gt;BreAchievementEarnedTrigger&lt;/code&gt;. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ACHIEVEMENTS_ADMIN
         /// </summary>
         /// <param name="userId">The user&#39;s id</param>
         /// <param name="achievementName">The achievement&#39;s name</param>
@@ -174,7 +174,7 @@ namespace com.knetikcloud.Api
         AchievementDefinitionResource UpdateAchievementData { get; }
 
         /// <summary>
-        /// Update an achievement definition The existing generated rule, if any, will be deleted. A new rule will be created if a trigger event name is specified in the new version.
+        /// Update an achievement definition The existing generated rule, if any, will be deleted. A new rule will be created if a trigger event name is specified in the new version. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ACHIEVEMENTS_ADMIN
         /// </summary>
         /// <param name="name">The name of the achievement</param>
         /// <param name="achievement">The achievement definition</param>
@@ -183,7 +183,7 @@ namespace com.knetikcloud.Api
         TemplateResource UpdateAchievementTemplateData { get; }
 
         /// <summary>
-        /// Update an achievement template 
+        /// Update an achievement template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="template">The updated template</param>
@@ -352,7 +352,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Create a new achievement definition If the definition contains a trigger event name, a BRE rule is created, so that tracking logic is executed when the triggering event occurs. If no trigger event name is specified, the user&#39;s achievement status must manually be updated via the API.
+        /// Create a new achievement definition If the definition contains a trigger event name, a BRE rule is created, so that tracking logic is executed when the triggering event occurs. If no trigger event name is specified, the user&#39;s achievement status must manually be updated via the API. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ACHIEVEMENTS_ADMIN
         /// </summary>
         /// <param name="achievement">The achievement definition</param>
         public void CreateAchievement(AchievementDefinitionResource achievement)
@@ -404,7 +404,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Create an achievement template Achievement templates define a type of achievement and the properties they have
+        /// Create an achievement template Achievement templates define a type of achievement and the properties they have. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="template">The achievement template to be created</param>
         public void CreateAchievementTemplate(TemplateResource template)
@@ -456,7 +456,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Delete an achievement definition Will also disable the associated generated rule, if any.
+        /// Delete an achievement definition Will also disable the associated generated rule, if any. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ACHIEVEMENTS_ADMIN
         /// </summary>
         /// <param name="name">The name of the achievement</param>
         public void DeleteAchievement(string name)
@@ -510,7 +510,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Delete an achievement template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
+        /// Delete an achievement template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="cascade">The value needed to delete used templates</param>
@@ -570,7 +570,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a single achievement definition 
+        /// Get a single achievement definition &lt;b&gt;Permissions Needed:&lt;/b&gt; ACHIEVEMENTS_ADMIN or ACHIEVEMENTS_USER
         /// </summary>
         /// <param name="name">The name of the achievement</param>
         public void GetAchievement(string name)
@@ -626,7 +626,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a single achievement template 
+        /// Get a single achievement template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or ACHIEVEMENTS_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         public void GetAchievementTemplate(string id)
@@ -682,7 +682,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// List and search achievement templates 
+        /// List and search achievement templates &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or ACHIEVEMENTS_ADMIN
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -749,7 +749,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Get the list of triggers that can be used to trigger an achievement progress update 
+        /// Get the list of triggers that can be used to trigger an achievement progress update &lt;b&gt;Permissions Needed:&lt;/b&gt; ACHIEVEMENTS_ADMIN
         /// </summary>
         public void GetAchievementTriggers()
         {
@@ -798,7 +798,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Get all achievement definitions in the system 
+        /// Get all achievement definitions in the system &lt;b&gt;Permissions Needed:&lt;/b&gt; ACHIEVEMENTS_ADMIN or ACHIEVEMENTS_USER
         /// </summary>
         /// <param name="filterTagset">Filter for achievements with specified tags (separated by comma)</param>
         /// <param name="filterName">Filter for achievements whose name contains a string</param>
@@ -889,7 +889,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a list of derived achievements Used by other services that depend on achievements
+        /// Get a list of derived achievements Used by other services that depend on achievements.  &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ACHIEVEMENTS_ADMIN
         /// </summary>
         /// <param name="name">The name of the derived achievement</param>
         public void GetDerivedAchievements(string name)
@@ -945,7 +945,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Retrieve progress on a given achievement for a given user Assets will not be filled in on the resources returned. Use &#39;Get a single poll&#39; to retrieve the full resource with assets for a given item as needed.
+        /// Retrieve progress on a given achievement for a given user Assets will not be filled in on the resources returned. Use &#39;Get a single poll&#39; to retrieve the full resource with assets for a given item as needed. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ACHIEVEMENTS_ADMIN
         /// </summary>
         /// <param name="userId">The user&#39;s id</param>
         /// <param name="achievementName">The achievement&#39;s name</param>
@@ -1008,7 +1008,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "achievement_name" +
 
         /// <inheritdoc />
         /// <summary>
-        /// Retrieve progress on achievements for a given user Assets will not be filled in on the resources returned. Use &#39;Get a single poll&#39; to retrieve the full resource with assets for a given item as needed.
+        /// Retrieve progress on achievements for a given user Assets will not be filled in on the resources returned. Use &#39;Get a single poll&#39; to retrieve the full resource with assets for a given item as needed. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ACHIEVEMENTS_ADMIN
         /// </summary>
         /// <param name="userId">The user&#39;s id</param>
         /// <param name="filterAchievementDerived">Filter for achievements that are derived from other services</param>
@@ -1094,7 +1094,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "achievement_name" +
 
         /// <inheritdoc />
         /// <summary>
-        /// Retrieve progress on a given achievement for all users Assets will not be filled in on the resources returned. Use &#39;Get single achievement progress for user&#39; to retrieve the full resource with assets for a given user as needed.
+        /// Retrieve progress on a given achievement for all users Assets will not be filled in on the resources returned. Use &#39;Get single achievement progress for user&#39; to retrieve the full resource with assets for a given user as needed. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ACHIEVEMENTS_ADMIN
         /// </summary>
         /// <param name="achievementName">The achievement&#39;s name</param>
         /// <param name="filterAchievementDerived">Filter for achievements that are derived from other services</param>
@@ -1180,7 +1180,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "achievement_name" +
 
         /// <inheritdoc />
         /// <summary>
-        /// Retrieve progress on achievements for all users Assets will not be filled in on the resources returned. Use &#39;Get single achievement progress for user&#39; to retrieve the full resource with assets for a given user as needed.
+        /// Retrieve progress on achievements for all users Assets will not be filled in on the resources returned. Use &#39;Get single achievement progress for user&#39; to retrieve the full resource with assets for a given user as needed. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ACHIEVEMENTS_ADMIN
         /// </summary>
         /// <param name="filterAchievementDerived">Filter for achievements that are derived from other services</param>
         /// <param name="filterAchievementTagset">Filter for achievements with specified tags (separated by comma)</param>
@@ -1259,7 +1259,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "achievement_name" +
 
         /// <inheritdoc />
         /// <summary>
-        /// Increment an achievement progress record for a user If no progress record yet exists for the user, it will be created. Otherwise it will be updated and the provided value added to the existing progress. May be negative. If progress meets or exceeds the achievement&#39;s max_value it will be marked as earned and a BRE event will be triggered for the &lt;code&gt;BreAchievementEarnedTrigger&lt;/code&gt;.
+        /// Increment an achievement progress record for a user If no progress record yet exists for the user, it will be created. Otherwise it will be updated and the provided value added to the existing progress. May be negative. If progress meets or exceeds the achievement&#39;s max_value it will be marked as earned and a BRE event will be triggered for the &lt;code&gt;BreAchievementEarnedTrigger&lt;/code&gt;. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ACHIEVEMENTS_ADMIN
         /// </summary>
         /// <param name="userId">The user&#39;s id</param>
         /// <param name="achievementName">The achievement&#39;s name</param>
@@ -1325,7 +1325,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "achievement_name" +
 
         /// <inheritdoc />
         /// <summary>
-        /// Set an achievement progress record for a user If no progress record yet exists for the user, it will be created. Otherwise it will be updated and progress set to the provided value. If progress meets or exceeds the achievement&#39;s max_value it will be marked as earned and a BRE event will be triggered for the &lt;code&gt;BreAchievementEarnedTrigger&lt;/code&gt;.
+        /// Set an achievement progress record for a user If no progress record yet exists for the user, it will be created. Otherwise it will be updated and progress set to the provided value. If progress meets or exceeds the achievement&#39;s max_value it will be marked as earned and a BRE event will be triggered for the &lt;code&gt;BreAchievementEarnedTrigger&lt;/code&gt;. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ACHIEVEMENTS_ADMIN
         /// </summary>
         /// <param name="userId">The user&#39;s id</param>
         /// <param name="achievementName">The achievement&#39;s name</param>
@@ -1391,7 +1391,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "achievement_name" +
 
         /// <inheritdoc />
         /// <summary>
-        /// Update an achievement definition The existing generated rule, if any, will be deleted. A new rule will be created if a trigger event name is specified in the new version.
+        /// Update an achievement definition The existing generated rule, if any, will be deleted. A new rule will be created if a trigger event name is specified in the new version. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ACHIEVEMENTS_ADMIN
         /// </summary>
         /// <param name="name">The name of the achievement</param>
         /// <param name="achievement">The achievement definition</param>
@@ -1450,7 +1450,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "achievement_name" +
 
         /// <inheritdoc />
         /// <summary>
-        /// Update an achievement template 
+        /// Update an achievement template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="template">The updated template</param>

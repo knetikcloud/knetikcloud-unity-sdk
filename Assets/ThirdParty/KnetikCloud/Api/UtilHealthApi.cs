@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         Object GetHealthData { get; }
 
         /// <summary>
-        /// Get health info 
+        /// Get health info &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         void GetHealth();
 
@@ -52,7 +52,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Get health info 
+        /// Get health info &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         public void GetHealth()
         {

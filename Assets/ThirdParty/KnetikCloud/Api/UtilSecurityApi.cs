@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         PageResourceLocationLogResource GetUserLocationLogData { get; }
 
         /// <summary>
-        /// Returns the authentication log for a user A log entry is recorded everytime a user requests a new token. Standard pagination available
+        /// Returns the authentication log for a user A log entry is recorded everytime a user requests a new token. Standard pagination available. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; SECURITY_ADMIN
         /// </summary>
         /// <param name="userId">The user id</param>
         /// <param name="size">The number of objects returned per page</param>
@@ -30,7 +30,7 @@ namespace com.knetikcloud.Api
         TokenDetailsResource GetUserTokenDetailsData { get; }
 
         /// <summary>
-        /// Returns the authentication token details. Use /users endpoint for detailed user&#39;s info 
+        /// Returns the authentication token details. Use /users endpoint for detailed user&#39;s info &lt;b&gt;Permissions Needed:&lt;/b&gt; SECURITY_ADMIN
         /// </summary>
         void GetUserTokenDetails();
 
@@ -71,7 +71,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Returns the authentication log for a user A log entry is recorded everytime a user requests a new token. Standard pagination available
+        /// Returns the authentication log for a user A log entry is recorded everytime a user requests a new token. Standard pagination available. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; SECURITY_ADMIN
         /// </summary>
         /// <param name="userId">The user id</param>
         /// <param name="size">The number of objects returned per page</param>
@@ -144,7 +144,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Returns the authentication token details. Use /users endpoint for detailed user&#39;s info 
+        /// Returns the authentication token details. Use /users endpoint for detailed user&#39;s info &lt;b&gt;Permissions Needed:&lt;/b&gt; SECURITY_ADMIN
         /// </summary>
         public void GetUserTokenDetails()
         {

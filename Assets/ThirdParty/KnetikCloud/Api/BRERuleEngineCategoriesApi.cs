@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         TemplateResource CreateBRECategoryTemplateData { get; }
 
         /// <summary>
-        /// Create a BRE category template Templates define a type of BRE category and the properties they have
+        /// Create a BRE category template Templates define a type of BRE category and the properties they have. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="template">The category template to create</param>
         void CreateBRECategoryTemplate(TemplateResource template);
@@ -27,7 +27,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Delete a BRE category template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
+        /// Delete a BRE category template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="cascade">The value needed to delete used templates</param>
@@ -36,7 +36,7 @@ namespace com.knetikcloud.Api
         PageResourceBreCategoryResource GetBRECategoriesData { get; }
 
         /// <summary>
-        /// List categories 
+        /// List categories &lt;b&gt;Permissions Needed:&lt;/b&gt; BRE_RULE_ENGINE_CATEGORIES_USER
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -45,7 +45,7 @@ namespace com.knetikcloud.Api
         BreCategoryResource GetBRECategoryData { get; }
 
         /// <summary>
-        /// Get a single category 
+        /// Get a single category &lt;b&gt;Permissions Needed:&lt;/b&gt; BRE_RULE_ENGINE_CATEGORIES_USER
         /// </summary>
         /// <param name="name">The category name</param>
         void GetBRECategory(string name);
@@ -53,7 +53,7 @@ namespace com.knetikcloud.Api
         TemplateResource GetBRECategoryTemplateData { get; }
 
         /// <summary>
-        /// Get a single BRE category template 
+        /// Get a single BRE category template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or BRE_RULE_ENGINE_CATEGORIES_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         void GetBRECategoryTemplate(string id);
@@ -61,7 +61,7 @@ namespace com.knetikcloud.Api
         PageResourceTemplateResource GetBRECategoryTemplatesData { get; }
 
         /// <summary>
-        /// List and search BRE category templates 
+        /// List and search BRE category templates &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or BRE_RULE_ENGINE_CATEGORIES_ADMIN
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -71,7 +71,7 @@ namespace com.knetikcloud.Api
         BreCategoryResource UpdateBRECategoryData { get; }
 
         /// <summary>
-        /// Update a category 
+        /// Update a category &lt;b&gt;Permissions Needed:&lt;/b&gt; BRE_RULE_ENGINE_CATEGORIES_ADMIN
         /// </summary>
         /// <param name="name">The category name</param>
         /// <param name="category">The updated BRE category information</param>
@@ -80,7 +80,7 @@ namespace com.knetikcloud.Api
         TemplateResource UpdateBRECategoryTemplateData { get; }
 
         /// <summary>
-        /// Update a BRE category template 
+        /// Update a BRE category template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="template">The updated category template definition</param>
@@ -170,7 +170,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Create a BRE category template Templates define a type of BRE category and the properties they have
+        /// Create a BRE category template Templates define a type of BRE category and the properties they have. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="template">The category template to create</param>
         public void CreateBRECategoryTemplate(TemplateResource template)
@@ -222,7 +222,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Delete a BRE category template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
+        /// Delete a BRE category template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="cascade">The value needed to delete used templates</param>
@@ -282,7 +282,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// List categories 
+        /// List categories &lt;b&gt;Permissions Needed:&lt;/b&gt; BRE_RULE_ENGINE_CATEGORIES_USER
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -343,7 +343,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a single category 
+        /// Get a single category &lt;b&gt;Permissions Needed:&lt;/b&gt; BRE_RULE_ENGINE_CATEGORIES_USER
         /// </summary>
         /// <param name="name">The category name</param>
         public void GetBRECategory(string name)
@@ -399,7 +399,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a single BRE category template 
+        /// Get a single BRE category template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or BRE_RULE_ENGINE_CATEGORIES_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         public void GetBRECategoryTemplate(string id)
@@ -455,7 +455,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// List and search BRE category templates 
+        /// List and search BRE category templates &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or BRE_RULE_ENGINE_CATEGORIES_ADMIN
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -522,7 +522,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Update a category 
+        /// Update a category &lt;b&gt;Permissions Needed:&lt;/b&gt; BRE_RULE_ENGINE_CATEGORIES_ADMIN
         /// </summary>
         /// <param name="name">The category name</param>
         /// <param name="category">The updated BRE category information</param>
@@ -581,7 +581,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Update a BRE category template 
+        /// Update a BRE category template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="template">The updated category template definition</param>

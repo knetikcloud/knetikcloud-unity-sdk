@@ -83,11 +83,19 @@ namespace com.knetikcloud.UnityEditor
             }
         }
 
-        public static string StagingURL
+        public static string ProductionUrl
         {
             get
             {
-                return (sProjectSettings != null) ? sProjectSettings.StagingURL : null;
+                return (sProjectSettings != null) ? sProjectSettings.ProductionUrl : null;
+            }
+        }
+
+        public static string StagingUrl
+        {
+            get
+            {
+                return (sProjectSettings != null) ? sProjectSettings.StagingUrl : null;
             }
         }
 

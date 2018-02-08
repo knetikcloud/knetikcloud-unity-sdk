@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         LeaderboardResource GetLeaderboardData { get; }
 
         /// <summary>
-        /// Retrieves leaderboard details and paginated entries The context type identifies the type of entity (i.e., &#39;activity&#39;) being tracked on the leaderboard. The context ID is the unique ID of the actual entity tracked by the leaderboard. Sorting is based on the fields of LeaderboardEntryResource rather than the returned LeaderboardResource.
+        /// Retrieves leaderboard details and paginated entries The context type identifies the type of entity (i.e., &#39;activity&#39;) being tracked on the leaderboard. The context ID is the unique ID of the actual entity tracked by the leaderboard. Sorting is based on the fields of LeaderboardEntryResource rather than the returned LeaderboardResource. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="contextType">The context type for the leaderboard</param>
         /// <param name="contextId">The context id for the leaderboard</param>
@@ -31,7 +31,7 @@ namespace com.knetikcloud.Api
         LeaderboardEntryResource GetLeaderboardRankData { get; }
 
         /// <summary>
-        /// Retrieves a specific user entry with rank The context type identifies the type of entity (i.e., &#39;activity&#39;) being tracked on the leaderboard. The context ID is the unique ID of the actual entity tracked by the leaderboard
+        /// Retrieves a specific user entry with rank The context type identifies the type of entity (i.e., &#39;activity&#39;) being tracked on the leaderboard. The context ID is the unique ID of the actual entity tracked by the leaderboard. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="contextType">The context type for the leaderboard</param>
         /// <param name="contextId">The context id for the leaderboard</param>
@@ -41,7 +41,7 @@ namespace com.knetikcloud.Api
         List<string> GetLeaderboardStrategiesData { get; }
 
         /// <summary>
-        /// Get a list of available leaderboard strategy names 
+        /// Get a list of available leaderboard strategy names &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         void GetLeaderboardStrategies();
 
@@ -90,7 +90,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Retrieves leaderboard details and paginated entries The context type identifies the type of entity (i.e., &#39;activity&#39;) being tracked on the leaderboard. The context ID is the unique ID of the actual entity tracked by the leaderboard. Sorting is based on the fields of LeaderboardEntryResource rather than the returned LeaderboardResource.
+        /// Retrieves leaderboard details and paginated entries The context type identifies the type of entity (i.e., &#39;activity&#39;) being tracked on the leaderboard. The context ID is the unique ID of the actual entity tracked by the leaderboard. Sorting is based on the fields of LeaderboardEntryResource rather than the returned LeaderboardResource. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="contextType">The context type for the leaderboard</param>
         /// <param name="contextId">The context id for the leaderboard</param>
@@ -171,7 +171,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "context_id" + "}", 
 
         /// <inheritdoc />
         /// <summary>
-        /// Retrieves a specific user entry with rank The context type identifies the type of entity (i.e., &#39;activity&#39;) being tracked on the leaderboard. The context ID is the unique ID of the actual entity tracked by the leaderboard
+        /// Retrieves a specific user entry with rank The context type identifies the type of entity (i.e., &#39;activity&#39;) being tracked on the leaderboard. The context ID is the unique ID of the actual entity tracked by the leaderboard. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="contextType">The context type for the leaderboard</param>
         /// <param name="contextId">The context id for the leaderboard</param>
@@ -241,7 +241,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikCl
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a list of available leaderboard strategy names 
+        /// Get a list of available leaderboard strategy names &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         public void GetLeaderboardStrategies()
         {

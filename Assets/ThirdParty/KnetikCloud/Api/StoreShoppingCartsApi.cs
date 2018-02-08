@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Adds a custom discount to the cart 
+        /// Adds a custom discount to the cart &lt;b&gt;Permissions Needed:&lt;/b&gt; SHOPPING_CARTS_ADMIN
         /// </summary>
         /// <param name="id">The id of the cart</param>
         /// <param name="customDiscount">The details of the discount to add</param>
@@ -28,7 +28,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Adds a discount coupon to the cart 
+        /// Adds a discount coupon to the cart &lt;b&gt;Permissions Needed:&lt;/b&gt; SHOPPING_CARTS_ADMIN or owner
         /// </summary>
         /// <param name="id">The id of the cart</param>
         /// <param name="skuRequest">The request of the sku</param>
@@ -37,7 +37,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Add an item to the cart Currently, carts cannot contain virtual and real currency items at the same time. Furthermore, the API only support a single virtual item at the moment
+        /// Add an item to the cart Currently, carts cannot contain virtual and real currency items at the same time. Furthermore, the API only support a single virtual item at the moment. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; SHOPPING_CARTS_ADMIN or owner
         /// </summary>
         /// <param name="id">The id of the cart</param>
         /// <param name="cartItemRequest">The cart item request object</param>
@@ -46,7 +46,7 @@ namespace com.knetikcloud.Api
         string CreateCartData { get; }
 
         /// <summary>
-        /// Create a cart You don&#39;t have to have a user to create a cart but the API requires authentication to checkout
+        /// Create a cart You don&#39;t have to have a user to create a cart but the API requires authentication to checkout. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="owner">Set the owner of a cart. If not specified, defaults to the calling user&#39;s id. If specified and is not the calling user&#39;s id, SHOPPING_CARTS_ADMIN permission is required</param>
         /// <param name="currencyCode">Set the currency for the cart, by currency code. May be disallowed by site settings.</param>
@@ -55,7 +55,7 @@ namespace com.knetikcloud.Api
         Cart GetCartData { get; }
 
         /// <summary>
-        /// Returns the cart with the given GUID 
+        /// Returns the cart with the given GUID &lt;b&gt;Permissions Needed:&lt;/b&gt; SHOPPING_CARTS_ADMIN or owner
         /// </summary>
         /// <param name="id">The id of the cart</param>
         void GetCart(string id);
@@ -63,7 +63,7 @@ namespace com.knetikcloud.Api
         PageResourceCartSummary GetCartsData { get; }
 
         /// <summary>
-        /// Get a list of carts 
+        /// Get a list of carts &lt;b&gt;Permissions Needed:&lt;/b&gt; SHOPPING_CARTS_ADMIN or owner
         /// </summary>
         /// <param name="filterOwnerId">Filter by the id of the owner</param>
         /// <param name="size">The number of objects returned per page</param>
@@ -74,7 +74,7 @@ namespace com.knetikcloud.Api
         CartShippableResponse GetShippableData { get; }
 
         /// <summary>
-        /// Returns whether a cart requires shipping 
+        /// Returns whether a cart requires shipping &lt;b&gt;Permissions Needed:&lt;/b&gt; SHOPPING_CARTS_ADMIN or owner
         /// </summary>
         /// <param name="id">The id of the cart</param>
         void GetShippable(string id);
@@ -82,7 +82,7 @@ namespace com.knetikcloud.Api
         SampleCountriesResponse GetShippingCountriesData { get; }
 
         /// <summary>
-        /// Get the list of available shipping countries per vendor Since a cart can have multiple vendors with different shipping options, the countries are broken down by vendors. Please see notes about the response object as the fields are variable.
+        /// Get the list of available shipping countries per vendor Since a cart can have multiple vendors with different shipping options, the countries are broken down by vendors. Please see notes about the response object as the fields are variable. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; SHOPPING_CARTS_ADMIN or owner
         /// </summary>
         /// <param name="id">The id of the cart</param>
         void GetShippingCountries(string id);
@@ -90,7 +90,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Removes a discount coupon from the cart 
+        /// Removes a discount coupon from the cart &lt;b&gt;Permissions Needed:&lt;/b&gt; SHOPPING_CARTS_ADMIN or owner
         /// </summary>
         /// <param name="id">The id of the cart</param>
         /// <param name="code">The SKU code of the coupon to remove</param>
@@ -99,7 +99,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Sets the currency to use for the cart May be disallowed by site settings.
+        /// Sets the currency to use for the cart May be disallowed by site settings. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; SHOPPING_CARTS_ADMIN or owner
         /// </summary>
         /// <param name="id">The id of the cart</param>
         /// <param name="currencyCode">The code of the currency</param>
@@ -108,7 +108,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Sets the owner of a cart if none is set already 
+        /// Sets the owner of a cart if none is set already &lt;b&gt;Permissions Needed:&lt;/b&gt; SHOPPING_CARTS_ADMIN or owner
         /// </summary>
         /// <param name="id">The id of the cart</param>
         /// <param name="userId">The id of the user</param>
@@ -117,7 +117,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Changes the quantity of an item already in the cart A quantity of zero will remove the item from the cart altogether.
+        /// Changes the quantity of an item already in the cart A quantity of zero will remove the item from the cart altogether. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; SHOPPING_CARTS_ADMIN or owner
         /// </summary>
         /// <param name="id">The id of the cart</param>
         /// <param name="cartItemRequest">The cart item request object</param>
@@ -126,7 +126,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Modifies or sets the order shipping address 
+        /// Modifies or sets the order shipping address &lt;b&gt;Permissions Needed:&lt;/b&gt; SHOPPING_CARTS_ADMIN or owner
         /// </summary>
         /// <param name="id">The id of the cart</param>
         /// <param name="cartShippingAddressRequest">The cart shipping address request object</param>
@@ -249,7 +249,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Adds a custom discount to the cart 
+        /// Adds a custom discount to the cart &lt;b&gt;Permissions Needed:&lt;/b&gt; SHOPPING_CARTS_ADMIN
         /// </summary>
         /// <param name="id">The id of the cart</param>
         /// <param name="customDiscount">The details of the discount to add</param>
@@ -306,7 +306,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Adds a discount coupon to the cart 
+        /// Adds a discount coupon to the cart &lt;b&gt;Permissions Needed:&lt;/b&gt; SHOPPING_CARTS_ADMIN or owner
         /// </summary>
         /// <param name="id">The id of the cart</param>
         /// <param name="skuRequest">The request of the sku</param>
@@ -363,7 +363,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Add an item to the cart Currently, carts cannot contain virtual and real currency items at the same time. Furthermore, the API only support a single virtual item at the moment
+        /// Add an item to the cart Currently, carts cannot contain virtual and real currency items at the same time. Furthermore, the API only support a single virtual item at the moment. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; SHOPPING_CARTS_ADMIN or owner
         /// </summary>
         /// <param name="id">The id of the cart</param>
         /// <param name="cartItemRequest">The cart item request object</param>
@@ -420,7 +420,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Create a cart You don&#39;t have to have a user to create a cart but the API requires authentication to checkout
+        /// Create a cart You don&#39;t have to have a user to create a cart but the API requires authentication to checkout. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="owner">Set the owner of a cart. If not specified, defaults to the calling user&#39;s id. If specified and is not the calling user&#39;s id, SHOPPING_CARTS_ADMIN permission is required</param>
         /// <param name="currencyCode">Set the currency for the cart, by currency code. May be disallowed by site settings.</param>
@@ -481,7 +481,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Returns the cart with the given GUID 
+        /// Returns the cart with the given GUID &lt;b&gt;Permissions Needed:&lt;/b&gt; SHOPPING_CARTS_ADMIN or owner
         /// </summary>
         /// <param name="id">The id of the cart</param>
         public void GetCart(string id)
@@ -537,7 +537,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a list of carts 
+        /// Get a list of carts &lt;b&gt;Permissions Needed:&lt;/b&gt; SHOPPING_CARTS_ADMIN or owner
         /// </summary>
         /// <param name="filterOwnerId">Filter by the id of the owner</param>
         /// <param name="size">The number of objects returned per page</param>
@@ -610,7 +610,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Returns whether a cart requires shipping 
+        /// Returns whether a cart requires shipping &lt;b&gt;Permissions Needed:&lt;/b&gt; SHOPPING_CARTS_ADMIN or owner
         /// </summary>
         /// <param name="id">The id of the cart</param>
         public void GetShippable(string id)
@@ -666,7 +666,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Get the list of available shipping countries per vendor Since a cart can have multiple vendors with different shipping options, the countries are broken down by vendors. Please see notes about the response object as the fields are variable.
+        /// Get the list of available shipping countries per vendor Since a cart can have multiple vendors with different shipping options, the countries are broken down by vendors. Please see notes about the response object as the fields are variable. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; SHOPPING_CARTS_ADMIN or owner
         /// </summary>
         /// <param name="id">The id of the cart</param>
         public void GetShippingCountries(string id)
@@ -722,7 +722,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Removes a discount coupon from the cart 
+        /// Removes a discount coupon from the cart &lt;b&gt;Permissions Needed:&lt;/b&gt; SHOPPING_CARTS_ADMIN or owner
         /// </summary>
         /// <param name="id">The id of the cart</param>
         /// <param name="code">The SKU code of the coupon to remove</param>
@@ -783,7 +783,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "code" + "}", Knetik
 
         /// <inheritdoc />
         /// <summary>
-        /// Sets the currency to use for the cart May be disallowed by site settings.
+        /// Sets the currency to use for the cart May be disallowed by site settings. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; SHOPPING_CARTS_ADMIN or owner
         /// </summary>
         /// <param name="id">The id of the cart</param>
         /// <param name="currencyCode">The code of the currency</param>
@@ -840,7 +840,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "code" + "}", Knetik
 
         /// <inheritdoc />
         /// <summary>
-        /// Sets the owner of a cart if none is set already 
+        /// Sets the owner of a cart if none is set already &lt;b&gt;Permissions Needed:&lt;/b&gt; SHOPPING_CARTS_ADMIN or owner
         /// </summary>
         /// <param name="id">The id of the cart</param>
         /// <param name="userId">The id of the user</param>
@@ -897,7 +897,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "code" + "}", Knetik
 
         /// <inheritdoc />
         /// <summary>
-        /// Changes the quantity of an item already in the cart A quantity of zero will remove the item from the cart altogether.
+        /// Changes the quantity of an item already in the cart A quantity of zero will remove the item from the cart altogether. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; SHOPPING_CARTS_ADMIN or owner
         /// </summary>
         /// <param name="id">The id of the cart</param>
         /// <param name="cartItemRequest">The cart item request object</param>
@@ -954,7 +954,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "code" + "}", Knetik
 
         /// <inheritdoc />
         /// <summary>
-        /// Modifies or sets the order shipping address 
+        /// Modifies or sets the order shipping address &lt;b&gt;Permissions Needed:&lt;/b&gt; SHOPPING_CARTS_ADMIN or owner
         /// </summary>
         /// <param name="id">The id of the cart</param>
         /// <param name="cartShippingAddressRequest">The cart shipping address request object</param>

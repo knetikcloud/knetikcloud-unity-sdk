@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         CurrencyResource CreateCurrencyData { get; }
 
         /// <summary>
-        /// Create a currency 
+        /// Create a currency &lt;b&gt;Permissions Needed:&lt;/b&gt; CURRENCIES_ADMIN
         /// </summary>
         /// <param name="currency">The currency object</param>
         void CreateCurrency(CurrencyResource currency);
@@ -27,7 +27,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Delete a currency 
+        /// Delete a currency &lt;b&gt;Permissions Needed:&lt;/b&gt; CURRENCIES_ADMIN
         /// </summary>
         /// <param name="code">The currency code</param>
         void DeleteCurrency(string code);
@@ -35,7 +35,7 @@ namespace com.knetikcloud.Api
         PageResourceCurrencyResource GetCurrenciesData { get; }
 
         /// <summary>
-        /// List and search currencies 
+        /// List and search currencies &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="filterDefault">Filter for the one currency that is set as default (true), or all that are not (false)</param>
         /// <param name="filterEnabledCurrencies">Filter for alternate currencies setup explicitely in system config</param>
@@ -48,7 +48,7 @@ namespace com.knetikcloud.Api
         CurrencyResource GetCurrencyData { get; }
 
         /// <summary>
-        /// Get a single currency 
+        /// Get a single currency &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="code">The currency code</param>
         void GetCurrency(string code);
@@ -56,7 +56,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Update a currency 
+        /// Update a currency &lt;b&gt;Permissions Needed:&lt;/b&gt; CURRENCIES_ADMIN
         /// </summary>
         /// <param name="code">The currency code</param>
         /// <param name="currency">The currency object</param>
@@ -121,7 +121,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Create a currency 
+        /// Create a currency &lt;b&gt;Permissions Needed:&lt;/b&gt; CURRENCIES_ADMIN
         /// </summary>
         /// <param name="currency">The currency object</param>
         public void CreateCurrency(CurrencyResource currency)
@@ -173,7 +173,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Delete a currency 
+        /// Delete a currency &lt;b&gt;Permissions Needed:&lt;/b&gt; CURRENCIES_ADMIN
         /// </summary>
         /// <param name="code">The currency code</param>
         public void DeleteCurrency(string code)
@@ -227,7 +227,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// List and search currencies 
+        /// List and search currencies &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="filterDefault">Filter for the one currency that is set as default (true), or all that are not (false)</param>
         /// <param name="filterEnabledCurrencies">Filter for alternate currencies setup explicitely in system config</param>
@@ -312,7 +312,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a single currency 
+        /// Get a single currency &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="code">The currency code</param>
         public void GetCurrency(string code)
@@ -368,7 +368,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Update a currency 
+        /// Update a currency &lt;b&gt;Permissions Needed:&lt;/b&gt; CURRENCIES_ADMIN
         /// </summary>
         /// <param name="code">The currency code</param>
         /// <param name="currency">The currency object</param>

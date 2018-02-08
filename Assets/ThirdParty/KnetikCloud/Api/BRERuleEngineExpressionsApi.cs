@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         ExpressionResource GetBREExpressionData { get; }
 
         /// <summary>
-        /// Lookup a specific expression 
+        /// Lookup a specific expression &lt;b&gt;Permissions Needed:&lt;/b&gt; BRE_RULE_ENGINE_EXPRESSIONS_USER
         /// </summary>
         /// <param name="type">Specifiy the type of expression as returned by the listing endpoint</param>
         void GetBREExpression(string type);
@@ -27,7 +27,7 @@ namespace com.knetikcloud.Api
         List<ExpressionResource> GetBREExpressionsData { get; }
 
         /// <summary>
-        /// Get a list of supported expressions to use in conditions or actions. Each resource contains a type and a definition that are read-only, all the other fields must be provided when using the expression in a rule.
+        /// Get a list of supported expressions to use in conditions or actions Each resource contains a type and a definition that are read-only, all the other fields must be provided when using the expression in a rule. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; BRE_RULE_ENGINE_EXPRESSIONS_USER
         /// </summary>
         /// <param name="filterTypeGroup">Filter for expressions by type group</param>
         void GetBREExpressions(string filterTypeGroup);
@@ -35,7 +35,7 @@ namespace com.knetikcloud.Api
         StringWrapper GetExpressionAsTextData { get; }
 
         /// <summary>
-        /// Returns the textual representation of an expression 
+        /// Returns the textual representation of an expression &lt;b&gt;Permissions Needed:&lt;/b&gt; BRE_RULE_ENGINE_EXPRESSIONS_USER
         /// </summary>
         /// <param name="expression">The expression resource to be converted</param>
         void GetExpressionAsText(ExpressionResource expression);
@@ -85,7 +85,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Lookup a specific expression 
+        /// Lookup a specific expression &lt;b&gt;Permissions Needed:&lt;/b&gt; BRE_RULE_ENGINE_EXPRESSIONS_USER
         /// </summary>
         /// <param name="type">Specifiy the type of expression as returned by the listing endpoint</param>
         public void GetBREExpression(string type)
@@ -141,7 +141,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a list of supported expressions to use in conditions or actions. Each resource contains a type and a definition that are read-only, all the other fields must be provided when using the expression in a rule.
+        /// Get a list of supported expressions to use in conditions or actions Each resource contains a type and a definition that are read-only, all the other fields must be provided when using the expression in a rule. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; BRE_RULE_ENGINE_EXPRESSIONS_USER
         /// </summary>
         /// <param name="filterTypeGroup">Filter for expressions by type group</param>
         public void GetBREExpressions(string filterTypeGroup)
@@ -196,7 +196,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Returns the textual representation of an expression 
+        /// Returns the textual representation of an expression &lt;b&gt;Permissions Needed:&lt;/b&gt; BRE_RULE_ENGINE_EXPRESSIONS_USER
         /// </summary>
         /// <param name="expression">The expression resource to be converted</param>
         public void GetExpressionAsText(ExpressionResource expression)

@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         string SilentPostOptimalData { get; }
 
         /// <summary>
-        /// Initiate silent post with Optimal Will return the url for a hosted payment endpoint to post to. See Optimal documentation for details.
+        /// Initiate silent post with Optimal Will return the url for a hosted payment endpoint to post to. See Optimal documentation for details. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; OPTIMAL_ADMIN or owner
         /// </summary>
         /// <param name="request">The payment request to initiate</param>
         void SilentPostOptimal(OptimalPaymentRequest request);
@@ -53,7 +53,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Initiate silent post with Optimal Will return the url for a hosted payment endpoint to post to. See Optimal documentation for details.
+        /// Initiate silent post with Optimal Will return the url for a hosted payment endpoint to post to. See Optimal documentation for details. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; OPTIMAL_ADMIN or owner
         /// </summary>
         /// <param name="request">The payment request to initiate</param>
         public void SilentPostOptimal(OptimalPaymentRequest request)

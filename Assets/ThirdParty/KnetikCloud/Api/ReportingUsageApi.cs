@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         PageResourceUsageInfo GetUsageByDayData { get; }
 
         /// <summary>
-        /// Returns aggregated endpoint usage information by day 
+        /// Returns aggregated endpoint usage information by day &lt;b&gt;Permissions Needed:&lt;/b&gt; USAGE_ADMIN
         /// </summary>
         /// <param name="startDate">The beginning of the range being requested, unix timestamp in seconds</param>
         /// <param name="endDate">The ending of the range being requested, unix timestamp in seconds</param>
@@ -33,7 +33,7 @@ namespace com.knetikcloud.Api
         PageResourceUsageInfo GetUsageByHourData { get; }
 
         /// <summary>
-        /// Returns aggregated endpoint usage information by hour 
+        /// Returns aggregated endpoint usage information by hour &lt;b&gt;Permissions Needed:&lt;/b&gt; USAGE_ADMIN
         /// </summary>
         /// <param name="startDate">The beginning of the range being requested, unix timestamp in seconds</param>
         /// <param name="endDate">The ending of the range being requested, unix timestamp in seconds</param>
@@ -47,7 +47,7 @@ namespace com.knetikcloud.Api
         PageResourceUsageInfo GetUsageByMinuteData { get; }
 
         /// <summary>
-        /// Returns aggregated endpoint usage information by minute 
+        /// Returns aggregated endpoint usage information by minute &lt;b&gt;Permissions Needed:&lt;/b&gt; USAGE_ADMIN
         /// </summary>
         /// <param name="startDate">The beginning of the range being requested, unix timestamp in seconds</param>
         /// <param name="endDate">The ending of the range being requested, unix timestamp in seconds</param>
@@ -61,7 +61,7 @@ namespace com.knetikcloud.Api
         PageResourceUsageInfo GetUsageByMonthData { get; }
 
         /// <summary>
-        /// Returns aggregated endpoint usage information by month 
+        /// Returns aggregated endpoint usage information by month &lt;b&gt;Permissions Needed:&lt;/b&gt; USAGE_ADMIN
         /// </summary>
         /// <param name="startDate">The beginning of the range being requested, unix timestamp in seconds</param>
         /// <param name="endDate">The ending of the range being requested, unix timestamp in seconds</param>
@@ -75,7 +75,7 @@ namespace com.knetikcloud.Api
         PageResourceUsageInfo GetUsageByYearData { get; }
 
         /// <summary>
-        /// Returns aggregated endpoint usage information by year 
+        /// Returns aggregated endpoint usage information by year &lt;b&gt;Permissions Needed:&lt;/b&gt; USAGE_ADMIN
         /// </summary>
         /// <param name="startDate">The beginning of the range being requested, unix timestamp in seconds</param>
         /// <param name="endDate">The ending of the range being requested, unix timestamp in seconds</param>
@@ -89,7 +89,7 @@ namespace com.knetikcloud.Api
         List<string> GetUsageEndpointsData { get; }
 
         /// <summary>
-        /// Returns list of endpoints called (method and url) 
+        /// Returns list of endpoints called (method and url) &lt;b&gt;Permissions Needed:&lt;/b&gt; USAGE_ADMIN
         /// </summary>
         /// <param name="startDate">The beginning of the range being requested, unix timestamp in seconds</param>
         /// <param name="endDate">The ending of the range being requested, unix timestamp in seconds</param>
@@ -164,7 +164,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Returns aggregated endpoint usage information by day 
+        /// Returns aggregated endpoint usage information by day &lt;b&gt;Permissions Needed:&lt;/b&gt; USAGE_ADMIN
         /// </summary>
         /// <param name="startDate">The beginning of the range being requested, unix timestamp in seconds</param>
         /// <param name="endDate">The ending of the range being requested, unix timestamp in seconds</param>
@@ -265,7 +265,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Returns aggregated endpoint usage information by hour 
+        /// Returns aggregated endpoint usage information by hour &lt;b&gt;Permissions Needed:&lt;/b&gt; USAGE_ADMIN
         /// </summary>
         /// <param name="startDate">The beginning of the range being requested, unix timestamp in seconds</param>
         /// <param name="endDate">The ending of the range being requested, unix timestamp in seconds</param>
@@ -366,7 +366,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Returns aggregated endpoint usage information by minute 
+        /// Returns aggregated endpoint usage information by minute &lt;b&gt;Permissions Needed:&lt;/b&gt; USAGE_ADMIN
         /// </summary>
         /// <param name="startDate">The beginning of the range being requested, unix timestamp in seconds</param>
         /// <param name="endDate">The ending of the range being requested, unix timestamp in seconds</param>
@@ -467,7 +467,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Returns aggregated endpoint usage information by month 
+        /// Returns aggregated endpoint usage information by month &lt;b&gt;Permissions Needed:&lt;/b&gt; USAGE_ADMIN
         /// </summary>
         /// <param name="startDate">The beginning of the range being requested, unix timestamp in seconds</param>
         /// <param name="endDate">The ending of the range being requested, unix timestamp in seconds</param>
@@ -568,7 +568,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Returns aggregated endpoint usage information by year 
+        /// Returns aggregated endpoint usage information by year &lt;b&gt;Permissions Needed:&lt;/b&gt; USAGE_ADMIN
         /// </summary>
         /// <param name="startDate">The beginning of the range being requested, unix timestamp in seconds</param>
         /// <param name="endDate">The ending of the range being requested, unix timestamp in seconds</param>
@@ -669,7 +669,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Returns list of endpoints called (method and url) 
+        /// Returns list of endpoints called (method and url) &lt;b&gt;Permissions Needed:&lt;/b&gt; USAGE_ADMIN
         /// </summary>
         /// <param name="startDate">The beginning of the range being requested, unix timestamp in seconds</param>
         /// <param name="endDate">The ending of the range being requested, unix timestamp in seconds</param>

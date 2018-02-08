@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         BreTriggerResource CreateBRETriggerData { get; }
 
         /// <summary>
-        /// Create a trigger Customer added triggers will not be fired automatically or have rules associated with them by default. Custom rules must be added to get use from the trigger and it must then be fired from the outside. See the Bre Event services
+        /// Create a trigger Customer added triggers will not be fired automatically or have rules associated with them by default. Custom rules must be added to get use from the trigger and it must then be fired from the outside. See the Bre Event services. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; BRE_RULE_ENGINE_TRIGGERS_ADMIN
         /// </summary>
         /// <param name="breTriggerResource">The BRE trigger resource object</param>
         void CreateBRETrigger(BreTriggerResource breTriggerResource);
@@ -27,7 +27,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Delete a trigger May fail if there are existing rules against it. Cannot delete core triggers
+        /// Delete a trigger May fail if there are existing rules against it. Cannot delete core triggers. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; BRE_RULE_ENGINE_TRIGGERS_ADMIN
         /// </summary>
         /// <param name="eventName">The trigger event name</param>
         void DeleteBRETrigger(string eventName);
@@ -35,7 +35,7 @@ namespace com.knetikcloud.Api
         BreTriggerResource GetBRETriggerData { get; }
 
         /// <summary>
-        /// Get a single trigger 
+        /// Get a single trigger &lt;b&gt;Permissions Needed:&lt;/b&gt; BRE_RULE_ENGINE_TRIGGERS_USER
         /// </summary>
         /// <param name="eventName">The trigger event name</param>
         void GetBRETrigger(string eventName);
@@ -43,7 +43,7 @@ namespace com.knetikcloud.Api
         PageResourceBreTriggerResource GetBRETriggersData { get; }
 
         /// <summary>
-        /// List triggers 
+        /// List triggers &lt;b&gt;Permissions Needed:&lt;/b&gt; BRE_RULE_ENGINE_TRIGGERS_USER
         /// </summary>
         /// <param name="filterSystem">Filter for triggers that are system triggers when true, or not when false. Leave off for both mixed</param>
         /// <param name="filterCategory">Filter for triggers that are within a specific category</param>
@@ -57,7 +57,7 @@ namespace com.knetikcloud.Api
         BreTriggerResource UpdateBRETriggerData { get; }
 
         /// <summary>
-        /// Update a trigger May fail if new parameters mismatch requirements of existing rules. Cannot update core triggers
+        /// Update a trigger May fail if new parameters mismatch requirements of existing rules. Cannot update core triggers. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; BRE_RULE_ENGINE_TRIGGERS_ADMIN
         /// </summary>
         /// <param name="eventName">The trigger event name</param>
         /// <param name="breTriggerResource">The BRE trigger resource object</param>
@@ -123,7 +123,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Create a trigger Customer added triggers will not be fired automatically or have rules associated with them by default. Custom rules must be added to get use from the trigger and it must then be fired from the outside. See the Bre Event services
+        /// Create a trigger Customer added triggers will not be fired automatically or have rules associated with them by default. Custom rules must be added to get use from the trigger and it must then be fired from the outside. See the Bre Event services. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; BRE_RULE_ENGINE_TRIGGERS_ADMIN
         /// </summary>
         /// <param name="breTriggerResource">The BRE trigger resource object</param>
         public void CreateBRETrigger(BreTriggerResource breTriggerResource)
@@ -175,7 +175,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Delete a trigger May fail if there are existing rules against it. Cannot delete core triggers
+        /// Delete a trigger May fail if there are existing rules against it. Cannot delete core triggers. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; BRE_RULE_ENGINE_TRIGGERS_ADMIN
         /// </summary>
         /// <param name="eventName">The trigger event name</param>
         public void DeleteBRETrigger(string eventName)
@@ -229,7 +229,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a single trigger 
+        /// Get a single trigger &lt;b&gt;Permissions Needed:&lt;/b&gt; BRE_RULE_ENGINE_TRIGGERS_USER
         /// </summary>
         /// <param name="eventName">The trigger event name</param>
         public void GetBRETrigger(string eventName)
@@ -285,7 +285,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// List triggers 
+        /// List triggers &lt;b&gt;Permissions Needed:&lt;/b&gt; BRE_RULE_ENGINE_TRIGGERS_USER
         /// </summary>
         /// <param name="filterSystem">Filter for triggers that are system triggers when true, or not when false. Leave off for both mixed</param>
         /// <param name="filterCategory">Filter for triggers that are within a specific category</param>
@@ -376,7 +376,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Update a trigger May fail if new parameters mismatch requirements of existing rules. Cannot update core triggers
+        /// Update a trigger May fail if new parameters mismatch requirements of existing rules. Cannot update core triggers. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; BRE_RULE_ENGINE_TRIGGERS_ADMIN
         /// </summary>
         /// <param name="eventName">The trigger event name</param>
         /// <param name="breTriggerResource">The BRE trigger resource object</param>

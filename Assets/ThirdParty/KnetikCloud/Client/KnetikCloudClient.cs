@@ -15,9 +15,6 @@ namespace com.knetikcloud.Client
     /// </summary>
     public class KnetikCloudClient : KnetikClient
     {
-        private const string StagingUrlFormat = "https://{0}.devsandbox.knetikcloud.com";
-        private const string ProductionUrlFormat = "https://{0}.knetikcloud.com";
-
         private KnetikCloudProjectSettings mProjectSettings;
         private AccessTokenApi mAccessTokenApi;
 
@@ -43,7 +40,9 @@ namespace com.knetikcloud.Client
                     return string.Empty;
                 }
 
-                return string.Format((ServerEnvironment == KnetikServerEnvironment.Production) ? ProductionUrlFormat : StagingUrlFormat, mProjectSettings.AppName);
+                return (ServerEnvironment == KnetikServerEnvironment.Production)
+                    ? mProjectSettings.ProductionUrl
+                    : mProjectSettings.StagingUrl;
             }
         }
 

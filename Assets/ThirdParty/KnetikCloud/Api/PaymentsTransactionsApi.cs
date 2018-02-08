@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         TransactionResource GetTransactionData { get; }
 
         /// <summary>
-        /// Get the details for a single transaction 
+        /// Get the details for a single transaction &lt;b&gt;Permissions Needed:&lt;/b&gt; TRANSACTIONS_ADMIN or owner
         /// </summary>
         /// <param name="id">id</param>
         void GetTransaction(int? id);
@@ -27,7 +27,7 @@ namespace com.knetikcloud.Api
         PageResourceTransactionResource GetTransactionsData { get; }
 
         /// <summary>
-        /// List and search transactions 
+        /// List and search transactions &lt;b&gt;Permissions Needed:&lt;/b&gt; TRANSACTIONS_ADMIN or owner
         /// </summary>
         /// <param name="filterInvoice">Filter for transactions from a specific invoice</param>
         /// <param name="size">The number of objects returned per page</param>
@@ -38,7 +38,7 @@ namespace com.knetikcloud.Api
         RefundResource RefundTransactionData { get; }
 
         /// <summary>
-        /// Refund a payment transaction, in full or in part Will not allow for refunding more than the full amount even with multiple partial refunds. Money is refunded to the payment method used to make the original payment. Payment method must support refunds.
+        /// Refund a payment transaction, in full or in part Will not allow for refunding more than the full amount even with multiple partial refunds. Money is refunded to the payment method used to make the original payment. Payment method must support refunds. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; PAYMENTS_ADMIN
         /// </summary>
         /// <param name="id">The id of the transaction to refund</param>
         /// <param name="request">Request containing refund details</param>
@@ -89,7 +89,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Get the details for a single transaction 
+        /// Get the details for a single transaction &lt;b&gt;Permissions Needed:&lt;/b&gt; TRANSACTIONS_ADMIN or owner
         /// </summary>
         /// <param name="id">id</param>
         public void GetTransaction(int? id)
@@ -145,7 +145,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// List and search transactions 
+        /// List and search transactions &lt;b&gt;Permissions Needed:&lt;/b&gt; TRANSACTIONS_ADMIN or owner
         /// </summary>
         /// <param name="filterInvoice">Filter for transactions from a specific invoice</param>
         /// <param name="size">The number of objects returned per page</param>
@@ -218,7 +218,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Refund a payment transaction, in full or in part Will not allow for refunding more than the full amount even with multiple partial refunds. Money is refunded to the payment method used to make the original payment. Payment method must support refunds.
+        /// Refund a payment transaction, in full or in part Will not allow for refunding more than the full amount even with multiple partial refunds. Money is refunded to the payment method used to make the original payment. Payment method must support refunds. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; PAYMENTS_ADMIN
         /// </summary>
         /// <param name="id">The id of the transaction to refund</param>
         /// <param name="request">Request containing refund details</param>

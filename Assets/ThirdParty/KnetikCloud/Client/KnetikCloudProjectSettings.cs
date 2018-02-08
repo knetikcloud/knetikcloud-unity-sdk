@@ -13,7 +13,7 @@ namespace com.knetikcloud.Client
         public string ClientId;
         public bool ProductionToggle;
 
-        public string StagingURL
+        public string ProductionUrl
         {
             get
             {
@@ -22,10 +22,22 @@ namespace com.knetikcloud.Client
                     return string.Empty;
                 }
 
-                return string.Format("https://{0}.devsandbox.knetikcloud.com", AppName);
+                return string.Format(KnetikCloudConstants.ProductionUrlFormat, AppName);
             }
         }
 
+        public string StagingUrl
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(AppName))
+                {
+                    return string.Empty;
+                }
+
+                return string.Format(KnetikCloudConstants.StagingUrlFormat, AppName);
+            }
+        }
 
         public bool IsConfiguredProperly
         {

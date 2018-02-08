@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         InvoiceResource AddItemToUserInventoryData { get; }
 
         /// <summary>
-        /// Adds an item to the user inventory The inventory is fulfilled asynchronously UNLESS the invoice is explicitely skipped. Depending on the use case, it might require the client to verify that the entitlement was added after the fact or configure a BRE rule to get a notification in real time
+        /// Adds an item to the user inventory The inventory is fulfilled asynchronously UNLESS the invoice is explicitely skipped. Depending on the use case, it might require the client to verify that the entitlement was added after the fact or configure a BRE rule to get a notification in real time. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; INVENTORY_ADMIN
         /// </summary>
         /// <param name="id">The id of the user</param>
         /// <param name="userInventoryAddRequest">The user inventory add request object</param>
@@ -28,7 +28,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Check for access to an item without consuming Useful for pre-check and accounts for all various buisness rules
+        /// Check for access to an item without consuming Useful for pre-check and accounts for all various buisness rules. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; INVENTORY_ADMIN or owner
         /// </summary>
         /// <param name="userId">The id of the user to check for or &#39;me&#39; for logged in user</param>
         /// <param name="itemId">The id of the item</param>
@@ -38,7 +38,7 @@ namespace com.knetikcloud.Api
         EntitlementItem CreateEntitlementItemData { get; }
 
         /// <summary>
-        /// Create an entitlement item 
+        /// Create an entitlement item &lt;b&gt;Permissions Needed:&lt;/b&gt; INVENTORY_ADMIN
         /// </summary>
         /// <param name="cascade">Whether to cascade group changes, such as in the limited gettable behavior. A 400 error will return otherwise if the group is already in use with different values.</param>
         /// <param name="entitlementItem">The entitlement item object</param>
@@ -47,7 +47,7 @@ namespace com.knetikcloud.Api
         ItemTemplateResource CreateEntitlementTemplateData { get; }
 
         /// <summary>
-        /// Create an entitlement template Entitlement templates define a type of entitlement and the properties they have
+        /// Create an entitlement template Entitlement templates define a type of entitlement and the properties they have. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="template">The entitlement template to be created</param>
         void CreateEntitlementTemplate(ItemTemplateResource template);
@@ -55,7 +55,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Delete an entitlement item 
+        /// Delete an entitlement item &lt;b&gt;Permissions Needed:&lt;/b&gt; INVENTORY_ADMIN
         /// </summary>
         /// <param name="entitlementId">The id of the entitlement</param>
         void DeleteEntitlementItem(int? entitlementId);
@@ -63,7 +63,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Delete an entitlement template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
+        /// Delete an entitlement template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="cascade">The value needed to delete used templates</param>
@@ -72,7 +72,7 @@ namespace com.knetikcloud.Api
         EntitlementItem GetEntitlementItemData { get; }
 
         /// <summary>
-        /// Get a single entitlement item 
+        /// Get a single entitlement item &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="entitlementId">The id of the entitlement</param>
         void GetEntitlementItem(int? entitlementId);
@@ -80,7 +80,7 @@ namespace com.knetikcloud.Api
         PageResourceEntitlementItem GetEntitlementItemsData { get; }
 
         /// <summary>
-        /// List and search entitlement items 
+        /// List and search entitlement items &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="filterTemplate">Filter for entitlements using a specified template</param>
         /// <param name="size">The number of objects returned per page</param>
@@ -91,7 +91,7 @@ namespace com.knetikcloud.Api
         ItemTemplateResource GetEntitlementTemplateData { get; }
 
         /// <summary>
-        /// Get a single entitlement template 
+        /// Get a single entitlement template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or ACHIEVEMENTS_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         void GetEntitlementTemplate(string id);
@@ -99,7 +99,7 @@ namespace com.knetikcloud.Api
         PageResourceItemTemplateResource GetEntitlementTemplatesData { get; }
 
         /// <summary>
-        /// List and search entitlement templates 
+        /// List and search entitlement templates &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or ACHIEVEMENTS_ADMIN
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -109,7 +109,7 @@ namespace com.knetikcloud.Api
         PageResourceUserInventoryResource GetUserInventoriesData { get; }
 
         /// <summary>
-        /// List the user inventory entries for a given user 
+        /// List the user inventory entries for a given user &lt;b&gt;Permissions Needed:&lt;/b&gt; INVENTORY_ADMIN or owner
         /// </summary>
         /// <param name="id">The id of the user</param>
         /// <param name="inactive">If true, accepts inactive user inventories</param>
@@ -125,7 +125,7 @@ namespace com.knetikcloud.Api
         UserInventoryResource GetUserInventoryData { get; }
 
         /// <summary>
-        /// Get an inventory entry 
+        /// Get an inventory entry &lt;b&gt;Permissions Needed:&lt;/b&gt; INVENTORY_ADMIN
         /// </summary>
         /// <param name="userId">The id of the inventory owner or &#39;me&#39; for the logged in user</param>
         /// <param name="id">The id of the user inventory</param>
@@ -134,7 +134,7 @@ namespace com.knetikcloud.Api
         PageResourceUserItemLogResource GetUserInventoryLogData { get; }
 
         /// <summary>
-        /// List the log entries for this inventory entry 
+        /// List the log entries for this inventory entry &lt;b&gt;Permissions Needed:&lt;/b&gt; INVENTORY_ADMIN or owner
         /// </summary>
         /// <param name="userId">The id of the inventory owner or &#39;me&#39; for the logged in user</param>
         /// <param name="id">The id of the user inventory</param>
@@ -145,7 +145,7 @@ namespace com.knetikcloud.Api
         PageResourceUserInventoryResource GetUsersInventoryData { get; }
 
         /// <summary>
-        /// List the user inventory entries for all users 
+        /// List the user inventory entries for all users &lt;b&gt;Permissions Needed:&lt;/b&gt; INVENTORY_ADMIN
         /// </summary>
         /// <param name="inactive">If true, accepts inactive user inventories</param>
         /// <param name="size">The number of objects returned per page</param>
@@ -160,7 +160,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Grant an entitlement 
+        /// Grant an entitlement &lt;b&gt;Permissions Needed:&lt;/b&gt; INVENTORY_ADMIN
         /// </summary>
         /// <param name="userId">The id of the user to grant the entitlement to</param>
         /// <param name="grantRequest">grantRequest</param>
@@ -169,7 +169,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Update an entitlement item 
+        /// Update an entitlement item &lt;b&gt;Permissions Needed:&lt;/b&gt; INVENTORY_ADMIN
         /// </summary>
         /// <param name="entitlementId">The id of the entitlement</param>
         /// <param name="cascade">Whether to cascade group changes, such as in the limited gettable behavior. A 400 error will return otherwise if the group is already in use with different values.</param>
@@ -179,7 +179,7 @@ namespace com.knetikcloud.Api
         ItemTemplateResource UpdateEntitlementTemplateData { get; }
 
         /// <summary>
-        /// Update an entitlement template 
+        /// Update an entitlement template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="template">The updated template</param>
@@ -188,7 +188,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Set the behavior data for an inventory entry 
+        /// Set the behavior data for an inventory entry &lt;b&gt;Permissions Needed:&lt;/b&gt; INVENTORY_ADMIN
         /// </summary>
         /// <param name="userId">The id of the user</param>
         /// <param name="id">The id of the user inventory</param>
@@ -198,7 +198,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Set the expiration date Will change the current grace period for a subscription but not the bill date (possibly even ending before having the chance to re-bill)
+        /// Set the expiration date Will change the current grace period for a subscription but not the bill date (possibly even ending before having the chance to re-bill). &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; INVENTORY_ADMIN
         /// </summary>
         /// <param name="userId">user_id</param>
         /// <param name="id">The id of the user inventory</param>
@@ -208,7 +208,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Set the status for an inventory entry 
+        /// Set the status for an inventory entry &lt;b&gt;Permissions Needed:&lt;/b&gt; INVENTORY_ADMIN
         /// </summary>
         /// <param name="userId">The id of the user</param>
         /// <param name="id">The id of the user inventory</param>
@@ -218,7 +218,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Use an item 
+        /// Use an item &lt;b&gt;Permissions Needed:&lt;/b&gt; INVENTORY_ADMIN or owner
         /// </summary>
         /// <param name="userId">The id of the user to check for or &#39;me&#39; for logged in user</param>
         /// <param name="itemId">The id of the item</param>
@@ -406,7 +406,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Adds an item to the user inventory The inventory is fulfilled asynchronously UNLESS the invoice is explicitely skipped. Depending on the use case, it might require the client to verify that the entitlement was added after the fact or configure a BRE rule to get a notification in real time
+        /// Adds an item to the user inventory The inventory is fulfilled asynchronously UNLESS the invoice is explicitely skipped. Depending on the use case, it might require the client to verify that the entitlement was added after the fact or configure a BRE rule to get a notification in real time. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; INVENTORY_ADMIN
         /// </summary>
         /// <param name="id">The id of the user</param>
         /// <param name="userInventoryAddRequest">The user inventory add request object</param>
@@ -465,7 +465,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Check for access to an item without consuming Useful for pre-check and accounts for all various buisness rules
+        /// Check for access to an item without consuming Useful for pre-check and accounts for all various buisness rules. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; INVENTORY_ADMIN or owner
         /// </summary>
         /// <param name="userId">The id of the user to check for or &#39;me&#39; for logged in user</param>
         /// <param name="itemId">The id of the item</param>
@@ -532,7 +532,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "item_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// Create an entitlement item 
+        /// Create an entitlement item &lt;b&gt;Permissions Needed:&lt;/b&gt; INVENTORY_ADMIN
         /// </summary>
         /// <param name="cascade">Whether to cascade group changes, such as in the limited gettable behavior. A 400 error will return otherwise if the group is already in use with different values.</param>
         /// <param name="entitlementItem">The entitlement item object</param>
@@ -590,7 +590,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "item_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// Create an entitlement template Entitlement templates define a type of entitlement and the properties they have
+        /// Create an entitlement template Entitlement templates define a type of entitlement and the properties they have. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="template">The entitlement template to be created</param>
         public void CreateEntitlementTemplate(ItemTemplateResource template)
@@ -642,7 +642,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "item_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// Delete an entitlement item 
+        /// Delete an entitlement item &lt;b&gt;Permissions Needed:&lt;/b&gt; INVENTORY_ADMIN
         /// </summary>
         /// <param name="entitlementId">The id of the entitlement</param>
         public void DeleteEntitlementItem(int? entitlementId)
@@ -696,7 +696,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "item_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// Delete an entitlement template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
+        /// Delete an entitlement template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="cascade">The value needed to delete used templates</param>
@@ -756,7 +756,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "item_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a single entitlement item 
+        /// Get a single entitlement item &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="entitlementId">The id of the entitlement</param>
         public void GetEntitlementItem(int? entitlementId)
@@ -812,7 +812,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "item_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// List and search entitlement items 
+        /// List and search entitlement items &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="filterTemplate">Filter for entitlements using a specified template</param>
         /// <param name="size">The number of objects returned per page</param>
@@ -885,7 +885,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "item_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a single entitlement template 
+        /// Get a single entitlement template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or ACHIEVEMENTS_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         public void GetEntitlementTemplate(string id)
@@ -941,7 +941,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "item_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// List and search entitlement templates 
+        /// List and search entitlement templates &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or ACHIEVEMENTS_ADMIN
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -1008,7 +1008,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "item_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// List the user inventory entries for a given user 
+        /// List the user inventory entries for a given user &lt;b&gt;Permissions Needed:&lt;/b&gt; INVENTORY_ADMIN or owner
         /// </summary>
         /// <param name="id">The id of the user</param>
         /// <param name="inactive">If true, accepts inactive user inventories</param>
@@ -1112,7 +1112,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "item_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// Get an inventory entry 
+        /// Get an inventory entry &lt;b&gt;Permissions Needed:&lt;/b&gt; INVENTORY_ADMIN
         /// </summary>
         /// <param name="userId">The id of the inventory owner or &#39;me&#39; for the logged in user</param>
         /// <param name="id">The id of the user inventory</param>
@@ -1175,7 +1175,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikCl
 
         /// <inheritdoc />
         /// <summary>
-        /// List the log entries for this inventory entry 
+        /// List the log entries for this inventory entry &lt;b&gt;Permissions Needed:&lt;/b&gt; INVENTORY_ADMIN or owner
         /// </summary>
         /// <param name="userId">The id of the inventory owner or &#39;me&#39; for the logged in user</param>
         /// <param name="id">The id of the user inventory</param>
@@ -1250,7 +1250,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikCl
 
         /// <inheritdoc />
         /// <summary>
-        /// List the user inventory entries for all users 
+        /// List the user inventory entries for all users &lt;b&gt;Permissions Needed:&lt;/b&gt; INVENTORY_ADMIN
         /// </summary>
         /// <param name="inactive">If true, accepts inactive user inventories</param>
         /// <param name="size">The number of objects returned per page</param>
@@ -1347,7 +1347,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikCl
 
         /// <inheritdoc />
         /// <summary>
-        /// Grant an entitlement 
+        /// Grant an entitlement &lt;b&gt;Permissions Needed:&lt;/b&gt; INVENTORY_ADMIN
         /// </summary>
         /// <param name="userId">The id of the user to grant the entitlement to</param>
         /// <param name="grantRequest">grantRequest</param>
@@ -1409,7 +1409,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikCl
 
         /// <inheritdoc />
         /// <summary>
-        /// Update an entitlement item 
+        /// Update an entitlement item &lt;b&gt;Permissions Needed:&lt;/b&gt; INVENTORY_ADMIN
         /// </summary>
         /// <param name="entitlementId">The id of the entitlement</param>
         /// <param name="cascade">Whether to cascade group changes, such as in the limited gettable behavior. A 400 error will return otherwise if the group is already in use with different values.</param>
@@ -1472,7 +1472,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikCl
 
         /// <inheritdoc />
         /// <summary>
-        /// Update an entitlement template 
+        /// Update an entitlement template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="template">The updated template</param>
@@ -1531,7 +1531,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikCl
 
         /// <inheritdoc />
         /// <summary>
-        /// Set the behavior data for an inventory entry 
+        /// Set the behavior data for an inventory entry &lt;b&gt;Permissions Needed:&lt;/b&gt; INVENTORY_ADMIN
         /// </summary>
         /// <param name="userId">The id of the user</param>
         /// <param name="id">The id of the user inventory</param>
@@ -1595,7 +1595,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikCl
 
         /// <inheritdoc />
         /// <summary>
-        /// Set the expiration date Will change the current grace period for a subscription but not the bill date (possibly even ending before having the chance to re-bill)
+        /// Set the expiration date Will change the current grace period for a subscription but not the bill date (possibly even ending before having the chance to re-bill). &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; INVENTORY_ADMIN
         /// </summary>
         /// <param name="userId">user_id</param>
         /// <param name="id">The id of the user inventory</param>
@@ -1659,7 +1659,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikCl
 
         /// <inheritdoc />
         /// <summary>
-        /// Set the status for an inventory entry 
+        /// Set the status for an inventory entry &lt;b&gt;Permissions Needed:&lt;/b&gt; INVENTORY_ADMIN
         /// </summary>
         /// <param name="userId">The id of the user</param>
         /// <param name="id">The id of the user inventory</param>
@@ -1723,7 +1723,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikCl
 
         /// <inheritdoc />
         /// <summary>
-        /// Use an item 
+        /// Use an item &lt;b&gt;Permissions Needed:&lt;/b&gt; INVENTORY_ADMIN or owner
         /// </summary>
         /// <param name="userId">The id of the user to check for or &#39;me&#39; for logged in user</param>
         /// <param name="itemId">The id of the item</param>
