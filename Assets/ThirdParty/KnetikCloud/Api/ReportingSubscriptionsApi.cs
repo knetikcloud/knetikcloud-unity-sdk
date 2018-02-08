@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         PageResourceBillingReport GetSubscriptionReportsData { get; }
 
         /// <summary>
-        /// Get a list of available subscription reports in most recent first order 
+        /// Get a list of available subscription reports in most recent first order &lt;b&gt;Permissions Needed:&lt;/b&gt; SUBSCRIPTIONS_ADMIN
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -54,7 +54,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Get a list of available subscription reports in most recent first order 
+        /// Get a list of available subscription reports in most recent first order &lt;b&gt;Permissions Needed:&lt;/b&gt; SUBSCRIPTIONS_ADMIN
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>

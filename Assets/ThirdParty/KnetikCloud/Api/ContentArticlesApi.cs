@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         ArticleResource CreateArticleData { get; }
 
         /// <summary>
-        /// Create a new article Articles are blobs of text with titles, a category and assets. Formatting and display of the text is in the hands of the front end.
+        /// Create a new article Articles are blobs of text with titles, a category and assets. Formatting and display of the text is in the hands of the front end.&lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions:&lt;/b&gt; ARTICLES_ADMIN
         /// </summary>
         /// <param name="articleResource">The new article</param>
         void CreateArticle(ArticleResource articleResource);
@@ -27,7 +27,7 @@ namespace com.knetikcloud.Api
         TemplateResource CreateArticleTemplateData { get; }
 
         /// <summary>
-        /// Create an article template Article Templates define a type of article and the properties they have
+        /// Create an article template Article Templates define a type of article and the properties they have. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="articleTemplateResource">The article template resource object</param>
         void CreateArticleTemplate(TemplateResource articleTemplateResource);
@@ -35,7 +35,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Delete an existing article 
+        /// Delete an existing article &lt;b&gt;Permissions Needed:&lt;/b&gt; ARTICLES_ADMIN
         /// </summary>
         /// <param name="id">The article id</param>
         void DeleteArticle(string id);
@@ -43,7 +43,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Delete an article template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
+        /// Delete an article template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="cascade">The value needed to delete used templates</param>
@@ -52,7 +52,7 @@ namespace com.knetikcloud.Api
         ArticleResource GetArticleData { get; }
 
         /// <summary>
-        /// Get a single article 
+        /// Get a single article &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="id">The article id</param>
         void GetArticle(string id);
@@ -60,7 +60,7 @@ namespace com.knetikcloud.Api
         TemplateResource GetArticleTemplateData { get; }
 
         /// <summary>
-        /// Get a single article template 
+        /// Get a single article template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or ARTICLES_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         void GetArticleTemplate(string id);
@@ -68,7 +68,7 @@ namespace com.knetikcloud.Api
         PageResourceTemplateResource GetArticleTemplatesData { get; }
 
         /// <summary>
-        /// List and search article templates 
+        /// List and search article templates &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or ARTICLES_ADMIN
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -78,7 +78,7 @@ namespace com.knetikcloud.Api
         PageResourceArticleResource GetArticlesData { get; }
 
         /// <summary>
-        /// List and search articles Get a list of articles with optional filtering. Assets will not be filled in on the resources returned. Use &#39;Get a single article&#39; to retrieve the full resource with assets for a given item as needed.
+        /// List and search articles Get a list of articles with optional filtering. Assets will not be filled in on the resources returned. Use &#39;Get a single article&#39; to retrieve the full resource with assets for a given item as needed. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="filterActiveOnly">Filter for articles that are active (true) or inactive (false)</param>
         /// <param name="filterCategory">Filter for articles from a specific category by id</param>
@@ -94,7 +94,7 @@ namespace com.knetikcloud.Api
         ArticleResource UpdateArticleData { get; }
 
         /// <summary>
-        /// Update an existing article 
+        /// Update an existing article &lt;b&gt;Permissions Needed:&lt;/b&gt; ARTICLES_ADMIN
         /// </summary>
         /// <param name="id">The article id</param>
         /// <param name="articleResource">The article object</param>
@@ -103,7 +103,7 @@ namespace com.knetikcloud.Api
         TemplateResource UpdateArticleTemplateData { get; }
 
         /// <summary>
-        /// Update an article template 
+        /// Update an article template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="articleTemplateResource">The article template resource object</param>
@@ -208,7 +208,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Create a new article Articles are blobs of text with titles, a category and assets. Formatting and display of the text is in the hands of the front end.
+        /// Create a new article Articles are blobs of text with titles, a category and assets. Formatting and display of the text is in the hands of the front end.&lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions:&lt;/b&gt; ARTICLES_ADMIN
         /// </summary>
         /// <param name="articleResource">The new article</param>
         public void CreateArticle(ArticleResource articleResource)
@@ -260,7 +260,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Create an article template Article Templates define a type of article and the properties they have
+        /// Create an article template Article Templates define a type of article and the properties they have. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="articleTemplateResource">The article template resource object</param>
         public void CreateArticleTemplate(TemplateResource articleTemplateResource)
@@ -312,7 +312,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Delete an existing article 
+        /// Delete an existing article &lt;b&gt;Permissions Needed:&lt;/b&gt; ARTICLES_ADMIN
         /// </summary>
         /// <param name="id">The article id</param>
         public void DeleteArticle(string id)
@@ -366,7 +366,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Delete an article template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
+        /// Delete an article template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="cascade">The value needed to delete used templates</param>
@@ -426,7 +426,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a single article 
+        /// Get a single article &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="id">The article id</param>
         public void GetArticle(string id)
@@ -482,7 +482,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a single article template 
+        /// Get a single article template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or ARTICLES_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         public void GetArticleTemplate(string id)
@@ -538,7 +538,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// List and search article templates 
+        /// List and search article templates &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or ARTICLES_ADMIN
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -605,7 +605,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// List and search articles Get a list of articles with optional filtering. Assets will not be filled in on the resources returned. Use &#39;Get a single article&#39; to retrieve the full resource with assets for a given item as needed.
+        /// List and search articles Get a list of articles with optional filtering. Assets will not be filled in on the resources returned. Use &#39;Get a single article&#39; to retrieve the full resource with assets for a given item as needed. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="filterActiveOnly">Filter for articles that are active (true) or inactive (false)</param>
         /// <param name="filterCategory">Filter for articles from a specific category by id</param>
@@ -708,7 +708,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Update an existing article 
+        /// Update an existing article &lt;b&gt;Permissions Needed:&lt;/b&gt; ARTICLES_ADMIN
         /// </summary>
         /// <param name="id">The article id</param>
         /// <param name="articleResource">The article object</param>
@@ -767,7 +767,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Update an article template 
+        /// Update an article template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="articleTemplateResource">The article template resource object</param>

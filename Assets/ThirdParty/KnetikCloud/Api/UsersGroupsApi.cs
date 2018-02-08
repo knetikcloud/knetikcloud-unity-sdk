@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         GroupMemberResource AddMemberToGroupData { get; }
 
         /// <summary>
-        /// Adds a new member to the group 
+        /// Adds a new member to the group &lt;b&gt;Permissions Needed:&lt;/b&gt; GROUP_ADMIN or self if open
         /// </summary>
         /// <param name="uniqueName">The group unique name</param>
         /// <param name="user">The id and status for a user to add to the group</param>
@@ -28,7 +28,7 @@ namespace com.knetikcloud.Api
         List<GroupMemberResource> AddMembersToGroupData { get; }
 
         /// <summary>
-        /// Adds multiple members to the group 
+        /// Adds multiple members to the group &lt;b&gt;Permissions Needed:&lt;/b&gt; GROUP_ADMIN
         /// </summary>
         /// <param name="uniqueName">The group unique name</param>
         /// <param name="users">The id and status for a list of users to add to the group</param>
@@ -37,7 +37,7 @@ namespace com.knetikcloud.Api
         GroupResource CreateGroupData { get; }
 
         /// <summary>
-        /// Create a group 
+        /// Create a group &lt;b&gt;Permissions Needed:&lt;/b&gt; GROUP_ADMIN
         /// </summary>
         /// <param name="groupResource">The new group</param>
         void CreateGroup(GroupResource groupResource);
@@ -45,7 +45,7 @@ namespace com.knetikcloud.Api
         TemplateResource CreateGroupMemberTemplateData { get; }
 
         /// <summary>
-        /// Create an group member template GroupMember Templates define a type of group member and the properties they have
+        /// Create an group member template GroupMember Templates define a type of group member and the properties they have. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="groupMemberTemplateResource">The group member template resource object</param>
         void CreateGroupMemberTemplate(TemplateResource groupMemberTemplateResource);
@@ -53,7 +53,7 @@ namespace com.knetikcloud.Api
         TemplateResource CreateGroupTemplateData { get; }
 
         /// <summary>
-        /// Create a group template Group Templates define a type of group and the properties they have
+        /// Create a group template Group Templates define a type of group and the properties they have. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="groupTemplateResource">The group template resource object</param>
         void CreateGroupTemplate(TemplateResource groupTemplateResource);
@@ -61,7 +61,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Removes a group from the system All groups listing this as the parent are also removed and users are in turn removed from this and those groups. This may result in users no longer being in this group&#39;s parent if they were not added to it directly as well.
+        /// Removes a group from the system All groups listing this as the parent are also removed and users are in turn removed from this and those groups. This may result in users no longer being in this group&#39;s parent if they were not added to it directly as well. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; GROUP_ADMIN
         /// </summary>
         /// <param name="uniqueName">The group unique name</param>
         void DeleteGroup(string uniqueName);
@@ -69,7 +69,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Delete an group member template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
+        /// Delete an group member template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="cascade">The value needed to delete used templates</param>
@@ -78,16 +78,26 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Delete a group template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
+        /// Delete a group template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="cascade">The value needed to delete used templates</param>
         void DeleteGroupTemplate(string id, string cascade);
 
+        
+
+        /// <summary>
+        /// Enable or disable notification of group messages 
+        /// </summary>
+        /// <param name="uniqueName">The group unique name</param>
+        /// <param name="userId">The user id of the member or &#39;me&#39;</param>
+        /// <param name="disabled">disabled</param>
+        void DisableGroupNotification(string uniqueName, string userId, ValueWrapperboolean disabled);
+
         GroupResource GetGroupData { get; }
 
         /// <summary>
-        /// Loads a specific group&#39;s details 
+        /// Loads a specific group&#39;s details &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="uniqueName">The group unique name</param>
         void GetGroup(string uniqueName);
@@ -95,7 +105,7 @@ namespace com.knetikcloud.Api
         List<GroupResource> GetGroupAncestorsData { get; }
 
         /// <summary>
-        /// Get group ancestors Returns a list of ancestor groups in reverse order (parent, then grandparent, etc
+        /// Get group ancestors Returns a list of ancestor groups in reverse order (parent, then grandparent, etc). &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="uniqueName">The group unique name</param>
         void GetGroupAncestors(string uniqueName);
@@ -103,7 +113,7 @@ namespace com.knetikcloud.Api
         GroupMemberResource GetGroupMemberData { get; }
 
         /// <summary>
-        /// Get a user from a group 
+        /// Get a user from a group &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="uniqueName">The group unique name</param>
         /// <param name="userId">The id of the user</param>
@@ -112,7 +122,7 @@ namespace com.knetikcloud.Api
         TemplateResource GetGroupMemberTemplateData { get; }
 
         /// <summary>
-        /// Get a single group member template 
+        /// Get a single group member template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or GROUP_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         void GetGroupMemberTemplate(string id);
@@ -120,7 +130,7 @@ namespace com.knetikcloud.Api
         PageResourceTemplateResource GetGroupMemberTemplatesData { get; }
 
         /// <summary>
-        /// List and search group member templates 
+        /// List and search group member templates &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or GROUP_ADMIN
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -130,7 +140,7 @@ namespace com.knetikcloud.Api
         PageResourceGroupMemberResource GetGroupMembersData { get; }
 
         /// <summary>
-        /// Lists members of the group 
+        /// Lists members of the group &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="uniqueName">The group unique name</param>
         /// <param name="size">The number of objects returned per page</param>
@@ -138,10 +148,20 @@ namespace com.knetikcloud.Api
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
         void GetGroupMembers(string uniqueName, int? size, int? page, string order);
 
+        PageResourceChatMessageResource GetGroupMessagesData { get; }
+
+        /// <summary>
+        /// Get a list of group messages &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
+        /// </summary>
+        /// <param name="uniqueName">The group unique name</param>
+        /// <param name="size">The number of objects returned per page</param>
+        /// <param name="page">The number of the page returned, starting with 1</param>
+        void GetGroupMessages(string uniqueName, int? size, int? page);
+
         TemplateResource GetGroupTemplateData { get; }
 
         /// <summary>
-        /// Get a single group template 
+        /// Get a single group template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or GROUP_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         void GetGroupTemplate(string id);
@@ -149,7 +169,7 @@ namespace com.knetikcloud.Api
         PageResourceTemplateResource GetGroupTemplatesData { get; }
 
         /// <summary>
-        /// List and search group templates 
+        /// List and search group templates &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or GROUP_ADMIN
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -159,7 +179,7 @@ namespace com.knetikcloud.Api
         List<string> GetGroupsForUserData { get; }
 
         /// <summary>
-        /// List groups a user is in 
+        /// List groups a user is in &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="userId">The id of the user</param>
         /// <param name="filterChildren">Whether to limit group list to children of groups only. If true, shows only groups with parents. If false, shows only groups with no parent.</param>
@@ -168,7 +188,7 @@ namespace com.knetikcloud.Api
         PageResourceGroupResource ListGroupsData { get; }
 
         /// <summary>
-        /// List and search groups 
+        /// List and search groups &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="filterTemplate">Filter for groups using a specific template, by id</param>
         /// <param name="filterMemberCount">Filters groups by member count. Multiple values possible for range search. Format: filter_member_count&#x3D;OP,ts&amp;... where OP in (GT, LT, GOE, LOE, EQ). Ex: filter_member_count&#x3D;GT,14,LT,17</param>
@@ -181,10 +201,19 @@ namespace com.knetikcloud.Api
         /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
         void ListGroups(string filterTemplate, string filterMemberCount, string filterName, string filterUniqueName, string filterParent, string filterStatus, int? size, int? page, string order);
 
+        ChatMessageResource PostGroupMessageData { get; }
+
+        /// <summary>
+        /// Send a group message 
+        /// </summary>
+        /// <param name="uniqueName">The group unique name</param>
+        /// <param name="chatMessageRequest">The chat message request</param>
+        void PostGroupMessage(string uniqueName, ChatMessageRequest chatMessageRequest);
+
         
 
         /// <summary>
-        /// Removes a user from a group 
+        /// Removes a user from a group &lt;b&gt;Permissions Needed:&lt;/b&gt; GROUP_ADMIN or self if open
         /// </summary>
         /// <param name="uniqueName">The group unique name</param>
         /// <param name="userId">The id of the user to remove</param>
@@ -193,7 +222,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Update a group If adding/removing/changing parent, user membership in group/new parent groups may be modified. The parent being removed will remove members from this sub group unless they were added explicitly to the parent and the new parent will gain members unless they were already a part of it.
+        /// Update a group If adding/removing/changing parent, user membership in group/new parent groups may be modified. The parent being removed will remove members from this sub group unless they were added explicitly to the parent and the new parent will gain members unless they were already a part of it. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; GROUP_ADMIN or admin of the group
         /// </summary>
         /// <param name="uniqueName">The group unique name</param>
         /// <param name="groupResource">The updated group</param>
@@ -202,7 +231,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Change a user&#39;s order 
+        /// Change a user&#39;s order &lt;b&gt;Permissions Needed:&lt;/b&gt; GROUP_ADMIN
         /// </summary>
         /// <param name="uniqueName">The group unique name</param>
         /// <param name="userId">The user id of the member to modify</param>
@@ -212,7 +241,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Change a user&#39;s membership properties 
+        /// Change a user&#39;s membership properties &lt;b&gt;Permissions Needed:&lt;/b&gt; GROUP_ADMIN
         /// </summary>
         /// <param name="uniqueName">The group unique name</param>
         /// <param name="userId">The user id of the member to modify</param>
@@ -222,7 +251,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Change a user&#39;s status 
+        /// Change a user&#39;s status &lt;b&gt;Permissions Needed:&lt;/b&gt; GROUP_ADMIN
         /// </summary>
         /// <param name="uniqueName">The group unique name</param>
         /// <param name="userId">The user id of the member to modify</param>
@@ -232,7 +261,7 @@ namespace com.knetikcloud.Api
         TemplateResource UpdateGroupMemberTemplateData { get; }
 
         /// <summary>
-        /// Update an group member template 
+        /// Update an group member template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="groupMemberTemplateResource">The group member template resource object</param>
@@ -241,7 +270,7 @@ namespace com.knetikcloud.Api
         TemplateResource UpdateGroupTemplateData { get; }
 
         /// <summary>
-        /// Update a group template 
+        /// Update a group template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="groupTemplateResource">The group template resource object</param>
@@ -273,6 +302,8 @@ namespace com.knetikcloud.Api
         private DateTime mDeleteGroupMemberTemplateStartTime;
         private readonly KnetikResponseContext mDeleteGroupTemplateResponseContext;
         private DateTime mDeleteGroupTemplateStartTime;
+        private readonly KnetikResponseContext mDisableGroupNotificationResponseContext;
+        private DateTime mDisableGroupNotificationStartTime;
         private readonly KnetikResponseContext mGetGroupResponseContext;
         private DateTime mGetGroupStartTime;
         private readonly KnetikResponseContext mGetGroupAncestorsResponseContext;
@@ -285,6 +316,8 @@ namespace com.knetikcloud.Api
         private DateTime mGetGroupMemberTemplatesStartTime;
         private readonly KnetikResponseContext mGetGroupMembersResponseContext;
         private DateTime mGetGroupMembersStartTime;
+        private readonly KnetikResponseContext mGetGroupMessagesResponseContext;
+        private DateTime mGetGroupMessagesStartTime;
         private readonly KnetikResponseContext mGetGroupTemplateResponseContext;
         private DateTime mGetGroupTemplateStartTime;
         private readonly KnetikResponseContext mGetGroupTemplatesResponseContext;
@@ -293,6 +326,8 @@ namespace com.knetikcloud.Api
         private DateTime mGetGroupsForUserStartTime;
         private readonly KnetikResponseContext mListGroupsResponseContext;
         private DateTime mListGroupsStartTime;
+        private readonly KnetikResponseContext mPostGroupMessageResponseContext;
+        private DateTime mPostGroupMessageStartTime;
         private readonly KnetikResponseContext mRemoveGroupMemberResponseContext;
         private DateTime mRemoveGroupMemberStartTime;
         private readonly KnetikResponseContext mUpdateGroupResponseContext;
@@ -337,6 +372,9 @@ namespace com.knetikcloud.Api
         public delegate void DeleteGroupTemplateCompleteDelegate(long responseCode);
         public DeleteGroupTemplateCompleteDelegate DeleteGroupTemplateComplete;
 
+        public delegate void DisableGroupNotificationCompleteDelegate(long responseCode);
+        public DisableGroupNotificationCompleteDelegate DisableGroupNotificationComplete;
+
         public GroupResource GetGroupData { get; private set; }
         public delegate void GetGroupCompleteDelegate(long responseCode, GroupResource response);
         public GetGroupCompleteDelegate GetGroupComplete;
@@ -361,6 +399,10 @@ namespace com.knetikcloud.Api
         public delegate void GetGroupMembersCompleteDelegate(long responseCode, PageResourceGroupMemberResource response);
         public GetGroupMembersCompleteDelegate GetGroupMembersComplete;
 
+        public PageResourceChatMessageResource GetGroupMessagesData { get; private set; }
+        public delegate void GetGroupMessagesCompleteDelegate(long responseCode, PageResourceChatMessageResource response);
+        public GetGroupMessagesCompleteDelegate GetGroupMessagesComplete;
+
         public TemplateResource GetGroupTemplateData { get; private set; }
         public delegate void GetGroupTemplateCompleteDelegate(long responseCode, TemplateResource response);
         public GetGroupTemplateCompleteDelegate GetGroupTemplateComplete;
@@ -376,6 +418,10 @@ namespace com.knetikcloud.Api
         public PageResourceGroupResource ListGroupsData { get; private set; }
         public delegate void ListGroupsCompleteDelegate(long responseCode, PageResourceGroupResource response);
         public ListGroupsCompleteDelegate ListGroupsComplete;
+
+        public ChatMessageResource PostGroupMessageData { get; private set; }
+        public delegate void PostGroupMessageCompleteDelegate(long responseCode, ChatMessageResource response);
+        public PostGroupMessageCompleteDelegate PostGroupMessageComplete;
 
         public delegate void RemoveGroupMemberCompleteDelegate(long responseCode);
         public RemoveGroupMemberCompleteDelegate RemoveGroupMemberComplete;
@@ -422,6 +468,8 @@ namespace com.knetikcloud.Api
             mDeleteGroupMemberTemplateResponseContext.ResponseReceived += OnDeleteGroupMemberTemplateResponse;
             mDeleteGroupTemplateResponseContext = new KnetikResponseContext();
             mDeleteGroupTemplateResponseContext.ResponseReceived += OnDeleteGroupTemplateResponse;
+            mDisableGroupNotificationResponseContext = new KnetikResponseContext();
+            mDisableGroupNotificationResponseContext.ResponseReceived += OnDisableGroupNotificationResponse;
             mGetGroupResponseContext = new KnetikResponseContext();
             mGetGroupResponseContext.ResponseReceived += OnGetGroupResponse;
             mGetGroupAncestorsResponseContext = new KnetikResponseContext();
@@ -434,6 +482,8 @@ namespace com.knetikcloud.Api
             mGetGroupMemberTemplatesResponseContext.ResponseReceived += OnGetGroupMemberTemplatesResponse;
             mGetGroupMembersResponseContext = new KnetikResponseContext();
             mGetGroupMembersResponseContext.ResponseReceived += OnGetGroupMembersResponse;
+            mGetGroupMessagesResponseContext = new KnetikResponseContext();
+            mGetGroupMessagesResponseContext.ResponseReceived += OnGetGroupMessagesResponse;
             mGetGroupTemplateResponseContext = new KnetikResponseContext();
             mGetGroupTemplateResponseContext.ResponseReceived += OnGetGroupTemplateResponse;
             mGetGroupTemplatesResponseContext = new KnetikResponseContext();
@@ -442,6 +492,8 @@ namespace com.knetikcloud.Api
             mGetGroupsForUserResponseContext.ResponseReceived += OnGetGroupsForUserResponse;
             mListGroupsResponseContext = new KnetikResponseContext();
             mListGroupsResponseContext.ResponseReceived += OnListGroupsResponse;
+            mPostGroupMessageResponseContext = new KnetikResponseContext();
+            mPostGroupMessageResponseContext.ResponseReceived += OnPostGroupMessageResponse;
             mRemoveGroupMemberResponseContext = new KnetikResponseContext();
             mRemoveGroupMemberResponseContext.ResponseReceived += OnRemoveGroupMemberResponse;
             mUpdateGroupResponseContext = new KnetikResponseContext();
@@ -460,7 +512,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Adds a new member to the group 
+        /// Adds a new member to the group &lt;b&gt;Permissions Needed:&lt;/b&gt; GROUP_ADMIN or self if open
         /// </summary>
         /// <param name="uniqueName">The group unique name</param>
         /// <param name="user">The id and status for a user to add to the group</param>
@@ -524,7 +576,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Adds multiple members to the group 
+        /// Adds multiple members to the group &lt;b&gt;Permissions Needed:&lt;/b&gt; GROUP_ADMIN
         /// </summary>
         /// <param name="uniqueName">The group unique name</param>
         /// <param name="users">The id and status for a list of users to add to the group</param>
@@ -588,7 +640,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Create a group 
+        /// Create a group &lt;b&gt;Permissions Needed:&lt;/b&gt; GROUP_ADMIN
         /// </summary>
         /// <param name="groupResource">The new group</param>
         public void CreateGroup(GroupResource groupResource)
@@ -640,7 +692,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Create an group member template GroupMember Templates define a type of group member and the properties they have
+        /// Create an group member template GroupMember Templates define a type of group member and the properties they have. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="groupMemberTemplateResource">The group member template resource object</param>
         public void CreateGroupMemberTemplate(TemplateResource groupMemberTemplateResource)
@@ -692,7 +744,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Create a group template Group Templates define a type of group and the properties they have
+        /// Create a group template Group Templates define a type of group and the properties they have. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="groupTemplateResource">The group template resource object</param>
         public void CreateGroupTemplate(TemplateResource groupTemplateResource)
@@ -744,7 +796,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Removes a group from the system All groups listing this as the parent are also removed and users are in turn removed from this and those groups. This may result in users no longer being in this group&#39;s parent if they were not added to it directly as well.
+        /// Removes a group from the system All groups listing this as the parent are also removed and users are in turn removed from this and those groups. This may result in users no longer being in this group&#39;s parent if they were not added to it directly as well. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; GROUP_ADMIN
         /// </summary>
         /// <param name="uniqueName">The group unique name</param>
         public void DeleteGroup(string uniqueName)
@@ -798,7 +850,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Delete an group member template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
+        /// Delete an group member template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="cascade">The value needed to delete used templates</param>
@@ -858,7 +910,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Delete a group template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
+        /// Delete a group template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="cascade">The value needed to delete used templates</param>
@@ -918,7 +970,76 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Loads a specific group&#39;s details 
+        /// Enable or disable notification of group messages 
+        /// </summary>
+        /// <param name="uniqueName">The group unique name</param>
+        /// <param name="userId">The user id of the member or &#39;me&#39;</param>
+        /// <param name="disabled">disabled</param>
+        public void DisableGroupNotification(string uniqueName, string userId, ValueWrapperboolean disabled)
+        {
+            // verify the required parameter 'uniqueName' is set
+            if (uniqueName == null)
+            {
+                throw new KnetikException(400, "Missing required parameter 'uniqueName' when calling DisableGroupNotification");
+            }
+            // verify the required parameter 'userId' is set
+            if (userId == null)
+            {
+                throw new KnetikException(400, "Missing required parameter 'userId' when calling DisableGroupNotification");
+            }
+            // verify the required parameter 'disabled' is set
+            if (disabled == null)
+            {
+                throw new KnetikException(400, "Missing required parameter 'disabled' when calling DisableGroupNotification");
+            }
+            
+            mWebCallEvent.WebPath = "/users/groups/{unique_name}/members/{user_id}/messages/disabled";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
+            {
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
+            }
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "unique_name" + "}", KnetikClient.ParameterToString(uniqueName));
+mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", KnetikClient.ParameterToString(userId));
+
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
+
+            mWebCallEvent.PostBody = KnetikClient.Serialize(disabled); // http body (model) parameter
+ 
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
+
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
+
+            // make the HTTP request
+            mDisableGroupNotificationStartTime = DateTime.Now;
+            mWebCallEvent.Context = mDisableGroupNotificationResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.PUT;
+
+            KnetikLogger.LogRequest(mDisableGroupNotificationStartTime, "DisableGroupNotification", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
+        }
+
+        private void OnDisableGroupNotificationResponse(KnetikRestResponse response)
+        {
+            if (!string.IsNullOrEmpty(response.Error))
+            {
+                throw new KnetikException("Error calling DisableGroupNotification: " + response.Error);
+            }
+
+            KnetikLogger.LogResponse(mDisableGroupNotificationStartTime, "DisableGroupNotification", "Response received successfully.");
+            if (DisableGroupNotificationComplete != null)
+            {
+                DisableGroupNotificationComplete(response.ResponseCode);
+            }
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Loads a specific group&#39;s details &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="uniqueName">The group unique name</param>
         public void GetGroup(string uniqueName)
@@ -974,7 +1095,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Get group ancestors Returns a list of ancestor groups in reverse order (parent, then grandparent, etc
+        /// Get group ancestors Returns a list of ancestor groups in reverse order (parent, then grandparent, etc). &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="uniqueName">The group unique name</param>
         public void GetGroupAncestors(string uniqueName)
@@ -996,6 +1117,12 @@ namespace com.knetikcloud.Api
             mWebCallEvent.QueryParams.Clear();
             mWebCallEvent.AuthSettings.Clear();
             mWebCallEvent.PostBody = null;
+
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
+
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
 
             // make the HTTP request
             mGetGroupAncestorsStartTime = DateTime.Now;
@@ -1024,7 +1151,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a user from a group 
+        /// Get a user from a group &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="uniqueName">The group unique name</param>
         /// <param name="userId">The id of the user</param>
@@ -1087,7 +1214,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a single group member template 
+        /// Get a single group member template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or GROUP_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         public void GetGroupMemberTemplate(string id)
@@ -1143,7 +1270,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// List and search group member templates 
+        /// List and search group member templates &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or GROUP_ADMIN
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -1210,7 +1337,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// Lists members of the group 
+        /// Lists members of the group &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="uniqueName">The group unique name</param>
         /// <param name="size">The number of objects returned per page</param>
@@ -1284,7 +1411,75 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a single group template 
+        /// Get a list of group messages &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
+        /// </summary>
+        /// <param name="uniqueName">The group unique name</param>
+        /// <param name="size">The number of objects returned per page</param>
+        /// <param name="page">The number of the page returned, starting with 1</param>
+        public void GetGroupMessages(string uniqueName, int? size, int? page)
+        {
+            // verify the required parameter 'uniqueName' is set
+            if (uniqueName == null)
+            {
+                throw new KnetikException(400, "Missing required parameter 'uniqueName' when calling GetGroupMessages");
+            }
+            
+            mWebCallEvent.WebPath = "/users/groups/{unique_name}/messages";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
+            {
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
+            }
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "unique_name" + "}", KnetikClient.ParameterToString(uniqueName));
+
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
+
+            if (size != null)
+            {
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
+            }
+
+            if (page != null)
+            {
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
+            }
+
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
+
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
+
+            // make the HTTP request
+            mGetGroupMessagesStartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetGroupMessagesResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetGroupMessagesStartTime, "GetGroupMessages", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
+        }
+
+        private void OnGetGroupMessagesResponse(KnetikRestResponse response)
+        {
+            if (!string.IsNullOrEmpty(response.Error))
+            {
+                throw new KnetikException("Error calling GetGroupMessages: " + response.Error);
+            }
+
+            GetGroupMessagesData = (PageResourceChatMessageResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceChatMessageResource), response.Headers);
+            KnetikLogger.LogResponse(mGetGroupMessagesStartTime, "GetGroupMessages", string.Format("Response received successfully:\n{0}", GetGroupMessagesData));
+
+            if (GetGroupMessagesComplete != null)
+            {
+                GetGroupMessagesComplete(response.ResponseCode, GetGroupMessagesData);
+            }
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Get a single group template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or GROUP_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         public void GetGroupTemplate(string id)
@@ -1340,7 +1535,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// List and search group templates 
+        /// List and search group templates &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or GROUP_ADMIN
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -1407,7 +1602,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// List groups a user is in 
+        /// List groups a user is in &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="userId">The id of the user</param>
         /// <param name="filterChildren">Whether to limit group list to children of groups only. If true, shows only groups with parents. If false, shows only groups with no parent.</param>
@@ -1469,7 +1664,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// List and search groups 
+        /// List and search groups &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="filterTemplate">Filter for groups using a specific template, by id</param>
         /// <param name="filterMemberCount">Filters groups by member count. Multiple values possible for range search. Format: filter_member_count&#x3D;OP,ts&amp;... where OP in (GT, LT, GOE, LOE, EQ). Ex: filter_member_count&#x3D;GT,14,LT,17</param>
@@ -1572,7 +1767,60 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// Removes a user from a group 
+        /// Send a group message 
+        /// </summary>
+        /// <param name="uniqueName">The group unique name</param>
+        /// <param name="chatMessageRequest">The chat message request</param>
+        public void PostGroupMessage(string uniqueName, ChatMessageRequest chatMessageRequest)
+        {
+            // verify the required parameter 'uniqueName' is set
+            if (uniqueName == null)
+            {
+                throw new KnetikException(400, "Missing required parameter 'uniqueName' when calling PostGroupMessage");
+            }
+            
+            mWebCallEvent.WebPath = "/users/groups/{unique_name}/messages";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
+            {
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
+            }
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "unique_name" + "}", KnetikClient.ParameterToString(uniqueName));
+
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
+
+            mWebCallEvent.PostBody = KnetikClient.Serialize(chatMessageRequest); // http body (model) parameter
+ 
+            // make the HTTP request
+            mPostGroupMessageStartTime = DateTime.Now;
+            mWebCallEvent.Context = mPostGroupMessageResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mPostGroupMessageStartTime, "PostGroupMessage", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
+        }
+
+        private void OnPostGroupMessageResponse(KnetikRestResponse response)
+        {
+            if (!string.IsNullOrEmpty(response.Error))
+            {
+                throw new KnetikException("Error calling PostGroupMessage: " + response.Error);
+            }
+
+            PostGroupMessageData = (ChatMessageResource) KnetikClient.Deserialize(response.Content, typeof(ChatMessageResource), response.Headers);
+            KnetikLogger.LogResponse(mPostGroupMessageStartTime, "PostGroupMessage", string.Format("Response received successfully:\n{0}", PostGroupMessageData));
+
+            if (PostGroupMessageComplete != null)
+            {
+                PostGroupMessageComplete(response.ResponseCode, PostGroupMessageData);
+            }
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Removes a user from a group &lt;b&gt;Permissions Needed:&lt;/b&gt; GROUP_ADMIN or self if open
         /// </summary>
         /// <param name="uniqueName">The group unique name</param>
         /// <param name="userId">The id of the user to remove</param>
@@ -1633,7 +1881,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// Update a group If adding/removing/changing parent, user membership in group/new parent groups may be modified. The parent being removed will remove members from this sub group unless they were added explicitly to the parent and the new parent will gain members unless they were already a part of it.
+        /// Update a group If adding/removing/changing parent, user membership in group/new parent groups may be modified. The parent being removed will remove members from this sub group unless they were added explicitly to the parent and the new parent will gain members unless they were already a part of it. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; GROUP_ADMIN or admin of the group
         /// </summary>
         /// <param name="uniqueName">The group unique name</param>
         /// <param name="groupResource">The updated group</param>
@@ -1690,7 +1938,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// Change a user&#39;s order 
+        /// Change a user&#39;s order &lt;b&gt;Permissions Needed:&lt;/b&gt; GROUP_ADMIN
         /// </summary>
         /// <param name="uniqueName">The group unique name</param>
         /// <param name="userId">The user id of the member to modify</param>
@@ -1759,7 +2007,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// Change a user&#39;s membership properties 
+        /// Change a user&#39;s membership properties &lt;b&gt;Permissions Needed:&lt;/b&gt; GROUP_ADMIN
         /// </summary>
         /// <param name="uniqueName">The group unique name</param>
         /// <param name="userId">The user id of the member to modify</param>
@@ -1828,7 +2076,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// Change a user&#39;s status 
+        /// Change a user&#39;s status &lt;b&gt;Permissions Needed:&lt;/b&gt; GROUP_ADMIN
         /// </summary>
         /// <param name="uniqueName">The group unique name</param>
         /// <param name="userId">The user id of the member to modify</param>
@@ -1897,7 +2145,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// Update an group member template 
+        /// Update an group member template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="groupMemberTemplateResource">The group member template resource object</param>
@@ -1956,7 +2204,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// Update a group template 
+        /// Update a group template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="groupTemplateResource">The group template resource object</param>

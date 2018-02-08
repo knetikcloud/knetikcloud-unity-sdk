@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         SimpleWallet GetUserWalletData { get; }
 
         /// <summary>
-        /// Returns the user&#39;s wallet for the given currency code 
+        /// Returns the user&#39;s wallet for the given currency code &lt;b&gt;Permissions Needed:&lt;/b&gt; WALLETS_ADMIN or owner
         /// </summary>
         /// <param name="userId">The ID of the user for whom wallet is being retrieved</param>
         /// <param name="currencyCode">Currency code of the user&#39;s wallet</param>
@@ -28,7 +28,7 @@ namespace com.knetikcloud.Api
         PageResourceWalletTransactionResource GetUserWalletTransactionsData { get; }
 
         /// <summary>
-        /// Retrieve a user&#39;s wallet transactions 
+        /// Retrieve a user&#39;s wallet transactions &lt;b&gt;Permissions Needed:&lt;/b&gt; WALLETS_ADMIN or owner
         /// </summary>
         /// <param name="userId">The ID of the user for whom wallet transactions are being retrieved</param>
         /// <param name="currencyCode">Currency code of the user&#39;s wallet</param>
@@ -44,7 +44,7 @@ namespace com.knetikcloud.Api
         List<SimpleWallet> GetUserWalletsData { get; }
 
         /// <summary>
-        /// List all of a user&#39;s wallets 
+        /// List all of a user&#39;s wallets &lt;b&gt;Permissions Needed:&lt;/b&gt; WALLETS_ADMIN or owner
         /// </summary>
         /// <param name="userId">The ID of the user for whom wallets are being retrieved</param>
         void GetUserWallets(int? userId);
@@ -52,14 +52,14 @@ namespace com.knetikcloud.Api
         PageResourceWalletTotalResponse GetWalletBalancesData { get; }
 
         /// <summary>
-        /// Retrieves a summation of wallet balances by currency code 
+        /// Retrieves a summation of wallet balances by currency code &lt;b&gt;Permissions Needed:&lt;/b&gt; WALLETS_ADMIN
         /// </summary>
         void GetWalletBalances();
 
         PageResourceWalletTransactionResource GetWalletTransactionsData { get; }
 
         /// <summary>
-        /// Retrieve wallet transactions across the system 
+        /// Retrieve wallet transactions across the system &lt;b&gt;Permissions Needed:&lt;/b&gt; WALLETS_ADMIN
         /// </summary>
         /// <param name="filterInvoice">Filter for transactions from a specific invoice</param>
         /// <param name="filterType">Filter for transactions with specified type</param>
@@ -77,7 +77,7 @@ namespace com.knetikcloud.Api
         PageResourceSimpleWallet GetWalletsData { get; }
 
         /// <summary>
-        /// Retrieve a list of wallets across the system 
+        /// Retrieve a list of wallets across the system &lt;b&gt;Permissions Needed:&lt;/b&gt; WALLETS_ADMIN
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -87,7 +87,7 @@ namespace com.knetikcloud.Api
         WalletTransactionResource UpdateWalletBalanceData { get; }
 
         /// <summary>
-        /// Updates the balance for a user&#39;s wallet 
+        /// Updates the balance for a user&#39;s wallet &lt;b&gt;Permissions Needed:&lt;/b&gt; WALLETS_ADMIN
         /// </summary>
         /// <param name="userId">The ID of the user for whom wallet is being modified</param>
         /// <param name="currencyCode">Currency code of the user&#39;s wallet</param>
@@ -171,7 +171,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Returns the user&#39;s wallet for the given currency code 
+        /// Returns the user&#39;s wallet for the given currency code &lt;b&gt;Permissions Needed:&lt;/b&gt; WALLETS_ADMIN or owner
         /// </summary>
         /// <param name="userId">The ID of the user for whom wallet is being retrieved</param>
         /// <param name="currencyCode">Currency code of the user&#39;s wallet</param>
@@ -234,7 +234,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "currency_code" + "}
 
         /// <inheritdoc />
         /// <summary>
-        /// Retrieve a user&#39;s wallet transactions 
+        /// Retrieve a user&#39;s wallet transactions &lt;b&gt;Permissions Needed:&lt;/b&gt; WALLETS_ADMIN or owner
         /// </summary>
         /// <param name="userId">The ID of the user for whom wallet transactions are being retrieved</param>
         /// <param name="currencyCode">Currency code of the user&#39;s wallet</param>
@@ -339,7 +339,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "currency_code" + "}
 
         /// <inheritdoc />
         /// <summary>
-        /// List all of a user&#39;s wallets 
+        /// List all of a user&#39;s wallets &lt;b&gt;Permissions Needed:&lt;/b&gt; WALLETS_ADMIN or owner
         /// </summary>
         /// <param name="userId">The ID of the user for whom wallets are being retrieved</param>
         public void GetUserWallets(int? userId)
@@ -395,7 +395,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "currency_code" + "}
 
         /// <inheritdoc />
         /// <summary>
-        /// Retrieves a summation of wallet balances by currency code 
+        /// Retrieves a summation of wallet balances by currency code &lt;b&gt;Permissions Needed:&lt;/b&gt; WALLETS_ADMIN
         /// </summary>
         public void GetWalletBalances()
         {
@@ -444,7 +444,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "currency_code" + "}
 
         /// <inheritdoc />
         /// <summary>
-        /// Retrieve wallet transactions across the system 
+        /// Retrieve wallet transactions across the system &lt;b&gt;Permissions Needed:&lt;/b&gt; WALLETS_ADMIN
         /// </summary>
         /// <param name="filterInvoice">Filter for transactions from a specific invoice</param>
         /// <param name="filterType">Filter for transactions with specified type</param>
@@ -559,7 +559,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "currency_code" + "}
 
         /// <inheritdoc />
         /// <summary>
-        /// Retrieve a list of wallets across the system 
+        /// Retrieve a list of wallets across the system &lt;b&gt;Permissions Needed:&lt;/b&gt; WALLETS_ADMIN
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -626,7 +626,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "currency_code" + "}
 
         /// <inheritdoc />
         /// <summary>
-        /// Updates the balance for a user&#39;s wallet 
+        /// Updates the balance for a user&#39;s wallet &lt;b&gt;Permissions Needed:&lt;/b&gt; WALLETS_ADMIN
         /// </summary>
         /// <param name="userId">The ID of the user for whom wallet is being modified</param>
         /// <param name="currencyCode">Currency code of the user&#39;s wallet</param>

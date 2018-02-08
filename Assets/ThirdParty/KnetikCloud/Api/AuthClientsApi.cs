@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         ClientResource CreateClientData { get; }
 
         /// <summary>
-        /// Create a new client 
+        /// Create a new client &lt;b&gt;Permissions Needed:&lt;/b&gt; CLIENTS_ADMIN
         /// </summary>
         /// <param name="clientResource">The client resource object</param>
         void CreateClient(ClientResource clientResource);
@@ -27,7 +27,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Delete a client 
+        /// Delete a client &lt;b&gt;Permissions Needed:&lt;/b&gt; CLIENTS_ADMIN
         /// </summary>
         /// <param name="clientKey">The key of the client</param>
         void DeleteClient(string clientKey);
@@ -35,7 +35,7 @@ namespace com.knetikcloud.Api
         ClientResource GetClientData { get; }
 
         /// <summary>
-        /// Get a single client 
+        /// Get a single client &lt;b&gt;Permissions Needed:&lt;/b&gt; CLIENTS_ADMIN
         /// </summary>
         /// <param name="clientKey">The key of the client</param>
         void GetClient(string clientKey);
@@ -43,14 +43,14 @@ namespace com.knetikcloud.Api
         List<GrantTypeResource> GetClientGrantTypesData { get; }
 
         /// <summary>
-        /// List available client grant types 
+        /// List available client grant types &lt;b&gt;Permissions Needed:&lt;/b&gt; CLIENTS_ADMIN
         /// </summary>
         void GetClientGrantTypes();
 
         PageResourceClientResource GetClientsData { get; }
 
         /// <summary>
-        /// List and search clients 
+        /// List and search clients &lt;b&gt;Permissions Needed:&lt;/b&gt; CLIENTS_ADMIN
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -60,7 +60,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Set grant types for a client 
+        /// Set grant types for a client &lt;b&gt;Permissions Needed:&lt;/b&gt; CLIENTS_ADMIN
         /// </summary>
         /// <param name="clientKey">The key of the client</param>
         /// <param name="grantList">A list of unique grant types</param>
@@ -69,7 +69,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Set redirect uris for a client 
+        /// Set redirect uris for a client &lt;b&gt;Permissions Needed:&lt;/b&gt; CLIENTS_ADMIN
         /// </summary>
         /// <param name="clientKey">The key of the client</param>
         /// <param name="redirectList">A list of unique redirect uris</param>
@@ -78,7 +78,7 @@ namespace com.knetikcloud.Api
         ClientResource UpdateClientData { get; }
 
         /// <summary>
-        /// Update a client 
+        /// Update a client &lt;b&gt;Permissions Needed:&lt;/b&gt; CLIENTS_ADMIN
         /// </summary>
         /// <param name="clientKey">The key of the client</param>
         /// <param name="clientResource">The client resource object</param>
@@ -166,7 +166,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Create a new client 
+        /// Create a new client &lt;b&gt;Permissions Needed:&lt;/b&gt; CLIENTS_ADMIN
         /// </summary>
         /// <param name="clientResource">The client resource object</param>
         public void CreateClient(ClientResource clientResource)
@@ -218,7 +218,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Delete a client 
+        /// Delete a client &lt;b&gt;Permissions Needed:&lt;/b&gt; CLIENTS_ADMIN
         /// </summary>
         /// <param name="clientKey">The key of the client</param>
         public void DeleteClient(string clientKey)
@@ -272,7 +272,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a single client 
+        /// Get a single client &lt;b&gt;Permissions Needed:&lt;/b&gt; CLIENTS_ADMIN
         /// </summary>
         /// <param name="clientKey">The key of the client</param>
         public void GetClient(string clientKey)
@@ -328,7 +328,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// List available client grant types 
+        /// List available client grant types &lt;b&gt;Permissions Needed:&lt;/b&gt; CLIENTS_ADMIN
         /// </summary>
         public void GetClientGrantTypes()
         {
@@ -377,7 +377,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// List and search clients 
+        /// List and search clients &lt;b&gt;Permissions Needed:&lt;/b&gt; CLIENTS_ADMIN
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -444,7 +444,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Set grant types for a client 
+        /// Set grant types for a client &lt;b&gt;Permissions Needed:&lt;/b&gt; CLIENTS_ADMIN
         /// </summary>
         /// <param name="clientKey">The key of the client</param>
         /// <param name="grantList">A list of unique grant types</param>
@@ -501,7 +501,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Set redirect uris for a client 
+        /// Set redirect uris for a client &lt;b&gt;Permissions Needed:&lt;/b&gt; CLIENTS_ADMIN
         /// </summary>
         /// <param name="clientKey">The key of the client</param>
         /// <param name="redirectList">A list of unique redirect uris</param>
@@ -558,7 +558,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Update a client 
+        /// Update a client &lt;b&gt;Permissions Needed:&lt;/b&gt; CLIENTS_ADMIN
         /// </summary>
         /// <param name="clientKey">The key of the client</param>
         /// <param name="clientResource">The client resource object</param>

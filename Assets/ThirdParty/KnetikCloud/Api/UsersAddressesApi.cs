@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         SavedAddressResource CreateAddressData { get; }
 
         /// <summary>
-        /// Create a new address 
+        /// Create a new address &lt;b&gt;Permissions Needed:&lt;/b&gt; USERS_ADMIN or owner
         /// </summary>
         /// <param name="userId">The id of the user</param>
         /// <param name="savedAddressResource">The new address</param>
@@ -28,7 +28,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Delete an address 
+        /// Delete an address &lt;b&gt;Permissions Needed:&lt;/b&gt; USERS_ADMIN or owner
         /// </summary>
         /// <param name="userId">The id of the user</param>
         /// <param name="id">The id of the address</param>
@@ -37,7 +37,7 @@ namespace com.knetikcloud.Api
         SavedAddressResource GetAddressData { get; }
 
         /// <summary>
-        /// Get a single address 
+        /// Get a single address &lt;b&gt;Permissions Needed:&lt;/b&gt; USERS_ADMIN or owner
         /// </summary>
         /// <param name="userId">The id of the user</param>
         /// <param name="id">The id of the address</param>
@@ -46,7 +46,7 @@ namespace com.knetikcloud.Api
         PageResourceSavedAddressResource GetAddressesData { get; }
 
         /// <summary>
-        /// List and search addresses 
+        /// List and search addresses &lt;b&gt;Permissions Needed:&lt;/b&gt; USERS_ADMIN or owner
         /// </summary>
         /// <param name="userId">The id of the user</param>
         /// <param name="size">The number of objects returned per page</param>
@@ -57,7 +57,7 @@ namespace com.knetikcloud.Api
         SavedAddressResource UpdateAddressData { get; }
 
         /// <summary>
-        /// Update an address 
+        /// Update an address &lt;b&gt;Permissions Needed:&lt;/b&gt; USERS_ADMIN or owner
         /// </summary>
         /// <param name="userId">The id of the user</param>
         /// <param name="id">The id of the address</param>
@@ -124,7 +124,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Create a new address 
+        /// Create a new address &lt;b&gt;Permissions Needed:&lt;/b&gt; USERS_ADMIN or owner
         /// </summary>
         /// <param name="userId">The id of the user</param>
         /// <param name="savedAddressResource">The new address</param>
@@ -183,7 +183,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Delete an address 
+        /// Delete an address &lt;b&gt;Permissions Needed:&lt;/b&gt; USERS_ADMIN or owner
         /// </summary>
         /// <param name="userId">The id of the user</param>
         /// <param name="id">The id of the address</param>
@@ -244,7 +244,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikCl
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a single address 
+        /// Get a single address &lt;b&gt;Permissions Needed:&lt;/b&gt; USERS_ADMIN or owner
         /// </summary>
         /// <param name="userId">The id of the user</param>
         /// <param name="id">The id of the address</param>
@@ -307,7 +307,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikCl
 
         /// <inheritdoc />
         /// <summary>
-        /// List and search addresses 
+        /// List and search addresses &lt;b&gt;Permissions Needed:&lt;/b&gt; USERS_ADMIN or owner
         /// </summary>
         /// <param name="userId">The id of the user</param>
         /// <param name="size">The number of objects returned per page</param>
@@ -381,7 +381,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikCl
 
         /// <inheritdoc />
         /// <summary>
-        /// Update an address 
+        /// Update an address &lt;b&gt;Permissions Needed:&lt;/b&gt; USERS_ADMIN or owner
         /// </summary>
         /// <param name="userId">The id of the user</param>
         /// <param name="id">The id of the address</param>

@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         CatalogSale CreateCatalogSaleData { get; }
 
         /// <summary>
-        /// Create a sale 
+        /// Create a sale &lt;b&gt;Permissions Needed:&lt;/b&gt; SALES_ADMIN
         /// </summary>
         /// <param name="catalogSale">The catalog sale object</param>
         void CreateCatalogSale(CatalogSale catalogSale);
@@ -27,7 +27,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Delete a sale 
+        /// Delete a sale &lt;b&gt;Permissions Needed:&lt;/b&gt; SALES_ADMIN
         /// </summary>
         /// <param name="id">The id of the sale</param>
         void DeleteCatalogSale(int? id);
@@ -35,7 +35,7 @@ namespace com.knetikcloud.Api
         CatalogSale GetCatalogSaleData { get; }
 
         /// <summary>
-        /// Get a single sale 
+        /// Get a single sale &lt;b&gt;Permissions Needed:&lt;/b&gt; SALES_USER or SALES_ADMIN
         /// </summary>
         /// <param name="id">The id of the sale</param>
         void GetCatalogSale(int? id);
@@ -43,7 +43,7 @@ namespace com.knetikcloud.Api
         PageResourceCatalogSale GetCatalogSalesData { get; }
 
         /// <summary>
-        /// List and search sales 
+        /// List and search sales &lt;b&gt;Permissions Needed:&lt;/b&gt; SALES_USER or SALES_ADMIN
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -53,7 +53,7 @@ namespace com.knetikcloud.Api
         CatalogSale UpdateCatalogSaleData { get; }
 
         /// <summary>
-        /// Update a sale 
+        /// Update a sale &lt;b&gt;Permissions Needed:&lt;/b&gt; SALES_ADMIN
         /// </summary>
         /// <param name="id">The id of the sale</param>
         /// <param name="catalogSale">The catalog sale object</param>
@@ -119,7 +119,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Create a sale 
+        /// Create a sale &lt;b&gt;Permissions Needed:&lt;/b&gt; SALES_ADMIN
         /// </summary>
         /// <param name="catalogSale">The catalog sale object</param>
         public void CreateCatalogSale(CatalogSale catalogSale)
@@ -171,7 +171,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Delete a sale 
+        /// Delete a sale &lt;b&gt;Permissions Needed:&lt;/b&gt; SALES_ADMIN
         /// </summary>
         /// <param name="id">The id of the sale</param>
         public void DeleteCatalogSale(int? id)
@@ -225,7 +225,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a single sale 
+        /// Get a single sale &lt;b&gt;Permissions Needed:&lt;/b&gt; SALES_USER or SALES_ADMIN
         /// </summary>
         /// <param name="id">The id of the sale</param>
         public void GetCatalogSale(int? id)
@@ -281,7 +281,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// List and search sales 
+        /// List and search sales &lt;b&gt;Permissions Needed:&lt;/b&gt; SALES_USER or SALES_ADMIN
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -348,7 +348,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Update a sale 
+        /// Update a sale &lt;b&gt;Permissions Needed:&lt;/b&gt; SALES_ADMIN
         /// </summary>
         /// <param name="id">The id of the sale</param>
         /// <param name="catalogSale">The catalog sale object</param>

@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         BreGlobalResource CreateBREGlobalData { get; }
 
         /// <summary>
-        /// Create a global definition Once created you can then use in a custom rule. Note that global definitions cannot be modified or deleted if in use.
+        /// Create a global definition Once created you can then use in a custom rule. Note that global definitions cannot be modified or deleted if in use. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; BRE_RULE_ENGINE_GLOBALS_ADMIN
         /// </summary>
         /// <param name="breGlobalResource">The BRE global resource object</param>
         void CreateBREGlobal(BreGlobalResource breGlobalResource);
@@ -27,7 +27,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Delete a global May fail if there are existing rules against it. Cannot delete core globals
+        /// Delete a global May fail if there are existing rules against it. Cannot delete core globals. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; BRE_RULE_ENGINE_GLOBALS_ADMIN
         /// </summary>
         /// <param name="id">The id of the global definition</param>
         void DeleteBREGlobal(string id);
@@ -35,7 +35,7 @@ namespace com.knetikcloud.Api
         BreGlobalResource GetBREGlobalData { get; }
 
         /// <summary>
-        /// Get a single global definition 
+        /// Get a single global definition &lt;b&gt;Permissions Needed:&lt;/b&gt; BRE_RULE_ENGINE_GLOBALS_USER
         /// </summary>
         /// <param name="id">The id of the global definition</param>
         void GetBREGlobal(string id);
@@ -43,7 +43,7 @@ namespace com.knetikcloud.Api
         PageResourceBreGlobalResource GetBREGlobalsData { get; }
 
         /// <summary>
-        /// List global definitions 
+        /// List global definitions &lt;b&gt;Permissions Needed:&lt;/b&gt; BRE_RULE_ENGINE_GLOBALS_USER
         /// </summary>
         /// <param name="filterSystem">Filter for globals that are system globals when true, or not when false. Leave off for both mixed</param>
         /// <param name="size">The number of objects returned per page</param>
@@ -53,7 +53,7 @@ namespace com.knetikcloud.Api
         BreGlobalResource UpdateBREGlobalData { get; }
 
         /// <summary>
-        /// Update a global definition May fail if new parameters mismatch requirements of existing rules. Cannot update core globals
+        /// Update a global definition May fail if new parameters mismatch requirements of existing rules. Cannot update core globals. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; BRE_RULE_ENGINE_GLOBALS_ADMIN
         /// </summary>
         /// <param name="id">The id of the global definition</param>
         /// <param name="breGlobalResource">The BRE global resource object</param>
@@ -119,7 +119,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Create a global definition Once created you can then use in a custom rule. Note that global definitions cannot be modified or deleted if in use.
+        /// Create a global definition Once created you can then use in a custom rule. Note that global definitions cannot be modified or deleted if in use. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; BRE_RULE_ENGINE_GLOBALS_ADMIN
         /// </summary>
         /// <param name="breGlobalResource">The BRE global resource object</param>
         public void CreateBREGlobal(BreGlobalResource breGlobalResource)
@@ -171,7 +171,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Delete a global May fail if there are existing rules against it. Cannot delete core globals
+        /// Delete a global May fail if there are existing rules against it. Cannot delete core globals. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; BRE_RULE_ENGINE_GLOBALS_ADMIN
         /// </summary>
         /// <param name="id">The id of the global definition</param>
         public void DeleteBREGlobal(string id)
@@ -225,7 +225,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a single global definition 
+        /// Get a single global definition &lt;b&gt;Permissions Needed:&lt;/b&gt; BRE_RULE_ENGINE_GLOBALS_USER
         /// </summary>
         /// <param name="id">The id of the global definition</param>
         public void GetBREGlobal(string id)
@@ -281,7 +281,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// List global definitions 
+        /// List global definitions &lt;b&gt;Permissions Needed:&lt;/b&gt; BRE_RULE_ENGINE_GLOBALS_USER
         /// </summary>
         /// <param name="filterSystem">Filter for globals that are system globals when true, or not when false. Leave off for both mixed</param>
         /// <param name="size">The number of objects returned per page</param>
@@ -348,7 +348,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Update a global definition May fail if new parameters mismatch requirements of existing rules. Cannot update core globals
+        /// Update a global definition May fail if new parameters mismatch requirements of existing rules. Cannot update core globals. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; BRE_RULE_ENGINE_GLOBALS_ADMIN
         /// </summary>
         /// <param name="id">The id of the global definition</param>
         /// <param name="breGlobalResource">The BRE global resource object</param>

@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Add a tag to a user 
+        /// Add a tag to a user &lt;b&gt;Permissions Needed:&lt;/b&gt; USERS_ADMIN
         /// </summary>
         /// <param name="userId">The id of the user</param>
         /// <param name="tag">tag</param>
@@ -28,7 +28,7 @@ namespace com.knetikcloud.Api
         TemplateResource CreateUserTemplateData { get; }
 
         /// <summary>
-        /// Create a user template User Templates define a type of user and the properties they have
+        /// Create a user template User Templates define a type of user and the properties they have. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="userTemplateResource">The user template resource object</param>
         void CreateUserTemplate(TemplateResource userTemplateResource);
@@ -36,16 +36,26 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Delete a user template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
+        /// Delete a user template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="cascade">The value needed to delete used templates</param>
         void DeleteUserTemplate(string id, string cascade);
 
+        PageResourceChatMessageResource GetDirectMessages1Data { get; }
+
+        /// <summary>
+        /// Get a list of direct messages with this user &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
+        /// </summary>
+        /// <param name="recipientId">The user id</param>
+        /// <param name="size">The number of objects returned per page</param>
+        /// <param name="page">The number of the page returned, starting with 1</param>
+        void GetDirectMessages1(int? recipientId, int? size, int? page);
+
         UserResource GetUserData { get; }
 
         /// <summary>
-        /// Get a single user Additional private info is included as USERS_ADMIN
+        /// Get a single user Additional private info is included as USERS_ADMIN. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="id">The id of the user or &#39;me&#39;</param>
         void GetUser(string id);
@@ -53,7 +63,7 @@ namespace com.knetikcloud.Api
         List<string> GetUserTagsData { get; }
 
         /// <summary>
-        /// List tags for a user 
+        /// List tags for a user &lt;b&gt;Permissions Needed:&lt;/b&gt; USERS_ADMIN
         /// </summary>
         /// <param name="userId">The id of the user</param>
         void GetUserTags(int? userId);
@@ -61,7 +71,7 @@ namespace com.knetikcloud.Api
         TemplateResource GetUserTemplateData { get; }
 
         /// <summary>
-        /// Get a single user template 
+        /// Get a single user template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or USERS_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         void GetUserTemplate(string id);
@@ -69,7 +79,7 @@ namespace com.knetikcloud.Api
         PageResourceTemplateResource GetUserTemplatesData { get; }
 
         /// <summary>
-        /// List and search user templates 
+        /// List and search user templates &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or USERS_ADMIN
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -79,7 +89,7 @@ namespace com.knetikcloud.Api
         PageResourceUserBaseResource GetUsersData { get; }
 
         /// <summary>
-        /// List and search users Additional private info is included as USERS_ADMIN
+        /// List and search users Additional private info is included as USERS_ADMIN. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="filterDisplayname">Filter for users whose display name starts with provided string.</param>
         /// <param name="filterEmail">Filter for users whose email starts with provided string. Requires USERS_ADMIN permission</param>
@@ -101,16 +111,25 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Choose a new password after a reset Finish resetting a user&#39;s password using the secret provided from the password-reset endpoint.  Password should be in plain text and will be encrypted on receipt. Use SSL for security.
+        /// Choose a new password after a reset Finish resetting a user&#39;s password using the secret provided from the password-reset endpoint.  Password should be in plain text and will be encrypted on receipt. Use SSL for security. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="id">The id of the user</param>
         /// <param name="newPasswordRequest">The new password request object</param>
         void PasswordReset(int? id, NewPasswordRequest newPasswordRequest);
 
+        ChatMessageResource PostUserMessageData { get; }
+
+        /// <summary>
+        /// Send a user message 
+        /// </summary>
+        /// <param name="recipientId">The user id</param>
+        /// <param name="chatMessageRequest">The chat message request</param>
+        void PostUserMessage(int? recipientId, ChatMessageRequest chatMessageRequest);
+
         UserResource RegisterUserData { get; }
 
         /// <summary>
-        /// Register a new user Password should be in plain text and will be encrypted on receipt. Use SSL for security
+        /// Register a new user Password should be in plain text and will be encrypted on receipt. Use SSL for security. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="userResource">The user resource object</param>
         void RegisterUser(UserResource userResource);
@@ -118,7 +137,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Remove a tag from a user 
+        /// Remove a tag from a user &lt;b&gt;Permissions Needed:&lt;/b&gt; USERS_ADMIN
         /// </summary>
         /// <param name="userId">The id of the user</param>
         /// <param name="tag">The tag to remove</param>
@@ -127,7 +146,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Set a user&#39;s password Password should be in plain text and will be encrypted on receipt. Use SSL for security.
+        /// Set a user&#39;s password Password should be in plain text and will be encrypted on receipt. Use SSL for security. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; USERS_ADMIN or (USERS_USER and owner)
         /// </summary>
         /// <param name="id">The id of the user</param>
         /// <param name="password">The new plain text password</param>
@@ -136,7 +155,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Reset a user&#39;s password A reset code will be generated and a &#39;forgot_password&#39; BRE event will be fired with that code.  The default system rule will send an email to the selected user if an email service has been setup. You can modify that rule in BRE to send an SMS instead or any other type of notification as you see fit
+        /// Reset a user&#39;s password A reset code will be generated and a &#39;forgot_password&#39; BRE event will be fired with that code.  The default system rule will send an email to the selected user if an email service has been setup. You can modify that rule in BRE to send an SMS instead or any other type of notification as you see fit. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="id">The id of the user</param>
         void StartPasswordReset(int? id);
@@ -144,7 +163,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Reset a user&#39;s password without user id A reset code will be generated and a &#39;forgot_password&#39; BRE event will be fired with that code.  The default system rule will send an email to the selected user if an email service has been setup. You can modify that rule in BRE to send an SMS instead or any other type of notification as you see fit.  Must submit their email, username, or mobile phone number
+        /// Reset a user&#39;s password without user id A reset code will be generated and a &#39;forgot_password&#39; BRE event will be fired with that code.  The default system rule will send an email to the selected user if an email service has been setup. You can modify that rule in BRE to send an SMS instead or any other type of notification as you see fit.  Must submit their email, username, or mobile phone number. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="passwordReset">An object containing one of three methods to look up a user</param>
         void SubmitPasswordReset(PasswordResetRequest passwordReset);
@@ -152,7 +171,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Update a user Password will not be edited on this endpoint, use password specific endpoints.
+        /// Update a user Password will not be edited on this endpoint, use password specific endpoints. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; USERS_ADMIN or owner
         /// </summary>
         /// <param name="id">The id of the user or &#39;me&#39;</param>
         /// <param name="userResource">The user resource object</param>
@@ -161,7 +180,7 @@ namespace com.knetikcloud.Api
         TemplateResource UpdateUserTemplateData { get; }
 
         /// <summary>
-        /// Update a user template 
+        /// Update a user template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="userTemplateResource">The user template resource object</param>
@@ -183,6 +202,8 @@ namespace com.knetikcloud.Api
         private DateTime mCreateUserTemplateStartTime;
         private readonly KnetikResponseContext mDeleteUserTemplateResponseContext;
         private DateTime mDeleteUserTemplateStartTime;
+        private readonly KnetikResponseContext mGetDirectMessages1ResponseContext;
+        private DateTime mGetDirectMessages1StartTime;
         private readonly KnetikResponseContext mGetUserResponseContext;
         private DateTime mGetUserStartTime;
         private readonly KnetikResponseContext mGetUserTagsResponseContext;
@@ -195,6 +216,8 @@ namespace com.knetikcloud.Api
         private DateTime mGetUsersStartTime;
         private readonly KnetikResponseContext mPasswordResetResponseContext;
         private DateTime mPasswordResetStartTime;
+        private readonly KnetikResponseContext mPostUserMessageResponseContext;
+        private DateTime mPostUserMessageStartTime;
         private readonly KnetikResponseContext mRegisterUserResponseContext;
         private DateTime mRegisterUserStartTime;
         private readonly KnetikResponseContext mRemoveUserTagResponseContext;
@@ -220,6 +243,10 @@ namespace com.knetikcloud.Api
         public delegate void DeleteUserTemplateCompleteDelegate(long responseCode);
         public DeleteUserTemplateCompleteDelegate DeleteUserTemplateComplete;
 
+        public PageResourceChatMessageResource GetDirectMessages1Data { get; private set; }
+        public delegate void GetDirectMessages1CompleteDelegate(long responseCode, PageResourceChatMessageResource response);
+        public GetDirectMessages1CompleteDelegate GetDirectMessages1Complete;
+
         public UserResource GetUserData { get; private set; }
         public delegate void GetUserCompleteDelegate(long responseCode, UserResource response);
         public GetUserCompleteDelegate GetUserComplete;
@@ -242,6 +269,10 @@ namespace com.knetikcloud.Api
 
         public delegate void PasswordResetCompleteDelegate(long responseCode);
         public PasswordResetCompleteDelegate PasswordResetComplete;
+
+        public ChatMessageResource PostUserMessageData { get; private set; }
+        public delegate void PostUserMessageCompleteDelegate(long responseCode, ChatMessageResource response);
+        public PostUserMessageCompleteDelegate PostUserMessageComplete;
 
         public UserResource RegisterUserData { get; private set; }
         public delegate void RegisterUserCompleteDelegate(long responseCode, UserResource response);
@@ -278,6 +309,8 @@ namespace com.knetikcloud.Api
             mCreateUserTemplateResponseContext.ResponseReceived += OnCreateUserTemplateResponse;
             mDeleteUserTemplateResponseContext = new KnetikResponseContext();
             mDeleteUserTemplateResponseContext.ResponseReceived += OnDeleteUserTemplateResponse;
+            mGetDirectMessages1ResponseContext = new KnetikResponseContext();
+            mGetDirectMessages1ResponseContext.ResponseReceived += OnGetDirectMessages1Response;
             mGetUserResponseContext = new KnetikResponseContext();
             mGetUserResponseContext.ResponseReceived += OnGetUserResponse;
             mGetUserTagsResponseContext = new KnetikResponseContext();
@@ -290,6 +323,8 @@ namespace com.knetikcloud.Api
             mGetUsersResponseContext.ResponseReceived += OnGetUsersResponse;
             mPasswordResetResponseContext = new KnetikResponseContext();
             mPasswordResetResponseContext.ResponseReceived += OnPasswordResetResponse;
+            mPostUserMessageResponseContext = new KnetikResponseContext();
+            mPostUserMessageResponseContext.ResponseReceived += OnPostUserMessageResponse;
             mRegisterUserResponseContext = new KnetikResponseContext();
             mRegisterUserResponseContext.ResponseReceived += OnRegisterUserResponse;
             mRemoveUserTagResponseContext = new KnetikResponseContext();
@@ -308,7 +343,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Add a tag to a user 
+        /// Add a tag to a user &lt;b&gt;Permissions Needed:&lt;/b&gt; USERS_ADMIN
         /// </summary>
         /// <param name="userId">The id of the user</param>
         /// <param name="tag">tag</param>
@@ -370,7 +405,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Create a user template User Templates define a type of user and the properties they have
+        /// Create a user template User Templates define a type of user and the properties they have. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="userTemplateResource">The user template resource object</param>
         public void CreateUserTemplate(TemplateResource userTemplateResource)
@@ -422,7 +457,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Delete a user template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
+        /// Delete a user template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="cascade">The value needed to delete used templates</param>
@@ -482,7 +517,75 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a single user Additional private info is included as USERS_ADMIN
+        /// Get a list of direct messages with this user &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
+        /// </summary>
+        /// <param name="recipientId">The user id</param>
+        /// <param name="size">The number of objects returned per page</param>
+        /// <param name="page">The number of the page returned, starting with 1</param>
+        public void GetDirectMessages1(int? recipientId, int? size, int? page)
+        {
+            // verify the required parameter 'recipientId' is set
+            if (recipientId == null)
+            {
+                throw new KnetikException(400, "Missing required parameter 'recipientId' when calling GetDirectMessages1");
+            }
+            
+            mWebCallEvent.WebPath = "/users/users/{recipient_id}/messages";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
+            {
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
+            }
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "recipient_id" + "}", KnetikClient.ParameterToString(recipientId));
+
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
+
+            if (size != null)
+            {
+                mWebCallEvent.QueryParams["size"] = KnetikClient.ParameterToString(size);
+            }
+
+            if (page != null)
+            {
+                mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
+            }
+
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_client_credentials_grant");
+
+            // authentication settings
+            mWebCallEvent.AuthSettings.Add("oauth2_password_grant");
+
+            // make the HTTP request
+            mGetDirectMessages1StartTime = DateTime.Now;
+            mWebCallEvent.Context = mGetDirectMessages1ResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.GET;
+
+            KnetikLogger.LogRequest(mGetDirectMessages1StartTime, "GetDirectMessages1", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
+        }
+
+        private void OnGetDirectMessages1Response(KnetikRestResponse response)
+        {
+            if (!string.IsNullOrEmpty(response.Error))
+            {
+                throw new KnetikException("Error calling GetDirectMessages1: " + response.Error);
+            }
+
+            GetDirectMessages1Data = (PageResourceChatMessageResource) KnetikClient.Deserialize(response.Content, typeof(PageResourceChatMessageResource), response.Headers);
+            KnetikLogger.LogResponse(mGetDirectMessages1StartTime, "GetDirectMessages1", string.Format("Response received successfully:\n{0}", GetDirectMessages1Data));
+
+            if (GetDirectMessages1Complete != null)
+            {
+                GetDirectMessages1Complete(response.ResponseCode, GetDirectMessages1Data);
+            }
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Get a single user Additional private info is included as USERS_ADMIN. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="id">The id of the user or &#39;me&#39;</param>
         public void GetUser(string id)
@@ -538,7 +641,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// List tags for a user 
+        /// List tags for a user &lt;b&gt;Permissions Needed:&lt;/b&gt; USERS_ADMIN
         /// </summary>
         /// <param name="userId">The id of the user</param>
         public void GetUserTags(int? userId)
@@ -594,7 +697,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a single user template 
+        /// Get a single user template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or USERS_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         public void GetUserTemplate(string id)
@@ -650,7 +753,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// List and search user templates 
+        /// List and search user templates &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or USERS_ADMIN
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -717,7 +820,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// List and search users Additional private info is included as USERS_ADMIN
+        /// List and search users Additional private info is included as USERS_ADMIN. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="filterDisplayname">Filter for users whose display name starts with provided string.</param>
         /// <param name="filterEmail">Filter for users whose email starts with provided string. Requires USERS_ADMIN permission</param>
@@ -856,7 +959,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Choose a new password after a reset Finish resetting a user&#39;s password using the secret provided from the password-reset endpoint.  Password should be in plain text and will be encrypted on receipt. Use SSL for security.
+        /// Choose a new password after a reset Finish resetting a user&#39;s password using the secret provided from the password-reset endpoint.  Password should be in plain text and will be encrypted on receipt. Use SSL for security. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="id">The id of the user</param>
         /// <param name="newPasswordRequest">The new password request object</param>
@@ -913,7 +1016,60 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Register a new user Password should be in plain text and will be encrypted on receipt. Use SSL for security
+        /// Send a user message 
+        /// </summary>
+        /// <param name="recipientId">The user id</param>
+        /// <param name="chatMessageRequest">The chat message request</param>
+        public void PostUserMessage(int? recipientId, ChatMessageRequest chatMessageRequest)
+        {
+            // verify the required parameter 'recipientId' is set
+            if (recipientId == null)
+            {
+                throw new KnetikException(400, "Missing required parameter 'recipientId' when calling PostUserMessage");
+            }
+            
+            mWebCallEvent.WebPath = "/users/{recipient_id}/messages";
+            if (!string.IsNullOrEmpty(mWebCallEvent.WebPath))
+            {
+                mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{format}", "json");
+            }
+            mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "recipient_id" + "}", KnetikClient.ParameterToString(recipientId));
+
+            mWebCallEvent.HeaderParams.Clear();
+            mWebCallEvent.QueryParams.Clear();
+            mWebCallEvent.AuthSettings.Clear();
+            mWebCallEvent.PostBody = null;
+
+            mWebCallEvent.PostBody = KnetikClient.Serialize(chatMessageRequest); // http body (model) parameter
+ 
+            // make the HTTP request
+            mPostUserMessageStartTime = DateTime.Now;
+            mWebCallEvent.Context = mPostUserMessageResponseContext;
+            mWebCallEvent.RequestType = KnetikRequestType.POST;
+
+            KnetikLogger.LogRequest(mPostUserMessageStartTime, "PostUserMessage", "Sending server request...");
+            KnetikGlobalEventSystem.Publish(mWebCallEvent);
+        }
+
+        private void OnPostUserMessageResponse(KnetikRestResponse response)
+        {
+            if (!string.IsNullOrEmpty(response.Error))
+            {
+                throw new KnetikException("Error calling PostUserMessage: " + response.Error);
+            }
+
+            PostUserMessageData = (ChatMessageResource) KnetikClient.Deserialize(response.Content, typeof(ChatMessageResource), response.Headers);
+            KnetikLogger.LogResponse(mPostUserMessageStartTime, "PostUserMessage", string.Format("Response received successfully:\n{0}", PostUserMessageData));
+
+            if (PostUserMessageComplete != null)
+            {
+                PostUserMessageComplete(response.ResponseCode, PostUserMessageData);
+            }
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Register a new user Password should be in plain text and will be encrypted on receipt. Use SSL for security. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="userResource">The user resource object</param>
         public void RegisterUser(UserResource userResource)
@@ -965,7 +1121,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Remove a tag from a user 
+        /// Remove a tag from a user &lt;b&gt;Permissions Needed:&lt;/b&gt; USERS_ADMIN
         /// </summary>
         /// <param name="userId">The id of the user</param>
         /// <param name="tag">The tag to remove</param>
@@ -1026,7 +1182,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "tag" + "}", KnetikC
 
         /// <inheritdoc />
         /// <summary>
-        /// Set a user&#39;s password Password should be in plain text and will be encrypted on receipt. Use SSL for security.
+        /// Set a user&#39;s password Password should be in plain text and will be encrypted on receipt. Use SSL for security. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; USERS_ADMIN or (USERS_USER and owner)
         /// </summary>
         /// <param name="id">The id of the user</param>
         /// <param name="password">The new plain text password</param>
@@ -1083,7 +1239,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "tag" + "}", KnetikC
 
         /// <inheritdoc />
         /// <summary>
-        /// Reset a user&#39;s password A reset code will be generated and a &#39;forgot_password&#39; BRE event will be fired with that code.  The default system rule will send an email to the selected user if an email service has been setup. You can modify that rule in BRE to send an SMS instead or any other type of notification as you see fit
+        /// Reset a user&#39;s password A reset code will be generated and a &#39;forgot_password&#39; BRE event will be fired with that code.  The default system rule will send an email to the selected user if an email service has been setup. You can modify that rule in BRE to send an SMS instead or any other type of notification as you see fit. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="id">The id of the user</param>
         public void StartPasswordReset(int? id)
@@ -1137,7 +1293,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "tag" + "}", KnetikC
 
         /// <inheritdoc />
         /// <summary>
-        /// Reset a user&#39;s password without user id A reset code will be generated and a &#39;forgot_password&#39; BRE event will be fired with that code.  The default system rule will send an email to the selected user if an email service has been setup. You can modify that rule in BRE to send an SMS instead or any other type of notification as you see fit.  Must submit their email, username, or mobile phone number
+        /// Reset a user&#39;s password without user id A reset code will be generated and a &#39;forgot_password&#39; BRE event will be fired with that code.  The default system rule will send an email to the selected user if an email service has been setup. You can modify that rule in BRE to send an SMS instead or any other type of notification as you see fit.  Must submit their email, username, or mobile phone number. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="passwordReset">An object containing one of three methods to look up a user</param>
         public void SubmitPasswordReset(PasswordResetRequest passwordReset)
@@ -1187,7 +1343,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "tag" + "}", KnetikC
 
         /// <inheritdoc />
         /// <summary>
-        /// Update a user Password will not be edited on this endpoint, use password specific endpoints.
+        /// Update a user Password will not be edited on this endpoint, use password specific endpoints. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; USERS_ADMIN or owner
         /// </summary>
         /// <param name="id">The id of the user or &#39;me&#39;</param>
         /// <param name="userResource">The user resource object</param>
@@ -1244,7 +1400,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "tag" + "}", KnetikC
 
         /// <inheritdoc />
         /// <summary>
-        /// Update a user template 
+        /// Update a user template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="userTemplateResource">The user template resource object</param>

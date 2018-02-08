@@ -31,6 +31,13 @@ namespace com.knetikcloud.Model
         public long? ChallengeActivityId;
 
         /// <summary>
+        /// Defines core settings about the activity that affect how it can be created/played by users.
+        /// </summary>
+        /// <value>Defines core settings about the activity that affect how it can be created/played by users.</value>
+        [JsonProperty(PropertyName = "core_settings")]
+        public CoreActivityOccurrenceSettings CoreSettings;
+
+        /// <summary>
         /// The entitlement item required to enter the occurrence. Required if not part of an event. Must come from the set of entitlement items listed in the activity
         /// </summary>
         /// <value>The entitlement item required to enter the occurrence. Required if not part of an event. Must come from the set of entitlement items listed in the activity</value>
@@ -43,6 +50,13 @@ namespace com.knetikcloud.Model
         /// <value>The id of the event this occurence is a part of, if any</value>
         [JsonProperty(PropertyName = "event_id")]
         public long? EventId;
+
+        /// <summary>
+        /// The host of the occurrence, if not a participant (will be left out of users array). Must be the caller that creates the occurrence unless admin. Requires activity/challenge to allow host_option of 'non_player' if not admin as well
+        /// </summary>
+        /// <value>The host of the occurrence, if not a participant (will be left out of users array). Must be the caller that creates the occurrence unless admin. Requires activity/challenge to allow host_option of 'non_player' if not admin as well</value>
+        [JsonProperty(PropertyName = "host")]
+        public int? Host;
 
         /// <summary>
         /// The values selected from the available settings defined for the activity. Ex: difficulty: hard. Can be left out if the activity is played during an event and the settings are already set at the event level. Ex: every monday, difficulty: hard, number of questions: 10, category: sport. Otherwise, the set must exactly match those of the activity.
@@ -83,8 +97,10 @@ namespace com.knetikcloud.Model
             sb.Append("class CreateActivityOccurrenceRequest {\n");
             sb.Append("  ActivityId: ").Append(ActivityId).Append("\n");
             sb.Append("  ChallengeActivityId: ").Append(ChallengeActivityId).Append("\n");
+            sb.Append("  CoreSettings: ").Append(CoreSettings).Append("\n");
             sb.Append("  Entitlement: ").Append(Entitlement).Append("\n");
             sb.Append("  EventId: ").Append(EventId).Append("\n");
+            sb.Append("  Host: ").Append(Host).Append("\n");
             sb.Append("  Settings: ").Append(Settings).Append("\n");
             sb.Append("  Simulated: ").Append(Simulated).Append("\n");
             sb.Append("  Status: ").Append(Status).Append("\n");

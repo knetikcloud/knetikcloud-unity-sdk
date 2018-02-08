@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         DeviceResource AddDeviceUsersData { get; }
 
         /// <summary>
-        /// Add device users 
+        /// Add device users &lt;b&gt;Permissions Needed:&lt;/b&gt; DEVICES_ADMIN or owner
         /// </summary>
         /// <param name="userResources">userResources</param>
         /// <param name="id">id</param>
@@ -28,7 +28,7 @@ namespace com.knetikcloud.Api
         DeviceResource CreateDeviceData { get; }
 
         /// <summary>
-        /// Create a device 
+        /// Create a device &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="device">device</param>
         void CreateDevice(DeviceResource device);
@@ -36,7 +36,7 @@ namespace com.knetikcloud.Api
         TemplateResource CreateDeviceTemplateData { get; }
 
         /// <summary>
-        /// Create a device template Device Templates define a type of device and the properties they have
+        /// Create a device template Device Templates define a type of device and the properties they have. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="deviceTemplateResource">The device template resource object</param>
         void CreateDeviceTemplate(TemplateResource deviceTemplateResource);
@@ -44,7 +44,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Delete a device 
+        /// Delete a device &lt;b&gt;Permissions Needed:&lt;/b&gt; DEVICES_ADMIN or owner
         /// </summary>
         /// <param name="id">id</param>
         void DeleteDevice(string id);
@@ -52,7 +52,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Delete an device template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
+        /// Delete an device template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="cascade">The value needed to delete used templates</param>
@@ -61,7 +61,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Delete a device user 
+        /// Delete a device user &lt;b&gt;Permissions Needed:&lt;/b&gt; DEVICES_ADMIN or owner
         /// </summary>
         /// <param name="id">The id of the device</param>
         /// <param name="userId">The user id of the device user</param>
@@ -70,7 +70,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Delete all device users 
+        /// Delete all device users &lt;b&gt;Permissions Needed:&lt;/b&gt; DEVICES_ADMIN or owner
         /// </summary>
         /// <param name="id">The id of the device</param>
         /// <param name="filterId">Filter for device users to delete with a user id in a given comma separated list of ids</param>
@@ -79,7 +79,7 @@ namespace com.knetikcloud.Api
         DeviceResource GetDeviceData { get; }
 
         /// <summary>
-        /// Get a single device 
+        /// Get a single device &lt;b&gt;Permissions Needed:&lt;/b&gt; DEVICES_ADMIN or owner
         /// </summary>
         /// <param name="id">id</param>
         void GetDevice(string id);
@@ -87,7 +87,7 @@ namespace com.knetikcloud.Api
         TemplateResource GetDeviceTemplateData { get; }
 
         /// <summary>
-        /// Get a single device template 
+        /// Get a single device template &lt;b&gt;Permissions Needed:&lt;/b&gt; description
         /// </summary>
         /// <param name="id">The id of the template</param>
         void GetDeviceTemplate(string id);
@@ -95,7 +95,7 @@ namespace com.knetikcloud.Api
         PageResourceTemplateResource GetDeviceTemplatesData { get; }
 
         /// <summary>
-        /// List and search device templates 
+        /// List and search device templates &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or DEVICES_ADMIN
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -105,7 +105,7 @@ namespace com.knetikcloud.Api
         PageResourceDeviceResource GetDevicesData { get; }
 
         /// <summary>
-        /// List and search devices Get a list of devices with optional filtering
+        /// List and search devices Get a list of devices with optional filtering. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; DEVICES_ADMIN or user
         /// </summary>
         /// <param name="filterMake">Filter for devices with specified make</param>
         /// <param name="filterModel">Filter for devices with specified model</param>
@@ -121,7 +121,7 @@ namespace com.knetikcloud.Api
         DeviceResource UpdateDeviceData { get; }
 
         /// <summary>
-        /// Update a device 
+        /// Update a device &lt;b&gt;Permissions Needed:&lt;/b&gt; CUSTOMERS_ADMIN
         /// </summary>
         /// <param name="device">device</param>
         /// <param name="id">id</param>
@@ -130,7 +130,7 @@ namespace com.knetikcloud.Api
         TemplateResource UpdateDeviceTemplateData { get; }
 
         /// <summary>
-        /// Update an device template 
+        /// Update an device template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="deviceTemplateResource">The device template resource object</param>
@@ -257,7 +257,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Add device users 
+        /// Add device users &lt;b&gt;Permissions Needed:&lt;/b&gt; DEVICES_ADMIN or owner
         /// </summary>
         /// <param name="userResources">userResources</param>
         /// <param name="id">id</param>
@@ -321,7 +321,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Create a device 
+        /// Create a device &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="device">device</param>
         public void CreateDevice(DeviceResource device)
@@ -378,7 +378,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Create a device template Device Templates define a type of device and the properties they have
+        /// Create a device template Device Templates define a type of device and the properties they have. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="deviceTemplateResource">The device template resource object</param>
         public void CreateDeviceTemplate(TemplateResource deviceTemplateResource)
@@ -430,7 +430,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Delete a device 
+        /// Delete a device &lt;b&gt;Permissions Needed:&lt;/b&gt; DEVICES_ADMIN or owner
         /// </summary>
         /// <param name="id">id</param>
         public void DeleteDevice(string id)
@@ -484,7 +484,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Delete an device template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects
+        /// Delete an device template If cascade &#x3D; &#39;detach&#39;, it will force delete the template even if it&#39;s attached to other objects. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="cascade">The value needed to delete used templates</param>
@@ -544,7 +544,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Delete a device user 
+        /// Delete a device user &lt;b&gt;Permissions Needed:&lt;/b&gt; DEVICES_ADMIN or owner
         /// </summary>
         /// <param name="id">The id of the device</param>
         /// <param name="userId">The user id of the device user</param>
@@ -605,7 +605,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// Delete all device users 
+        /// Delete all device users &lt;b&gt;Permissions Needed:&lt;/b&gt; DEVICES_ADMIN or owner
         /// </summary>
         /// <param name="id">The id of the device</param>
         /// <param name="filterId">Filter for device users to delete with a user id in a given comma separated list of ids</param>
@@ -665,7 +665,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a single device 
+        /// Get a single device &lt;b&gt;Permissions Needed:&lt;/b&gt; DEVICES_ADMIN or owner
         /// </summary>
         /// <param name="id">id</param>
         public void GetDevice(string id)
@@ -721,7 +721,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a single device template 
+        /// Get a single device template &lt;b&gt;Permissions Needed:&lt;/b&gt; description
         /// </summary>
         /// <param name="id">The id of the template</param>
         public void GetDeviceTemplate(string id)
@@ -777,7 +777,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// List and search device templates 
+        /// List and search device templates &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or DEVICES_ADMIN
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -844,7 +844,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// List and search devices Get a list of devices with optional filtering
+        /// List and search devices Get a list of devices with optional filtering. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; DEVICES_ADMIN or user
         /// </summary>
         /// <param name="filterMake">Filter for devices with specified make</param>
         /// <param name="filterModel">Filter for devices with specified model</param>
@@ -947,7 +947,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// Update a device 
+        /// Update a device &lt;b&gt;Permissions Needed:&lt;/b&gt; CUSTOMERS_ADMIN
         /// </summary>
         /// <param name="device">device</param>
         /// <param name="id">id</param>
@@ -1011,7 +1011,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "user_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// Update an device template 
+        /// Update an device template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="deviceTemplateResource">The device template resource object</param>

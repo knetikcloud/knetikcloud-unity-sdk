@@ -19,21 +19,21 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Delete maintenance info 
+        /// Delete maintenance info &lt;b&gt;Permissions Needed:&lt;/b&gt; MAINTENANCE_ADMIN
         /// </summary>
         void DeleteMaintenance();
 
         Maintenance GetMaintenanceData { get; }
 
         /// <summary>
-        /// Get current maintenance info Get current maintenance info. 404 if no maintenance.
+        /// Get current maintenance info Get current maintenance info. 404 if no maintenance. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         void GetMaintenance();
 
         
 
         /// <summary>
-        /// Set current maintenance info 
+        /// Set current maintenance info &lt;b&gt;Permissions Needed:&lt;/b&gt; MAINTENANCE_ADMIN
         /// </summary>
         /// <param name="maintenance">The maintenance object</param>
         void SetMaintenance(Maintenance maintenance);
@@ -41,7 +41,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Update current maintenance info 
+        /// Update current maintenance info &lt;b&gt;Permissions Needed:&lt;/b&gt; MAINTENANCE_ADMIN
         /// </summary>
         /// <param name="maintenance">The maintenance object</param>
         void UpdateMaintenance(Maintenance maintenance);
@@ -96,7 +96,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Delete maintenance info 
+        /// Delete maintenance info &lt;b&gt;Permissions Needed:&lt;/b&gt; MAINTENANCE_ADMIN
         /// </summary>
         public void DeleteMaintenance()
         {
@@ -143,7 +143,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Get current maintenance info Get current maintenance info. 404 if no maintenance.
+        /// Get current maintenance info Get current maintenance info. 404 if no maintenance. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         public void GetMaintenance()
         {
@@ -192,7 +192,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Set current maintenance info 
+        /// Set current maintenance info &lt;b&gt;Permissions Needed:&lt;/b&gt; MAINTENANCE_ADMIN
         /// </summary>
         /// <param name="maintenance">The maintenance object</param>
         public void SetMaintenance(Maintenance maintenance)
@@ -242,7 +242,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Update current maintenance info 
+        /// Update current maintenance info &lt;b&gt;Permissions Needed:&lt;/b&gt; MAINTENANCE_ADMIN
         /// </summary>
         /// <param name="maintenance">The maintenance object</param>
         public void UpdateMaintenance(Maintenance maintenance)

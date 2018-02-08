@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         PageResourceAggregateCountResource GetUserRegistrationsData { get; }
 
         /// <summary>
-        /// Get user registration info Get user registration counts grouped by time range
+        /// Get user registration info Get user registration counts grouped by time range. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; REPORTING_USER_ADMIN
         /// </summary>
         /// <param name="granularity">The time duration to aggregate by</param>
         /// <param name="startDate">The start of the time range to aggregate, unix timestamp in seconds. Default is beginning of time</param>
@@ -57,7 +57,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Get user registration info Get user registration counts grouped by time range
+        /// Get user registration info Get user registration counts grouped by time range. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; REPORTING_USER_ADMIN
         /// </summary>
         /// <param name="granularity">The time duration to aggregate by</param>
         /// <param name="startDate">The start of the time range to aggregate, unix timestamp in seconds. Default is beginning of time</param>

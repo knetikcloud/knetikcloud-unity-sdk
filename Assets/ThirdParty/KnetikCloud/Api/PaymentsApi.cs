@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         PaymentMethodResource CreatePaymentMethodData { get; }
 
         /// <summary>
-        /// Create a new payment method for a user 
+        /// Create a new payment method for a user &lt;b&gt;Permissions Needed:&lt;/b&gt; PAYMENTS_ADMIN or owner
         /// </summary>
         /// <param name="userId">ID of the user for whom the payment method is being created</param>
         /// <param name="paymentMethod">Payment method being created</param>
@@ -28,7 +28,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Delete an existing payment method for a user 
+        /// Delete an existing payment method for a user &lt;b&gt;Permissions Needed:&lt;/b&gt; PAYMENTS_ADMIN or owner
         /// </summary>
         /// <param name="userId">ID of the user for whom the payment method is being updated</param>
         /// <param name="id">ID of the payment method being deleted</param>
@@ -37,7 +37,7 @@ namespace com.knetikcloud.Api
         PaymentMethodResource GetPaymentMethodData { get; }
 
         /// <summary>
-        /// Get a single payment method for a user 
+        /// Get a single payment method for a user &lt;b&gt;Permissions Needed:&lt;/b&gt; PAYMENTS_ADMIN or owner
         /// </summary>
         /// <param name="userId">ID of the user for whom the payment method is being retrieved</param>
         /// <param name="id">ID of the payment method being retrieved</param>
@@ -46,7 +46,7 @@ namespace com.knetikcloud.Api
         PaymentMethodTypeResource GetPaymentMethodTypeData { get; }
 
         /// <summary>
-        /// Get a single payment method type 
+        /// Get a single payment method type &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="id">ID of the payment method type being retrieved</param>
         void GetPaymentMethodType(int? id);
@@ -54,7 +54,7 @@ namespace com.knetikcloud.Api
         PageResourcePaymentMethodTypeResource GetPaymentMethodTypesData { get; }
 
         /// <summary>
-        /// Get all payment method types 
+        /// Get all payment method types &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="filterName">Filter for payment method types whose name matches a given string</param>
         /// <param name="size">The number of objects returned per page</param>
@@ -65,7 +65,7 @@ namespace com.knetikcloud.Api
         List<PaymentMethodResource> GetPaymentMethodsData { get; }
 
         /// <summary>
-        /// Get all payment methods for a user 
+        /// Get all payment methods for a user &lt;b&gt;Permissions Needed:&lt;/b&gt; PAYMENTS_ADMIN or owner
         /// </summary>
         /// <param name="userId">ID of the user for whom the payment methods are being retrieved</param>
         /// <param name="filterName">Filter for payment methods whose name starts with a given string</param>
@@ -80,7 +80,7 @@ namespace com.knetikcloud.Api
         PaymentAuthorizationResource PaymentAuthorizationData { get; }
 
         /// <summary>
-        /// Authorize payment of an invoice for later capture 
+        /// Authorize payment of an invoice for later capture &lt;b&gt;Permissions Needed:&lt;/b&gt; PAYMENTS_ADMIN or PAYMENTS_USER
         /// </summary>
         /// <param name="request">Payment authorization request</param>
         void PaymentAuthorization(PaymentAuthorizationResource request);
@@ -88,7 +88,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Capture an existing invoice payment authorization 
+        /// Capture an existing invoice payment authorization &lt;b&gt;Permissions Needed:&lt;/b&gt; PAYMENTS_ADMIN
         /// </summary>
         /// <param name="id">ID of the payment authorization to capture</param>
         void PaymentCapture(int? id);
@@ -96,7 +96,7 @@ namespace com.knetikcloud.Api
         PaymentMethodResource UpdatePaymentMethodData { get; }
 
         /// <summary>
-        /// Update an existing payment method for a user 
+        /// Update an existing payment method for a user &lt;b&gt;Permissions Needed:&lt;/b&gt; PAYMENTS_ADMIN or owner
         /// </summary>
         /// <param name="userId">ID of the user for whom the payment method is being updated</param>
         /// <param name="id">ID of the payment method being updated</param>
@@ -194,7 +194,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Create a new payment method for a user 
+        /// Create a new payment method for a user &lt;b&gt;Permissions Needed:&lt;/b&gt; PAYMENTS_ADMIN or owner
         /// </summary>
         /// <param name="userId">ID of the user for whom the payment method is being created</param>
         /// <param name="paymentMethod">Payment method being created</param>
@@ -253,7 +253,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Delete an existing payment method for a user 
+        /// Delete an existing payment method for a user &lt;b&gt;Permissions Needed:&lt;/b&gt; PAYMENTS_ADMIN or owner
         /// </summary>
         /// <param name="userId">ID of the user for whom the payment method is being updated</param>
         /// <param name="id">ID of the payment method being deleted</param>
@@ -314,7 +314,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikCl
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a single payment method for a user 
+        /// Get a single payment method for a user &lt;b&gt;Permissions Needed:&lt;/b&gt; PAYMENTS_ADMIN or owner
         /// </summary>
         /// <param name="userId">ID of the user for whom the payment method is being retrieved</param>
         /// <param name="id">ID of the payment method being retrieved</param>
@@ -377,7 +377,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikCl
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a single payment method type 
+        /// Get a single payment method type &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="id">ID of the payment method type being retrieved</param>
         public void GetPaymentMethodType(int? id)
@@ -433,7 +433,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikCl
 
         /// <inheritdoc />
         /// <summary>
-        /// Get all payment method types 
+        /// Get all payment method types &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="filterName">Filter for payment method types whose name matches a given string</param>
         /// <param name="size">The number of objects returned per page</param>
@@ -506,7 +506,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikCl
 
         /// <inheritdoc />
         /// <summary>
-        /// Get all payment methods for a user 
+        /// Get all payment methods for a user &lt;b&gt;Permissions Needed:&lt;/b&gt; PAYMENTS_ADMIN or owner
         /// </summary>
         /// <param name="userId">ID of the user for whom the payment methods are being retrieved</param>
         /// <param name="filterName">Filter for payment methods whose name starts with a given string</param>
@@ -604,7 +604,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikCl
 
         /// <inheritdoc />
         /// <summary>
-        /// Authorize payment of an invoice for later capture 
+        /// Authorize payment of an invoice for later capture &lt;b&gt;Permissions Needed:&lt;/b&gt; PAYMENTS_ADMIN or PAYMENTS_USER
         /// </summary>
         /// <param name="request">Payment authorization request</param>
         public void PaymentAuthorization(PaymentAuthorizationResource request)
@@ -656,7 +656,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikCl
 
         /// <inheritdoc />
         /// <summary>
-        /// Capture an existing invoice payment authorization 
+        /// Capture an existing invoice payment authorization &lt;b&gt;Permissions Needed:&lt;/b&gt; PAYMENTS_ADMIN
         /// </summary>
         /// <param name="id">ID of the payment authorization to capture</param>
         public void PaymentCapture(int? id)
@@ -710,7 +710,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "id" + "}", KnetikCl
 
         /// <inheritdoc />
         /// <summary>
-        /// Update an existing payment method for a user 
+        /// Update an existing payment method for a user &lt;b&gt;Permissions Needed:&lt;/b&gt; PAYMENTS_ADMIN or owner
         /// </summary>
         /// <param name="userId">ID of the user for whom the payment method is being updated</param>
         /// <param name="id">ID of the payment method being updated</param>

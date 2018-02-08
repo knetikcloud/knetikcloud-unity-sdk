@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         string CreateXsollaTokenUrlData { get; }
 
         /// <summary>
-        /// Create a payment token that should be used to forward the user to Xsolla so they can complete payment 
+        /// Create a payment token that should be used to forward the user to Xsolla so they can complete payment &lt;b&gt;Permissions Needed:&lt;/b&gt; XSOLLA_ADMIN or owner
         /// </summary>
         /// <param name="request">The payment request to be sent to XSolla</param>
         void CreateXsollaTokenUrl(XsollaPaymentRequest request);
@@ -53,7 +53,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Create a payment token that should be used to forward the user to Xsolla so they can complete payment 
+        /// Create a payment token that should be used to forward the user to Xsolla so they can complete payment &lt;b&gt;Permissions Needed:&lt;/b&gt; XSOLLA_ADMIN or owner
         /// </summary>
         /// <param name="request">The payment request to be sent to XSolla</param>
         public void CreateXsollaTokenUrl(XsollaPaymentRequest request)

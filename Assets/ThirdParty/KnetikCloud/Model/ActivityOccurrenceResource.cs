@@ -24,11 +24,25 @@ namespace com.knetikcloud.Model
         public long? ActivityId;
 
         /// <summary>
+        /// The ids of banned users that cannot join the occurrence. See occurrence-user delete endpoint
+        /// </summary>
+        /// <value>The ids of banned users that cannot join the occurrence. See occurrence-user delete endpoint</value>
+        [JsonProperty(PropertyName = "bans")]
+        public List<int?> Bans;
+
+        /// <summary>
         /// The id of the challenge activity (as part of the event, required if eventId set)
         /// </summary>
         /// <value>The id of the challenge activity (as part of the event, required if eventId set)</value>
         [JsonProperty(PropertyName = "challenge_activity_id")]
         public long? ChallengeActivityId;
+
+        /// <summary>
+        /// Defines core settings about the activity occurrence that affect how it behaves in the system. Validated against core settings in activity/challenge-activity.
+        /// </summary>
+        /// <value>Defines core settings about the activity occurrence that affect how it behaves in the system. Validated against core settings in activity/challenge-activity.</value>
+        [JsonProperty(PropertyName = "core_settings")]
+        public CoreActivityOccurrenceSettings CoreSettings;
 
         /// <summary>
         /// The date this occurrence was created, unix timestamp in seconds
@@ -50,6 +64,13 @@ namespace com.knetikcloud.Model
         /// <value>The id of the event</value>
         [JsonProperty(PropertyName = "event_id")]
         public long? EventId;
+
+        /// <summary>
+        /// The host of the occurrence, if not a participant (will be left out of users array). Must be the caller that creates the occurrence unless admin. Requires activity/challenge to allow host_option of 'non_player' if not admin as well
+        /// </summary>
+        /// <value>The host of the occurrence, if not a participant (will be left out of users array). Must be the caller that creates the occurrence unless admin. Requires activity/challenge to allow host_option of 'non_player' if not admin as well</value>
+        [JsonProperty(PropertyName = "host")]
+        public SimpleUserResource Host;
 
         /// <summary>
         /// The id of the activity occurrence
@@ -117,10 +138,13 @@ namespace com.knetikcloud.Model
             StringBuilder sb = new StringBuilder();
             sb.Append("class ActivityOccurrenceResource {\n");
             sb.Append("  ActivityId: ").Append(ActivityId).Append("\n");
+            sb.Append("  Bans: ").Append(Bans).Append("\n");
             sb.Append("  ChallengeActivityId: ").Append(ChallengeActivityId).Append("\n");
+            sb.Append("  CoreSettings: ").Append(CoreSettings).Append("\n");
             sb.Append("  CreatedDate: ").Append(CreatedDate).Append("\n");
             sb.Append("  Entitlement: ").Append(Entitlement).Append("\n");
             sb.Append("  EventId: ").Append(EventId).Append("\n");
+            sb.Append("  Host: ").Append(Host).Append("\n");
             sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  RewardStatus: ").Append(RewardStatus).Append("\n");
             sb.Append("  Settings: ").Append(Settings).Append("\n");

@@ -57,7 +57,7 @@ namespace com.knetikcloud.UnityEditor
             mPreviousButton = new GUIContent("Previous...");
             mNextButton = new GUIContent("Next...");
             mCloseButton = new GUIContent("Close");
-            mURLText = new GUIContent(KnetikEditorConstants.KnetikCloudWebsiteUrl);
+            mURLText = new GUIContent(KnetikCloudConstants.KnetikCloudWebsiteUrl);
             
             KnetikCloudEditorSettingsWindow.OpenProjectSettingsWindow();
         }
@@ -142,7 +142,7 @@ namespace com.knetikcloud.UnityEditor
 
             if (GUILayout.Button(mURLText, GUI.skin.label))
             {
-                Application.OpenURL(KnetikEditorConstants.KnetikCloudWebsiteUrl);
+                Application.OpenURL(KnetikCloudConstants.KnetikCloudWebsiteUrl);
             }
 
             GUI.skin.label.normal.textColor = originalColor;

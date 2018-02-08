@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         UserRelationshipResource CreateUserRelationshipData { get; }
 
         /// <summary>
-        /// Create a user relationship 
+        /// Create a user relationship &lt;b&gt;Permissions Needed:&lt;/b&gt; RELATIONSHIPS_ADMIN
         /// </summary>
         /// <param name="relationship">The new relationship</param>
         void CreateUserRelationship(UserRelationshipResource relationship);
@@ -27,7 +27,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Delete a user relationship 
+        /// Delete a user relationship &lt;b&gt;Permissions Needed:&lt;/b&gt; RELATIONSHIPS_ADMIN
         /// </summary>
         /// <param name="id">The id of the relationship</param>
         void DeleteUserRelationship(long? id);
@@ -35,7 +35,7 @@ namespace com.knetikcloud.Api
         UserRelationshipResource GetUserRelationshipData { get; }
 
         /// <summary>
-        /// Get a user relationship 
+        /// Get a user relationship &lt;b&gt;Permissions Needed:&lt;/b&gt; RELATIONSHIPS_USER or RELATIONSHIPS_ADMIN
         /// </summary>
         /// <param name="id">The id of the relationship</param>
         void GetUserRelationship(long? id);
@@ -43,7 +43,7 @@ namespace com.knetikcloud.Api
         PageResourceUserRelationshipResource GetUserRelationshipsData { get; }
 
         /// <summary>
-        /// Get a list of user relationships 
+        /// Get a list of user relationships &lt;b&gt;Permissions Needed:&lt;/b&gt; RELATIONSHIPS_USER or RELATIONSHIPS_ADMIN
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned</param>
@@ -53,7 +53,7 @@ namespace com.knetikcloud.Api
         UserRelationshipResource UpdateUserRelationshipData { get; }
 
         /// <summary>
-        /// Update a user relationship 
+        /// Update a user relationship &lt;b&gt;Permissions Needed:&lt;/b&gt; RELATIONSHIPS_ADMIN
         /// </summary>
         /// <param name="id">The id of the relationship</param>
         /// <param name="relationship">The new relationship</param>
@@ -119,7 +119,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Create a user relationship 
+        /// Create a user relationship &lt;b&gt;Permissions Needed:&lt;/b&gt; RELATIONSHIPS_ADMIN
         /// </summary>
         /// <param name="relationship">The new relationship</param>
         public void CreateUserRelationship(UserRelationshipResource relationship)
@@ -171,7 +171,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Delete a user relationship 
+        /// Delete a user relationship &lt;b&gt;Permissions Needed:&lt;/b&gt; RELATIONSHIPS_ADMIN
         /// </summary>
         /// <param name="id">The id of the relationship</param>
         public void DeleteUserRelationship(long? id)
@@ -225,7 +225,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a user relationship 
+        /// Get a user relationship &lt;b&gt;Permissions Needed:&lt;/b&gt; RELATIONSHIPS_USER or RELATIONSHIPS_ADMIN
         /// </summary>
         /// <param name="id">The id of the relationship</param>
         public void GetUserRelationship(long? id)
@@ -281,7 +281,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a list of user relationships 
+        /// Get a list of user relationships &lt;b&gt;Permissions Needed:&lt;/b&gt; RELATIONSHIPS_USER or RELATIONSHIPS_ADMIN
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned</param>
@@ -348,7 +348,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Update a user relationship 
+        /// Update a user relationship &lt;b&gt;Permissions Needed:&lt;/b&gt; RELATIONSHIPS_ADMIN
         /// </summary>
         /// <param name="id">The id of the relationship</param>
         /// <param name="relationship">The new relationship</param>

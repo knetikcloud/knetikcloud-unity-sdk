@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         SubscriptionResource CreateSubscriptionData { get; }
 
         /// <summary>
-        /// Creates a subscription item and associated plans 
+        /// Creates a subscription item and associated plans &lt;b&gt;Permissions Needed:&lt;/b&gt; SUBSCRIPTIONS_ADMIN
         /// </summary>
         /// <param name="subscriptionResource">The subscription to be created</param>
         void CreateSubscription(SubscriptionResource subscriptionResource);
@@ -27,7 +27,7 @@ namespace com.knetikcloud.Api
         SubscriptionTemplateResource CreateSubscriptionTemplateData { get; }
 
         /// <summary>
-        /// Create a subscription template Subscription Templates define a type of subscription and the properties they have.
+        /// Create a subscription template Subscription Templates define a type of subscription and the properties they have. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="subscriptionTemplateResource">The new subscription template</param>
         void CreateSubscriptionTemplate(SubscriptionTemplateResource subscriptionTemplateResource);
@@ -35,7 +35,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Delete a subscription plan Must not be locked or a migration target
+        /// Delete a subscription plan Must not be locked or a migration target. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; SUBSCRIPTIONS_ADMIN
         /// </summary>
         /// <param name="id">The id of the subscription</param>
         /// <param name="planId">The id of the plan</param>
@@ -44,7 +44,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Delete a subscription template 
+        /// Delete a subscription template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="cascade">force deleting the template if it&#39;s attached to other objects, cascade &#x3D; detach</param>
@@ -53,7 +53,7 @@ namespace com.knetikcloud.Api
         SubscriptionResource GetSubscriptionData { get; }
 
         /// <summary>
-        /// Retrieve a single subscription item and associated plans 
+        /// Retrieve a single subscription item and associated plans &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="id">The id of the subscription</param>
         void GetSubscription(int? id);
@@ -61,7 +61,7 @@ namespace com.knetikcloud.Api
         SubscriptionTemplateResource GetSubscriptionTemplateData { get; }
 
         /// <summary>
-        /// Get a single subscription template Subscription Templates define a type of subscription and the properties they have.
+        /// Get a single subscription template Subscription Templates define a type of subscription and the properties they have. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         void GetSubscriptionTemplate(string id);
@@ -69,7 +69,7 @@ namespace com.knetikcloud.Api
         PageResourceSubscriptionTemplateResource GetSubscriptionTemplatesData { get; }
 
         /// <summary>
-        /// List and search subscription templates 
+        /// List and search subscription templates &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or SUBSCRIPTIONS_ADMIN
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -79,7 +79,7 @@ namespace com.knetikcloud.Api
         PageResourceSubscriptionResource GetSubscriptionsData { get; }
 
         /// <summary>
-        /// List available subscription items and associated plans 
+        /// List available subscription items and associated plans &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -89,14 +89,14 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Processes subscriptions and charge dues 
+        /// Processes subscriptions and charge dues &lt;b&gt;Permissions Needed:&lt;/b&gt; SUBSCRIPTIONS_ADMIN
         /// </summary>
         void ProcessSubscriptions();
 
         
 
         /// <summary>
-        /// Updates a subscription item and associated plans Will not remove plans left out
+        /// Updates a subscription item and associated plans Will not remove plans left out. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; SUBSCRIPTIONS_ADMIN
         /// </summary>
         /// <param name="id">The id of the subscription</param>
         /// <param name="subscriptionResource">The subscription resource object</param>
@@ -105,7 +105,7 @@ namespace com.knetikcloud.Api
         SubscriptionTemplateResource UpdateSubscriptionTemplateData { get; }
 
         /// <summary>
-        /// Update a subscription template 
+        /// Update a subscription template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="subscriptionTemplateResource">The subscription template resource object</param>
@@ -216,7 +216,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Creates a subscription item and associated plans 
+        /// Creates a subscription item and associated plans &lt;b&gt;Permissions Needed:&lt;/b&gt; SUBSCRIPTIONS_ADMIN
         /// </summary>
         /// <param name="subscriptionResource">The subscription to be created</param>
         public void CreateSubscription(SubscriptionResource subscriptionResource)
@@ -268,7 +268,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Create a subscription template Subscription Templates define a type of subscription and the properties they have.
+        /// Create a subscription template Subscription Templates define a type of subscription and the properties they have. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="subscriptionTemplateResource">The new subscription template</param>
         public void CreateSubscriptionTemplate(SubscriptionTemplateResource subscriptionTemplateResource)
@@ -320,7 +320,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Delete a subscription plan Must not be locked or a migration target
+        /// Delete a subscription plan Must not be locked or a migration target. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; SUBSCRIPTIONS_ADMIN
         /// </summary>
         /// <param name="id">The id of the subscription</param>
         /// <param name="planId">The id of the plan</param>
@@ -381,7 +381,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "plan_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// Delete a subscription template 
+        /// Delete a subscription template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="cascade">force deleting the template if it&#39;s attached to other objects, cascade &#x3D; detach</param>
@@ -441,7 +441,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "plan_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// Retrieve a single subscription item and associated plans 
+        /// Retrieve a single subscription item and associated plans &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="id">The id of the subscription</param>
         public void GetSubscription(int? id)
@@ -497,7 +497,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "plan_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a single subscription template Subscription Templates define a type of subscription and the properties they have.
+        /// Get a single subscription template Subscription Templates define a type of subscription and the properties they have. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         public void GetSubscriptionTemplate(string id)
@@ -553,7 +553,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "plan_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// List and search subscription templates 
+        /// List and search subscription templates &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN or SUBSCRIPTIONS_ADMIN
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -620,7 +620,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "plan_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// List available subscription items and associated plans 
+        /// List available subscription items and associated plans &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -687,7 +687,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "plan_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// Processes subscriptions and charge dues 
+        /// Processes subscriptions and charge dues &lt;b&gt;Permissions Needed:&lt;/b&gt; SUBSCRIPTIONS_ADMIN
         /// </summary>
         public void ProcessSubscriptions()
         {
@@ -734,7 +734,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "plan_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// Updates a subscription item and associated plans Will not remove plans left out
+        /// Updates a subscription item and associated plans Will not remove plans left out. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; SUBSCRIPTIONS_ADMIN
         /// </summary>
         /// <param name="id">The id of the subscription</param>
         /// <param name="subscriptionResource">The subscription resource object</param>
@@ -791,7 +791,7 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "plan_id" + "}", Kne
 
         /// <inheritdoc />
         /// <summary>
-        /// Update a subscription template 
+        /// Update a subscription template &lt;b&gt;Permissions Needed:&lt;/b&gt; TEMPLATE_ADMIN
         /// </summary>
         /// <param name="id">The id of the template</param>
         /// <param name="subscriptionTemplateResource">The subscription template resource object</param>

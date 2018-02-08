@@ -18,7 +18,7 @@ namespace com.knetikcloud.UnityEditor
         [MenuItem("Knetik Cloud/Sign up...")]
         private static void SignUp()
         {
-            Application.OpenURL(KnetikEditorConstants.KnetikCloudWebsiteUrl);
+            Application.OpenURL(KnetikCloudConstants.KnetikCloudWebsiteUrl);
         }
 
 
@@ -33,7 +33,7 @@ namespace com.knetikcloud.UnityEditor
         {
             if (KnetikCloudEditorConfigurationManager.IsAppNameSet)
             {
-                Application.OpenURL(KnetikCloudEditorConfigurationManager.StagingURL);
+                Application.OpenURL(KnetikCloudEditorConfigurationManager.StagingUrl);
             }
         }
 
@@ -48,7 +48,7 @@ namespace com.knetikcloud.UnityEditor
         {
             if (KnetikCloudEditorConfigurationManager.IsAppNameSet)
             {
-                Application.OpenURL(KnetikCloudEditorConfigurationManager.StagingURL + "/api.html");
+                Application.OpenURL(KnetikCloudEditorConfigurationManager.StagingUrl + "/api.html");
             }
         }
     }

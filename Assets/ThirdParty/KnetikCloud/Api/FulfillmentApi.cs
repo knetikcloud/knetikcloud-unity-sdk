@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         FulfillmentType CreateFulfillmentTypeData { get; }
 
         /// <summary>
-        /// Create a fulfillment type 
+        /// Create a fulfillment type &lt;b&gt;Permissions Needed:&lt;/b&gt; FULFILLMENT_ADMIN
         /// </summary>
         /// <param name="type">The fulfillment type</param>
         void CreateFulfillmentType(FulfillmentType type);
@@ -27,7 +27,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Delete a fulfillment type 
+        /// Delete a fulfillment type &lt;b&gt;Permissions Needed:&lt;/b&gt; FULFILLMENT_ADMIN
         /// </summary>
         /// <param name="id">The id</param>
         void DeleteFulfillmentType(int? id);
@@ -35,7 +35,7 @@ namespace com.knetikcloud.Api
         FulfillmentType GetFulfillmentTypeData { get; }
 
         /// <summary>
-        /// Get a single fulfillment type 
+        /// Get a single fulfillment type &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="id">The id</param>
         void GetFulfillmentType(int? id);
@@ -43,7 +43,7 @@ namespace com.knetikcloud.Api
         PageResourceFulfillmentType GetFulfillmentTypesData { get; }
 
         /// <summary>
-        /// List and search fulfillment types 
+        /// List and search fulfillment types &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -53,7 +53,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Update a fulfillment type 
+        /// Update a fulfillment type &lt;b&gt;Permissions Needed:&lt;/b&gt; FULFILLMENT_ADMIN
         /// </summary>
         /// <param name="id">The id</param>
         /// <param name="fulfillmentType">The fulfillment type</param>
@@ -118,7 +118,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Create a fulfillment type 
+        /// Create a fulfillment type &lt;b&gt;Permissions Needed:&lt;/b&gt; FULFILLMENT_ADMIN
         /// </summary>
         /// <param name="type">The fulfillment type</param>
         public void CreateFulfillmentType(FulfillmentType type)
@@ -170,7 +170,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Delete a fulfillment type 
+        /// Delete a fulfillment type &lt;b&gt;Permissions Needed:&lt;/b&gt; FULFILLMENT_ADMIN
         /// </summary>
         /// <param name="id">The id</param>
         public void DeleteFulfillmentType(int? id)
@@ -224,7 +224,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a single fulfillment type 
+        /// Get a single fulfillment type &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="id">The id</param>
         public void GetFulfillmentType(int? id)
@@ -280,7 +280,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// List and search fulfillment types 
+        /// List and search fulfillment types &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -347,7 +347,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Update a fulfillment type 
+        /// Update a fulfillment type &lt;b&gt;Permissions Needed:&lt;/b&gt; FULFILLMENT_ADMIN
         /// </summary>
         /// <param name="id">The id</param>
         /// <param name="fulfillmentType">The fulfillment type</param>

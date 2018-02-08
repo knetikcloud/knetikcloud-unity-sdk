@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         Version GetVersionData { get; }
 
         /// <summary>
-        /// Get current version info 
+        /// Get current version info &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         void GetVersion();
 
@@ -52,7 +52,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Get current version info 
+        /// Get current version info &lt;b&gt;Permissions Needed:&lt;/b&gt; ANY
         /// </summary>
         public void GetVersion()
         {

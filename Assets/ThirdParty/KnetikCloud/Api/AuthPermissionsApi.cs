@@ -19,7 +19,7 @@ namespace com.knetikcloud.Api
         PermissionResource CreatePermissionData { get; }
 
         /// <summary>
-        /// Create a new permission 
+        /// Create a new permission &lt;b&gt;Permissions Needed:&lt;/b&gt; PERMISSIONS_ADMIN
         /// </summary>
         /// <param name="permissionResource">The permission resource object</param>
         void CreatePermission(PermissionResource permissionResource);
@@ -27,7 +27,7 @@ namespace com.knetikcloud.Api
         
 
         /// <summary>
-        /// Delete a permission 
+        /// Delete a permission &lt;b&gt;Permissions Needed:&lt;/b&gt; PERMISSIONS_ADMIN
         /// </summary>
         /// <param name="permission">The permission value</param>
         /// <param name="force">If true, removes permission assigned to roles</param>
@@ -36,7 +36,7 @@ namespace com.knetikcloud.Api
         PermissionResource GetPermissionData { get; }
 
         /// <summary>
-        /// Get a single permission 
+        /// Get a single permission &lt;b&gt;Permissions Needed:&lt;/b&gt; PERMISSIONS_ADMIN
         /// </summary>
         /// <param name="permission">The permission value</param>
         void GetPermission(string permission);
@@ -44,7 +44,7 @@ namespace com.knetikcloud.Api
         PageResourcePermissionResource GetPermissionsData { get; }
 
         /// <summary>
-        /// List and search permissions 
+        /// List and search permissions &lt;b&gt;Permissions Needed:&lt;/b&gt; PERMISSIONS_ADMIN
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -54,7 +54,7 @@ namespace com.knetikcloud.Api
         PermissionResource UpdatePermissionData { get; }
 
         /// <summary>
-        /// Update a permission 
+        /// Update a permission &lt;b&gt;Permissions Needed:&lt;/b&gt; PERMISSIONS_ADMIN
         /// </summary>
         /// <param name="permission">The permission value</param>
         /// <param name="permissionResource">The permission resource object</param>
@@ -120,7 +120,7 @@ namespace com.knetikcloud.Api
     
         /// <inheritdoc />
         /// <summary>
-        /// Create a new permission 
+        /// Create a new permission &lt;b&gt;Permissions Needed:&lt;/b&gt; PERMISSIONS_ADMIN
         /// </summary>
         /// <param name="permissionResource">The permission resource object</param>
         public void CreatePermission(PermissionResource permissionResource)
@@ -172,7 +172,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Delete a permission 
+        /// Delete a permission &lt;b&gt;Permissions Needed:&lt;/b&gt; PERMISSIONS_ADMIN
         /// </summary>
         /// <param name="permission">The permission value</param>
         /// <param name="force">If true, removes permission assigned to roles</param>
@@ -232,7 +232,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Get a single permission 
+        /// Get a single permission &lt;b&gt;Permissions Needed:&lt;/b&gt; PERMISSIONS_ADMIN
         /// </summary>
         /// <param name="permission">The permission value</param>
         public void GetPermission(string permission)
@@ -288,7 +288,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// List and search permissions 
+        /// List and search permissions &lt;b&gt;Permissions Needed:&lt;/b&gt; PERMISSIONS_ADMIN
         /// </summary>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
@@ -355,7 +355,7 @@ namespace com.knetikcloud.Api
 
         /// <inheritdoc />
         /// <summary>
-        /// Update a permission 
+        /// Update a permission &lt;b&gt;Permissions Needed:&lt;/b&gt; PERMISSIONS_ADMIN
         /// </summary>
         /// <param name="permission">The permission value</param>
         /// <param name="permissionResource">The permission resource object</param>
