@@ -201,7 +201,7 @@ namespace com.knetikcloud.Api
         /// <param name="challengeResource">The challenge resource object</param>
         void UpdateChallenge(long? id, ChallengeResource challengeResource);
 
-        ChallengeActivityResource UpdateChallengeActivityData { get; }
+        
 
         /// <summary>
         /// Update a challenge activity A challenge can have multiple instances of the same activity and thus the id used is of the specific entry within the challenge. &lt;br&gt;&lt;br&gt;&lt;b&gt;Permissions Needed:&lt;/b&gt; CHALLENGES_ADMIN
@@ -362,8 +362,7 @@ namespace com.knetikcloud.Api
         public delegate void UpdateChallengeCompleteDelegate(long responseCode, ChallengeResource response);
         public UpdateChallengeCompleteDelegate UpdateChallengeComplete;
 
-        public ChallengeActivityResource UpdateChallengeActivityData { get; private set; }
-        public delegate void UpdateChallengeActivityCompleteDelegate(long responseCode, ChallengeActivityResource response);
+        public delegate void UpdateChallengeActivityCompleteDelegate(long responseCode);
         public UpdateChallengeActivityCompleteDelegate UpdateChallengeActivityComplete;
 
         public TemplateResource UpdateChallengeActivityTemplateData { get; private set; }
@@ -1731,12 +1730,10 @@ mWebCallEvent.WebPath = mWebCallEvent.WebPath.Replace("{" + "challenge_id" + "}"
                 throw new KnetikException("Error calling UpdateChallengeActivity: " + response.Error);
             }
 
-            UpdateChallengeActivityData = (ChallengeActivityResource) KnetikClient.Deserialize(response.Content, typeof(ChallengeActivityResource), response.Headers);
-            KnetikLogger.LogResponse(mUpdateChallengeActivityStartTime, "UpdateChallengeActivity", string.Format("Response received successfully:\n{0}", UpdateChallengeActivityData));
-
+            KnetikLogger.LogResponse(mUpdateChallengeActivityStartTime, "UpdateChallengeActivity", "Response received successfully.");
             if (UpdateChallengeActivityComplete != null)
             {
-                UpdateChallengeActivityComplete(response.ResponseCode, UpdateChallengeActivityData);
+                UpdateChallengeActivityComplete(response.ResponseCode);
             }
         }
 

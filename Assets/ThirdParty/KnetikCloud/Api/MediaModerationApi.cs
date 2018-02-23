@@ -64,7 +64,8 @@ namespace com.knetikcloud.Api
         /// <param name="filterContextId">Filter by moderation context ID</param>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
-        void GetModerationReports(bool? excludeResolved, string filterContext, string filterContextId, int? size, int? page);
+        /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
+        void GetModerationReports(bool? excludeResolved, string filterContext, string filterContextId, int? size, int? page, string order);
 
         
 
@@ -401,7 +402,8 @@ namespace com.knetikcloud.Api
         /// <param name="filterContextId">Filter by moderation context ID</param>
         /// <param name="size">The number of objects returned per page</param>
         /// <param name="page">The number of the page returned, starting with 1</param>
-        public void GetModerationReports(bool? excludeResolved, string filterContext, string filterContextId, int? size, int? page)
+        /// <param name="order">A comma separated list of sorting requirements in priority order, each entry matching PROPERTY_NAME:[ASC|DESC]</param>
+        public void GetModerationReports(bool? excludeResolved, string filterContext, string filterContextId, int? size, int? page, string order)
         {
             
             mWebCallEvent.WebPath = "/moderation/reports";
@@ -438,6 +440,11 @@ namespace com.knetikcloud.Api
             if (page != null)
             {
                 mWebCallEvent.QueryParams["page"] = KnetikClient.ParameterToString(page);
+            }
+
+            if (order != null)
+            {
+                mWebCallEvent.QueryParams["order"] = KnetikClient.ParameterToString(order);
             }
 
             // authentication settings
