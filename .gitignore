@@ -8,3 +8,4 @@ knetikcloud-unity-sdk.Editor.csproj
 **\.pdb**
 **/\.vs/**
 **\.user**
+/.project
